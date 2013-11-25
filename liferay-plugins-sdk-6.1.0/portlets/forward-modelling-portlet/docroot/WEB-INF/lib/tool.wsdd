@@ -1,8 +1,0 @@
-<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
-    <service name="urn:portaltoolservice" provider="java:RPC">
-        <parameter name="className" value="hu.sztaki.lpds.portal.net.wsaxis13.PortalToolServiceImpl"/>
-        <parameter name="allowedMethods" value="uploadUserProxy uploadUserProxyStr submittWorkflow submittWorkflowStr"/>
-        <parameter name="scope" value="request"/>
-        <beanMapping qname="lpdsNS:ToolComDataBean" xmlns:lpdsNS="urn:BeanService" languageSpecificType="java:hu.sztaki.lpds.portal.com.ToolComDataBean"/>
-    </service>
-</deployment>
