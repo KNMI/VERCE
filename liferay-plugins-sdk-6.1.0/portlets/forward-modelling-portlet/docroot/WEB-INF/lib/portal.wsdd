@@ -1,0 +1,9 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+    <service name="urn:loggservice" provider="java:RPC">
+        <parameter name="className" value="hu.sztaki.lpds.logging.net.wsaxis13.LogServiceImpl"/>
+        <parameter name="allowedMethods" value="sendLog"/>
+        <parameter name="scope" value="request"/>
+        <beanMapping qname="lpdsNS:LogInfoBean" xmlns:lpdsNS="urn:BeanService" languageSpecificType="java:hu.sztaki.lpds.logging.com.LogInfoBean"/>
+    </service>
+    
+</deployment>

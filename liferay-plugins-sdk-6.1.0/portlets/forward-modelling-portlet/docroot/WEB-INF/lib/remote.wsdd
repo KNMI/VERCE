@@ -1,0 +1,7 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+    <service name="urn:remotesubmit" provider="java:RPC">
+        <parameter name="className" value="hu.sztaki.lpds.portal.net.wsaxis13.RemoteSubmitImpl"/>
+        <parameter name="allowedMethods" value="submit"/>
+        <parameter name="scope" value="request"/>
+    </service>
+</deployment>
