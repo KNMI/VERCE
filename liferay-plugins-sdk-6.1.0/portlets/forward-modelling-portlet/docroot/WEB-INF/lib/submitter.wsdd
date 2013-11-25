@@ -1,0 +1,17 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+    <service name="urn:portalsubmitterservice" provider="java:RPC">
+        <parameter name="className" value="hu.sztaki.lpds.portal.net.wsaxis13.PortalSubmitterServiceImpl"/>
+        <parameter name="allowedMethods" value="getProxy getActiveProxys"/>
+        <parameter name="scope" value="request"/>
+
+	<operation name="getActiveProxys" returnQName="returnqname" returnType="ns1:AxisVector" >
+    	    <parameter name="dh" type="ns1:AxisVector"/>
+        </operation>
+
+	<typeMapping deserializer="org.apache.axis.encoding.ser.VectorDeserializerFactory"
+	    languageSpecificType="java:java.util.Vector" qname="ns1:AxisVector"
+	    serializer="org.apache.axis.encoding.ser.VectorSerializerFactory" 
+	    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+	
+    </service>
+</deployment>

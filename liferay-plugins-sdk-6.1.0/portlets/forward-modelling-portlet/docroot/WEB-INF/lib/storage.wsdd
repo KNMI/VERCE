@@ -1,0 +1,19 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+    <service name="urn:portalstorageservice" provider="java:RPC">
+        <parameter name="className" value="hu.sztaki.lpds.portal.net.wsaxis13.PortalStorageServiceImpl"/>
+        <parameter name="allowedMethods" value="newOccupied newWorkflowNames checkWorkflowNames getUploadingFilePercent"/>
+        <parameter name="scope" value="request"/>
+        <beanMapping qname="lpdsNS:ComDataBean" xmlns:lpdsNS="urn:BeanService" languageSpecificType="java:hu.sztaki.lpds.wfs.com.ComDataBean"/>
+        <beanMapping qname="lpdsNS:StoragePortalWorkflowNamesBean" xmlns:lpdsNS="urn:BeanService" languageSpecificType="java:hu.sztaki.lpds.portal.com.StoragePortalWorkflowNamesBean"/>
+	
+      <typeMapping
+        xmlns:ns="http://soapinterop.org/"
+        qname="ns1:AxisHashtable"
+        type="java:java.util.Hashtable[]"
+        serializer="org.apache.axis.encoding.ser.ArraySerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.ArrayDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+	
+    </service>
+</deployment>

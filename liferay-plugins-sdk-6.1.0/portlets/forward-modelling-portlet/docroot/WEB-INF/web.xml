@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+ 
+   
+
+    <display-name>WS-Pgrade in Liferay</display-name>
+	<listener>
+        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+    </listener>
+    <servlet>
+		<servlet-name>InitServices</servlet-name>
+		<servlet-class>hu.sztaki.lpds.information.local.InitAxisServices</servlet-class>
+		
+		<init-param>
+			<param-name>baseurl</param-name>
+			<param-value>http://localhost:8080/forward-modelling-portlet/servlet/AxisServlet</param-value>
+		</init-param>
+		<init-param>
+			<param-name>install-4</param-name>
+			<param-value>webapps/forward-modelling-portlet/WEB-INF/lib/wfi.wsdd</param-value>
+		</init-param>
+		<init-param>
+			<param-name>install-1</param-name>
+			<param-value>webapps/forward-modelling-portlet/WEB-INF/lib/storage.wsdd</param-value>
+		</init-param>
+		<init-param>
+			<param-name>install-2</param-name>
+			<param-value>webapps/forward-modelling-portlet/WEB-INF/lib/submitter.wsdd</param-value>
+		</init-param>
+		<init-param>
+			<param-name>install-3</param-name>
+			<param-value>webapps/forward-modelling-portlet/WEB-INF/lib/remote.wsdd</param-value>
+		</init-param>
+		<init-param>
+			<param-name>run-0</param-name>
+			<param-value>hu.sztaki.lpds.information.local.PropertyInitCommandImpl</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+        <servlet-name>CredentialProvider</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>WorkflowStatusHandlerService</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        </servlet>
+    <servlet-mapping>
+        <servlet-name>InitServices</servlet-name>
+        <url-pattern>/init</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+	<servlet-name>InitServlet</servlet-name>
+        <servlet-class>hu.sztaki.lpds.pgportal.servlet.InitServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>InitServlet</servlet-name>
+        <url-pattern>/initservlet</url-pattern>
+    </servlet-mapping>
+
+
+
+  <servlet>
+         <servlet-name>ASMDownloadServlet</servlet-name>
+         <servlet-class>hu.sztaki.lpds.pgportal.services.asm.ASMDownloadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ASMDownloadServlet</servlet-name>
+        <url-pattern>/asmdownload</url-pattern>
+	<load-on-startup>10</load-on-startup>
+    </servlet-mapping>
+
+
+
+  <servlet>
+    <servlet-name>ajax</servlet-name>
+    <servlet-class>hu.sztaki.lpds.pgportal.servlet.ajax</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ajax</servlet-name>
+    <url-pattern>/ajax</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>lg</servlet-name>
+    <servlet-class>hu.sztaki.lpds.pgportal.servlet.LoggServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>lg</servlet-name>
+    <url-pattern>/logg</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>tce</servlet-name>
+    <servlet-class>hu.sztaki.lpds.pgportal.servlet.TinyMCEList</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>tce</servlet-name>
+    <url-pattern>/tce</url-pattern>
+  </servlet-mapping>
+
+
+
+
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <display-name>Apache-Axis Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AxisServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>AdminServlet</servlet-name>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-class>
+        org.apache.axis.transport.http.AdminServlet
+    </servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <display-name>SOAPMonitorService</display-name>
+    <servlet-class>
+        org.apache.axis.monitor.SOAPMonitorService
+    </servlet-class>
+    <init-param>
+      <param-name>SOAPMonitorPort</param-name>
+      <param-value>5001</param-value>
+    </init-param>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <url-pattern>/SOAPMonitor</url-pattern>
+  </servlet-mapping>
+<servlet-mapping>
+        <servlet-name>CredentialProvider</servlet-name>
+        <url-pattern>/CredentialProvider</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WorkflowStatusHandlerService</servlet-name>
+        <url-pattern>/WorkflowStatusHandlerService</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

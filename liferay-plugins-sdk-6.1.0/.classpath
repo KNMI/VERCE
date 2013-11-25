@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="tools/portlet_vaadin_tmpl/docroot/WEB-INF/src"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
+	<classpathentry kind="lib" path="lib/antelope.jar"/>
+	<classpathentry kind="lib" path="lib/ccpp.jar"/>
+	<classpathentry kind="lib" path="lib/ecj.jar"/>
+	<classpathentry kind="lib" path="lib/jalopy.jar"/>
+	<classpathentry kind="lib" path="lib/jargs.jar"/>
+	<classpathentry kind="lib" path="lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/mail.jar"/>
+	<classpathentry kind="lib" path="lib/qdox.jar"/>
+	<classpathentry kind="lib" path="lib/serializer.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/xalan.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/alloyfaces-1.0.1.0.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/icefaces-2.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/icefaces-compat-2.0.2.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/jboss-el-2.0.0.GA.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/jsf-api-2.1.1_b04.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/jsf-impl-2.1.1_b04.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/liferayfaces-6.0.0.0.jar"/>
+	<classpathentry kind="lib" path="tools/portlet_jsf_tmpl/docroot/WEB-INF/lib/portletfaces-bridge-2.0.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="portlets/my-second-portet-portlet/docroot/WEB-INF/lib/commons-dbutils-1.5.jar"/>
+	<classpathentry kind="lib" path="portlets/my-second-portet-portlet/docroot/WEB-INF/lib/mysql-connector-java-3.1.12.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
