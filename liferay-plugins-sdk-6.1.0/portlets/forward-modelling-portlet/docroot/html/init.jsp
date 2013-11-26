@@ -47,7 +47,7 @@ PortletPreferences preferences = renderRequest.getPreferences();
 String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
-String invisibleWorkflowIds = preferences.getValue("invisibleWorkflowIds", "");
+String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
 
 List<String> wfNames = new ArrayList();
 List<String> wfIds = new ArrayList();
@@ -63,7 +63,7 @@ try{
 		for(ASMRepositoryItemBean i : wfs)
 		{
 			String wfId = i.getId()+"";
-			if(!invisibleWorkflowIds.contains(wfId))
+			if(visibleWorkflowIds.contains(wfId))
 			{
 				wfNames.add(i.getItemID());
 				wfIds.add(wfId);

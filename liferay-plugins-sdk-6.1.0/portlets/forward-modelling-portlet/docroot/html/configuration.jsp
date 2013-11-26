@@ -29,7 +29,7 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
 
-String invisibleWorkflowIds = preferences.getValue("invisibleWorkflowIds", "");
+String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
 
 try{
 	ASMService asm_service = null;
@@ -56,8 +56,8 @@ catch(Exception e){
 		<aui:input name="cmd" type="hidden" value="update" />
 		<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 		
-		<aui:input name="preferences--invisibleWorkflowIds--" type="input" label="Hidden workflows" value="<%=invisibleWorkflowIds %>"
-		 	helpMessage="List of workflows ids (numbers) that will be hidden to the users, separated by ';'"/>
+		<aui:input name="preferences--visibleWorkflowIds--" type="input" label="Visible workflows" value="<%=visibleWorkflowIds %>"
+		 	helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'"/>
 		 	
 		<aui:button-row>
 			<aui:button type="submit"/>
