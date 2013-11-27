@@ -11,7 +11,7 @@
             {name: 'ID', type: 'string', mapping:'_id'},
             {name: 'instanceId', type: 'string', mapping:'instanceId'},
             {name: 'parameters', type: 'string', mapping:'parameters'},
-            {name: 'creationDate', type: 'string', mapping:'creationDate'}, // custom mapping
+            {name: 'creationDate', type: 'string', mapping:'endTime'}, // custom mapping
             {name: 'error', type: 'string' , convert: function (val){
             			 				return JSON.stringify(val)
     							}

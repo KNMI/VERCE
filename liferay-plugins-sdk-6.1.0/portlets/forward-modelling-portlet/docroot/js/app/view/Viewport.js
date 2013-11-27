@@ -206,33 +206,36 @@ Ext.define('CF.view.Viewport', {
                 ]
             }
             , {
-			                        xtype: 'panel',	// Earthquake & Station & Common
-			                        title: 'Results',
-			                        region: 'center',
-			                        border: false,
-			                      autoSroll:true,
-			                        layout: {
- 									           type: 'border',
-									            padding: 5
- 									       },
- 								       defaults: {
- 								           split: true
- 								       },
-			                        items: [	Ext.create('CF.view.ActivityMonitor'), 
-					                        { 
-          									  region: 'center',
-      								    	  layout: 'border',
-      								   		  border: false,
-      								   		  autoSroll:true,
-    								   	 	  items: [
-			   		                     			Ext.create('CF.view.ResultsPane'),
-			   		                     			Ext.create('CF.view.ArtifactView')
-			   		                     			]
-			   		                     	}
-			                        	
-			                               
-			                              ]
-			                    }
+                xtype: 'panel',	// Earthquake & Station & Common
+                title: 'Results',
+                region: 'center',
+                border: false,
+              autoScroll:true,
+                layout: {
+					           type: 'border',
+				            padding: 5
+					       },
+				       defaults: {
+				           split: true
+				       },
+                items: [	Ext.create('CF.view.ActivityMonitor'), 
+                        { 
+							  region: 'center',
+					    	  layout: 'border',
+					   		  border: false,
+					   		  autoScroll:true,
+				   	 	  items: [
+				   	 			  
+	                     			Ext.create('CF.view.provenanceGraphsViewer')
+	                     			 
+	                     			,
+	                     			Ext.create('CF.view.ArtifactView')
+	                     			]
+	                     	}
+                	
+                       
+                      ]
+            }
             ]
           
           }]
