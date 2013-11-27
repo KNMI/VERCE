@@ -160,7 +160,7 @@ var action = Ext.create('Ext.Action', {
         handler: function(){
             workflowStore.setProxy({
  											type: 'ajax',
-  							  		        url: '/j2ep-1.0/prov/workflow/aspinuso',
+  							  		        url: '/j2ep-1.0/prov/workflow/'+userSN,
   							          reader: {
    			  				             root: 'runIds',
   						                 totalProperty: 'totalCount'
