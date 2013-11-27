@@ -130,14 +130,12 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 	
 				SessionMessages.add(
 					actionRequest,
-					liferayPortletConfig.getPortletId() +
-						SessionMessages.KEY_SUFFIX_REFRESH_PORTLET,
+					liferayPortletConfig.getPortletId()+".refreshPortlet",
 					portletResource);
 	
 				SessionMessages.add(
 					actionRequest,
-					liferayPortletConfig.getPortletId() +
-						SessionMessages.KEY_SUFFIX_UPDATED_CONFIGURATION);
+					liferayPortletConfig.getPortletId()+".updatedConfiguration");
 			}
 		}
 	}	
