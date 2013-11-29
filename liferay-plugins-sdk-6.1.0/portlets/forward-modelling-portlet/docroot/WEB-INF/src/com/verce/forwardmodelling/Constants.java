@@ -7,6 +7,7 @@ public class Constants
 	public static final String STPOINTS_TYPE = "stpts"; 	
 	public static final String SOLVER_TYPE = "solver";
 	public static final String WS_TYPE = "ws"; 	
+	public static final String ZIP_TYPE = "zip"; 	
 
 	public static final String BASE_FOLDER_NAME = "Forward Modelling";
 	public static final String BASE_FOLDER_DESC = "Folder containing all the files uploaded through the mapgui";
@@ -17,6 +18,16 @@ public class Constants
 	public static final String STPOINTS_FOLDER_NAME = "Stations (Points)"; 	
 	public static final String SOLVER_FOLDER_NAME = "Solvers"; 	
 	public static final String WS_FOLDER_NAME = "WS"; 	
+	
+	public static final String MIMETYPE_PLAIN = "text/plain";
+	public static final String MIMETYPE_XML = "application/xml";
+	public static final String MIMETYPE_JSON = "application/json";
+	public static final String MIMETYPE_ZIP = "application/zip";
+	
+	public static final String ST_INPUT_NAME = "stations";
+	public static final String EVENT_INPUT_NAME = "quakeml";
+	public static final String SOLVER_INPUT_NAME = "solverconf";
+	public static final String ZIP_INPUT_NAME = "vercepes";
 	
 	//public static final String SHARE_FIELD = "shareable"; 	
 	//public static final String SHARE_VALUE_EVENT = "eventshareable"; 

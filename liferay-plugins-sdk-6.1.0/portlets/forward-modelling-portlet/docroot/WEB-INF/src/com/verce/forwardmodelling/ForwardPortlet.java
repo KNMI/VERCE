@@ -1,57 +1,69 @@
 package com.verce.forwardmodelling;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.portlet.PortletException;
-import javax.servlet.http.HttpServletRequest;
-
-import com.liferay.util.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
-import com.liferay.portlet.documentlibrary.model.DLFileEntry;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
-import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.model.User;
-import com.verce.forwardmodelling.Constants;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.net.*;
 import javax.net.ssl.HttpsURLConnection;
 import java.util.zip.*;
+import java.util.TimeZone;
 import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.text.Format;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+//import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.documentlibrary.model.DLFileEntry;
+import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
+import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
 import hu.sztaki.lpds.pgportal.services.asm.ASMWorkflow;
 import hu.sztaki.lpds.pgportal.services.asm.beans.ASMRepositoryItemBean;
 import hu.sztaki.lpds.pgportal.services.asm.constants.RepositoryItemTypeConstants;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.service.CompanyServiceUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.PropertiesParamUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItem;
+import com.verce.forwardmodelling.Constants;
+
+
 
 
 
@@ -132,6 +144,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   boolean stationDLFile = stationUrl.contains("documents");
 		   File stationFile = null;
 		   File eventFile = null;
+		   String stPublicPath;
+		   String evPublicPath;
 		   long groupId = PortalUtil.getScopeGroupId(req);
 		   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 		   ServiceContext serviceContext = new ServiceContext();
@@ -148,58 +162,70 @@ public class ForwardPortlet extends MVCPortlet{
 		   String importedWfId = importWorkflow(userId, ownerId, workflowId, submitName);
 		   
 		   //1. Create the solver file and store it
-		   File solverFile = com.liferay.portal.kernel.util.FileUtil.createTempFile();
-		   com.liferay.portal.kernel.util.FileUtil.write(solverFile, jsonContent);
+		   File solverFile = FileUtil.createTempFile();
+		   FileUtil.write(solverFile, jsonContent);
 		   String fileName = solverType+"_"+formatter.format(new Date()).toString()+".json";
 		   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
-		   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+portalUrl+publicPath);
+		   publicPath = portalUrl + publicPath;
+		   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+publicPath);
 
 		   if(!stationDLFile)	//2a. create StationFile and store it
 		   {
-			   stationFile = com.liferay.portal.kernel.util.FileUtil.createTempFile();
+			   stationFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(PortalUtil.getPortalURL(req)+stationUrl);
-			   com.liferay.portal.kernel.util.FileUtil.write(stationFile, wsUrl.openStream());
+			   FileUtil.write(stationFile, wsUrl.openStream());
 			   String stFileName = "stations_"+formatter.format(new Date()).toString();
-			   String stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
-			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+portalUrl+stPublicPath);
+			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
+			   stPublicPath = portalUrl + stPublicPath;
+			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+stPublicPath);
 		   }
 		   else					//2b. Retrieve StationFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, Constants.STPOINTS_TYPE, serviceContext);
-			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, "DefaultName");
+			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
+			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, stFileName);
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
+			   stPublicPath = stationUrl;
 		   }
 		   
 		   if(!eventDLFile)		//3a. create EventFile and store it
 		   {
-			   eventFile = com.liferay.portal.kernel.util.FileUtil.createTempFile();
+			   eventFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(PortalUtil.getPortalURL(req)+eventUrl);
-			   com.liferay.portal.kernel.util.FileUtil.write(eventFile, wsUrl.openStream());
+			   FileUtil.write(eventFile, wsUrl.openStream());
 			   String evFileName = "events_"+formatter.format(new Date()).toString();
-			   String evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
-			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+portalUrl+evPublicPath);
+			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
+			   evPublicPath = portalUrl + evPublicPath;
+			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+evPublicPath);
 		   }
 		   else					//3b. Retrieve EventFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, Constants.EVENT_TYPE, serviceContext);
-			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, "DefaultName");
+			   String evFileName = eventUrl.substring(eventUrl.lastIndexOf(CharPool.SLASH)+1);
+			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, evFileName);
 			   eventFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
+			   evPublicPath = eventUrl;
 		   }
 		   
 		   //4. Generate zip file
 		   String zipName = userSN+"_"+formatter.format(new Date()).toString()+".zip";
-		   File zipFile = getZipFile(zipName);
+		   createZipFile("temp/"+zipName);
+		   File tempZipFile = new File("temp/"+zipName);
+		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
+	       zipPublicPath = portalUrl + zipPublicPath;
+		   System.out.println("[ForwardModellingPortlet.submitSolver] zipPublicPath: "+zipPublicPath);
 
 		   //5. Upload files and submit
 		   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
 		   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
 		   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
-		   asm_service.placeUploadedFile(userId, zipFile, importedWfId, jobName, "3");
+		   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
 		   asm_service.submit(userId, importedWfId, submitMessage, "Never");
+		   tempZipFile.delete();
 		   
 		   //6. Add run info in the Provenance Repository
 		   //String asmRunId = getASMRunId(userId, workflowId);
-		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowId, importedWfId);
+		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath);
 		   
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+verceRunId+", "+submitMessage+", "+workflowId+", "+importedWfId);
 	   }
@@ -230,7 +256,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   //TODO: for station check that fileType matches the extension or the content of the file
 
 		   if(inputStream!=null){
-			   File file = com.liferay.portal.kernel.util.FileUtil.createTempFile(inputStream);
+			   File file = FileUtil.createTempFile(inputStream);
 			   String uploadString = getFileAsString(file);		//content
 
 			   if (uploadString!=null)
@@ -339,7 +365,7 @@ public class ForwardPortlet extends MVCPortlet{
    }
    
 	private String getFileAsString(File file) {
-	   java.io.FileInputStream fis = null;
+	   FileInputStream fis = null;
 	   BufferedInputStream bis = null;
 	   DataInputStream dis = null;
 	   StringBuffer sb = new StringBuffer();
@@ -373,10 +399,10 @@ public class ForwardPortlet extends MVCPortlet{
 		}
     }
 	
-	private File getZipFile(String fileName) throws IOException
+	private void createZipFile(String fileName) throws IOException
 	{		 	
 		 ZipFile zipFile = new ZipFile("data/verce-hpc-pe.zip");
-	     ZipOutputStream append = new ZipOutputStream(new FileOutputStream("data/"+fileName));
+	     ZipOutputStream append = new ZipOutputStream(new FileOutputStream(fileName));
 	     
 	    //	copy contents from existing war
 	   //TODO: see why input_file_generator.pyc fails to be copied (too big maybe?)
@@ -400,14 +426,12 @@ public class ForwardPortlet extends MVCPortlet{
         // close
         zipFile.close();
         append.close();
-        System.out.println("[ForwardModellingPortlet.getZipFile] File created in the server file system: "+"data/"+fileName);
-        
-        //access it as a normal file
-        return new File("data/"+fileName); 
+        System.out.println("[ForwardModellingPortlet.createZipFile] File created in the server file system: "+fileName);
 	}
 	
 	
-	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String asmRunId)
+	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String asmRunId, 
+			String stationUrl, String eventUrl, String solverUrl, String zipUrl)
     {	
 		String runType = "workflow_run";
 		try{
@@ -417,10 +441,20 @@ public class ForwardPortlet extends MVCPortlet{
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 			con.setRequestProperty("Accept", "application/json");
-			Format formatter = new SimpleDateFormat("yyyyMMddHHmm");
+			TimeZone tz = TimeZone.getTimeZone("UTC");
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+			df.setTimeZone(tz);
+			String nowAsISO = df.format(new Date());
 			
-			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage+
-					"\", \"name\":\""+wfName+"\", \"system_id\":\""+asmRunId+"\"}";
+			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage
+					+"\", \"name\":\""+wfName+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
+			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
+			//TODO: mime type for stations can be also plain
+			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.EVENT_INPUT_NAME+"\", \"url\":\""+eventUrl+"\"},";
+			params += "{\"mime-type\":\""+Constants.MIMETYPE_JSON+"\", \"name\":\""+Constants.SOLVER_INPUT_NAME+"\", \"url\":\""+solverUrl+"\"},";
+			params += "{\"mime-type\":\""+Constants.MIMETYPE_ZIP+"\", \"name\":\""+Constants.ZIP_INPUT_NAME+"\", \"url\":\""+zipUrl+"\"}";
+			params += "]}";
+			System.out.println("[updateProvenanceRepository] Params: "+params);
 			String urlParameters = "prov="+URLEncoder.encode(params, "ISO-8859-1");
 			//System.out.println("[ForwardModellingPortlet.provant] Post parameters: " + urlParameters);
 
