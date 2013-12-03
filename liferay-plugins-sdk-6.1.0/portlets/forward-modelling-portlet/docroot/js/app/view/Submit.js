@@ -71,6 +71,7 @@ Ext.define('CF.view.SubmitForm', {
 	          	    				"ownerId": ownerId,
 	          	    				"stationUrl": gl_stationUrl,
 	          	    				"eventUrl": gl_eventUrl,
+	          	    				"stationType": gl_stFileType,
 	          	    				"runId": runId
 	          	    			},
 	          	    			success: function(response){

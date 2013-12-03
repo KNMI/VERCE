@@ -137,6 +137,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   String stationUrl = ParamUtil.getString(req, "stationUrl");
 		   String eventUrl = ParamUtil.getString(req, "eventUrl");
 		   String verceRunId = ParamUtil.getString(req, "runId");
+		   String stFileType = ParamUtil.getString(req, "stationType");
 		   String jobName = "Job0";
 		   String submitMessage = ParamUtil.getString(req, "submitMessage");
 		   String submitName = ParamUtil.getString(req, "submitName");
@@ -178,10 +179,11 @@ public class ForwardPortlet extends MVCPortlet{
 			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
 			   stPublicPath = portalUrl + stPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+stPublicPath);
+			   stFileType = Constants.STXML_TYPE;
 		   }
 		   else					//2b. Retrieve StationFile
 		   {
-			   long folderId = getFolderId(repositoryId, userSN, Constants.STPOINTS_TYPE, serviceContext);
+			   long folderId = getFolderId(repositoryId, userSN, stFileType, serviceContext);
 			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
 			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, stFileName);
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
@@ -225,7 +227,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   
 		   //6. Add run info in the Provenance Repository
 		   //String asmRunId = getASMRunId(userId, workflowId);
-		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath);
+		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
 		   
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+verceRunId+", "+submitMessage+", "+workflowId+", "+importedWfId);
 	   }
@@ -431,7 +433,7 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	
 	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String asmRunId, 
-			String stationUrl, String eventUrl, String solverUrl, String zipUrl)
+			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType)
     {	
 		String runType = "workflow_run";
 		try{
@@ -445,11 +447,12 @@ public class ForwardPortlet extends MVCPortlet{
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
 			df.setTimeZone(tz);
 			String nowAsISO = df.format(new Date());
+			if(stationFileType.equals(Constants.STPOINTS_TYPE))	stationFileType = Constants.MIMETYPE_PLAIN;
+			if(stationFileType.equals(Constants.STXML_TYPE))	stationFileType = Constants.MIMETYPE_XML;
 			
 			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage
 					+"\", \"name\":\""+wfName+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
-			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
-			//TODO: mime type for stations can be also plain
+			params += "{\"mime-type\":\""+stationFileType+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.EVENT_INPUT_NAME+"\", \"url\":\""+eventUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_JSON+"\", \"name\":\""+Constants.SOLVER_INPUT_NAME+"\", \"url\":\""+solverUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_ZIP+"\", \"name\":\""+Constants.ZIP_INPUT_NAME+"\", \"url\":\""+zipUrl+"\"}";

@@ -9,6 +9,7 @@ var gl_maxLat;		//bounding box
 var gl_minLon;		//bounding box
 var gl_maxLon;		//bounding box
 var gl_stationUrl;
+var gl_stFileType;
 var gl_eventUrl;
 var gl_stationFormat;
 var gl_solver;

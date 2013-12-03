@@ -1,5 +1,3 @@
-//TODO: add some input to define is the file is StationXML or a listOf points
-
 Ext.require([
     'Ext.form.field.File',
     'Ext.form.field.ComboBox',
@@ -59,7 +57,6 @@ var form1 = Ext.create('Ext.form.Panel', {
 	        buttonText: 'Browse...'
 	    }
     ],
-
     buttons: [{ 
         text: 'Upload',
         handler: function(){
@@ -68,11 +65,12 @@ var form1 = Ext.create('Ext.form.Panel', {
             	var n = form.getValues()['name'];
             	if(n.indexOf(" ") < 0)
             	{
+            		gl_stFileType = form.getValues()['filetype'];
 	                form.submit({
 	                    url: uploadFileURL,
 	                    waitMsg: 'Uploading your file...',
 	                    success: function(fp, o) {
-	                    	 getStations(ctrl, o.result.path, form.getValues()['filetype']);
+	                    	 getStations(ctrl, o.result.path, gl_stFileType);
 	                    },
 	                    failure: function(rec, op) {
 	                    	Ext.Msg.alert("Error!", "Was not possible to upload the file");
@@ -81,7 +79,7 @@ var form1 = Ext.create('Ext.form.Panel', {
             	}
             	else
             	{
-            		Ext.Msg.alert('Alert!',"The name cannot contain blackspaces");
+            		Ext.Msg.alert('Alert!',"The name cannot contain blankspaces");
             	}
             }
         }
@@ -101,12 +99,14 @@ openMenuStations.push({
         	Ext.create('Ext.button.Button', {
         	    text: 'StationXML',     
         	    handler: function() {
+        	    	gl_stFileType = STXML_TYPE;
         	    	fileSelection(STXML_TYPE);			//declared in Viewport.js
         	    }
         	}),
         	Ext.create('Ext.button.Button', {
         	    text: 'List of points',     
         	    handler: function() {
+        	    	gl_stFileType = STPOINTS_TYPE;
         	    	fileSelection(STPOINTS_TYPE);			//declared in Viewport.js
         	    }
         	})
