@@ -21,7 +21,12 @@ var wfcombo = Ext.create('Ext.form.field.ComboBox', {
     listWidth: 400,
 	store:  reposWorkflowsStore,		//defined in init.jsp
     displayField: 'workflowName',
-    valueField: 'workflowId'
+    valueField: 'workflowId',
+    listeners : {
+        change : function (f, e){
+            $("div#submit_overview div#workflow").html(e);
+        }
+    }
 });
 
 Ext.define('CF.view.SubmitForm', {
@@ -34,14 +39,24 @@ Ext.define('CF.view.SubmitForm', {
 			        id: 'submitName',
 			        name: 'submitName',
 			        width: 350,
-			        fieldLabel: 'Name'
+			        fieldLabel: 'Name',
+			        listeners : {
+			            change : function (f, e){
+			                $("div#submit_overview div#submitname").html(e);
+			            }
+			        }
 			    },
 			    {
 			        xtype: 'textfield',
 			        id: 'submitMessage',
 			        name: 'submitMessage',
 			        width: 350,
-			        fieldLabel: 'Description'
+			        fieldLabel: 'Description',
+			        listeners : {
+			            change : function (f, e){
+			                $("div#submit_overview div#submitdesc").html(e);
+			            }
+			        }
 			    }
 			],
 	  buttons: [
@@ -91,7 +106,18 @@ Ext.define('CF.view.SubmitForm', {
 
 
 
-
+var submitInformation = "<div id='submit_overview'>" +
+"<strong>Submit name:</strong> <div id='submitname'>" + "</div>" + 
+"<strong>Submit description:</strong> <div id='submitdesc'>" + "</div>" + 
+"<strong>Selected workflow:</strong> <div id='workflow'>" + "</div>" + 
+"<strong>Solver:</strong> <div id='solver'>" + "</div>" + 
+"<strong>Mesh:</strong> <div id='mesh'>" + "</div>" + 
+"<strong>Velocity Model:</strong> <div id='velmodel'>" + "</div>" + 
+"<strong>Earthquakes Url:</strong> <div id='eurl'>" + "</div>" + 
+"<strong>Selected earthquakes:</strong> <div id='esel'>" + "</div>" + 
+"<strong>Station Url:</strong> <div id='surl'>" + "</div>" + 
+"<strong>Selected stations:</strong> <div id='ssel'>" + "</div>" + 
+"</div>";
 
 Ext.define('CF.view.Submit', {
 	  extend:'Ext.form.Panel',
@@ -101,7 +127,7 @@ Ext.define('CF.view.Submit', {
 		     	{  
 		     		id: "wflist",
 			       xtype: 'panel',
-			       html:'<div id="wflist"></div>'
+			       html:submitInformation
 				},
 				
 			]
@@ -116,7 +142,7 @@ function getSubmitedWorkflows() {
 			userId: "res"
 		},
 		success: function(response){
-			Ext.create('Ext.form.Panel',{
+			Ext.create('Ext.form.Panel', {
 		       renderTo: Ext.Element.get('wflist'),
 		       html: response.responseText
 			});

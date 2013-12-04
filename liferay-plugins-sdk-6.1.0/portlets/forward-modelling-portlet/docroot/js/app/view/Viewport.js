@@ -200,7 +200,12 @@ Ext.define('CF.view.Viewport', {
 			                                    Ext.create('CF.view.Control')
 			                                   ]
 	                                }
-			                  ]
+			                  ],
+		                  listeners: {
+		                      'tabchange': function(tabPanel, tab){
+		                          if(tab.id=="submit") updateSubmitOverview();
+		                      }
+		                  }
                     }
                     
                 ]
@@ -248,6 +253,34 @@ Ext.define('CF.view.Viewport', {
 
 
 selectedFile = "";
+
+
+function updateSubmitOverview() {
+	 $("div#submit_overview div#solver").html(gl_solver);
+	 $("div#submit_overview div#mesh").html(gl_mesh);
+	 $("div#submit_overview div#velmodel").html(gl_velmod);
+	 $("div#submit_overview div#eurl").html(gl_eventUrl);
+	 $("div#submit_overview div#surl").html(gl_stationUrl);	 
+	 
+	 var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
+	 var sStations = "";
+	 selectedStations.each(function(item, ind, l)
+		{
+			if(ind>0)	sStations+= ', ';
+			sStations+= '"'+item.get('network')+'.'+item.get('station')+'"';
+		});
+	 $("div#submit_overview div#esel").html(sStations);
+	 
+	 var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
+	 var sEvents = "";
+	 selectedEvents.each(function(item, ind, l)
+		{
+			if(ind>0)	sEvents+= ', ';
+			sEvents+= '"'+item.get('eventId')+'"';
+		});
+	 $("div#submit_overview div#ssel").html(sEvents);
+	 
+}
 
 function fileSelection(filetype) {
 	Ext.Ajax.request({
