@@ -102,7 +102,7 @@ if(data["entities"][0]["location"]!=""){
 function wasGeneratedFromAddBranch(url){
 
 $.getJSON(url, function(data) {
-wasGeneratedFromDephtree(data,sysWasGeneratedFrom,null)
+wasGeneratedFromDephtree(data,sys,null)
 });
 }
 
@@ -114,7 +114,7 @@ function derivedDataAddBranch(url){
 graphMode="DERIVEDDATA"
 
 $.getJSON(url, function(data) {
-derivedDataDephtree(data,sysWasGeneratedFrom,null)
+derivedDataDephtree(data,sys,null)
 });
 }
 
@@ -122,14 +122,14 @@ function wasGeneratedFromNewGraph(url){
 
 graphMode="WASGENERATEDFROM"
 
-sysWasGeneratedFrom.prune();
+sys.prune();
 wasGeneratedFromAddBranch(url)
  
 }
 
 
 function derivedDataNewGraph(url){
-sysWasGeneratedFrom.prune();
+sys.prune();
 derivedDataAddBranch(url)
  
 }
@@ -140,7 +140,7 @@ derivedDataAddBranch(url)
 function addMeta(url){
 
 $.getJSON(url, function(data) {
-getMetadata(data,sysWasGeneratedFrom)
+getMetadata(data,sys)
 });
 }
 
@@ -648,7 +648,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
         	$(viewportprov).bind('contextmenu', function(e){
             var pos = $(this).offset();
             var p = {x:e.pageX-pos.left, y:e.pageY-pos.top}
-            selected = nearest = dragged = sysWasGeneratedFrom.nearest(p);
+            selected = nearest = dragged = sys.nearest(p);
            
             if (selected.node !== null){
             // dragged.node.tempMass = 10000
@@ -677,7 +677,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
 		$(viewportprov).bind('dblclick', function(e){
             var pos = $(this).offset();
             var p = {x:e.pageX-pos.left, y:e.pageY-pos.top}
-            selected = nearest = dragged = sysWasGeneratedFrom.nearest(p);
+            selected = nearest = dragged = sys.nearest(p);
            
             if (selected.node !== null){
             // dragged.node.tempMass = 10000
@@ -692,7 +692,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
     }
             return false;
         })
-            sysWasGeneratedFrom.renderer = Renderer("#viewportprov");
+            sys.renderer = Renderer("#viewportprov");
 	//		
         }
     }
