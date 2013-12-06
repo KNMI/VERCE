@@ -105,7 +105,7 @@ Ext.define('CF.view.SubmitForm', {
 	});
 
 
-
+//TODO! Nicer style
 var submitInformation = "<div id='submit_overview'>" +
 "<strong>Submit name:</strong> <div id='submitname'>" + "</div>" + 
 "<strong>Submit description:</strong> <div id='submitdesc'>" + "</div>" + 
@@ -127,14 +127,15 @@ Ext.define('CF.view.Submit', {
 		     	{  
 		     		id: "wflist",
 			       xtype: 'panel',
-			       html:submitInformation
+			       html:submitInformation,
+			       layout: 'fit'	//TODO!!
 				},
 				
 			]
 	});
 
-getSubmitedWorkflows();
-//TODO
+//getSubmitedWorkflows();
+//TODO: control page
 function getSubmitedWorkflows() {
 	Ext.Ajax.request({
 		url: getSubmitedWorkflowsURL,

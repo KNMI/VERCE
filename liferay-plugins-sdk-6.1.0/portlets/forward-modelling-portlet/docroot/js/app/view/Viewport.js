@@ -259,8 +259,14 @@ function updateSubmitOverview() {
 	 $("div#submit_overview div#solver").html(gl_solver);
 	 $("div#submit_overview div#mesh").html(gl_mesh);
 	 $("div#submit_overview div#velmodel").html(gl_velmod);
-	 $("div#submit_overview div#eurl").html(gl_eventUrl);
-	 $("div#submit_overview div#surl").html(gl_stationUrl);	 
+	 
+	 var portalUrl = "TODO";		//TODO!!
+	 var sEventUrl = gl_eventUrl;
+	 if(sEventUrl.indexOf('documents')<0)	sEventUrl=portalUrl+sEventUrl;
+	 $("div#submit_overview div#eurl").html(sEventUrl);
+	 var sStationUrl = gl_stationUrl;
+	 if(sStationUrl.indexOf('documents')<0)	sStationUrl=portalUrl+sStationUrl;
+	 $("div#submit_overview div#surl").html(sStationUrl);	 
 	 
 	 var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 	 var sStations = "";
