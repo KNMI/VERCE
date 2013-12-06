@@ -437,7 +437,8 @@ public class ForwardPortlet extends MVCPortlet{
     {	
 		String runType = "workflow_run";
 		try{
-			URL url = new URL("http://escience7.inf.ed.ac.uk:8082/workflow/insert");
+			//TODO: put the url in a properties file
+			URL url = new URL("http://129.215.213.249:8082/workflow/insert");
 			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
