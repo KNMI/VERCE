@@ -269,7 +269,7 @@ function updateSubmitOverview() {
 			if(ind>0)	sStations+= ', ';
 			sStations+= '"'+item.get('network')+'.'+item.get('station')+'"';
 		});
-	 $("div#submit_overview div#esel").html(sStations);
+	 $("div#submit_overview div#ssel").html(sStations);
 	 
 	 var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
 	 var sEvents = "";
@@ -278,7 +278,7 @@ function updateSubmitOverview() {
 			if(ind>0)	sEvents+= ', ';
 			sEvents+= '"'+item.get('eventId')+'"';
 		});
-	 $("div#submit_overview div#ssel").html(sEvents);
+	 $("div#submit_overview div#esel").html(sEvents);
 	 
 }
 
