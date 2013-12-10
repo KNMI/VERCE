@@ -1,4 +1,3 @@
-
 var graphMode=""
 
 var currentRun
@@ -378,7 +377,7 @@ Ext.define('CF.view.ActivityMonitor', {
          		 
          		artifactStore.setProxy({
  						           type : 'ajax',
-  							       url: '/j2ep-1.0/prov/entities/generatedby?iterationid='+record.get("ID"),
+  							       url: '/j2ep-1.0/prov/entities/generatedby?iterationId='+record.get("ID"),
   				         
  					               reader: {
    						             root: 'entities',
@@ -449,7 +448,7 @@ Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
   													          if (form.isValid()) {
    													              artifactStore.setProxy({
 									 						           type : 'ajax',
-  							      									   url: '/j2ep-1.0/prov/entities/content?runId='+currentRun+"&"+form.getValues(true),
+  							      									   url: '/j2ep-1.0/prov/entities/contentmatch-eachtoone?runId='+currentRun+"&"+form.getValues(true),
   				         
  					   									               reader: {
    						 											            root: 'entities',
@@ -657,7 +656,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
             	
                 artifactStore.setProxy({
  						           type : 'ajax',
-  							       url: '/j2ep-1.0/prov/entities/run?runid='+currentRun+'&dataid='+selected.node.name,
+  							       url: '/j2ep-1.0/prov/entities/run?runId='+currentRun+'&dataId='+selected.node.name,
   				         
  					               reader: {
    						             root: 'entities',
@@ -697,5 +696,3 @@ Ext.define('CF.view.provenanceGraphsViewer', {
         }
     }
 });
-
-    
