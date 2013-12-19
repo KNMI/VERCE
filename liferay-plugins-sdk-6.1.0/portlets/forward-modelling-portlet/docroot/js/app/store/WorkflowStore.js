@@ -9,8 +9,9 @@
   fields : [
   		     
             {name: 'runId', type: 'string', mapping:'_id'},
+            {name: 'name', type: 'string', mapping:'name'},
             {name: 'description', type: 'string', mapping:'description'},
-            {name: 'date', type: 'string', mapping:'date'}
+            {name: 'date', type: 'string', mapping:'startTime'}
             
             
         	], 
