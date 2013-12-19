@@ -37,109 +37,122 @@ var providerscombo = Ext.create('Ext.form.field.ComboBox', {
     }
 });
 
+var formEventSearch = Ext.create('Ext.form.Panel', {   
+	width: 500,
+    frame: false,
+    border: false,
+    bodyPadding: '10 10 0 10',
+   layout: {
+           type: 'table',
+           columns: 4
+       },
+   defaults: {
+       bodyStyle:'padding:5px;text-align:center;'
+   },
+   defaultType:'numberfield',
+   items: [
+    providerscombo,    
+    {  
+       xtype: 'label',
+       forId: '',
+       text: '',
+       margin: '10 15 0 0'
+   },
+   {   
+       xtype: 'label',
+       forId: 'Mag',
+       text: 'Mag',
+       margin: '10 10 0 0'
+   },
+   {   
+       xtype: 'label',
+       forId: 'Depth',
+       text: 'Depth',
+       margin: '10 10 0 0'
+   },
+   {   
+       xtype: 'label',
+       forId: 'Time',
+       text: 'Time',
+       margin: '10 10 0 0'
+   },
+   {
+       xtype: 'label',
+       forId: 'Min',
+       text: 'Min',
+       margin: '4 15 0 0'
+   },
+   {
+       name: 'minmag',
+       allowBlank: false,
+       value: 4,
+       width: 100,
+       margin: '4 10 0 0'
+   },
+   {
+       name: 'mindepth',
+       allowBlank: false,
+       value:0,
+       margin: '4 10 0 0'
+   },
+   {
+       xtype: 'datefield',
+  	  // fieldLabel: 'Start Time',
+  	   name: 'starttime',
+         format: 'Y-m-d\\TH:i:s',
+         value: "2013-01-01T00:00:00",
+         margin: '4 5 0 0'
+   },
+   {   
+       xtype: 'label',
+       forId: 'Max',
+       text: 'Max',
+       margin: '5 15 5 0'
+   },
+   {
+       name: 'maxmag',
+       allowBlank: false,
+       value: 9,
+       width: 100,
+       margin: '5 10 5 0'
+   }, 
+   {
+       name: 'maxdepth',
+       allowBlank: false,
+       value: 100000,
+       margin: '5 10 5 0'
+   }, 
+   {
+     	xtype: 'datefield',
+     //	fieldLabel: 'End Time',
+         name: 'endtime',
+         format: 'Y-m-d\\TH:i:s',
+         value: "2013-08-02T00:00:00",
+         margin: '5 5 5 0'
+   },
+   {
+   	xtype: 'hidden',
+   	name: 'user',
+   	value: 'verce_'+userSN	//user screen name, it is populated in html/init.jsp
+   }
+   ],
+    buttons: [{
+   	itemId: 'event_but',		//action defined in controller/Map.js
+       text: 'Search'
+      
+   },
+   {
+   	itemId: 'event_cl_but',
+       text: 'Clear'
+      
+   }]
+});
 
 Ext.define('CF.view.EventSearch', {
-     extend:'Ext.form.Panel',
-     alias: 'widget.eventsearch',
-    
-    // configure how to read the XML Data
-   
-    layout: {
-            type: 'table',
-            columns: 4
-        },
-    defaultType:'numberfield',
-    items: [
-     providerscombo,    
-     {  
-    	style: 'font: normal 12px courier',
-        xtype: 'label',
-        forId: '',
-        text: '',
-        margins: '0 0 0 10'
-    },
-    {   style: 'font: normal 12px courier',
-        xtype: 'label',
-        forId: 'Mag',
-        text: 'Mag',
-        margins: '0 0 0 10'
-    },
-    {   style: 'font: normal 12px courier',
-        xtype: 'label',
-        forId: 'Depth',
-        text: 'Depth',
-        margins: '0 0 0 10'
-    },
-    {   style: 'font: normal 12px courier',
-        xtype: 'label',
-        forId: 'Time',
-        text: 'Time',
-        margins: '0 0 0 10'
-    },
-    {
-        xtype: 'label',
-        style: 'font: normal 12px courier',
-        forId: 'Min',
-        text: 'Min',
-        margins: '0 0 0 0'
-    },
-    {
-        
-        name: 'minmag',
-        allowBlank: false,
-        value:4
-    },
-    {
-        name: 'mindepth',
-        allowBlank: false,
-        value:0
-    },
-    {
-        xtype: 'datefield',
-   	  // fieldLabel: 'Start Time',
-   	   name: 'starttime',
-          format: 'Y-m-d\\TH:i:s',
-          value: "2013-01-01T00:00:00"
-    },
-    {   style: 'font: normal 12px courier',
-        xtype: 'label',
-        forId: 'Max',
-        text: 'Max',
-        margins: '0 0 0 10'
-    },
-    {
-        name: 'maxmag',
-        allowBlank: false,
-        value:9
-    }, 
-    {
-        name: 'maxdepth',
-        allowBlank: false,
-        value:100000
-    }, 
-    {
-      	xtype: 'datefield',
-      //	fieldLabel: 'End Time',
-          name: 'endtime',
-          format: 'Y-m-d\\TH:i:s',
-          value: "2013-08-02T00:00:00"
-    },
-    {
-    	xtype: 'hidden',
-    	name: 'user',
-    	value: 'verce_'+userSN	//user screen name, it is populated in html/init.jsp
-    }
-            ],
-     buttons: [{
-    	itemId: 'event_but',		//action defined in controller/Map.js
-        text: 'Search'
-       
-    },
-    {
-    	itemId: 'event_cl_but',
-        text: 'Clear'
-       
-    }]
-});
+	  extend:'Ext.form.Panel',
+	  alias: 'widget.eventsearch',
+	    bodyPadding: '0 0 10 0',
+	  items: [formEventSearch]
+	});
 
     

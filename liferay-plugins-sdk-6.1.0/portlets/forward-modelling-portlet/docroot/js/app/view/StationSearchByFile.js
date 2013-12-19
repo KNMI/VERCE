@@ -22,11 +22,12 @@ var fileTypes = Ext.create('Ext.form.ComboBox', {
     store: fileTypesStore,
     queryMode: 'local',
     displayField: 'name',
-    valueField: 'abbr'
+    valueField: 'abbr',
+    width: '75px'
 });
 
-var form1 = Ext.create('Ext.form.Panel', {
-    width: 500,
+var formStationSearchByFile = Ext.create('Ext.form.Panel', {
+    width: 450,
     frame: false,
     border: false,
     bodyPadding: '10 10 10 10',
@@ -34,7 +35,7 @@ var form1 = Ext.create('Ext.form.Panel', {
         anchor: '100%',
         allowBlank: false,
         msgTarget: 'side',
-        labelWidth: 70
+        labelWidth: 100
     },
     items: 
     [
@@ -43,7 +44,7 @@ var form1 = Ext.create('Ext.form.Panel', {
 	        id: 'name',
 	        name: 'name',
 	        value: 'DefaultName',
-	        fieldLabel: 'Name',
+	        fieldLabel: 'File name',
 	        allowBlank: false,
 	        
 	    },
@@ -125,5 +126,5 @@ Ext.define('CF.view.StationSearchByFile', {
 		        padding: 0
 		    }
     }],
-	  items: [form1]
+	  items: [formStationSearchByFile]
 	});

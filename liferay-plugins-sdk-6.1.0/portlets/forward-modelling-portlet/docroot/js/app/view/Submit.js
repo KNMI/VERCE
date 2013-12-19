@@ -29,98 +29,109 @@ var wfcombo = Ext.create('Ext.form.field.ComboBox', {
     }
 });
 
+var formSubmit = Ext.create('Ext.form.Panel', {   
+	height:'100%',
+    frame: false,
+    border: false,
+    bodyPadding: '10 10 0 10',
+    items: 
+	    [
+	     	wfcombo,
+		    {
+		        xtype: 'textfield',
+		        id: 'submitName',
+		        name: 'submitName',
+		        width: 350,
+		        fieldLabel: 'Name',
+		        listeners : {
+		            change : function (f, e){
+		                $("div#submit_overview div#submitname").html(e);
+		            }
+		        }
+		    },
+		    {
+		        xtype: 'textfield',
+		        id: 'submitMessage',
+		        name: 'submitMessage',
+		        width: 350,
+		        fieldLabel: 'Description',
+		        listeners : {
+		            change : function (f, e){
+		                $("div#submit_overview div#submitdesc").html(e);
+		            }
+		        }
+		    }
+		],
+		buttons: [
+               {
+                  text: 'Submit',
+                  handler: function() 
+                  {
+                	solverConfStore.commitChanges();
+              		solverConfStore.save();
+              		
+              		var jsonString = createJsonString();
+              		
+              		if(jsonString!=null)
+              		{
+              			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
+              			var workflowId = wfModel.get('workflowId');   	 
+              			var ownerId = wfModel.get('ownerId');   
+              			
+          	    		Ext.Ajax.request({
+          	    			url: submitSolverURL,
+          	    			params: {
+          	    				"solver": gl_solver,
+          	    				"jsonObject": jsonString,
+          	    				"submitMessage": Ext.getCmp('submitMessage').getValue(),
+          	    				"submitName": Ext.getCmp('submitName').getValue(),
+          	    				"workflowId": workflowId,
+          	    				"ownerId": ownerId,
+          	    				"stationUrl": gl_stationUrl,
+          	    				"eventUrl": gl_eventUrl,
+          	    				"stationType": gl_stFileType,
+          	    				"runId": runId
+          	    			},
+          	    			success: function(response){
+          	    				Ext.Msg.alert("Success", "The information has been submited");
+          	    			}
+          	    		});
+              		}
+              		else
+              		{
+              			Ext.Msg.alert("Alert!", "You must select at least one event and one station");
+              		}
+              		setInterval("getSubmitedWorkflows()",10000);
+                  }
+                }
+              ]
+});
+
 Ext.define('CF.view.SubmitForm', {
 	  extend:'Ext.form.Panel',
-	  items: 
-		    [
-		     	wfcombo,
-			    {
-			        xtype: 'textfield',
-			        id: 'submitName',
-			        name: 'submitName',
-			        width: 350,
-			        fieldLabel: 'Name',
-			        listeners : {
-			            change : function (f, e){
-			                $("div#submit_overview div#submitname").html(e);
-			            }
-			        }
-			    },
-			    {
-			        xtype: 'textfield',
-			        id: 'submitMessage',
-			        name: 'submitMessage',
-			        width: 350,
-			        fieldLabel: 'Description',
-			        listeners : {
-			            change : function (f, e){
-			                $("div#submit_overview div#submitdesc").html(e);
-			            }
-			        }
-			    }
-			],
-	  buttons: [
-	               {
-	                  text: 'Submit',
-	                  handler: function() 
-	                  {
-	                	solverConfStore.commitChanges();
-	              		solverConfStore.save();
-	              		
-	              		var jsonString = createJsonString();
-	              		
-	              		if(jsonString!=null)
-	              		{
-	              			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
-	              			var workflowId = wfModel.get('workflowId');   	 
-	              			var ownerId = wfModel.get('ownerId');   
-	              			
-	          	    		Ext.Ajax.request({
-	          	    			url: submitSolverURL,
-	          	    			params: {
-	          	    				"solver": gl_solver,
-	          	    				"jsonObject": jsonString,
-	          	    				"submitMessage": Ext.getCmp('submitMessage').getValue(),
-	          	    				"submitName": Ext.getCmp('submitName').getValue(),
-	          	    				"workflowId": workflowId,
-	          	    				"ownerId": ownerId,
-	          	    				"stationUrl": gl_stationUrl,
-	          	    				"eventUrl": gl_eventUrl,
-	          	    				"stationType": gl_stFileType,
-	          	    				"runId": runId
-	          	    			},
-	          	    			success: function(response){
-	          	    				Ext.Msg.alert("Success", "The information has been submited");
-	          	    			}
-	          	    		});
-	              		}
-	              		else
-	              		{
-	              			Ext.Msg.alert("Alert!", "You must select at least one event and one station");
-	              		}
-	              		setInterval("getSubmitedWorkflows()",10000);
-	                  }
-	                }
-	              ]
+	  bodyPadding: '0 0 10 0',
+	  height:'100%',
+	  items: [formSubmit]
 	});
 
 
 //TODO! Nicer style
 var submitInformation = "<div id='submit_overview'>" +
-"<strong>Submit name:</strong> <div id='submitname'>" + "</div>" + 
-"<strong>Submit description:</strong> <div id='submitdesc'>" + "</div>" + 
-"<strong>Selected workflow:</strong> <div id='workflow'>" + "</div>" + 
-"<strong>Solver:</strong> <div id='solver'>" + "</div>" + 
-"<strong>Mesh:</strong> <div id='mesh'>" + "</div>" + 
-"<strong>Velocity Model:</strong> <div id='velmodel'>" + "</div>" + 
-"<strong>Earthquakes Url:</strong> <div id='eurl'>" + "</div>" + 
-"<strong>Selected earthquakes:</strong> <div id='esel'>" + "</div>" + 
-"<strong>Station Url:</strong> <div id='surl'>" + "</div>" + 
-"<strong>Selected stations:</strong> <div id='ssel'>" + "</div>" + 
-"</div>";
+"<strong>Submit name:</strong> <div id='submitname'><br></div>" + 
+"<strong>Submit description:</strong> <div id='submitdesc'><br></div>" + 
+"<strong>Selected workflow:</strong> <div id='workflow'><br></div>" + 
+"<strong>Solver:</strong> <div id='solver'><br></div>" + 
+"<strong>Mesh:</strong> <div id='mesh'><br></div>" + 
+"<strong>Velocity Model:</strong> <div id='velmodel'><br></div>" + 
+"<strong>Earthquakes Url:</strong> <div id='eurl'><br></div>" + 
+"<strong>Selected earthquakes:</strong> <div id='esel'><br></div>" + 
+"<strong>Station Url:</strong> <div id='surl'><br></div>" + 
+"<strong>Selected stations:</strong> <div id='ssel'><br></div>" + 
+"<br><br><br></div>";
 
 Ext.define('CF.view.Submit', {
 	  extend:'Ext.form.Panel',
+	    border: false,
 	  items: 
 		    [
 		     	Ext.create('CF.view.SubmitForm'),
@@ -128,7 +139,11 @@ Ext.define('CF.view.Submit', {
 		     		id: "wflist",
 			       xtype: 'panel',
 			       html:submitInformation,
-			       layout: 'fit'	//TODO!!
+				    bodyPadding: '10 10 0 10',
+				    border: false,
+				    frame: false,
+				    autoScroll:true
+				    	//TODO: length of the div
 				},
 				
 			]

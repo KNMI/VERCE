@@ -140,13 +140,13 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
 	}
 });
 
-var form55 = Ext.create('Ext.form.Panel', {
+var formSolverSelect = Ext.create('Ext.form.Panel', {
      extend:'Ext.form.Panel',
      alias: 'widget.solverselect',
     width: 500,
     frame: false,
     border: false,
-    bodyPadding: '10 10 10 10',
+    bodyPadding: '10 10 0 10',
     defaults: {
         anchor: '100%',
         allowBlank: false,
@@ -185,7 +185,8 @@ var form55 = Ext.create('Ext.form.Panel', {
 
 Ext.define('CF.view.SolverSelect', {
 	  extend:'Ext.form.Panel',
-	  items: [form55]
+	    bodyPadding: '0 0 10 0',
+	  items: [formSolverSelect]
 	});
 
 
