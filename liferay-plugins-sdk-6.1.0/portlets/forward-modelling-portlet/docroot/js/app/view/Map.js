@@ -36,7 +36,7 @@ Ext.define('CF.view.Map', {
         
            var hwms = 
            new OpenLayers.Layer.WMS(
-            "Hazard Map WMS (Epher) ",
+            "Hazard Map WMS (EFEHR) ",
             "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&",
              {layers: 'hmap469',
              transparent: 'true',
