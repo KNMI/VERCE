@@ -1,4 +1,4 @@
- 
+
 var mimetypes = [
 { "mime":"application/octet-stream","desc":""},
 { "mime":"image/png","desc":""},
@@ -553,17 +553,12 @@ Ext.define('CF.view.AnnotationSearch' , {extend:'Ext.form.Panel',
 
 );
 
-
-var searchartifacts = Ext.create('Ext.Action', {
-        text: 'Search',
-        iconCls: 'icon-add',
-        handler: function(){
-      
-         		Ext.create('Ext.window.Window', {
+var searchartifactspane = Ext.create('Ext.window.Window', {
   								   title:'Search Stream Data',
  								   height: 230,
 								   width: 400,
 							       layout: 'fit',
+							       closeAction: 'hide',
 						           items:[{xtype:'tabpanel',
 						           			items:[
 						        				   Ext.create('CF.view.AnnotationSearch'),
@@ -571,7 +566,15 @@ var searchartifacts = Ext.create('Ext.Action', {
 						      					   ]
 						           		 }
 						           		]
-								}).show();
+								})
+
+
+var searchartifacts = Ext.create('Ext.Action', {
+        text: 'Search',
+        iconCls: 'icon-add',
+        handler: function(){
+      
+         		searchartifactspane.show();
         }
     });		
  
