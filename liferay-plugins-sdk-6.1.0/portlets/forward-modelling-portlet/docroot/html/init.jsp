@@ -28,6 +28,8 @@
 </liferay-portlet:renderURL> 
    
 <liferay-portlet:actionURL name="provant" var="provantURL"/>
+
+<liferay-portlet:actionURL name="deleteWorkflow" var="deleteWorkflowURL"/>
 		
 <portlet:resourceURL id="uploadMe" var="uploadFileURL" />
 
@@ -35,9 +37,7 @@
 	<portlet:param name="jspPage" value="/html/ajax_getfilelist.jsp"/>
 </liferay-portlet:renderURL>
 
-<liferay-portlet:renderURL var="getSubmitedWorkflowsURL">
-	<portlet:param name="jspPage" value="/html/ajax_getsubmitedwfs.jsp"/>
-</liferay-portlet:renderURL>
+<liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
 
 <liferay-portlet:actionURL name="submitSolver" var="submitSolverURL" />
 
@@ -52,6 +52,7 @@ String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
 List<String> wfNames = new ArrayList();
 List<String> wfIds = new ArrayList();
 List<String> ownerIds = new ArrayList();
+List<ASMWorkflow> importedWfs  = new ArrayList();
 try{
 	ASMService asm_service = null;
 	asm_service = ASMService.getInstance();
@@ -71,15 +72,16 @@ try{
 			}
 		}
 	}
+
+	System.out.println("init!! "+themeDisplay.getUserId());
+	importedWfs = asm_service.getASMWorkflows(themeDisplay.getUserId()+"");
+	
 }
 catch(Exception e){
 	wfNames.add("Error. Are you connected to guse?");
 	wfIds.add("Error");
 	ownerIds.add("Error");
 }
-
-
-
 %>
 
 <script>
@@ -89,9 +91,10 @@ catch(Exception e){
 	var SOLVER_TYPE = '<%=Constants.SOLVER_TYPE %>';
 	
 	//var provantURL='<%=provantURL.toString()%>';
+	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
 	var uploadFileURL='<%=uploadFileURL.toString()%>';
 	var getListURL='<%=getListURL.toString()%>';
-	var getSubmitedWorkflowsURL='<%=getSubmitedWorkflowsURL.toString()%>';
+	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
@@ -101,6 +104,16 @@ catch(Exception e){
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
            <% } %>
        ];
+	
+	var wfList = [
+		<% for(ASMWorkflow wf : importedWfs){ 
+		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
+		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
+		System.out.println("data2: "+wfDate2);
+		%>
+		 ['<%=wf.getWorkflowName() %>', '<%=wf.getStatusbean().getStatus() %>', '<%=wfDate %>', '<%=wfDate2 %>'],
+		<% } %>
+	 ];
 	
 </script>
 
