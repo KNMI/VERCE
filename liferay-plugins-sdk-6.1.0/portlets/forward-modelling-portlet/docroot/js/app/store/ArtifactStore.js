@@ -16,6 +16,7 @@
     					return JSON.stringify(val)
     					}
     					},
+    		{name: 'errors', type: 'string' , mapping:'errors'},
     					
             {name: 'annotations', type: 'string',convert: function (val){
             			 

@@ -392,7 +392,7 @@ Ext.define('CF.view.ActivityMonitor', {
              
             {header: 'Date',   dataIndex:'creationDate', flex: 3, sortable: true,
             groupable: false}, // custom mapping
-            {header: 'Error',   dataIndex:'error', flex: 3, sortable: false}, // custom mapping
+            {header: 'Errors',   dataIndex:'errors', flex: 3, sortable: false}, // custom mapping
             {header: 'IterationIndex',   dataIndex:'iterationIndex', flex: 3, sortable: false} // custom mapping
 
 			],
@@ -467,7 +467,7 @@ Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
        												  pack:   'center',
     								        type:   'vbox'
      										   },
-										    items: [{
+										    items: [ {
   												      fieldLabel: 'Content keys (csv)',
  												       name: 'keys',
  												       allowBlank: false
@@ -476,7 +476,8 @@ Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
  											       name: 'values',
  											       allowBlank: false
   													  },
-  													  mimetypescombo],
+  													  mimetypescombo
+  													  ],
 						           			
 						           	
 						           			buttons: [ {
@@ -591,7 +592,8 @@ function renderStream(value, p, record) {
             '<strong>Parameters :</strong>{2}<br/> <br/>'+
             '<strong>Annotations :</strong>{3}<br/> <br/>'+
             '<strong>Location :</strong><a href="javascript:viewDataImage(\'{4}\')">{4}</a><br/> <br/>'+
-            '<strong>Content:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/>'+
+        	'<strong>Content:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>'+
+        	'<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>'+
         	'</div>',
             record.data.ID,
             record.data.wasGeneratedBy,
@@ -601,7 +603,7 @@ function renderStream(value, p, record) {
             record.data.content.substring(0,1000)+"...",
             record.data.runId,
             record.data.creationDate,
-            record.data.content
+            record.data.errors
         );		
         }
 			
