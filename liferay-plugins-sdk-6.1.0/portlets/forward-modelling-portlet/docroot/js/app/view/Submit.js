@@ -65,6 +65,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
 		buttons: [
                {
                   text: 'Submit',
+                  id: 'submitbutton',
                   handler: function() 
                   {
                 	solverConfStore.commitChanges();
@@ -74,9 +75,11 @@ var formSubmit = Ext.create('Ext.form.Panel', {
               		
               		if(jsonString!=null)
               		{
+              			Ext.getCmp('submitbutton').disable();
               			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
               			var workflowId = wfModel.get('workflowId');   	 
-              			var ownerId = wfModel.get('ownerId');   
+              			var ownerId = wfModel.get('ownerId');  
+              			var workflowName = wfModel.get('workflowName');  
               			
           	    		Ext.Ajax.request({
           	    			url: submitSolverURL,
@@ -86,6 +89,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"submitMessage": Ext.getCmp('submitMessage').getValue(),
           	    				"submitName": Ext.getCmp('submitName').getValue(),
           	    				"workflowId": workflowId,
+          	    				"workflowName": workflowName,
           	    				"ownerId": ownerId,
           	    				"stationUrl": gl_stationUrl,
           	    				"eventUrl": gl_eventUrl,
@@ -94,14 +98,20 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    			},
           	    			success: function(response){
           	    				Ext.Msg.alert("Success", "The information has been submited");
-          	    			}
+          	    				Ext.getCmp('submitbutton').enable();
+          	    				wfStore.load();
+          	    			},
+          	    			failure: function(response) {
+          	    				Ext.Msg.alert("Error", "Submition failed!");
+          	    				Ext.getCmp('submitbutton').enable();
+          	    				wfStore.load();
+          	                }
           	    		});
               		}
               		else
               		{
               			Ext.Msg.alert("Alert!", "You must select at least one event and one station");
               		}
-              		setInterval("getSubmitedWorkflows()",10000);
                   }
                 }
               ]
@@ -144,27 +154,9 @@ Ext.define('CF.view.Submit', {
 				    frame: false,
 				    autoScroll:true
 				    	//TODO: length of the div
-				},
-				
+				}
 			]
 	});
-
-//getSubmitedWorkflows();
-//TODO: control page
-function getSubmitedWorkflows() {
-	Ext.Ajax.request({
-		url: getSubmitedWorkflowsURL,
-		params: {
-			userId: "res"
-		},
-		success: function(response){
-			Ext.create('Ext.form.Panel', {
-		       renderTo: Ext.Element.get('wflist'),
-		       html: response.responseText
-			});
-		}
-	});
-}	
 
 /*
  * Creates a jsonString containing the information of the solverGrid
