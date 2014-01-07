@@ -555,7 +555,7 @@ Ext.define('CF.view.AnnotationSearch' , {extend:'Ext.form.Panel',
 );
 
 var searchartifactspane = Ext.create('Ext.window.Window', {
-  								   title:'Search Stream Data',
+  								   title:'Search Data',
  								   height: 230,
 								   width: 400,
 							       layout: 'fit',
@@ -582,7 +582,7 @@ var searchartifacts = Ext.create('Ext.Action', {
 function renderStream(value, p, record) {
         return Ext.String.format(
             '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>'+
-            '<strong>Stream Data ID: {0} </strong> <br/> <br/></strong><hr/>'+
+            '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>'+
             '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>'+
             '<strong><a href="javascript:wasGeneratedFromNewGraph(\'/j2ep-1.0/prov/wasGeneratedFrom/{0}?level='+level+'\')">Backwards</a><br/><br/></strong>'+
             '<strong><a href="javascript:derivedDataNewGraph(\'/j2ep-1.0/prov/derivedData/{0}?level='+level+'\')">Forward</a><br/><br/><hr/></strong>'+
