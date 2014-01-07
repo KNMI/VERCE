@@ -1,5 +1,6 @@
 package com.verce.forwardmodelling;
 
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-//import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -64,9 +65,6 @@ import hu.sztaki.lpds.pgportal.services.asm.constants.RepositoryItemTypeConstant
 import com.verce.forwardmodelling.Constants;
 
 
-
-
-
 public class ForwardPortlet extends MVCPortlet{
 	
 	ASMService asm_service = null;
@@ -89,6 +87,7 @@ public class ForwardPortlet extends MVCPortlet{
 				System.out.println("- info: "+ai.toString());
 				System.out.println("- jobs: "+w.getJobs().toString());
 				System.out.println("- status: "+p1);
+				System.out.println("- statusBean: "+w.getStatusbean().getStatus());
 				if(p1.equals("RUNNING"))
 				{
 					try{
@@ -103,7 +102,7 @@ public class ForwardPortlet extends MVCPortlet{
 					}
 				}
 			}		
-			for(ASMWorkflow w : ws)
+			/*for(ASMWorkflow w : ws)
 			{
 				System.out.println("-------------- "+w.getWorkflowName());
 				try{
@@ -114,13 +113,63 @@ public class ForwardPortlet extends MVCPortlet{
 				catch(Exception e)
 				{
 					System.out.println("- details error: "+e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
-			}
+			}*/
 		}
 		catch(Exception e)
 		{
 			System.out.println("[ForwardModellingPortlet.provant] Exception catched!!");
+			e.printStackTrace();
+		}
+    }
+
+	
+	public void getWorkflowList(ActionRequest req, ActionResponse res)
+    {
+		ArrayList<ASMWorkflow> importedWfs;
+		try{
+			//System.out.println("getWorkflowList!! "+req.getRemoteUser());
+			asm_service = ASMService.getInstance();
+			importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+			
+			//System.out.println("getWorkflowList!! " + importedWfs.size());
+			String jsWfArray = "{\"list\":[";
+			for(ASMWorkflow wf : importedWfs)
+			{ 
+	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
+	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
+	      		jsWfArray +=  "{\"name\":\""+wf.getWorkflowName()+"\", \"status\":\""+wf.getStatusbean().getStatus() +"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\"},";
+			}
+			jsWfArray.substring(0, jsWfArray.length()-1);
+			jsWfArray +="]}";
+
+			HttpServletResponse response = PortalUtil.getHttpServletResponse(res);
+			PrintWriter out = response.getWriter();
+			out.print(jsWfArray);
+			out.flush();
+			out.close();
+			System.out.println("[ForwardModellingPortlet.getWorkflowList] Array: "+jsWfArray);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Could not update the workflow list");
+		}
+		
+    }
+	
+	public void deleteWorkflow(ActionRequest req, ActionResponse res)
+    {
+		asm_service = ASMService.getInstance();
+		String userId = req.getRemoteUser();
+		try{
+			String wfId = ParamUtil.getString(req, "workflowId");
+			asm_service.DeleteWorkflow(userId, wfId);
+			System.out.println("[ForwardModellingPortlet.delete] wfId: "+wfId);
+		}
+		catch(Exception e)
+		{
+			System.out.println("[ForwardModellingPortlet.delete] Exception catched!!");
 			e.printStackTrace();
 		}
     }
@@ -133,6 +182,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   String solverType = ParamUtil.getString(req, "solver");
 		   String jsonContent = ParamUtil.getString(req, "jsonObject");
 		   String workflowId = ParamUtil.getString(req, "workflowId");
+		   String workflowName = ParamUtil.getString(req, "workflowName");
 		   String ownerId = ParamUtil.getString(req, "ownerId");
 		   String stationUrl = ParamUtil.getString(req, "stationUrl");
 		   String eventUrl = ParamUtil.getString(req, "eventUrl");
@@ -226,8 +276,25 @@ public class ForwardPortlet extends MVCPortlet{
 		   tempZipFile.delete();
 		   
 		   //6. Add run info in the Provenance Repository
-		   //String asmRunId = getASMRunId(userId, workflowId);
-		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
+		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowName, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
+		   
+		   //7. Check the status of the run (check if the credential worked)
+		   try {
+			    Thread.sleep(10000);
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+		   ASMWorkflow w = asm_service.getASMWorkflow(userId,importedWfId);
+		   
+		   String status = w.getStatusbean().getStatus();
+
+		   HttpServletResponse response = PortalUtil.getHttpServletResponse(res);
+		   if(status.equals("ERROR"))
+		   {
+			   response.sendError(401, "Error in credentials");
+		   }
+		   
+		   System.out.println("[ForwardModellingPortlet.submitSolver] Submition status: "+w.getStatusbean().getStatus());
 		   
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+verceRunId+", "+submitMessage+", "+workflowId+", "+importedWfId);
 	   }
