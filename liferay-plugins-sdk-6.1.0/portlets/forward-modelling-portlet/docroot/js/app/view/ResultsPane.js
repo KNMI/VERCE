@@ -460,7 +460,7 @@ Ext.create('Ext.window.Window', {
 
 Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
 						           // The fields
-						           title:'Search Stream Content',
+						           title:'Search Data Content',
   											  defaultType: 'textfield',
   											  layout: {
           											  align:  'center',
