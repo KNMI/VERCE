@@ -76,10 +76,12 @@ var formSubmit = Ext.create('Ext.form.Panel', {
               		if(jsonString!=null)
               		{
               			Ext.getCmp('submitbutton').disable();
+  	    				Ext.getCmp('viewport').setLoading(true);
               			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
               			var workflowId = wfModel.get('workflowId');   	 
               			var ownerId = wfModel.get('ownerId');  
               			var workflowName = wfModel.get('workflowName');  
+              			var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_");	//replace ' ' by '_'
               			
           	    		Ext.Ajax.request({
           	    			url: submitSolverURL,
@@ -87,7 +89,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"solver": gl_solver,
           	    				"jsonObject": jsonString,
           	    				"submitMessage": Ext.getCmp('submitMessage').getValue(),
-          	    				"submitName": Ext.getCmp('submitName').getValue(),
+          	    				"submitName": submitName,
           	    				"workflowId": workflowId,
           	    				"workflowName": workflowName,
           	    				"ownerId": ownerId,
@@ -99,11 +101,13 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    			success: function(response){
           	    				Ext.Msg.alert("Success", "The information has been submited");
           	    				Ext.getCmp('submitbutton').enable();
+          	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();
           	    			},
           	    			failure: function(response) {
           	    				Ext.Msg.alert("Error", "Submition failed!");
           	    				Ext.getCmp('submitbutton').enable();
+          	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();
           	                }
           	    		});
