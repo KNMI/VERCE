@@ -1,9 +1,4 @@
 
-var text = "<div style='padding-left: 15px;'><br>" +
-		"<a href='file-manager' target='_blank'>" +
-		"Access the Document Library  (opens in a new window)</a>" +
-		"<br><br></div>";
-
 var wfStore = Ext.create('Ext.data.ArrayStore', {
     fields: [
        {name: 'name'},
@@ -91,23 +86,68 @@ var wfGrid = Ext.create('Ext.grid.Panel', {
             }
             ]
         }
-    ],
-    title: 'Submited workflows'
+    ]
 });
+
+
+var refreshMenuControl = [
+	{
+       html: '<strong style="color: #04408C; position: relative; font-size: 12px; top: -1px;">Submited workflows</strong>'
+	},                      
+	"->",
+	{
+		tooltip: 'Refresh list',
+		handler: function() {
+			  wfStore.load();
+		},
+		style: {
+		    background:'none',
+		    backgroundImage: 'url('+localResourcesPath+'/img/refresh-icon.png)',
+		    backgroundSize: '100% 90%',
+		    backgroundRepeat: 'no-repeat',
+			height: 32,
+			width: 32
+		},
+		height: 35,
+		width: 35
+	},
+	{
+		tooltip: 'Go to Document Library<br>(open in a new win)',
+		height: 32,
+		width: 32,
+		handler: function() {
+		    openInNewTab('file-manager');
+		},
+		style: {
+		    background:'none',
+		    backgroundImage: 'url('+localResourcesPath+'/img/folder-icon.png)',
+		    backgroundSize: '100% 100%',
+		    backgroundRepeat: 'no-repeat',
+			height: 32,
+			width: 32
+		},
+		height: 32,
+		width: 32
+	}
+	];
 
 //TODO: the scroll in the list does not work
 Ext.define('CF.view.Control', {
 	  extend:'Ext.form.Panel',
-	  alias: 'widget.mypanel',
+		style:{
+			cursor: 'default'
+		},
+	  dockedItems: 
+		  [{
+		    xtype: 'toolbar',
+		    dock: 'top',
+			height: 37,
+		    items: refreshMenuControl
+		}],
 	  items: 
 		    [
-		     	{
-			       xtype: 'panel',
-			       html:text
-				},
 				{
 			       xtype: 'panel',
-			       layout: 'fit',
 			       autoScroll: true,
 			       items: [wfGrid]
 				}
@@ -122,5 +162,11 @@ function statusRenderer(val) {
         return '<span style="color:red;">' + val + '</span>';
     }
     return val;
+}
+
+function openInNewTab(url)
+{
+  var win=window.open(url, '_blank');
+  win.focus();
 }
 
