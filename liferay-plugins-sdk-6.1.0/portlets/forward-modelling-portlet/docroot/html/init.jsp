@@ -94,6 +94,7 @@ catch(Exception e){
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
+	var userId = '<%=themeDisplay.getUser().getUserId() %>';
 
 	var reposWorkflows = [
    	    <% for(int i=0; i< wfNames.size();i++){ %>
