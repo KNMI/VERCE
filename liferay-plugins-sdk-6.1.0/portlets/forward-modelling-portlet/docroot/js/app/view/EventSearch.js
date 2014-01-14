@@ -6,16 +6,15 @@
         {"abbr":"INGV","name":"Istituto Nazionale di Geofisica e Vulcanologia"}
     ];
 
-Ext.regModel('ProvidersCombo', {
-    fields: [
-        {type: 'string', name: 'abbr'},
-        {type: 'string', name: 'name'}
-        
-    ]
-});
+Ext.define("ProvidersComboModel", {
+		extend: "Ext.data.Model",
+		fields: [
+                  {type: 'string', name: 'abbr'},
+                  {type: 'string', name: 'name'}
+              ]});
 
 var providersStore = Ext.create('Ext.data.Store', {
-    model: 'ProvidersCombo',
+    model: 'ProvidersComboModel',
     data: providers
 });
 

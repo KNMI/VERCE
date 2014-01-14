@@ -3,24 +3,24 @@ var solvers = [
         {"abbr":"SPECFEM3D_CARTESIAN_21447","name":"SPECFEM3D_CARTESIAN_21447"},
     ];
 
-Ext.regModel('SolversCombo', {
+Ext.define("SolversCombo", {
+	extend: "Ext.data.Model",
     fields: [
-        {type: 'string', name: 'abbr'},
-        {type: 'string', name: 'name'}
-    ]
-});
+             {type: 'string', name: 'abbr'},
+             {type: 'string', name: 'name'}
+         ]});
 
-Ext.regModel('MeshesModel', {
-    fields: [
-        {type: 'string', name: 'name'},
-        {type: 'long', name: 'geo_minLat'},
-        {type: 'long', name: 'geo_maxLat'},
-        {type: 'long', name: 'geo_minLon'},
-        {type: 'long', name: 'geo_maxLon'},
-        {type: 'string', name: 'geo_proj'},
-        {type: 'array', name: 'velmod'}
-    ]
-});
+Ext.define("MeshesModel", {
+	extend: "Ext.data.Model",
+	fields: [
+	         {type: 'string', name: 'name'},
+	         {type: 'long', name: 'geo_minLat'},
+	         {type: 'long', name: 'geo_maxLat'},
+	         {type: 'long', name: 'geo_minLon'},
+	         {type: 'long', name: 'geo_maxLon'},
+	         {type: 'string', name: 'geo_proj'},
+	         {type: 'array', name: 'velmod'}
+	     ]});
 
 var solverstore = Ext.create('Ext.data.Store', {
     model: 'SolversCombo',

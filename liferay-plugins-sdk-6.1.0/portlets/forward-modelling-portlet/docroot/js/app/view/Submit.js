@@ -1,12 +1,13 @@
 var runId = "";
 
-Ext.regModel('ExportedWorkflowModel', {
+Ext.define("ExportedWorkflowModel", {
+	extend: "Ext.data.Model",
     fields: [
-        {type: 'string', name: 'workflowName'},
-        {type: 'string', name: 'workflowId'},
-        {type: 'string', name: 'ownerId'}
-    ]
-});
+             {type: 'string', name: 'workflowName'},
+             {type: 'string', name: 'workflowId'},
+             {type: 'string', name: 'ownerId'}
+         ]});
+
 var reposWorkflowsStore = Ext.create('Ext.data.Store', {
     model: 'ExportedWorkflowModel',
     data: reposWorkflows
@@ -197,6 +198,7 @@ function createJsonString()
 	//Add the runId, user, stationUrl, eventUrl, solver and mesh
 	jsonString += '"runId" :"'+runId+'",';
 	jsonString += '"user_name" :"'+userSN+'",';
+	jsonString += '"user_id" :"'+userId+'",';
 	jsonString += '"station_url" :"'+gl_stationUrl+'",';
 	jsonString += '"event_url" :"'+gl_eventUrl+'",';
 	if(gl_stationFormat===STXML_TYPE)			var auxFormat = "stationXML";

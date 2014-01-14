@@ -3,7 +3,10 @@
  * @extends Ext.Viewport
  */
 
-
+Ext.require([
+    'CF.view.StationSearch',
+    'CF.view.StationSearchByFile'
+]);
 
 var eventsTabPanel = Ext.create('Ext.TabPanel',{
     region: 'center',
@@ -12,6 +15,7 @@ var eventsTabPanel = Ext.create('Ext.TabPanel',{
         type: 'vbox',
         align: 'stretch'
     },
+    requires: ['CF.view.EventSearchByFile','CF.view.EventSearch'],
     items: [
                 {
                     xtype: 'panel',
@@ -84,12 +88,8 @@ Ext.define('CF.view.Viewport', {
     requires: [
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
-        'CF.view.StationSearch',
-        'CF.view.StationSearchByFile',
         'CF.view.Commons',
-        'CF.view.EventSearch',
         'CF.view.ResultsPane',
-        'CF.view.EventSearchByFile',
         'CF.view.Control',
         'CF.view.Map'
     ],

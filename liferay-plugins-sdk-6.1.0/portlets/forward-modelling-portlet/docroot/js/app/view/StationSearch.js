@@ -22,13 +22,12 @@ Ext.Ajax.request({
 });
 
 var networks = [];
-
-Ext.regModel('NetworkCombo', {
-    fields: [
-        {type: 'string', name: 'abbr'},
-        {type: 'string', name: 'name'}
-    ]
-});
+Ext.define("NetworkCombo", {
+	extend: "Ext.data.Model",
+	 fields: [
+	          {type: 'string', name: 'abbr'},
+	          {type: 'string', name: 'name'}
+	      ]});
 
 var networksStore = Ext.create('Ext.data.Store', {
     model: 'NetworkCombo',
