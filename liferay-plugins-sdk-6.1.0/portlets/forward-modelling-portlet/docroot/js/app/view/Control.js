@@ -15,8 +15,8 @@ var wfStore = Ext.create('Ext.data.ArrayStore', {
 	          reader: {
 		             root: 'list'
 		          }
-		   },
-		   autoLoad: true
+	},
+	autoLoad: true
 });
 
 wfStore.load(function() {
@@ -92,7 +92,7 @@ var wfGrid = Ext.create('Ext.grid.Panel', {
 
 var refreshMenuControl = [
 	{
-       html: '<strong style="color: #04408C; position: relative; font-size: 12px; top: -1px;">Submited workflows</strong>'
+       html: '<strong style="color: #416DA3; position: relative; font-size: 12px; top: -1px;">Submited workflows</strong>'
 	},                      
 	"->",
 	{
@@ -103,10 +103,12 @@ var refreshMenuControl = [
 		style: {
 		    background:'none',
 		    backgroundImage: 'url('+localResourcesPath+'/img/refresh-icon.png)',
-		    backgroundSize: '100% 90%',
+		    backgroundSize: '90% 85%',
 		    backgroundRepeat: 'no-repeat',
 			height: 32,
-			width: 32
+			width: 45,
+			margin: 1,
+			marginRight: '10px'
 		},
 		height: 35,
 		width: 35
@@ -121,10 +123,13 @@ var refreshMenuControl = [
 		style: {
 		    background:'none',
 		    backgroundImage: 'url('+localResourcesPath+'/img/folder-icon.png)',
-		    backgroundSize: '100% 100%',
+		    backgroundSize: '90% 90%',
 		    backgroundRepeat: 'no-repeat',
 			height: 32,
-			width: 32
+			width: 32,
+			top: 0,
+			margin: 1,
+			marginRight: '10px'
 		},
 		height: 32,
 		width: 32
@@ -141,14 +146,13 @@ Ext.define('CF.view.Control', {
 		  [{
 		    xtype: 'toolbar',
 		    dock: 'top',
-			height: 37,
+			height: 35,
 		    items: refreshMenuControl
 		}],
 	  items: 
 		    [
 				{
 			       xtype: 'panel',
-			       autoScroll: true,
 			       items: [wfGrid]
 				}
 			]
