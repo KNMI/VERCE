@@ -1,8 +1,4 @@
  
- 
-
- 
- 						
  Ext.define('CF.model.Event', {
     extend: 'Ext.data.Model',
  
@@ -27,23 +23,12 @@
         	{name: 'tensor_mtp', type: 'string' , mapping:'tensor_mtp'}
         	], 
 });
-
  
-
-/**
- * The store used for summits
- */
 Ext.define('CF.store.EventStore', {extend:'GeoExt.data.FeatureStore',
-   						 // requires:['CF.model.Station','CF.model.Network'],
-   						  model:   'CF.model.Event',
-   						  alias: 'store.eventstore',
-   						  storeId: 'eventStore',
-   						   
-   					/*	  proxy: {	 
-    							     type: 'memory' 
-    							 }  
- 					*/	 
- 						   
- 						});
+				 // requires:['CF.model.Station','CF.model.Network'],
+				  model:   'CF.model.Event',
+				  alias: 'store.eventstore',
+				  storeId: 'eventStore'
+				});
 
 
