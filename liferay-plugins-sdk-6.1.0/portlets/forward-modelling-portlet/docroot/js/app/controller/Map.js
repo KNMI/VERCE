@@ -193,35 +193,7 @@ var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
         
  	 	return features;
     }
-});
-
-var eventcontext = {
-		getRadius: function(feature) { 
-			return feature.attributes.magnitude*1.5;
-        },
-        getColor: function(feature) { 
-          if (feature.attributes.depth < 20) {
-             return 'green';
-        }
-        if (feature.attributes.depth < 50) {
-            return 'orange';
-        }
-        return 'red';
-    }
-};
-var eventtemplate = {
-    cursor: "pointer",
-    fillOpacity: 0.5,
-    fillColor: "${getColor}",
-    pointRadius: "${getRadius}",
-    strokeWidth: 1,
-    strokeOpacity: 1,
-    strokeColor: "${getColor}"
-};
-eventrenderer =  OpenLayers.Layer.Vector.prototype.renderers;
-   
-var eventstyle = new OpenLayers.Style(eventtemplate, {context: eventcontext});
-       
+});  
 var stationStore = Ext.create('CF.store.StationStore');
 
 var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
@@ -263,36 +235,76 @@ var protocol=new OpenLayers.Protocol.HTTP({
     format: new StationXMLFormat()
 });
 
+var eventcontext = {
+		getRadius: function(feature) { 
+			return feature.attributes.magnitude*1.5;
+        }
+};
+var eventtemplate = {
+    cursor: "pointer",
+    fillOpacity: 0.3,
+    fillColor: "#AA0000",
+    pointRadius: "${getRadius}",
+    strokeWidth: 1,
+    strokeOpacity: 1,
+    strokeColor: "#AA0000"
+};
+var eventtemplateselected = {
+	    cursor: "pointer",
+	    fillOpacity: 0.9,
+	    fillColor: "#FF3333",
+	    pointRadius: "${getRadius}",
+	    strokeWidth: 1,
+	    strokeOpacity: 1,
+	    strokeColor: "#FF3333"
+	};
+eventrenderer =  OpenLayers.Layer.Vector.prototype.renderers;
+var eventstyle = new OpenLayers.Style(eventtemplate, {context: eventcontext});
+var eventstyleselected = new OpenLayers.Style(eventtemplateselected, {context: eventcontext});
+var eventstylemap = new OpenLayers.StyleMap({
+	'default': eventstyle,
+    'select': eventstyleselected
+});
+
 var stationcontext = {
 	getColor: function(feature) { 
-	    if (feature.attributes.elevation < 2000) {
-	        return 'blue';
+	    if (feature.attributes.elevation < 1000) {
+	        return '#3333FF';
 	    }
-	    if (feature.attributes.elevation < 2300) {
-	        return 'orange';
-	    }
-	    return 'red';
+	    return '#000066';
     }
 };
 var stationtemplate = {
     cursor: "pointer",
-    fillOpacity: 0.5,
-    fillColor: "${getColor}",
+    fillOpacity: 0.3,
+    fillColor: "#111188",
     pointRadius: 5,
     strokeWidth: 1,
     strokeOpacity: 1,
-    strokeColor: "${getColor}",
+    strokeColor: "#222299",
     graphicName: "triangle"
 };
 
+var stationtemplateselected = {
+	    cursor: "pointer",
+	    fillOpacity: 0.9,
+	    fillColor: "#3333FF",
+	    pointRadius: 7,
+	    strokeWidth: 1,
+	    strokeOpacity: 1,
+	    strokeColor: "#3333FF",
+	    graphicName: "triangle"
+};
 stationrenderer =  OpenLayers.Layer.Vector.prototype.renderers;
-      
 var stationstyle = new OpenLayers.Style(stationtemplate, {context: stationcontext});
+var stationstyleselected = new OpenLayers.Style(stationtemplateselected, {context: stationcontext});
+var stationstylemap = new OpenLayers.StyleMap({
+	'default': stationstyle,
+    'select': stationstyleselected
+});
  
 Ext.define('CF.controller.Map', {
     extend: 'Ext.app.Controller',
-    models: ['CF.model.Station'],
-  //  stores: ['StationStore'],
 	refs: [
         {ref: 'stationsGrid', selector: 'stationsgrid'},
         {ref: 'eventSearch', selector: 'eventsearch'},
@@ -302,23 +314,16 @@ Ext.define('CF.controller.Map', {
     init: function() {
         var me = this;
         this.solverConfStore = solverConfStore;
-        this.solverConfStore.on({
-            scope: me,
-            'datachanged' : function(store, records) {}
-        });
 		this.stationstore = stationStore;
-		//this.getStore('StationStore');
         this.stationstore.on({
             scope: me,
-            'datachanged' : me.onStationStoreLoad
+            'datachanged': me.onStationStoreLoad
         });
-        this.eventstore=eventStore
-		//this.getStore('StationStore');
+        this.eventstore = eventStore
         this.eventstore.on({
             scope: me,
-            'datachanged' : me.onEventStoreLoad
+            'datachanged': me.onEventStoreLoad
         });
-      
         this.control({
             'cf_mappanel': {
                 'beforerender': this.onMapPanelBeforeRender,
@@ -364,7 +369,6 @@ Ext.define('CF.controller.Map', {
         //map = mapPanel.map;
         this.mapPanel = mapPanel;        
      },
-     
     onMapPanelAfterRender: function(mapPanel, options) {
     	//this.onEventSearch(this.getEventSearch().down("#event_but"));
    	},
@@ -379,7 +383,6 @@ Ext.define('CF.controller.Map', {
     	//if the solver, the stations and the events are selected, enable the submit button
     	if(this.eventstore.count()>0 && this.stationstore.count()>0 && this.solverConfStore.count()>0)
     		Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(false);
-    		//Ext.getCmp('solver_but').enable();
     	//TODO: should be with selected stations and events (checkbox clicked not the ones in the store)
     },
     
@@ -397,7 +400,6 @@ Ext.define('CF.controller.Map', {
     		var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';
     		var bbox = "&maxlat="+gl_maxLat+"&minlon="+gl_minLon+"&maxlon="+gl_maxLon+"&minlat="+gl_minLat;
 	    	getEvents(this, baseUrl+form.getValues(true)+bbox);
-    		//getEvents(this, '/j2ep-1.0/ingv-fdsn-event/fdsnws/event/1/query?eventId=2367191', new QuakeMLXMLFormat());
     	}
     },
     onStationSearch: function (button){
@@ -424,7 +426,7 @@ function getStations(elem, purl, formatType)
 
 	var layers=[];
 	 elem.stationLayer = new OpenLayers.Layer.Vector("Stations", {
-	     styleMap: new OpenLayers.StyleMap(stationstyle),
+	     styleMap: stationstylemap,
 	     protocol: new OpenLayers.Protocol.HTTP({
 	         url : purl,
 	         format: f,
@@ -451,7 +453,6 @@ function getStations(elem, purl, formatType)
 	   // manually bind stationstore to layer
 	   elem.stationstore.unbind();
 	   elem.stationstore.bind(elem.stationLayer);
-	  
 	   
 	   elem.selectControl = new OpenLayers.Control.SelectFeature(elem.stationLayer);
 	   elem.selector = new OpenLayers.Control.SelectFeature(elem.stationLayer,{
@@ -473,7 +474,7 @@ function getEvents(elem, purl)
 
     var layers=[];
     elem.eventLayer = new OpenLayers.Layer.Vector("Events", {
-         styleMap: new OpenLayers.StyleMap(eventstyle),
+         styleMap: eventstylemap,
          protocol: new OpenLayers.Protocol.HTTP({
          	url : purl,
          	format: new QuakeMLXMLFormat(),
@@ -496,7 +497,6 @@ function getEvents(elem, purl)
     });
    	elem.mapPanel.map.addLayers(layers);
 
-    // manually bind stationstore to layer
    	elem.eventstore.unbind();
     elem.eventstore.bind(elem.eventLayer);
     elem.evselectControl = new OpenLayers.Control.SelectFeature(elem.eventLayer);

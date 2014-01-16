@@ -21,8 +21,26 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
         	id: 'gridStations',
             border: false,
             store:stationStore,
-            //selType: 'checkboxmodel',
-            selModel: Ext.create('Ext.selection.CheckboxModel', {checkOnly: true}),            
+            selModel: Ext.create('Ext.selection.CheckboxModel', 
+            		{checkOnly: true, 
+            		 listeners: {
+            			 select: function(t, r, i) 
+            			 {
+            				 var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'select');
+            				 r.data.symbolizer = newSymbolizer;
+            			 },
+            			 deselect: function(t, r, i) 
+            			 {
+            				 var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'default');
+            				 r.data.symbolizer = newSymbolizer;
+            			 },
+            			 selectionchange: function(t, s)
+            			 {
+            				 Ext.getCmp('gridStations').getView().refresh();
+            				 ctrl.stationLayer.redraw();
+            			 }
+            		 }
+            		}),            
             columns: [
                 {
                     header: '',
@@ -54,6 +72,11 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
  		            }]
                 }],
             flex: 1
+            /*,listeners : {
+	        	selectionchange : function (t , selections){
+	            	alert(selections.length);
+	            }
+	        }*/
         });
         this.callParent(arguments);   
     },

@@ -30,8 +30,26 @@ Ext.define('CF.view.dataviews.EventGrid' ,{
         	id: 'gridEvents',
             border: false,
             store:eventStore,
-            //selType: 'checkboxmodel',
-            selModel: Ext.create('Ext.selection.CheckboxModel',{checkOnly: true}),  
+            selModel: Ext.create('Ext.selection.CheckboxModel',
+            		{checkOnly: true,
+		            	listeners: {
+		           			 select: function(t, r, i) 
+		        			 {
+		        				 var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'select');
+		        				 r.data.symbolizer = newSymbolizer;
+		        			 },
+		        			 deselect: function(t, r, i) 
+		        			 {
+		        				 var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'default');
+		        				 r.data.symbolizer = newSymbolizer;
+		        			 },
+	            			 selectionchange: function(t, s)
+	            			 {
+	            				 Ext.getCmp('gridEvents').getView().refresh();
+	            				 ctrl.eventLayer.redraw();
+	            			 }
+		        		 }
+            		}),  
             loadMask: true,
             columns: [
 			{
