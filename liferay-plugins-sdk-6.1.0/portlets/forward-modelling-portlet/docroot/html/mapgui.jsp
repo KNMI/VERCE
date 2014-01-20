@@ -88,7 +88,7 @@
 	    <body>
 	    	<%@ include file="init.jsp" %>	
 	       <div style="display: none; left: 100px; position: absolute; top: 100px; z-index: 100;">
-	       	<button onclick="location.href='<%= provantURL.toString() %>'">Test Button</button>
+	       	<!-- <button onclick="location.href='<%= provantURL.toString() %>'">Test Button</button> -->
 	      </div>
 	    </body>
 	</html>
