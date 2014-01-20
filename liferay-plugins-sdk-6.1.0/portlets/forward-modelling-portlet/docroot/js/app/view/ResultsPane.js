@@ -727,7 +727,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
             if (selected.node !== null){
             // dragged.node.tempMass = 10000
                 dragged.node.fixed = true;
-                if (graphMode=="WASDERIVEDDFROM")
+                if (graphMode=="WASDERIVEDFROM")
 	                wasDerivedFromAddBranch('/j2ep-1.0/prov/wasDerivedFrom/'+selected.node.name+"?level="+level)
                 
                 if (graphMode=="DERIVEDDATA")
