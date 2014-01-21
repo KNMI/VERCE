@@ -12,6 +12,7 @@
         	{name: 'eventId', type: 'string' , mapping:'eventId'}, // custom mapping
             {name: 'description', type: 'string', mapping:'description'},
             {name: 'date', type: 'string', mapping:'datetime'},
+            {name: 'depth', type: 'string', mapping:'depth'},
             {name: 'magnitude', type: 'string', mapping:'magnitude'},
             {name: 'latitude', type: 'string' , mapping:'latitude'}, // custom mapping
             {name: 'longitude', type: 'string' , mapping:'longitude'}, // custom mapping
