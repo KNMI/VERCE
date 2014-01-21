@@ -40,7 +40,7 @@ try{
 		out.write("<br><strong>Owner "+a+"</strong>");
 		Vector<ASMRepositoryItemBean> wfs = asm_service.getWorkflowsFromRepository(a, RepositoryItemTypeConstants.Application);
 		for(ASMRepositoryItemBean i : wfs)
-			out.write("<br>- "+i.getItemID()+" - "+i.getId());
+			out.write("<br>- "+i.getItemID()+" <strong>("+i.getId()+")</strong> - <i>"+i.getExportText()+"</i>");
 	}
 }
 catch(Exception e){
