@@ -20,23 +20,29 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
         Ext.apply(this, {
         	id: 'gridStations',
             border: false,
-            store:stationStore,
+            store: stationStore,
             selModel: Ext.create('Ext.selection.CheckboxModel', 
             		{checkOnly: true, 
             		 listeners: {
             			 select: function(t, r, i) 
             			 {
-            				 var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'select');
+            				//upate to selected image
+            				 var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'gridSelect');
             				 r.data.symbolizer = newSymbolizer;
+            				 //ctrl.stationLayer.drawFeature(r.raw, 'gridSelect');
             			 },
             			 deselect: function(t, r, i) 
             			 {
+	        				 //update to unselected image
             				 var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'default');
             				 r.data.symbolizer = newSymbolizer;
             			 },
             			 selectionchange: function(t, s)
             			 {
-            				 Ext.getCmp('gridStations').getView().refresh();
+            				 //render grid and layer to update the selected/unselected symbols
+            				 //Ext.getCmp('gridStations').getView().refresh();
+            				 //t.refresh();
+            				 //this.getView().refresh();
             				 ctrl.stationLayer.redraw();
             			 }
             		 }
@@ -50,10 +56,8 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
                     xtype: 'gx_symbolizercolumn',
                     width: 30
                 },
-                
                 {header: 'Station', dataIndex: 'station', flex: 3},
                 {header: 'Network', dataIndex: 'network', flex: 3},
-                 
                 {header: 'Elevation',dataIndex: 'elevation',flex: 3},
                 {header: 'Latitude', dataIndex: 'latitude', flex: 3},
                 {header: 'Longitude', dataIndex: 'longitude', flex: 3},
@@ -72,11 +76,6 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
  		            }]
                 }],
             flex: 1
-            /*,listeners : {
-	        	selectionchange : function (t , selections){
-	            	alert(selections.length);
-	            }
-	        }*/
         });
         this.callParent(arguments);   
     },

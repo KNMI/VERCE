@@ -35,17 +35,20 @@ Ext.define('CF.view.dataviews.EventGrid' ,{
 		            	listeners: {
 		           			 select: function(t, r, i) 
 		        			 {
-		        				 var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'select');
+		           				 //upate to selected image
+		        				 var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'gridSelect');
 		        				 r.data.symbolizer = newSymbolizer;
 		        			 },
 		        			 deselect: function(t, r, i) 
 		        			 {
+		        				 //update to unselected image
 		        				 var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'default');
 		        				 r.data.symbolizer = newSymbolizer;
 		        			 },
 	            			 selectionchange: function(t, s)
 	            			 {
-	            				 Ext.getCmp('gridEvents').getView().refresh();
+	            				 //render grid and layer to update the selected/unselected symbols
+	            				 //Ext.getCmp('gridEvents').getView().refresh();
 	            				 ctrl.eventLayer.redraw();
 	            			 }
 		        		 }
