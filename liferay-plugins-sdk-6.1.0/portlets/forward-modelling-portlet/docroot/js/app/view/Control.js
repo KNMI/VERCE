@@ -64,7 +64,7 @@ var wfGrid = Ext.create('Ext.grid.Panel', {
                 tooltip: 'Delete instance',
                 handler: function(grid, rowIndex, colIndex) {
                     var rec = wfStore.getAt(rowIndex);
-                    Ext.Msg.confirm('Alert!', 'Are you sure that you want to delete the workflow '+rec.get('name')+"?", 
+                    Ext.Msg.confirm('Warning', 'Are you sure that you want to delete '+rec.get('name')+"?", 
       	                  function(btn) {
       	                  	if(btn === 'yes')
       	                  	{	
