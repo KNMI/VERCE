@@ -263,7 +263,7 @@ var eventstyle = new OpenLayers.Style(eventtemplate, {context: eventcontext});
 var eventstyleselected = new OpenLayers.Style(eventtemplateselected, {context: eventcontext});
 var eventstylemap = new OpenLayers.StyleMap({
 	'default': eventstyle,
-    'select': eventstyleselected
+    'gridSelect': eventstyleselected
 });
 
 var stationcontext = {
@@ -300,7 +300,7 @@ var stationstyle = new OpenLayers.Style(stationtemplate, {context: stationcontex
 var stationstyleselected = new OpenLayers.Style(stationtemplateselected, {context: stationcontext});
 var stationstylemap = new OpenLayers.StyleMap({
 	'default': stationstyle,
-    'select': stationstyleselected
+    'gridSelect': stationstyleselected
 });
  
 Ext.define('CF.controller.Map', {
@@ -419,7 +419,7 @@ function getStations(elem, purl, formatType)
 	gl_stationFormat = formatType;
 	
 	gl_stationUrl = purl;
-	map.removeControl(elem.selector);
+	map.removeControl(elem.stSelector);
 	elem.stationstore.removeAll();
 	elem.getStationsGrid().setLoading(true);
 	hideStationInfo();
@@ -444,8 +444,8 @@ function getStations(elem, purl, formatType)
 		   elem.mapPanel.map.removeLayer(elem.mapPanel.map.getLayersByName("Stations")[0]);
 
 	   elem.stationLayer.events.on({
-		   'featureselected':	function(evt){showStationInfo(evt.feature);},
-		   'featureunselected':	function(evt){hideStationInfo(evt.feature);}
+		   'beforefeatureselected':		function(evt){showStationInfo(evt.feature); return false;},
+		   'beforefeatureunselected':	function(evt){hideStationInfo(evt.feature); return false;}
 	   });
 	   
 	   elem.mapPanel.map.addLayers(layers);
@@ -454,19 +454,17 @@ function getStations(elem, purl, formatType)
 	   elem.stationstore.unbind();
 	   elem.stationstore.bind(elem.stationLayer);
 	   
-	   elem.selectControl = new OpenLayers.Control.SelectFeature(elem.stationLayer);
-	   elem.selector = new OpenLayers.Control.SelectFeature(elem.stationLayer,{
+	   elem.stSelector = new OpenLayers.Control.SelectFeature(elem.stationLayer,{
 		      click:true,
 		      autoActivate:true
 	   });
-	
-	   map.addControl(elem.selector);
+	   map.addControl(elem.stSelector);
 }
 
 function getEvents(elem, purl)
 {
 	gl_eventUrl = purl;
-	map.removeControl(elem.evselector);
+	map.removeControl(elem.evSelector);
     elem.eventstore.removeAll();
 	elem.getEventsGrid().setLoading(true);
 	hideEventInfo();
@@ -492,19 +490,19 @@ function getEvents(elem, purl)
    		elem.mapPanel.map.removeLayer(elem.mapPanel.map.getLayersByName("Events")[0]);
    	
    	elem.eventLayer.events.on({
- 		'featureselected':		function(evt){showEventInfo(evt.feature);},
-   		'featureunselected':	function(evt){hideEventInfo(evt.feature);}
+ 		'beforefeatureselected':	function(evt){showEventInfo(evt.feature);return false;},
+   		'beforefeatureunselected':	function(evt){hideEventInfo(evt.feature);return false;}
     });
    	elem.mapPanel.map.addLayers(layers);
 
    	elem.eventstore.unbind();
     elem.eventstore.bind(elem.eventLayer);
-    elem.evselectControl = new OpenLayers.Control.SelectFeature(elem.eventLayer);
-    elem.evselector = new OpenLayers.Control.SelectFeature(elem.eventLayer,{
+    
+    elem.evSelector = new OpenLayers.Control.SelectFeature(elem.eventLayer,{
     	click:true,
 	    autoActivate:true
     });
-	map.addControl(elem.evselector);
+	map.addControl(elem.evSelector);
 }
 
 //type is a string "event" or "station"
