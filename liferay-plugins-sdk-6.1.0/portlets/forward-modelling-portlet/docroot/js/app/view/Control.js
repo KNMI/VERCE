@@ -8,7 +8,6 @@ var wfStore = Ext.create('Ext.data.ArrayStore', {
     ],
     sortOnLoad: true, 
     sorters: { property: 'date2', direction : 'DESC' },
-    //data: wfList
     proxy: {
 	         type: 'ajax',
 	          url: getWorkflowListURL,
@@ -23,72 +22,78 @@ wfStore.load(function() {
 		console.log(arguments);
 });
 
-var wfGrid = Ext.create('Ext.grid.Panel', {
-    store: wfStore,
-    id: 'wfGrid',
-    columns: [
-        {
-            text     : 'Name',
-            flex     : 1,
-            sortable : true,
-            dataIndex: 'name'
-        },
-        {
-            text     : 'Status',
-            width    : 75,
-            sortable : true,
-            renderer : statusRenderer,
-            dataIndex: 'status'
-        },
-        {
-            text     : 'Date',
-            width    : 90,
-            sortable : true,
-            renderer : Ext.util.Format.dateRenderer('d - m - Y'),
-            dataIndex: 'date'
-        },
-        {
-            xtype: 'actioncolumn',
-            width: 50,
-            items: [
-            {
-                icon   : localResourcesPath+'/img/download-icon.png', 
-                tooltip: 'Download results',
-                handler: function(grid, rowIndex, colIndex) {
-                    var rec = wfStore.getAt(rowIndex);
-                    alert("Download results " + rec.get('name'));
-                }
-            },
-            {
-                icon   : localResourcesPath+'/img/delete-icon.png',
-                tooltip: 'Delete instance',
-                handler: function(grid, rowIndex, colIndex) {
-                    var rec = wfStore.getAt(rowIndex);
-                    Ext.Msg.confirm('Warning', 'Are you sure that you want to delete '+rec.get('name')+"?", 
-      	                  function(btn) {
-      	                  	if(btn === 'yes')
-      	                  	{	
-	      	                  	Ext.Ajax.request({
-	      	      	    			url: deleteWorkflowURL,
-	      	      	    			params: {
-	      	      	    				"workflowId": rec.get('name')
-	      	      	    			},
-	      	      	    			success: function(response){
-	      	      	    				wfStore.load();
-	      	      	    			},
-	      	      	    			failure: function(response) {
-	      	      	    				Ext.Msg.alert("Error", "Delete failed!");
-	      	      	                }
-	      	                    });
-      	                  	}
-      	            });
-                }
-            }
-            ]
-        }
-    ]
+Ext.define('CF.view.WfGrid', {
+	extend: 'Ext.grid.Panel',
+	initComponent: function() {
+	    Ext.apply(this, {
+	        store: wfStore,
+	        id: 'wfGrid',
+	        columns: [
+	            {
+	                text     : 'Name',
+	                flex     : 1,
+	                sortable : true,
+	                dataIndex: 'name'
+	            },
+	            {
+	                text     : 'Status',
+	                width    : 75,
+	                sortable : true,
+	                renderer : statusRenderer,
+	                dataIndex: 'status'
+	            },
+	            {
+	                text     : 'Date',
+	                width    : 90,
+	                sortable : true,
+	                renderer : Ext.util.Format.dateRenderer('d - m - Y'),
+	                dataIndex: 'date'
+	            },
+	            {
+	                xtype: 'actioncolumn',
+	                width: 50,
+	                items: [
+	                {
+	                    icon   : localResourcesPath+'/img/download-icon.png', 
+	                    tooltip: 'Download results',
+	                    handler: function(grid, rowIndex, colIndex) {
+	                        var rec = wfStore.getAt(rowIndex);
+	                        alert("Download results " + rec.get('name'));
+	                    }
+	                },
+	                {
+	                    icon   : localResourcesPath+'/img/delete-icon.png',
+	                    tooltip: 'Delete instance',
+	                    handler: function(grid, rowIndex, colIndex) {
+	                        var rec = wfStore.getAt(rowIndex);
+	                        Ext.Msg.confirm('Warning', 'Are you sure that you want to delete '+rec.get('name')+"?", 
+	          	                  function(btn) {
+	          	                  	if(btn === 'yes')
+	          	                  	{	
+	    	      	                  	Ext.Ajax.request({
+	    	      	      	    			url: deleteWorkflowURL,
+	    	      	      	    			params: {
+	    	      	      	    				"workflowId": rec.get('name')
+	    	      	      	    			},
+	    	      	      	    			success: function(response){
+	    	      	      	    				wfStore.load();
+	    	      	      	    			},
+	    	      	      	    			failure: function(response) {
+	    	      	      	    				Ext.Msg.alert("Error", "Delete failed!");
+	    	      	      	                }
+	    	      	                    });
+	          	                  	}
+	          	            });
+	                    }
+	                }
+	                ]
+	            }
+	        ],
+	        flex: 1
+	    });
+	    this.callParent(arguments);
+	}
 });
-
 
 var refreshMenuControl = [
 	{
@@ -136,12 +141,12 @@ var refreshMenuControl = [
 	}
 	];
 
-//TODO: the scroll in the list does not work
 Ext.define('CF.view.Control', {
 	  extend:'Ext.form.Panel',
-		style:{
-			cursor: 'default'
-		},
+		layout: 'fit',
+		  viewConfig      : {
+		    style           : { overflow: 'scroll', overflowX: 'hidden' }
+		  },
 	  dockedItems: 
 		  [{
 		    xtype: 'toolbar',
@@ -149,13 +154,7 @@ Ext.define('CF.view.Control', {
 			height: 35,
 		    items: refreshMenuControl
 		}],
-	  items: 
-		    [
-				{
-			       xtype: 'panel',
-			       items: [wfGrid]
-				}
-			]
+	  items: [Ext.create('CF.view.WfGrid')]
 	});
 
 function statusRenderer(val) {

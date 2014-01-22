@@ -192,13 +192,8 @@ Ext.define('CF.view.Viewport', {
 		                                xtype: 'panel',
 		                                title: 'Control',
 		                                border: false,
-		                                layout: {
-		                                    type: 'vbox',
-		                                    align: 'stretch'
-		                                },
-		                                items: [
-			                                    Ext.create('CF.view.Control')
-			                                   ]
+		                        		layout: 'fit',
+		                                items: [Ext.create('CF.view.Control')]
 	                                }
 			                  ],
 		                  listeners: {
