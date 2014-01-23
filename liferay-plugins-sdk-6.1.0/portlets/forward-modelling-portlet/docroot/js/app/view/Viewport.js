@@ -255,13 +255,14 @@ function updateSubmitOverview() {
 	 $("div#submit_overview div#mesh").html(gl_mesh);
 	 $("div#submit_overview div#velmodel").html(gl_velmod);
 	 
-	 var portalUrl = "TODO";		//TODO!!
 	 var sEventUrl = gl_eventUrl;
 	 if(sEventUrl.indexOf('documents')<0)	sEventUrl=portalUrl+sEventUrl;
-	 $("div#submit_overview div#eurl").html(sEventUrl);
+	 var linkToUrl = "<a href='"+sEventUrl+"'>"+sEventUrl+"</a>";
+	 $("div#submit_overview div#eurl").html(linkToUrl);
 	 var sStationUrl = gl_stationUrl;
 	 if(sStationUrl.indexOf('documents')<0)	sStationUrl=portalUrl+sStationUrl;
-	 $("div#submit_overview div#surl").html(sStationUrl);	 
+	 linkToUrl = "<a href='"+sStationUrl+"'>"+sStationUrl+"</a>";
+	 $("div#submit_overview div#surl").html(linkToUrl);	 
 	 
 	 var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 	 var sStations = "";
