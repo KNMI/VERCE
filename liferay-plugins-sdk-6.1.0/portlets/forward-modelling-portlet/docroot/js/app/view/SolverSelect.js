@@ -19,7 +19,8 @@ Ext.define("MeshesModel", {
 	         {type: 'long', name: 'geo_minLon'},
 	         {type: 'long', name: 'geo_maxLon'},
 	         {type: 'string', name: 'geo_proj'},
-	         {type: 'array', name: 'velmod'}
+	         {type: 'array', name: 'velmod'},
+	         {type: 'array', name: 'values'}
 	     ]});
 
 var solverstore = Ext.create('Ext.data.Store', {
@@ -92,6 +93,9 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
 	        	 	        	 
 	        	 //Populate the VelocityModel Combo
 	        	 velocitycombo.store.add(meshModel.get('velmod'));	
+	        	 
+	        	 //Update the solver values
+	        	 updateSolverValues(meshModel.get('values'));
 	        	 
 	        	 //Render the bounding box in the map and center it
 	        	 gl_minLat = meshModel.get('geo_minLat');
@@ -189,6 +193,17 @@ Ext.define('CF.view.SolverSelect', {
 	  items: [formSolverSelect]
 	});
 
+function updateSolverValues(newValues)
+{
+	solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+	for (var i = 0; i < newValues.length; i++) {
+	    //alert(JSON.stringify(newValues[i]));
+	    for(var propertyName in newValues[i]) {
+	    	var record = solverConfStore.findRecord("name", propertyName);
+			record.set("value", newValues[i][propertyName]);
+    	}
+	}
+}
 
 function selectSolver(selectedSolver)
 {
