@@ -30,7 +30,9 @@
 <liferay-portlet:actionURL name="provant" var="provantURL"/>
 
 <liferay-portlet:actionURL name="deleteWorkflow" var="deleteWorkflowURL"/>
-		
+
+<liferay-portlet:resourceURL id="downloadOutput" var="downloadWorkflowOutputURL" />
+
 <portlet:resourceURL id="uploadMe" var="uploadFileURL" />
 
 <liferay-portlet:renderURL var="getListURL">
@@ -88,6 +90,7 @@ catch(Exception e){
 	
 	//var provantURL='<%=provantURL.toString()%>';
 	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
+	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
 	var uploadFileURL='<%=uploadFileURL.toString()%>';
 	var getListURL='<%=getListURL.toString()%>';
 	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';

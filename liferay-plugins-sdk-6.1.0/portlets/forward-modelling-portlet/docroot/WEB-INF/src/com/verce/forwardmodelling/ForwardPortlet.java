@@ -33,6 +33,7 @@ import javax.portlet.PortletException;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -56,6 +57,7 @@ import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
 import hu.sztaki.lpds.pgportal.services.asm.ASMWorkflow;
@@ -231,7 +233,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
 		   }
-		   else					//2b. Retrieve StationFile
+		   else     //2b. Retrieve StationFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, stFileType, serviceContext);
 			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -239,8 +241,8 @@ public class ForwardPortlet extends MVCPortlet{
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 			   stPublicPath = stationUrl;
 		   }
-		   
-		   if(!eventDLFile)		//3a. create EventFile and store it
+
+		   if(!eventDLFile)     //3a. create EventFile and store it
 		   {
 			   eventFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(PortalUtil.getPortalURL(req)+eventUrl);
@@ -250,7 +252,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   evPublicPath = portalUrl + evPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+evPublicPath);
 		   }
-		   else					//3b. Retrieve EventFile
+		   else     //3b. Retrieve EventFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, Constants.EVENT_TYPE, serviceContext);
 			   String evFileName = eventUrl.substring(eventUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -304,11 +306,60 @@ public class ForwardPortlet extends MVCPortlet{
 		   e.printStackTrace();
 	   }
    }    
-   
-   
+
    public void serveResource(ResourceRequest resourceRequest,
-	ResourceResponse resourceResponse) throws PortletException, IOException 
-	{
+		   ResourceResponse resourceResponse) throws PortletException, IOException 
+		   {
+	   if (resourceRequest.getResourceID().equals("uploadMe")) {
+		   uploadFile(resourceRequest, resourceResponse);
+	   } else if (resourceRequest.getResourceID().equals("downloadOutput")) {
+		   downloadOutput(resourceRequest, resourceResponse);
+	   }
+		   }
+
+   public void downloadOutput(ResourceRequest resourceRequest,
+		   ResourceResponse resourceResponse) throws PortletException, IOException
+		   {
+	   asm_service = ASMService.getInstance();
+	   String userId = resourceRequest.getRemoteUser();
+	   String wfId = ParamUtil.getString(resourceRequest, "workflowId");
+	   String jobName = "Job0";		
+
+	   String fileName = ParamUtil.getString(resourceRequest, "fileName");
+	   if (!(fileName.equals("stdout.log") || fileName.equals("stderr.log"))) {
+		   System.out.println("Trying to fetch illegal file");
+		   return;
+	   }
+
+	   resourceResponse.setContentType("text/plain");
+	   resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"stdout.log\"");
+
+	   InputStream inputStream = null; 
+	   
+	   try{
+		   System.out.println("Fetching " + fileName + " from asm");
+		   inputStream = asm_service.getSingleOutputFileStream(userId, wfId, jobName, null, fileName);
+		   HttpServletResponse httpResponse = PortalUtil.getHttpServletResponse(resourceResponse);
+		   HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(resourceRequest);
+
+		   ServletResponseUtil.sendFile(httpRequest,httpResponse,fileName,inputStream,"text/plain");
+		   System.out.println("[ForwardModellingPortlet.downloadOutput] wfId: "+wfId);
+	   }
+	   catch(Exception e)
+	   {
+		   System.out.println("[ForwardModellingPortlet.downloadOutput] Exception caught!!");
+		   e.printStackTrace();
+		   // TODO send error to client
+	   }
+	   finally
+	   {
+		   inputStream.close();
+	   }
+   }
+
+   public void uploadFile(ResourceRequest resourceRequest,
+		   ResourceResponse resourceResponse) throws PortletException, IOException
+		   {
 	   resourceResponse.setContentType("text/html");
 	   String failedString = "{'ErrorMsg':'false'}";
 	   String successString = "{'success':'true', 'path':''}";
@@ -321,7 +372,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
 		   User u = PortalUtil.getUser(resourceRequest);
 		   String userSN =  u.getScreenName();
-		   
+
 		   //TODO: for station check that fileType matches the extension or the content of the file
 
 		   if(inputStream!=null){
@@ -338,7 +389,7 @@ public class ForwardPortlet extends MVCPortlet{
 					   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
 					   //System.out.println("[ForwardModellingPortlet.serveResource] " +portalUrl+" "+currentURL+" "+portal);
 					   //if(portalUrl.startsWith("http://localhost"))	
-						   portalUrl += portal;
+					   portalUrl += portal;
 					   publicPath = portalUrl+publicPath;
 					   successString = " {'success':'true', 'path':'"+publicPath+"'}";
 					   resourceResponse.getWriter().write(successString);	
@@ -363,7 +414,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   resourceResponse.getWriter().write(failedString);
 		   System.out.println("[ForwardModellingPortlet.serveResource] Exception catched!!");
 	   }
-	}
+		   }
    
    private String addFileToDL(File file, String name, long groupId, String userSN, String filetype) throws SystemException, PortalException
    {

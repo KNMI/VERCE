@@ -53,14 +53,24 @@ Ext.define('CF.view.WfGrid', {
 	                xtype: 'actioncolumn',
 	                width: 50,
 	                items: [
-	                {
-	                    icon   : localResourcesPath+'/img/download-icon.png', 
-	                    tooltip: 'Download results',
-	                    handler: function(grid, rowIndex, colIndex) {
-	                        var rec = wfStore.getAt(rowIndex);
-	                        alert("Download results " + rec.get('name'));
-	                    }
-	                },
+		            {
+		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white.png', 
+		                tooltip: 'Download results',
+		                handler: function(grid, rowIndex, colIndex) {
+		                    var rec = wfStore.getAt(rowIndex);
+		
+		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name') + '&fileName=stdout.log', '_self');
+		                }
+		            },
+		            {
+		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white_error.png', 
+		                tooltip: 'Download results',
+		                handler: function(grid, rowIndex, colIndex) {
+		                    var rec = wfStore.getAt(rowIndex);
+		
+		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name') + '&fileName=stderr.log', '_self');
+		                }
+		            },
 	                {
 	                    icon   : localResourcesPath+'/img/delete-icon.png',
 	                    tooltip: 'Delete instance',
