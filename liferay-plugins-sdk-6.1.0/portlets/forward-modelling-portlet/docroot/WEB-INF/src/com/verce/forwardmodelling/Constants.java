@@ -7,7 +7,8 @@ public class Constants
 	public static final String STPOINTS_TYPE = "stpts"; 	
 	public static final String SOLVER_TYPE = "solver";
 	public static final String WS_TYPE = "ws"; 	
-	public static final String ZIP_TYPE = "zip"; 	
+	public static final String ZIP_TYPE = "zip"; 
+	public static final String SPECFEM_TYPE = "specfem"; 	
 
 	public static final String BASE_FOLDER_NAME = "Forward Modelling";
 	public static final String BASE_FOLDER_DESC = "Folder containing all the files uploaded through the mapgui";
