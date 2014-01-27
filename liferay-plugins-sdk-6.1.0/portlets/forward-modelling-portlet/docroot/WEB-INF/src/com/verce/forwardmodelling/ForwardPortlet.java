@@ -204,7 +204,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   if(!stationDLFile)	//2a. create StationFile and store it
 		   {
 			   stationFile = FileUtil.createTempFile();
-			   URL wsUrl = new URL(PortalUtil.getPortalURL(req)+stationUrl);
+			   URL wsUrl = new URL(PortalUtil.getPortalURL(resourceRequest)+stationUrl);
 			   FileUtil.write(stationFile, wsUrl.openStream());
 			   String stFileName = "stations_"+formatter.format(new Date()).toString();
 			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
@@ -224,7 +224,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   if(!eventDLFile)     //3a. create EventFile and store it
 		   {
 			   eventFile = FileUtil.createTempFile();
-			   URL wsUrl = new URL(PortalUtil.getPortalURL(req)+eventUrl);
+			   URL wsUrl = new URL(PortalUtil.getPortalURL(resourceRequest)+eventUrl);
 			   FileUtil.write(eventFile, wsUrl.openStream());
 			   String evFileName = "events_"+formatter.format(new Date()).toString();
 			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
