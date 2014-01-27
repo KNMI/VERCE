@@ -84,6 +84,10 @@ var formSubmit = Ext.create('Ext.form.Panel', {
               			var workflowName = wfModel.get('workflowName');  
               			var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_");	//replace ' ' by '_'
               			
+              			var scs = Ext.data.StoreManager.lookup('solverConfStore');
+              			var r = scs.findRecord("name", "NPROC");
+              			var nProc = r.get("value");
+              			
           	    		Ext.Ajax.request({
           	    			url: submitSolverURL,
           	    			params: {
@@ -97,6 +101,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"stationUrl": gl_stationUrl,
           	    				"eventUrl": gl_eventUrl,
           	    				"stationType": gl_stFileType,
+          	    				"nProc": nProc,
           	    				"runId": runId
           	    			},
           	    			success: function(response){
@@ -106,7 +111,10 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				wfStore.load();
           	    			},
           	    			failure: function(response) {
-          	    				Ext.Msg.alert("Error", "Submition failed!");
+          	    				if(response.status=="401")
+          	    					Ext.Msg.alert("Error", "Submition failed! Check your credentials");
+          	    				else
+          	    					Ext.Msg.alert("Error", "Submition failed!");
           	    				Ext.getCmp('submitbutton').enable();
           	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();

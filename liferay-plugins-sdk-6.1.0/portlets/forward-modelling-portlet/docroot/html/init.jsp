@@ -7,9 +7,10 @@
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
-<%@ page import="com.liferay.portal.theme.ThemeDisplay"%>
-<%@ page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
+<%@ page import="com.liferay.portal.theme.ThemeDisplay"%>
+<%@ page import="com.liferay.portal.util.PortalUtil"%>
+<%@ page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %>
 <%@ page import="hu.sztaki.lpds.pgportal.services.asm.ASMService" %>
 <%@ page import="hu.sztaki.lpds.pgportal.services.asm.ASMWorkflow" %>
 <%@ page import="hu.sztaki.lpds.pgportal.services.asm.beans.ASMRepositoryItemBean" %>
@@ -33,15 +34,15 @@
 
 <liferay-portlet:resourceURL id="downloadOutput" var="downloadWorkflowOutputURL" />
 
-<portlet:resourceURL id="uploadMe" var="uploadFileURL" />
+<portlet:resourceURL id="uploadFile" var="uploadFileURL" />
+
+<portlet:resourceURL id="submit" var="submitSolverURL" />
 
 <liferay-portlet:renderURL var="getListURL">
 	<portlet:param name="jspPage" value="/html/ajax_getfilelist.jsp"/>
 </liferay-portlet:renderURL>
 
 <liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
-
-<liferay-portlet:actionURL name="submitSolver" var="submitSolverURL" />
 
 <%
 
@@ -98,7 +99,7 @@ catch(Exception e){
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
-
+	var portalUrl = '<%=PortalUtil.getPortalURL(request) %>';
 	var reposWorkflows = [
    	    <% for(int i=0; i< wfNames.size();i++){ %>
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
