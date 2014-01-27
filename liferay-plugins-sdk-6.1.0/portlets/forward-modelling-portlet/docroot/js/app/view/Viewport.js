@@ -257,11 +257,11 @@ function updateSubmitOverview() {
 	 
 	 var sEventUrl = gl_eventUrl;
 	 if(sEventUrl.indexOf('documents')<0)	sEventUrl=portalUrl+sEventUrl;
-	 var linkToUrl = "<a href='"+sEventUrl+"'>"+sEventUrl+"</a>";
+	 var linkToUrl = "<a href='"+sEventUrl+"' target='_blank'>"+sEventUrl+"</a>";
 	 $("div#submit_overview div#eurl").html(linkToUrl);
 	 var sStationUrl = gl_stationUrl;
 	 if(sStationUrl.indexOf('documents')<0)	sStationUrl=portalUrl+sStationUrl;
-	 linkToUrl = "<a href='"+sStationUrl+"'>"+sStationUrl+"</a>";
+	 linkToUrl = "<a href='"+sStationUrl+"' target='_blank'>"+sStationUrl+"</a>";
 	 $("div#submit_overview div#surl").html(linkToUrl);	 
 	 
 	 var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
