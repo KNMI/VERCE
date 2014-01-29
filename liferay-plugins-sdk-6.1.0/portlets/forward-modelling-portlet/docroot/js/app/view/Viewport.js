@@ -286,7 +286,7 @@ function updateSubmitOverview() {
 
 function fileSelection(filetype) {
 	Ext.Ajax.request({
-		url: getListURL,
+		url: getFileListURL,
 		params: {
 			userSN: userSN,		//user screen name, it is populated in html/init.jsp
 			filetype: filetype
