@@ -30,7 +30,9 @@
    
 <liferay-portlet:actionURL name="provant" var="provantURL"/>
 
-<liferay-portlet:actionURL name="deleteWorkflow" var="deleteWorkflowURL"/>
+<liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
+
+<liferay-portlet:resourceURL id="deleteWorkflow" var="deleteWorkflowURL"/>
 
 <liferay-portlet:resourceURL id="downloadOutput" var="downloadWorkflowOutputURL" />
 
@@ -38,11 +40,9 @@
 
 <portlet:resourceURL id="submit" var="submitSolverURL" />
 
-<liferay-portlet:renderURL var="getListURL">
+<liferay-portlet:renderURL var="getFileListURL">
 	<portlet:param name="jspPage" value="/html/ajax_getfilelist.jsp"/>
 </liferay-portlet:renderURL>
-
-<liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
 
 <%
 
@@ -93,7 +93,7 @@ catch(Exception e){
 	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
 	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
 	var uploadFileURL='<%=uploadFileURL.toString()%>';
-	var getListURL='<%=getListURL.toString()%>';
+	var getFileListURL='<%=getFileListURL.toString()%>';
 	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
