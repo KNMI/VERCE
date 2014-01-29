@@ -51,7 +51,7 @@ Ext.define('CF.view.WfGrid', {
 	            },
 	            {
 	                xtype: 'actioncolumn',
-	                width: 50,
+	                width: 55,
 	                items: [
 		            {
 		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white.png', 
