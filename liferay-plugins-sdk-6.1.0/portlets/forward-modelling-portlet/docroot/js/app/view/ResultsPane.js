@@ -289,7 +289,7 @@ Ext.define('CF.view.WorlflowSelection', {
             columns: [
              
             {header: 'Run ID',   dataIndex:'runId', flex: 5, sortable: false},
-            {header: 'Name',   dataIndex:'name', flex: 3, sortable: true,
+            {header: 'Workflow Name',   dataIndex:'name', flex: 3, sortable: true,
             groupable: false}, 
             {header: 'Description',   dataIndex:'description', flex: 3, sortable: true,
             groupable: false},
@@ -465,7 +465,7 @@ for (var i=0;i<url.length;i++)
 	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/"+userSN+"/verce/")
 	 
 	    
- 		htmlcontent=htmlcontent+"<div id='"+url[i]+"'><img   src='https://www.irods.org/web/images/loading.gif'/></div><br/><br/>"
+ 		htmlcontent=htmlcontent+"<div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div><br/><br/>"
     	var id=url[i];
     	var im = new Object()
     	im.func=is_image
