@@ -465,11 +465,11 @@ for (var i=0;i<url.length;i++)
 	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/"+userSN+"/verce/")
 	 
 	    
- 		htmlcontent=htmlcontent+"<div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div><br/><br/>"
+ 		htmlcontent=htmlcontent+"<center><div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div></center><br/><br/>"
     	var id=url[i];
     	var im = new Object()
     	im.func=is_image
-        im.func(id, function(val) {document.getElementById(val).innerHTML="<img  width='100%' height='100%' src='"+val+"'/>"},function(val) { document.getElementById(val).innerHTML="<center><strong><a  href='"+val+"'>"+val.substring(val.lastIndexOf('/')+1)+"</a></strong></center>"})
+    	im.func(id, function(val) {document.getElementById(val).innerHTML="<img  width='100%' height='100%' src='"+val+"'/>"},function(val) { document.getElementById(val).innerHTML="<center><strong><a target='_blank'  href='"+val+"'>"+val.substring(val.lastIndexOf('/')+1)+"</a></strong></center>"})
 
 }
  
