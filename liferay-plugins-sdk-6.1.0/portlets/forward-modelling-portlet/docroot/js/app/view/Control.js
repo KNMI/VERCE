@@ -54,21 +54,12 @@ Ext.define('CF.view.WfGrid', {
 	                width: 55,
 	                items: [
 		            {
-		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white.png', 
-		                tooltip: 'Download results',
+		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white_text.png', 
+		                tooltip: 'Download logfiles',
 		                handler: function(grid, rowIndex, colIndex) {
 		                    var rec = wfStore.getAt(rowIndex);
 		
-		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name') + '&fileName=stdout.log', '_self');
-		                }
-		            },
-		            {
-		                icon   : localResourcesPath+'/img/Farm-Fresh_page_white_error.png', 
-		                tooltip: 'Download results',
-		                handler: function(grid, rowIndex, colIndex) {
-		                    var rec = wfStore.getAt(rowIndex);
-		
-		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name') + '&fileName=stderr.log', '_self');
+		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name'), '_self');
 		                }
 		            },
 	                {

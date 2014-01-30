@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.List;
+import java.util.Map;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.Format;
@@ -64,7 +65,10 @@ import hu.sztaki.lpds.pgportal.services.asm.ASMJob;
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
 import hu.sztaki.lpds.pgportal.services.asm.ASMWorkflow;
 import hu.sztaki.lpds.pgportal.services.asm.beans.ASMRepositoryItemBean;
+import hu.sztaki.lpds.pgportal.services.asm.beans.WorkflowInstanceBean;
+import hu.sztaki.lpds.pgportal.services.asm.beans.RunningJobDetailsBean;
 import hu.sztaki.lpds.pgportal.services.asm.constants.RepositoryItemTypeConstants;
+import hu.sztaki.lpds.pgportal.services.asm.constants.DownloadTypeConstants;
 import hu.sztaki.lpds.pgportal.service.base.data.WorkflowData;
 import hu.sztaki.lpds.pgportal.service.base.PortalCacheService;
 import hu.sztaki.lpds.dcibridge.client.ResourceConfigurationFace;
@@ -254,8 +258,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
 		   {
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc);
-			   //asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
-			   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc+"");
+//			   asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
+			   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", String.valueOf(nProc));
 		   }
 		   
 		   //8. Submit
@@ -298,38 +302,48 @@ public class ForwardPortlet extends MVCPortlet{
 	   asm_service = ASMService.getInstance();
 	   String userId = resourceRequest.getRemoteUser();
 	   String wfId = ParamUtil.getString(resourceRequest, "workflowId");
-	   String jobName = "Job0";		
-
-	   String fileName = ParamUtil.getString(resourceRequest, "fileName");
-	   if (!(fileName.equals("stdout.log") || fileName.equals("stderr.log"))) {
-		   System.out.println("Trying to fetch illegal file");
-		   return;
-	   }
-
-	   resourceResponse.setContentType("text/plain");
-	   resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"stdout.log\"");
-
-	   InputStream inputStream = null; 
 	   
-	   try{
-		   System.out.println("Fetching " + fileName + " from asm");
-		   inputStream = asm_service.getSingleOutputFileStream(userId, wfId, jobName, null, fileName);
-		   HttpServletResponse httpResponse = PortalUtil.getHttpServletResponse(resourceResponse);
-		   HttpServletRequest httpRequest = PortalUtil.getHttpServletRequest(resourceRequest);
+	   resourceResponse.setContentType("application/zip");
+	   resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"logs.zip\"");
 
-		   ServletResponseUtil.sendFile(httpRequest,httpResponse,fileName,inputStream,"text/plain");
-		   System.out.println("[ForwardModellingPortlet.downloadOutput] wfId: "+wfId);
+	   ASMWorkflow wf = asm_service.getASMWorkflow(userId, wfId);
+
+	   InputStream inputStream = null;
+	   String[] fileNames = { "stdout.log", "stderr.log" };
+
+	   ZipOutputStream zos = new ZipOutputStream(resourceResponse.getPortletOutputStream());
+	   
+       int size;
+       byte[] buffer = new byte[2048];
+
+	   for (Map.Entry<String, ASMJob> job : wf.getJobs().entrySet()) {
+		   for (String fileName : fileNames) {
+			   try{
+//				   asm_service.getWorkflowOutputs(userId, wfId, resourceResponse);
+
+				   System.out.println("Fetching " + fileName + " from asm");
+				   inputStream = asm_service.getSingleOutputFileStream(userId, wfId, job.getKey(), null, fileName);
+				   
+				   ZipEntry newEntry = new ZipEntry(job.getKey() + "/" + fileName);
+				   zos.putNextEntry(newEntry);
+                   while ((size = inputStream.read(buffer, 0, buffer.length)) != -1) {
+                       zos.write(buffer, 0, size);
+                   }
+                   zos.closeEntry();
+			   }
+			   catch(Exception e)
+			   {
+				   System.out.println("[ForwardModellingPortlet.downloadOutput] Exception caught!!");
+				   e.printStackTrace();
+				   // TODO send error to client
+			   }
+			   finally
+			   {
+				   inputStream.close();
+			   }
+		   }
 	   }
-	   catch(Exception e)
-	   {
-		   System.out.println("[ForwardModellingPortlet.downloadOutput] Exception caught!!");
-		   e.printStackTrace();
-		   // TODO send error to client
-	   }
-	   finally
-	   {
-		   inputStream.close();
-	   }
+	   zos.close();
    }
  
    private void uploadFile(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
