@@ -10,7 +10,7 @@
   		    {name: 'wasGeneratedBy', type: 'string', mapping:'wasGeneratedBy'}, 
   		    {name: 'runId', type: 'string', mapping:'runId'}, 
             {name: 'ID', type: 'string', mapping:'id'},
-            {name: 'creationDate', type: 'string', mapping:'creationDate'},
+            {name: 'endTime', type: 'string', mapping:'endTime'},
             {name: 'content', type: 'string', convert: function (val){
             			 
     					return JSON.stringify(val)
