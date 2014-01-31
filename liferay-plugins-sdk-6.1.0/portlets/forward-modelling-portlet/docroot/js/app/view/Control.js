@@ -2,6 +2,7 @@
 var wfStore = Ext.create('Ext.data.ArrayStore', {
     fields: [
        {name: 'name'},
+       {name: 'desc'},
        {name: 'status'},
        {name: 'date', type: 'date', dateFormat: 'Y-m-d'},
        {name: 'date2'}
@@ -34,6 +35,12 @@ Ext.define('CF.view.WfGrid', {
 	                flex     : 1,
 	                sortable : true,
 	                dataIndex: 'name'
+	            },
+	            {
+	                text     : 'Desc',
+	                flex     : 1,
+	                sortable : true,
+	                dataIndex: 'desc'
 	            },
 	            {
 	                text     : 'Status',

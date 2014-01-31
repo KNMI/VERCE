@@ -23,6 +23,7 @@ var wfcombo = Ext.create('Ext.form.field.ComboBox', {
 	store:  reposWorkflowsStore,		//defined in init.jsp
     displayField: 'workflowName',
     valueField: 'workflowId',
+    allowBlank: false,
     listeners : {
         change : function (f, e){
             $("div#submit_overview div#workflow").html(e);
@@ -44,6 +45,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
 		        name: 'submitName',
 		        width: 350,
 		        fieldLabel: 'Name',
+		        allowBlank: false,
 		        listeners : {
 		            change : function (f, e){
 		                $("div#submit_overview div#submitname").html(e);
@@ -69,20 +71,47 @@ var formSubmit = Ext.create('Ext.form.Panel', {
                   id: 'submitbutton',
                   handler: function() 
                   {
+            		var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_");	//replace ' ' by '_'
+          			var submitMessage = Ext.getCmp('submitMessage').getValue();
+          			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
+          			
+          			if(!wfModel)	
+          			{
+          				Ext.Msg.alert("Warning", "Workflow cannot be empty");
+          				Ext.getCmp('submitName').focus();
+          				return;
+          			}
+          			if(submitName.length < 1)
+          			{
+          				Ext.Msg.alert("Warning", "Name cannot be empty");
+          				Ext.getCmp('submitName').focus();
+          				return;
+          			}
+          			if(submitName.length > 20)
+          			{
+          				Ext.Msg.alert("Warning", "Name cannot be longer than 20 characters");
+          				Ext.getCmp('submitName').focus();
+          				return;
+          			}
+          			if(submitMessage.length > 100)
+          			{
+          				Ext.Msg.alert("Alert", "Description cannot be longer than 100 characters");
+          				Ext.getCmp('submitMessage').focus(false, 200);
+          				return;
+          			}
+          			
                 	solverConfStore.commitChanges();
               		solverConfStore.save();
-              		
-              		var jsonString = createJsonString();
+
+              		var jsonString = createJsonString(submitName);
               		
               		if(jsonString!=null)
               		{
               			Ext.getCmp('submitbutton').disable();
   	    				Ext.getCmp('viewport').setLoading(true);
-              			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
               			var workflowId = wfModel.get('workflowId');   	 
               			var ownerId = wfModel.get('ownerId');  
               			var workflowName = wfModel.get('workflowName');  
-              			var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_");	//replace ' ' by '_'
               			
               			var scs = Ext.data.StoreManager.lookup('solverConfStore');
               			var r = scs.findRecord("name", "NPROC");
@@ -93,8 +122,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    			params: {
           	    				"solver": gl_solver,
           	    				"jsonObject": jsonString,
-          	    				"submitMessage": Ext.getCmp('submitMessage').getValue(),
-          	    				"submitName": submitName,
+          	    				"submitMessage": submitMessage,
           	    				"workflowId": workflowId,
           	    				"workflowName": workflowName,
           	    				"ownerId": ownerId,
@@ -105,7 +133,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"runId": runId
           	    			},
           	    			success: function(response){
-          	    				Ext.Msg.alert("Success", "The information has been submited");
+          	    				Ext.Msg.alert("Success", "The information has been submited. RunId is "+runId);
           	    				Ext.getCmp('submitbutton').enable();
           	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();
@@ -175,7 +203,7 @@ Ext.define('CF.view.Submit', {
  * Creates a jsonString containing the information of the solverGrid
  * and two lists of the selected stations and events
  */
-function createJsonString()
+function createJsonString(submitName)
 {
 	var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 	var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
@@ -202,7 +230,7 @@ function createJsonString()
 		});
 	jsonString += '],';	
 	
-	runId = userSN + (new Date()).getTime(),
+	runId = submitName + (new Date()).getTime(),
 	//Add the runId, user, stationUrl, eventUrl, solver and mesh
 	jsonString += '"runId" :"'+runId+'",';
 	jsonString += '"user_name" :"'+userSN+'",';

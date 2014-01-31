@@ -93,9 +93,14 @@ public class ForwardPortlet extends MVCPortlet{
 			String jsWfArray = "{\"list\":[";
 			for(ASMWorkflow wf : importedWfs)
 			{ 
+				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
+				//wfDate is YYYY-MM-DD
+				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
+				//wfName is submitedName+RandomID
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
-	      		jsWfArray +=  "{\"name\":\""+wf.getWorkflowName()+"\", \"status\":\""+wf.getStatusbean().getStatus() +"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\"},";
+	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
+	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+"test"+"\", \"status\":\""+wf.getStatusbean().getStatus() +"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\"},";
 			}
 			jsWfArray.substring(0, jsWfArray.length()-1);
 			jsWfArray +="]}";
@@ -146,8 +151,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   String stFileType = ParamUtil.getString(resourceRequest, "stationType");
 		   String jobName = "Job0";
 		   String submitMessage = ParamUtil.getString(resourceRequest, "submitMessage");
-		   String submitName = ParamUtil.getString(resourceRequest, "submitName");
-		   int nProc = ParamUtil.getInteger(resourceRequest, "nProc");
+		   //String submitName = ParamUtil.getString(resourceRequest, "submitName");
+		   String nProc = ParamUtil.getString(resourceRequest, "nProc");
 		   boolean eventDLFile = eventUrl.contains("documents");
 		   boolean stationDLFile = stationUrl.contains("documents");
 		   File stationFile = null;
@@ -166,7 +171,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   portalUrl += portal;
 		   
 		   //0. Import the workflow
-		   String importedWfId = importWorkflow(userId, ownerId, workflowId, submitName);
+		   String importedWfId = importWorkflow(userId, ownerId, workflowId, verceRunId);
 		   
 		   //1. Create the solver file and store it
 		   File solverFile = FileUtil.createTempFile();
@@ -258,8 +263,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
 		   {
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc);
-//			   asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
-			   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", String.valueOf(nProc));
+			   //asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
+			   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
 		   }
 		   
 		   //8. Submit
