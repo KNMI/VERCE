@@ -175,8 +175,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   //System.out.println("[ForwardModellingPortlet.submitSolver] Abans: "+portalUrl2);
 		   if(portalUrl2.equals("http://localhost:8081"))	portalUrl2 = "http://localhost:8080";	//TODO: careful
 		   //System.out.println("[ForwardModellingPortlet.submitSolver] Despres (sencer): "+portalUrl2+stationUrl);
-		    
-		   if(!stationDLFile)	//2a. create StationFile and store it
+		   
+		   if(!stationDLFile)	//1a. create StationFile and store it
 		   {
 			   stationFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(portalUrl2+stationUrl);
@@ -187,7 +187,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by user "+userSN+", accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
 		   }
-		   else	 //2b. Retrieve StationFile
+		   else	 				//1b. Retrieve StationFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, stFileType, serviceContext);
 			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -196,7 +196,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   stPublicPath = stationUrl;
 		   }
 		   
-		   if(!eventDLFile)	 //3a. create EventFile and store it
+		   if(!eventDLFile)	 //2a. create EventFile and store it
 		   {
 			   eventFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(portalUrl2+eventUrl);
@@ -206,7 +206,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   evPublicPath = portalUrl + evPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by user "+userSN+", accessible in: "+evPublicPath);
 		   }
-		   else	 //3b. Retrieve EventFile
+		   else	 			//2b. Retrieve EventFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, Constants.EVENT_TYPE, serviceContext);
 			   String evFileName = eventUrl.substring(eventUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -215,7 +215,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   evPublicPath = eventUrl;
 		   }
 		   
-		   //4. Generate zip file
+		   //3. Generate zip file
 		   String zipName = userSN+"_"+formatter.format(new Date()).toString()+".zip";
 		   createZipFile("temp/"+zipName);
 		   File tempZipFile = new File("temp/"+zipName);
@@ -229,10 +229,10 @@ public class ForwardPortlet extends MVCPortlet{
 			   //seran iguals per a tots els submits
 			   String jsonContent = jsonContentArray[i];
 			   
-			   //0. Import the workflow
+			   //4. Import the workflow
 			   String importedWfId = importWorkflow(userId, ownerId, workflowId, runIds[i]);
 		  
-			   //1. Create the solver file and store it
+			   //5. Create the solver file and store it
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
 			   String fileName = solverType+"_"+formatter.format(new Date()).toString()+".json";
@@ -240,25 +240,25 @@ public class ForwardPortlet extends MVCPortlet{
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by user "+userSN+", accessible in: "+publicPath);
 	
-			   //5. Upload files
+			   //6. Upload files
 			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
 			   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
 			   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
 			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
 			   
-			   //6. Check for credential errors
+			   //7. Check for credential errors
 			   //TODO: we should check just once
 			   WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
 			   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
 			   List resources = rc.get();
-			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources,userId, wfData);
+			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources, userId, wfData);
 			   if(errorVector==null)
 			   {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is null");
+				   System.out.println("[ForwardModellingPortlet.submitSolver] Error, vector is null");
 			   }
 			   else if(errorVector.isEmpty())
 			   {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is empty");
+				   System.out.println("[ForwardModellingPortlet.submitSolver] Error, vector is empty");
 			   }
 			   else
 			   {
@@ -272,18 +272,17 @@ public class ForwardPortlet extends MVCPortlet{
 				   }
 			   }
 			   
-			   //7. Change number of MPI nodes
+			   //8. Change number of MPI nodes
 			   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
 			   {
 				   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc+" by user "+userSN);
-				   //asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
 				   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
 			   }
 			   
-			   //8. Submit
+			   //9. Submit
 			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
 			   
-			   //9. Add run info in the Provenance Repository
+			   //10. Add run info in the Provenance Repository
 			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
