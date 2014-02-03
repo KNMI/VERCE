@@ -196,7 +196,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   String stFileName = "stations_"+formatter.format(new Date()).toString();
 			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
 			   stPublicPath = portalUrl + stPublicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by user "+userSN+", accessible in: "+stPublicPath);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by "+userSN+", accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
 		   }
 		   else	 				//1b. Retrieve StationFile
@@ -216,7 +216,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   String evFileName = "events_"+formatter.format(new Date()).toString();
 			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
 			   evPublicPath = portalUrl + evPublicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by user "+userSN+", accessible in: "+evPublicPath);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
 		   }
 		   else	 			//2b. Retrieve EventFile
 		   {
@@ -233,7 +233,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   File tempZipFile = new File("temp/"+zipName);
 		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
 	       zipPublicPath = portalUrl + zipPublicPath;
-		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by user "+userSN+", accessible in: "+zipPublicPath);
+		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
 
 		   for(int i=0;i<jsonContentArray.length;i++)
 		   {
@@ -247,10 +247,10 @@ public class ForwardPortlet extends MVCPortlet{
 			   //5. Create the solver file and store it
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
-			   String fileName = solverType+"_"+formatter.format(new Date()).toString()+".json";
+			   String fileName = solverType+"_"+i+"_"+formatter.format(new Date()).toString()+".json";
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by user "+userSN+", accessible in: "+publicPath);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
 	
 			   //6. Upload files
 			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
@@ -264,15 +264,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
 			   List resources = rc.get();
 			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources, userId, wfData);
-			   if(errorVector==null)
-			   {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] Error, vector is null");
-			   }
-			   else if(errorVector.isEmpty())
-			   {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] Error, vector is empty");
-			   }
-			   else
+			   if(errorVector!=null && !errorVector.isEmpty())
 			   {
 				   for (WorkflowConfigErrorBean er : errorVector) {
 					   System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+er.getErrorID()+"'! userSN: "+userSN+", runId: "+runIds[i]);
@@ -287,7 +279,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //8. Change number of MPI nodes
 			   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
 			   {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc+" by user "+userSN);
+				   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc+", by "+userSN);
 				   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
 			   }
 			   
@@ -423,7 +415,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   try {
 		   FileEntry check = DLAppServiceUtil.getFileEntry(groupId, folderId, name);
 		   DLAppServiceUtil.updateFileEntry(check.getFileEntryId(), sourceFileName, mimeType, name,	description, changeLog, false, file, serviceContext);
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN The file "+name+" has been overwritten by user"+userSN);
+		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN The file "+name+" has been overwritten by "+userSN);
 	   } catch (PortalException pe) {
 		   try {
 			   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, name, description, changeLog, file, serviceContext);
@@ -570,7 +562,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 			if(con.getResponseCode()!=200)
 				System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Error: " + con.getResponseCode());
-				 
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
@@ -580,7 +572,7 @@ public class ForwardPortlet extends MVCPortlet{
 			}
 			in.close();
 			
-			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Response: "+response.toString());
+			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] User: "+userSN+", Response: "+response.toString());
 		}
 		catch(Exception e)
 		{
