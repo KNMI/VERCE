@@ -100,7 +100,9 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
-	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+"test"+"\", \"status\":\""+wf.getStatusbean().getStatus() +"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\"},";
+	      		//TODO: get the description!!!
+	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+"test"+"\", \"status\":\""+wf.getStatusbean().getStatus()+
+	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
 			}
 			jsWfArray.substring(0, jsWfArray.length()-1);
 			jsWfArray +="]}";
@@ -120,9 +122,9 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	private void deleteWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
     {
+		String userId = resourceRequest.getRemoteUser();
 		try{
 			asm_service = ASMService.getInstance();
-			String userId = resourceRequest.getRemoteUser();
 			String wfId = ParamUtil.getString(resourceRequest, "workflowId");
 			asm_service.DeleteWorkflow(userId, wfId);
 			//asm_service.abort(userId, wfId);	//TODO: fixme!
@@ -130,7 +132,7 @@ public class ForwardPortlet extends MVCPortlet{
 		}
 		catch(Exception e)
 		{
-			catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.delete] Exception catched!!");
+			catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.delete] Exception catched!! User :"+userId);
 		}
     }
    
@@ -139,19 +141,19 @@ public class ForwardPortlet extends MVCPortlet{
 	   try {
 		   asm_service = ASMService.getInstance();
 		   User u = PortalUtil.getUser(resourceRequest);
+		   String userSN = u.getScreenName();
 		   String userId = u.getUserId()+"";
 		   String solverType = ParamUtil.getString(resourceRequest, "solver");
-		   String jsonContent = ParamUtil.getString(resourceRequest, "jsonObject");
+		   String[] jsonContentArray = resourceRequest.getParameterValues("jsonObject");
 		   String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
 		   String workflowName = ParamUtil.getString(resourceRequest, "workflowName");
 		   String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
 		   String stationUrl = ParamUtil.getString(resourceRequest, "stationUrl");
 		   String eventUrl = ParamUtil.getString(resourceRequest, "eventUrl");
-		   String verceRunId = ParamUtil.getString(resourceRequest, "runId");
+		   String[] runIds = resourceRequest.getParameterValues("runId");
 		   String stFileType = ParamUtil.getString(resourceRequest, "stationType");
 		   String jobName = "Job0";
 		   String submitMessage = ParamUtil.getString(resourceRequest, "submitMessage");
-		   //String submitName = ParamUtil.getString(resourceRequest, "submitName");
 		   String nProc = ParamUtil.getString(resourceRequest, "nProc");
 		   boolean eventDLFile = eventUrl.contains("documents");
 		   boolean stationDLFile = stationUrl.contains("documents");
@@ -163,36 +165,29 @@ public class ForwardPortlet extends MVCPortlet{
 		   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 		   ServiceContext serviceContext = new ServiceContext();
 		   serviceContext.setScopeGroupId(groupId);
-		   String userSN = u.getScreenName();
 		   Format formatter = new SimpleDateFormat("yyyyMMddHHmm");
 		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
 		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
 		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
 		   portalUrl += portal;
 		   
-		   //0. Import the workflow
-		   String importedWfId = importWorkflow(userId, ownerId, workflowId, verceRunId);
-		   
-		   //1. Create the solver file and store it
-		   File solverFile = FileUtil.createTempFile();
-		   FileUtil.write(solverFile, jsonContent);
-		   String fileName = solverType+"_"+formatter.format(new Date()).toString()+".json";
-		   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
-		   publicPath = portalUrl + publicPath;
-		   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+publicPath);
-
+		   String portalUrl2 = PortalUtil.getPortalURL(resourceRequest);
+		   //System.out.println("[ForwardModellingPortlet.submitSolver] Abans: "+portalUrl2);
+		   if(portalUrl2.equals("http://localhost:8081"))	portalUrl2 = "http://localhost:8080";	//TODO: careful
+		   //System.out.println("[ForwardModellingPortlet.submitSolver] Despres (sencer): "+portalUrl2+stationUrl);
+		    
 		   if(!stationDLFile)	//2a. create StationFile and store it
 		   {
 			   stationFile = FileUtil.createTempFile();
-			   URL wsUrl = new URL(PortalUtil.getPortalURL(resourceRequest)+stationUrl);
+			   URL wsUrl = new URL(portalUrl2+stationUrl);
 			   FileUtil.write(stationFile, wsUrl.openStream());
 			   String stFileName = "stations_"+formatter.format(new Date()).toString();
 			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
 			   stPublicPath = portalUrl + stPublicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+stPublicPath);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by user "+userSN+", accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
 		   }
-		   else     //2b. Retrieve StationFile
+		   else	 //2b. Retrieve StationFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, stFileType, serviceContext);
 			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -200,18 +195,18 @@ public class ForwardPortlet extends MVCPortlet{
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 			   stPublicPath = stationUrl;
 		   }
-
-		   if(!eventDLFile)     //3a. create EventFile and store it
+		   
+		   if(!eventDLFile)	 //3a. create EventFile and store it
 		   {
 			   eventFile = FileUtil.createTempFile();
-			   URL wsUrl = new URL(PortalUtil.getPortalURL(resourceRequest)+eventUrl);
+			   URL wsUrl = new URL(portalUrl2+eventUrl);
 			   FileUtil.write(eventFile, wsUrl.openStream());
 			   String evFileName = "events_"+formatter.format(new Date()).toString();
 			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
 			   evPublicPath = portalUrl + evPublicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] File created in the document library, accessible in: "+evPublicPath);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by user "+userSN+", accessible in: "+evPublicPath);
 		   }
-		   else     //3b. Retrieve EventFile
+		   else	 //3b. Retrieve EventFile
 		   {
 			   long folderId = getFolderId(repositoryId, userSN, Constants.EVENT_TYPE, serviceContext);
 			   String evFileName = eventUrl.substring(eventUrl.lastIndexOf(CharPool.SLASH)+1);
@@ -226,59 +221,78 @@ public class ForwardPortlet extends MVCPortlet{
 		   File tempZipFile = new File("temp/"+zipName);
 		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
 	       zipPublicPath = portalUrl + zipPublicPath;
-		   System.out.println("[ForwardModellingPortlet.submitSolver] zipPublicPath: "+zipPublicPath);
+		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by user "+userSN+", accessible in: "+zipPublicPath);
 
-		   //5. Upload files
-		   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
-		   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
-		   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
-		   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
-		   
-		   //6. Check for credential errors
-		   WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
-		   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
-		   List resources = rc.get();
-		   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources,userId, wfData);
-		   if(errorVector==null)
+		   for(int i=0;i<jsonContentArray.length;i++)
 		   {
-			   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is null");
-		   }
-		   else if(errorVector.isEmpty())
-		   {
-			   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is empty");
-		   }
-		   else
-		   {
-			   for (WorkflowConfigErrorBean er : errorVector) {
-				   System.out.println("[ForwardModellingPortlet.submitSolver] Alert! "+er.getErrorID());
-				   if(er.getErrorID().contains("noproxy") || er.getErrorID().contains("proxyexpired"))
-				   {
-					   catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submition stoped");
-					   return;
+			   //TODO: mirar si hi ha coses que puguem fer nomes una vegada, de guardar els fitxers d'events i estacions,
+			   //seran iguals per a tots els submits
+			   String jsonContent = jsonContentArray[i];
+			   
+			   //0. Import the workflow
+			   String importedWfId = importWorkflow(userId, ownerId, workflowId, runIds[i]);
+		  
+			   //1. Create the solver file and store it
+			   File solverFile = FileUtil.createTempFile();
+			   FileUtil.write(solverFile, jsonContent);
+			   String fileName = solverType+"_"+formatter.format(new Date()).toString()+".json";
+			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
+			   publicPath = portalUrl + publicPath;
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by user "+userSN+", accessible in: "+publicPath);
+	
+			   //5. Upload files
+			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
+			   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
+			   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
+			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
+			   
+			   //6. Check for credential errors
+			   //TODO: we should check just once
+			   WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
+			   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
+			   List resources = rc.get();
+			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources,userId, wfData);
+			   if(errorVector==null)
+			   {
+				   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is null");
+			   }
+			   else if(errorVector.isEmpty())
+			   {
+				   System.out.println("[ForwardModellingPortlet.submitSolver] error vector is empty");
+			   }
+			   else
+			   {
+				   for (WorkflowConfigErrorBean er : errorVector) {
+					   System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+er.getErrorID()+"'! userSN: "+userSN+", runId: "+runIds[i]);
+					   if(er.getErrorID().contains("noproxy") || er.getErrorID().contains("proxyexpired"))
+					   {
+						   catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submition stoped");
+						   return;
+					   }
 				   }
 			   }
-		   }
-		   
-		   //7. Change number of MPI nodes
-		   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
-		   {
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc);
-			   //asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
-			   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
-		   }
-		   
-		   //8. Submit
-		   asm_service.submit(userId, importedWfId, submitMessage, "Never");
-		   tempZipFile.delete();
-		   
-		   //9. Add run info in the Provenance Repository
-		   updateProvenanceRepository(userSN, verceRunId, submitMessage, workflowName, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
 			   
-		   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+verceRunId+", "+submitMessage+", "+workflowId+", "+importedWfId);
+			   //7. Change number of MPI nodes
+			   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
+			   {
+				   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc+" by user "+userSN);
+				   //asm_service.setNodeNumber(userId, importedWfId, jobName, nProc);
+				   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
+			   }
+			   
+			   //8. Submit
+			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
+			   
+			   //9. Add run info in the Provenance Repository
+			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
+				   
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
+		   }
+		   tempZipFile.delete();
 	   }
 	   catch (Exception e)
 	   {
-		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception catched!!");
+		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception catched!");
 	   }
    }
    
@@ -383,22 +397,22 @@ public class ForwardPortlet extends MVCPortlet{
 					   publicPath = portalUrl+publicPath;
 					   String successString = " {'success':'true', 'path':'"+publicPath+"'}";
 					   resourceResponse.getWriter().write(successString);
-					   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library, accessible in: "+publicPath);
+					   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
 				   }
 				   catch (Exception spe) 
 				   {	
-					   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL");
+					   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN);
 				   } 
 			   }
 			   else
 			   {
-				   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Failed!! The file is empty");
+				   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Failed!! The file is empty. User: "+userSN);
 			   }
 		   }
 	   }
 	   catch (Exception e)
 	   {
-		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Exception catched!!");
+		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Exception catched!");
 	   }
    }
    
@@ -417,18 +431,18 @@ public class ForwardPortlet extends MVCPortlet{
 	   try {
 		   FileEntry check = DLAppServiceUtil.getFileEntry(groupId, folderId, name);
 		   DLAppServiceUtil.updateFileEntry(check.getFileEntryId(), sourceFileName, mimeType, name,	description, changeLog, false, file, serviceContext);
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN The file "+name+" has been overwritten.");
+		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN The file "+name+" has been overwritten by user"+userSN);
 	   } catch (PortalException pe) {
 		   try {
 			   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, name, description, changeLog, file, serviceContext);
 			   //System.out.println("[ForwardModellingPortlet.addFileToDL] The file "+name+" has been created.");
 		   } catch (Exception e) {
-			   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched!!!");
+			   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN);
 			   e.printStackTrace();
 			   return null;
 		   }
 	   } catch (Exception e) {
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched!!!");
+		   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN);
 		   e.printStackTrace();
 		   return null;
 	   }
