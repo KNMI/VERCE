@@ -83,6 +83,18 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	ASMService asm_service = null;
 	
+	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
+	{
+		   if(resourceRequest.getResourceID().equals("uploadFile"))
+			   uploadFile(resourceRequest, resourceResponse);
+		   else if(resourceRequest.getResourceID().equals("submit"))
+			   submit(resourceRequest, resourceResponse);
+		   else if (resourceRequest.getResourceID().equals("downloadOutput"))
+			   downloadOutput(resourceRequest, resourceResponse);
+		   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
+			   deleteWorkflow(resourceRequest, resourceResponse);
+	}
+	
 	public void getWorkflowList(ActionRequest req, ActionResponse res)
     {
 		ArrayList<ASMWorkflow> importedWfs;
@@ -294,25 +306,6 @@ public class ForwardPortlet extends MVCPortlet{
 		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception catched!");
 	   }
    }
-   
-   public void serveResource(ResourceRequest resourceRequest,
-	ResourceResponse resourceResponse) throws PortletException, IOException 
-	{
-	   if(resourceRequest.getResourceID().equals("uploadFile"))
-	   {
-		   uploadFile(resourceRequest, resourceResponse);
-	   }
-	   else if(resourceRequest.getResourceID().equals("submit"))
-	   {
-		   submit(resourceRequest, resourceResponse);
-	   }
-	   else if (resourceRequest.getResourceID().equals("downloadOutput")) {
-		   downloadOutput(resourceRequest, resourceResponse);
-	   }
-	   else if (resourceRequest.getResourceID().equals("deleteWorkflow")) {
-		   deleteWorkflow(resourceRequest, resourceResponse);
-	   }
-	}
    
    public void downloadOutput(ResourceRequest resourceRequest,
 		   ResourceResponse resourceResponse) throws PortletException, IOException
