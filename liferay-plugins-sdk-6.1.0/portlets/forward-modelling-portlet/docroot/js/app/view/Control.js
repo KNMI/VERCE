@@ -5,7 +5,8 @@ var wfStore = Ext.create('Ext.data.ArrayStore', {
        {name: 'desc'},
        {name: 'status'},
        {name: 'date', type: 'date', dateFormat: 'Y-m-d'},
-       {name: 'date2'}
+       {name: 'date2'},
+       {name: 'workflowId'}
     ],
     sortOnLoad: true, 
     sorters: { property: 'date2', direction : 'DESC' },
@@ -66,7 +67,7 @@ Ext.define('CF.view.WfGrid', {
 		                handler: function(grid, rowIndex, colIndex) {
 		                    var rec = wfStore.getAt(rowIndex);
 		
-		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('name'), '_self');
+		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
 		                }
 		            },
 	                {
@@ -81,7 +82,7 @@ Ext.define('CF.view.WfGrid', {
 	    	      	                  	Ext.Ajax.request({
 	    	      	      	    			url: deleteWorkflowURL,
 	    	      	      	    			params: {
-	    	      	      	    				"workflowId": rec.get('name')
+	    	      	      	    				"workflowId": rec.get('workflowId')
 	    	      	      	    			},
 	    	      	      	    			success: function(response){
 	    	      	      	    				wfStore.load();
