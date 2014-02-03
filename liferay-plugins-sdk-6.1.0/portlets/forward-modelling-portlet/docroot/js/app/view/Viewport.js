@@ -236,6 +236,28 @@ Ext.define('CF.view.Viewport', {
                        
                       ]
             }
+          , {
+                xtype: 'panel',
+                title: 'iRods',
+                region: 'center',
+                border: false,
+                autoScroll:true,
+                layout: {
+                    type: 'border',
+                    padding: 5
+                },
+                defaults: {
+                },
+                items: [
+                    {
+                        xtype : "component",
+                        autoEl : {
+                            tag : "iframe",
+                            src : "https://www.irods.org/web/"
+                        }
+                    }
+                ]
+            }
             ]
           
           }]
