@@ -50,6 +50,8 @@ Ext.define('CF.view.dataviews.EventGrid' ,{
 	            				 //render grid and layer to update the selected/unselected symbols
 	            				 //Ext.getCmp('gridEvents').getView().refresh();
 	            				 ctrl.eventLayer.redraw();
+	            				 if(s.length>1)	Ext.getCmp('checkboxNSubmit').setDisabled(false);
+	            				 else			Ext.getCmp('checkboxNSubmit').setDisabled(true);
 	            			 }
 		        		 }
             		}),  
