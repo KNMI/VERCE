@@ -1,4 +1,4 @@
-var runId = "";
+var runId = new Array();
 
 Ext.define("ExportedWorkflowModel", {
 	extend: "Ext.data.Model",
@@ -63,6 +63,18 @@ var formSubmit = Ext.create('Ext.form.Panel', {
 		                $("div#submit_overview div#submitdesc").html(e);
 		            }
 		        }
+		    },
+		    {
+	            xtype      : 'fieldcontainer',
+	            defaultType: 'checkboxfield',
+	            items: [
+	                {
+	                    boxLabel  : 'Process the events in parallel',
+	                    name      : 'nsubmit',
+	                    disabled	: true,
+	                    id        : 'checkboxNSubmit'
+	                }
+	            ]
 		    }
 		],
 		buttons: [
@@ -74,6 +86,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
             		var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_");	//replace ' ' by '_'
           			var submitMessage = Ext.getCmp('submitMessage').getValue();
           			var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
+          			var checkboxNSubmit = Ext.getCmp('checkboxNSubmit').getValue() && !Ext.getCmp('checkboxNSubmit').isDisabled();
           			
           			if(!wfModel)	
           			{
@@ -102,8 +115,8 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           			
                 	solverConfStore.commitChanges();
               		solverConfStore.save();
-
-              		var jsonString = createJsonString(submitName);
+              		
+              		var jsonString = createJsonString(submitName, checkboxNSubmit);
               		
               		if(jsonString!=null)
               		{
@@ -148,10 +161,6 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				wfStore.load();
           	                }
           	    		});
-              		}
-              		else
-              		{
-              			Ext.Msg.alert("Alert!", "You must select at least one event and one station");
               		}
                   }
                 }
@@ -203,46 +212,76 @@ Ext.define('CF.view.Submit', {
  * Creates a jsonString containing the information of the solverGrid
  * and two lists of the selected stations and events
  */
-function createJsonString(submitName)
+function createJsonString(submitName, multipleSubmits)
 {
 	var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 	var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
-	if(selectedStations.length<1 || selectedEvents.length<1)	return null;
 
-	//Add the solver information
-	var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + ",";
+	if(selectedStations.length<1)
+	{
+		Ext.Msg.alert("Alert!", "You must select at least one station");
+		return null;
+	}
+	if(selectedEvents.length<1)
+	{
+		Ext.Msg.alert("Alert!", "You must select at least one event");
+		return null;
+	}
+	if(selectedEvents.length>GL_EVENTSLIMIT)
+	{
+		Ext.Msg.alert("Alert!", "You cannot select more than "+GL_EVENTSLIMIT+" events.");
+		return null;
+	}
+
+	var aJsonString = new Array();
+	var limit = 1;
+	if(multipleSubmits)	limit = selectedEvents.length;
 	
-	//Add the stations Ids
-	jsonString += '"stations" :[';
-	selectedStations.each(function(item, ind, l)
+	for(i=0; i<limit; i++)
+	{
+		//Add the solver information
+		var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + ",";
+		
+		//Add the stations Ids
+		jsonString += '"stations" :[';
+		selectedStations.each(function(item, ind, l)
+			{
+				if(ind>0)	jsonString+= ', ';
+				jsonString+= '"'+item.get('network')+'.'+item.get('station')+'"';
+			});
+		jsonString += '],';
+		
+		//Add the events Ids
+		jsonString += '"events" :[';
+		if(multipleSubmits)			//we put only one event in each jsonString
 		{
-			if(ind>0)	jsonString+= ', ';
-			jsonString+= '"'+item.get('network')+'.'+item.get('station')+'"';
-		});
-	jsonString += '],';
-	
-	//Add the events Ids
-	jsonString += '"events" :[';
-	selectedEvents.each(function(item, ind, l)
+			jsonString+= '"'+selectedEvents.items[i].get('eventId')+'"';
+		}
+		else						//we put all the events in the jsonString
 		{
-			if(ind>0)	jsonString+= ', ';
-			jsonString+= '"'+item.get('eventId')+'"';
-		});
-	jsonString += '],';	
-	
-	runId = submitName + (new Date()).getTime(),
-	//Add the runId, user, stationUrl, eventUrl, solver and mesh
-	jsonString += '"runId" :"'+runId+'",';
-	jsonString += '"user_name" :"'+userSN+'",';
-	jsonString += '"user_id" :"'+userId+'",';
-	jsonString += '"station_url" :"'+gl_stationUrl+'",';
-	jsonString += '"event_url" :"'+gl_eventUrl+'",';
-	if(gl_stationFormat===STXML_TYPE)			var auxFormat = "stationXML";
-	else if(gl_stationFormat===STPOINTS_TYPE)	var auxFormat = "points";
-	jsonString += '"station_format" :"'+auxFormat+'",';
-	jsonString += '"solver" :"'+gl_solver+'",';
-	jsonString += '"mesh" :"'+gl_mesh+'",';
-	jsonString += '"velocity_model" :"'+gl_velmod+'"}';
-	
-	return jsonString;
+			selectedEvents.each(function(item, ind, l)
+				{
+					if(ind>0)	jsonString+= ', ';
+					jsonString+= '"'+item.get('eventId')+'"';
+				});
+		}
+		jsonString += '],';	
+		
+		runId[i] = submitName + i + (new Date()).getTime();
+		//Add the runId, user, stationUrl, eventUrl, solver and mesh
+		jsonString += '"runId" :"'+runId[i]+'",';
+		jsonString += '"user_name" :"'+userSN+'",';
+		jsonString += '"user_id" :"'+userId+'",';
+		jsonString += '"station_url" :"'+gl_stationUrl+'",';
+		jsonString += '"event_url" :"'+gl_eventUrl+'",';
+		if(gl_stationFormat===STXML_TYPE)			var auxFormat = "stationXML";
+		else if(gl_stationFormat===STPOINTS_TYPE)	var auxFormat = "points";
+		jsonString += '"station_format" :"'+auxFormat+'",';
+		jsonString += '"solver" :"'+gl_solver+'",';
+		jsonString += '"mesh" :"'+gl_mesh+'",';
+		jsonString += '"velocity_model" :"'+gl_velmod+'"}';
+		
+		aJsonString[i] = jsonString;
+	}
+	return aJsonString;
 }
