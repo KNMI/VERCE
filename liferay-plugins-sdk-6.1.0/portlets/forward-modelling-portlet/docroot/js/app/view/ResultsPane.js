@@ -207,16 +207,20 @@ var action = Ext.create('Ext.Action', {
      					   } 					    
     					);
          		
-         		
-         		
-         		Ext.create('Ext.window.Window', {
+         		if(typeof workflowSel != "undefined") {
+	         		workflowSel.close();
+    }
+         		workflowSel=Ext.create('Ext.window.Window', {
   								   title:'Workflows Runs',
  								   height: 230,
 								   width: 800,
 							       layout: 'fit',
 						           items:[ Ext.create('CF.view.WorlflowSelection') ]
       			 			     	
-								}).show();
+								})
+								
+				 			
+         		workflowSel.show();
 								
 				workflowStore.load()
         }
