@@ -197,7 +197,7 @@ var action = Ext.create('Ext.Action', {
         handler: function(){
             workflowStore.setProxy({
  											type: 'ajax',
-  							  		        url: '/j2ep-1.0/prov/workflow/'+userSN,
+  							  		        url: '/j2ep-1.0/prov/workflow/aspinuso',
   							          reader: {
    			  				             root: 'runIds',
   						                 totalProperty: 'totalCount'
@@ -206,15 +206,19 @@ var action = Ext.create('Ext.Action', {
     
      					   } 					    
     					);
-         		workflowStore.load()
+         		
+         		
+         		
          		Ext.create('Ext.window.Window', {
   								   title:'Workflows Runs',
  								   height: 230,
 								   width: 800,
 							       layout: 'fit',
-						           items:[ Ext.create('CF.view.WorlflowSelection')]
+						           items:[ Ext.create('CF.view.WorlflowSelection') ]
       			 			     	
 								}).show();
+								
+				workflowStore.load()
         }
     });
     
@@ -256,7 +260,7 @@ Ext.define('CF.view.WorlflowSelection', {
 	 height:200,
 	extend: 'Ext.grid.Panel',
     
-    id:'worklflowselection',
+     
       requires: [
     	'CF.store.WorkflowStore',
     	'Ext.grid.plugin.BufferedRenderer'
@@ -333,6 +337,7 @@ Ext.define('CF.view.WorlflowSelection', {
     
     
 });
+
 
 
 
@@ -466,10 +471,10 @@ for (var i=0;i<url.length;i++)
 	 
 	    
  		htmlcontent=htmlcontent+"<center><div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div></center><br/><br/>"
-    	var id=url[i];
+        var id=url[i];
     	var im = new Object()
     	im.func=is_image
-    	im.func(id, function(val) {document.getElementById(val).innerHTML="<img  width='100%' height='100%' src='"+val+"'/>"},function(val) { document.getElementById(val).innerHTML="<center><strong><a target='_blank'  href='"+val+"'>"+val.substring(val.lastIndexOf('/')+1)+"</a></strong></center>"})
+        im.func(id, function(val) {document.getElementById(val).innerHTML="<img  width='100%' height='100%' src='"+val+"'/>"},function(val) { document.getElementById(val).innerHTML="<center><strong><a target='_blank'  href='"+val+"'>"+val.substring(val.lastIndexOf('/')+1)+"</a></strong></center>"})
 
 }
  
