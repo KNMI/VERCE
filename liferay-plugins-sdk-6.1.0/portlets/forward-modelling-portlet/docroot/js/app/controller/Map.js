@@ -58,30 +58,6 @@ var PointsListFormat = OpenLayers.Class(OpenLayers.Format.Text, {
     }
 });
 
-var QuakeMLFormat = OpenLayers.Class(OpenLayers.Format.JSON, {
-    read: function(response)    
-    {
-    	//TODO: add the focal mechanism information coming from json
-        // We're going to read JSON
-        if(typeof response == "string") {
-            jsonDoc = OpenLayers.Format.JSON.prototype.read.apply(this, [response]);
-        }  
-        var unids=jsonDoc.unids;
-        var features = [];
- 	 	for(var i=0; i<unids.length; i++)
-		{
-		 	var attributes ={description: unids[i].flynn_region, datetime: unids[i].datetime, magnitude: unids[i].mag, depth: unids[i].depth, longitude: unids[i].lon, latitude: unids[i].lat};
-			feature = new OpenLayers.Feature.Vector(
-					new OpenLayers.Geometry.Point(unids[i].lon,unids[i].lat),
-					attributes
-				);
-		    features.push(feature);
-		}
- 	 	//alert("Parser: " + features.length);
- 	 	return features;
-    }
-});
-
 var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
     read: function(response)    
     {
@@ -232,10 +208,6 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
     }
 });
 
-var protocol=new OpenLayers.Protocol.HTTP({
-    format: new StationXMLFormat()
-});
-
 var eventcontext = {
 		getRadius: function(feature) { 
 			return feature.attributes.magnitude*1.5;
@@ -384,14 +356,12 @@ Ext.define('CF.controller.Map', {
     	//if the solver, the stations and the events are selected, enable the submit button
     	if(this.eventstore.count()>0 && this.stationstore.count()>0 && this.solverConfStore.count()>0)
     		Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(false);
-    	//TODO: should be with selected stations and events (checkbox clicked not the ones in the store)
     },
     
     onEventStoreLoad: function(store, records) {
     	//if the solver, the stations and the events are selected, enable the submit button
     	if(this.eventstore.count()>0 && this.stationstore.count()>0 && this.solverConfStore.count()>0)
     		Ext.getCmp('tabpanel_principal').down('#submit').enable();
-    	//TODO: should be with selected stations and events (checkbox clicked not the ones in the store)
     },
     
     onEventSearch: function(button) { 
