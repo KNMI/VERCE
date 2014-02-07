@@ -112,8 +112,8 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
-	      		//TODO: get the description!!!
-	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+"test"+"\", \"status\":\""+wf.getStatusbean().getStatus()+
+	      	
+	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+wf.getStatusbean().getStatus()+
 	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
 			}
 			jsWfArray.substring(0, jsWfArray.length()-1);
@@ -132,14 +132,36 @@ public class ForwardPortlet extends MVCPortlet{
 		}
     }
 	
+	public void updateWorkflowDescription(ActionRequest req, ActionResponse res)
+    {
+		asm_service = ASMService.getInstance();
+		String begName = ParamUtil.getString(req, "workflowId");
+		String newText = ParamUtil.getString(req, "newText");
+		
+		ArrayList<ASMWorkflow> importedWfs;
+		importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+		for(ASMWorkflow wf : importedWfs)
+		{ 
+			if(wf.getWorkflowName().startsWith(begName))
+			{
+				wf.setSubmissionText(newText);
+				System.out.println("[ForwardModellingPortlet.updateWorkflowDescription] Description in workflow "+begName+" has been updated to "+newText+" by user "+req.getRemoteUser());
+				return;
+			}
+		}
+		System.out.println("[ForwardModellingPortlet.updateWorkflowDescription] Error! Workflow "+begName+" could not be found");
+    }
+	
 	private void deleteWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
     {
 		String userId = resourceRequest.getRemoteUser();
 		try{
 			asm_service = ASMService.getInstance();
 			String wfId = ParamUtil.getString(resourceRequest, "workflowId");
+			//String status = asm_service.getStatus(userId, wfId);
+			//if(status.equals("RUNNING")||status.equals("INIT")||status.equals("INIT"))
+			asm_service.abort(userId, wfId);	//TODO: fixme!
 			asm_service.DeleteWorkflow(userId, wfId);
-			//asm_service.abort(userId, wfId);	//TODO: fixme!
 			System.out.println("[ForwardModellingPortlet.delete] workflow "+wfId+" has been deleted by user "+userId);
 		}
 		catch(Exception e)
@@ -237,8 +259,6 @@ public class ForwardPortlet extends MVCPortlet{
 
 		   for(int i=0;i<jsonContentArray.length;i++)
 		   {
-			   //TODO: mirar si hi ha coses que puguem fer nomes una vegada, de guardar els fitxers d'events i estacions,
-			   //seran iguals per a tots els submits
 			   String jsonContent = jsonContentArray[i];
 			   
 			   //4. Import the workflow
@@ -362,7 +382,6 @@ public class ForwardPortlet extends MVCPortlet{
 		   User u = PortalUtil.getUser(resourceRequest);
 		   String userSN =  u.getScreenName();
 		   
-		   //TODO: for station check that fileType matches the extension or the content of the file
 		   if(inputStream!=null){
 			   File file = FileUtil.createTempFile(inputStream);
 			   String uploadString = getFileAsString(file);		//content
@@ -501,7 +520,6 @@ public class ForwardPortlet extends MVCPortlet{
 	     ZipOutputStream append = new ZipOutputStream(new FileOutputStream(fileName));
 	     
 	    //	copy contents from existing war
-	   //TODO: see why input_file_generator.pyc fails to be copied (too big maybe?)
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry e = entries.nextElement();

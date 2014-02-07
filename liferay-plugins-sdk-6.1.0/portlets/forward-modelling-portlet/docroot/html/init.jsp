@@ -44,6 +44,8 @@
 	<portlet:param name="jspPage" value="/html/ajax_getfilelist.jsp"/>
 </liferay-portlet:renderURL>
 
+<liferay-portlet:actionURL name="updateWorkflowDescription" var="updateWorkflowDescriptionURL"/>
+
 <%
 
 PortletPreferences preferences = renderRequest.getPreferences();
@@ -90,6 +92,7 @@ catch(Exception e){
 	var SOLVER_TYPE = '<%=Constants.SOLVER_TYPE %>';
 	
 	//var provantURL='<%=provantURL.toString()%>';
+	var updateWorkflowDescriptionURL='<%=updateWorkflowDescriptionURL.toString()%>';
 	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
 	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
 	var uploadFileURL='<%=uploadFileURL.toString()%>';
