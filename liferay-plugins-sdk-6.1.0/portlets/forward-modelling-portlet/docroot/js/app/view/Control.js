@@ -167,7 +167,7 @@ Ext.define('CF.view.Control', {
 	});
 
 function statusRenderer(val) {
-    if (val === 'INIT') {
+    if (val === 'INIT' || val === 'RUNNING') {
         return '<span style="color:green;">' + val + '</span>';
     } 
     else if (val === 'ERROR') {
