@@ -547,6 +547,109 @@ Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
 
 );
 
+Ext.define('FilterAjax', {
+    extend: 'Ext.data.Connection',
+    singleton: true,
+    constructor : function(config){
+        this.callParent([config]);
+        this.on("beforerequest", function(){
+             Ext.getCmp("ArtifactView").el.mask("Loading", "x-mask-loading");
+									 						         
+        });
+        this.on("requestcomplete", function(){
+            Ext.getCmp("ArtifactView").el.unmask();
+        });
+    }
+});
+
+Ext.define('CF.view.FilterOnAnchestor' , {extend:'Ext.form.Panel',
+						           // The fields
+						           title:'FilterOnAnchestor',
+  											  defaultType: 'textfield',
+  											  layout: {
+          											  align:  'center',
+       												  pack:   'center',
+    								        type:   'vbox'
+     										   },
+										    items: [ {
+  												      fieldLabel: 'Content keys (csv)',
+ 												       name: 'keys',
+ 												       allowBlank: false
+  													  },{
+ 											       fieldLabel: 'Content values (csv)',
+ 											       name: 'values',
+ 											       allowBlank: false
+  													  }
+  													  
+  													  ],
+						           			
+						           	
+						           			buttons: [ {
+  											      text: 'Filter',
+     											   formBind: true, //only enabled once the form is valid
+    											     
+  											      handler: function() {
+													
+												  dataids=""
+  											      if (artifactStore.getAt(0).data.ID) 
+  											     	 dataids=artifactStore.getAt(0).data.ID
+  											      
+  											      for (var i = 1; i < artifactStore.getCount(); i++)
+													{
+													  
+   													  dataids += ',' + artifactStore.getAt(i).data.ID; 
+													}
+  											       
+  											     
+  											      
+ 										          var form = this.up('form').getForm();
+  													          if (form.isValid()) {
+  													               FilterAjax.request({
+									 						           
+									 						           method: 'POST',
+  							      									   url: '/j2ep-1.0/prov/entities/filterOnAnchestorsMeta',
+  				 												       headers: { 'Content-Type':'application/x-www-form-urlencoded' },
+  				 												       success: function(response){
+  				 												        filtered=Ext.decode(response.responseText)
+  				 												        artifactStore.clearFilter(true);
+  				 												        if (filtered.length==0)
+  				 												       			 artifactStore.removeAll()
+  				 												       	else
+  				 												       	{
+																	    artifactStore.filterBy(function(record, id){
+													  											if(Ext.Array.indexOf(filtered, record.data.ID)==-1)
+													  											{	
+													  											   return false;
+ 																						   		}    
+																							    return true;
+																								}, this);
+																		
+																			}
+																		}
+																		
+																	   ,
+																	   failure: function(response){
+  				 												       
+  				 												       alert("Filter Request Failed")
+  				 												     
+  				 												       
+  				 												       },
+ 					   									               params: {
+   						 											            ids: dataids,
+  																	            keys: form.findField("keys").getValue(),
+  																	            values: form.findField("values").getValue()
+  																	            
+  						        	  											}
+  						 			  									});
+  						 			  									
+         														   } 
+   															 }     
+												    }
+												    ]
+      			 			     				}
+
+);
+
 
 
 
@@ -611,6 +714,20 @@ var searchartifactspane = Ext.create('Ext.window.Window', {
 						           		 }
 						           		]
 								})
+								
+var filterOnAnchestorspane = Ext.create('Ext.window.Window', {
+  								   title:'Filter Data on anchestors metadata',
+ 								   height: 230,
+								   width: 400,
+							       layout: 'fit',
+							       closeAction: 'hide',
+						           items:[{xtype:'tabpanel',
+						           			items:[
+						        				   Ext.create('CF.view.FilterOnAnchestor')
+						      					   ]
+						           		 }
+						           		]
+								})
 
 
 var searchartifacts = Ext.create('Ext.Action', {
@@ -621,6 +738,16 @@ var searchartifacts = Ext.create('Ext.Action', {
          		searchartifactspane.show();
         }
     });		
+    
+    
+var filterOnAnchestors = Ext.create('Ext.Action', {
+        text: 'Filter Current',
+        iconCls: 'icon-add',
+        handler: function(){
+      
+         		filterOnAnchestorspane.show();
+        }
+    });
  
 function renderStream(value, p, record) {
         return Ext.String.format(
@@ -651,6 +778,7 @@ function renderStream(value, p, record) {
         }
 			
 Ext.define('CF.view.ArtifactView', {
+     id:'ArtifactView',
      extend:'Ext.grid.Panel',
      region: 'south',
      width: '65%',
@@ -672,6 +800,8 @@ Ext.define('CF.view.ArtifactView', {
     },
    	 plugins : [{
             ptype: 'bufferedrenderer',
+             trailingBufferZone: 20,  
+             leadingBufferZone: 50   
            }
             ],
    	 
@@ -685,7 +815,8 @@ Ext.define('CF.view.ArtifactView', {
             xtype: 'toolbar',
             items: [
                  
-                searchartifacts
+                searchartifacts,
+                filterOnAnchestors
                  
             ]
         },

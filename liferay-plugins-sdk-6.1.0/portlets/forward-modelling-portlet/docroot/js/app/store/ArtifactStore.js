@@ -54,9 +54,9 @@ Ext.define('CF.store.ArtifactStore', {
    						  model:   'CF.model.Artifact',
    						  alias: 'store.artifactstore',
    						  storeId: 'artifactStore',
-   						  buffered: true,
+   						  /*buffered: true,
    					      leadingBufferZone: 30,
-   					      pageSize: 300,
+   					      pageSize: 300,*/
    						  
  						   
  						});
