@@ -242,10 +242,7 @@ Ext.define('CF.view.Viewport', {
                 region: 'center',
                 border: false,
                 autoScroll:true,
-                layout: {
-                    type: 'border',
-                    padding: 5
-                },
+                layout: 'border',
                 defaults: {
                 },
                 items: [
@@ -253,8 +250,12 @@ Ext.define('CF.view.Viewport', {
                         xtype : "component",
                         autoEl : {
                             tag : "iframe",
-                            src : "https://www.irods.org/web/"
-                        }
+                            seamless: "seamless",
+                            // TODO real url
+                            src: "http://192.168.33.11/browse.php?ruri="+(userSN?userSN+"@":"")+"dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/"+(userSN?userSN+"/verce":"")
+                        },
+                        region: 'center',
+                        border: false,
                     }
                 ]
             }
