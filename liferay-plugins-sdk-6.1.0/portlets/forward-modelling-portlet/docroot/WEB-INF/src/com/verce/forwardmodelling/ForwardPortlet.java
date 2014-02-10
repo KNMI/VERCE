@@ -329,44 +329,15 @@ public class ForwardPortlet extends MVCPortlet{
 	   resourceResponse.setContentType("application/zip");
 	   resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"logs.zip\"");
 
-	   ASMWorkflow wf = asm_service.getASMWorkflow(userId, wfId);
-
-	   InputStream inputStream = null;
-	   String[] fileNames = { "stdout.log", "stderr.log" };
-
-	   ZipOutputStream zos = new ZipOutputStream(resourceResponse.getPortletOutputStream());
-	   
-       int size;
-       byte[] buffer = new byte[2048];
-
-	   for (Map.Entry<String, ASMJob> job : wf.getJobs().entrySet()) {
-		   for (String fileName : fileNames) {
-			   try{
-//				   asm_service.getWorkflowOutputs(userId, wfId, resourceResponse);
-
-				   System.out.println("Fetching " + fileName + " from asm");
-				   inputStream = asm_service.getSingleOutputFileStream(userId, wfId, job.getKey(), null, fileName);
-				   
-				   ZipEntry newEntry = new ZipEntry(job.getKey() + "/" + fileName);
-				   zos.putNextEntry(newEntry);
-                   while ((size = inputStream.read(buffer, 0, buffer.length)) != -1) {
-                       zos.write(buffer, 0, size);
-                   }
-                   zos.closeEntry();
-			   }
-			   catch(Exception e)
-			   {
-				   System.out.println("[ForwardModellingPortlet.downloadOutput] Exception caught!!");
-				   e.printStackTrace();
-				   // TODO send error to client
-			   }
-			   finally
-			   {
-				   inputStream.close();
-			   }
-		   }
+	   try{
+		   asm_service.getWorkflowOutputs(userId, wfId, resourceResponse);
 	   }
-	   zos.close();
+	   catch(Exception e)
+	   {
+		   System.out.println("[ForwardModellingPortlet.downloadOutput] Exception caught!!");
+		   e.printStackTrace();
+		   // TODO send error to client
+	   }
    }
  
    private void uploadFile(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
