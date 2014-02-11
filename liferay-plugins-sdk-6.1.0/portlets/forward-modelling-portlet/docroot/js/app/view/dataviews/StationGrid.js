@@ -2,8 +2,7 @@
  * The grid in which summits are displayed
  * @extends Ext.grid.Panel
  */
- 
- 
+
 Ext.define('CF.view.dataviews.StationGrid' ,{
     extend: 'Ext.grid.Panel',
     alias : 'widget.stationsgrid',
@@ -44,17 +43,19 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
             				 //t.refresh();
             				 //this.getView().refresh();
             				 ctrl.stationLayer.redraw();
+            				 Ext.getCmp('stationSelColumn').setText(s.length+"/"+stationStore.getTotalCount());
             			 }
             		 }
             		}),            
             columns: [
                 {
-                    header: '',
+                    header: '0/0',
+                    id: 'stationSelColumn',
                     dataIndex: 'symbolizer',
                     menuDisabled: true,
                     sortable: false,
                     xtype: 'gx_symbolizercolumn',
-                    width: 30
+                    width: 45
                 },
                 {header: 'Station', dataIndex: 'station', flex: 3},
                 {header: 'Network', dataIndex: 'network', flex: 3},

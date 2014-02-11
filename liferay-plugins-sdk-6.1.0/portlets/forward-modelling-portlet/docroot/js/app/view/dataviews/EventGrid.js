@@ -52,18 +52,20 @@ Ext.define('CF.view.dataviews.EventGrid' ,{
 	            				 ctrl.eventLayer.redraw();
 	            				 if(s.length>1)	Ext.getCmp('checkboxNSubmit').setDisabled(false);
 	            				 else			Ext.getCmp('checkboxNSubmit').setDisabled(true);
+	            				 Ext.getCmp('eventSelColumn').setText(s.length+"/"+eventStore.getTotalCount());
 	            			 }
 		        		 }
             		}),  
             loadMask: true,
             columns: [
 			{
-                header: '',
+				header: '0/0',
+                id: 'eventSelColumn',
                 dataIndex: 'symbolizer',
                 menuDisabled: true,
                 sortable: false,
                 xtype: 'gx_symbolizercolumn',
-                width: 30
+                width: 40
             },
             {header: 'Desc', dataIndex: 'description', flex: 3},
             {header: 'Date', dataIndex: 'date', flex: 3},
