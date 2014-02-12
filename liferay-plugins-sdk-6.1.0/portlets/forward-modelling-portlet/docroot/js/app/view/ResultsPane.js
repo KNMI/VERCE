@@ -1,4 +1,5 @@
 
+
 var mimetypes = [
 { "mime":"application/octet-stream","desc":""},
 { "mime":"image/png","desc":""},
@@ -21,7 +22,36 @@ var mimetypesStore = Ext.create('Ext.data.Store', {
 });
 
 // ComboBox with single selection enabled
-var mimetypescombo = Ext.create('Ext.form.field.ComboBox', {
+
+
+Ext.define('CF.view.mimeCombo',{
+	extend:'Ext.form.field.ComboBox',
+	fieldLabel: 'mime-type',
+    name: 'mime-type',
+    displayField: 'mime',
+    width: 300,
+    labelWidth: 130,
+    colspan: 4,
+    store: mimetypesStore,
+    queryMode: 'local',
+    getInnerTpl: function() {
+        return '<div data-qtip="{mime}">{mime} {desc}</div>';
+    },
+    initComponent: function() {
+        var me = this;
+
+
+        me.callParent();
+
+
+         
+    }
+});
+var mimetypescombo1 = Ext.create('CF.view.mimeCombo', {
+    
+});
+
+var mimetypescombo2 = Ext.create('Ext.form.field.ComboBox', {
     fieldLabel: 'mime-type',
     name: 'mime-type',
     displayField: 'mime',
@@ -192,20 +222,11 @@ var artifactStore = Ext.create('CF.store.ArtifactStore');
 var workflowStore = Ext.create('CF.store.WorkflowStore');
 
 var action = Ext.create('Ext.Action', {
+        tooltip: 'Open Run',
         text: 'Open Run',
-        iconCls: 'icon-add',
+         
         handler: function(){
-            workflowStore.setProxy({
- 											type: 'ajax',
-  							  		        url: '/j2ep-1.0/prov/workflow/aspinuso',
-  							          reader: {
-   			  				             root: 'runIds',
-  						                 totalProperty: 'totalCount'
-  						           },
-  						  simpleSortMode: true
-    
-     					   } 					    
-    					);
+             
          		
          		if(typeof workflowSel != "undefined") {
 	         		workflowSel.close();
@@ -227,8 +248,10 @@ var action = Ext.create('Ext.Action', {
     });
     
 var refreshAction = Ext.create('Ext.Action', {
-        text: 'Refresh',
-        iconCls: 'icon-add',
+        tooltip: 'Refresh View',
+        text: 'Refresh View',
+         
+        
         handler: function(){
             activityStore.setProxy({
  											type: 'ajax',
@@ -297,15 +320,73 @@ Ext.define('CF.view.WorlflowSelection', {
             columns: [
              
             {header: 'Run ID',   dataIndex:'runId', flex: 5, sortable: false},
-            {header: 'Workflow Name',   dataIndex:'name', flex: 3, sortable: true,
+            {header: 'Workflow Name',   dataIndex:'name', flex: 3, sortable: false,
             groupable: false}, 
-            {header: 'Description',   dataIndex:'description', flex: 3, sortable: true,
-            groupable: false},
-            {header: 'Date',   dataIndex:'date', flex: 3, sortable: true,
-            groupable: false}// custom mapping
-             
-			],
+            {header: 'Description',   dataIndex:'description', flex: 3, sortable: false, field:{
+  					              xtype:'textfield',
+  					              allowBlank:true,
+  					              maxLength: 50
+  						          }
+						        },
+            {header: 'Date',   dataIndex:'date', flex: 3, sortable: false,
+            groupable: false},// custom mapping
+            {
+	            xtype:'actioncolumn', 
+	            width:40,
+	            tdCls:'Delete',
+	            items: [{
+	            	icon: localResourcesPath+'/img/delete-icon.png', // Use a URL in the icon config
+	                tooltip: 'Show',
+	                handler: function(grid, rowIndex, colIndex) {
+	                    var rec = grid.getStore().getAt(rowIndex);
+	                    
+	                    var storeClassName = Ext.getClassName(grid.getStore());
+     				    var tempStore = Ext.create(storeClassName, { buffered: false });
+  				        tempStore.add(rec);
+  				        var xx=tempStore.getAt(0)
+  				        Ext.Msg.confirm('Remove Run', 'Are you sure?', function (button) {
+                  		  if (button == 'yes') {
+                       
+                         
+                         var tempx=tempStore.getProxy()
+                         tempx.api.destroy="/j2ep-1.0/prov/workflow/"+xx.get("runId");
+                         
+                         tempStore.remove(xx);
+                         tempStore.sync({
+         							  success: function(args) {
+                  
+                 					
+           						      grid.getStore().data.clear();
+           						      grid.getStore().load();                     
+            						}
+                      
+          		  				})
+                  		  }
+                  		  })
+                  		 
+  				     
+          		  }
+          		 
+                     
+	             
+            }
+			]
+			}],
 		flex: 1,
+		selType: 'cellmodel',
+		    plugins: [
+ 				       Ext.create('Ext.grid.plugin.CellEditing', {
+			            clicksToEdit: 1,
+			            listeners: {
+			            	'validateedit': function(c, e, eOpts)
+			            	{
+			            		var r = e.rowIdx;
+			            		var sr = workflowStore.getAt(r);
+			            		sr.set(e.field, e.value);
+			            	}
+			            }
+				       })
+  					  ]
 		
  	
             
@@ -471,7 +552,7 @@ function viewData(url)
 htmlcontent="<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
 for (var i=0;i<url.length;i++)
 {
-	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/"+userSN+"/verce/")
+	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/aspinuso/verce/")
 	 
 	    
  		htmlcontent=htmlcontent+"<center><div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div></center><br/><br/>"
@@ -501,9 +582,10 @@ Ext.create('Ext.window.Window', {
 
 
 
-Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
+
+Ext.define('CF.view.StreamValuesRangeSearch' , {extend:'Ext.form.Panel',
 						           // The fields
-						           title:'Search Data Content',
+						           title:'Values\' Range',
   											  defaultType: 'textfield',
   											  layout: {
           											  align:  'center',
@@ -511,15 +593,69 @@ Ext.define('CF.view.StreamContentSearch' , {extend:'Ext.form.Panel',
     								        type:   'vbox'
      										   },
 										    items: [ {
-  												      fieldLabel: 'Content keys (csv)',
+  												      fieldLabel: 'Attributes keys (csv)',
  												       name: 'keys',
  												       allowBlank: false
   													  },{
- 											       fieldLabel: 'Content values (csv)',
+ 											       fieldLabel: 'Min values (csv)',
+ 											       name: 'minvalues',
+ 											       allowBlank: false
+  													  },
+  													  {
+ 											       fieldLabel: 'Max values (csv)',
+ 											       name: 'maxvalues',
+ 											       allowBlank: false
+  													  },
+  													  Ext.create('CF.view.mimeCombo', {})
+  													  ],
+						           			
+						           	
+						           			buttons: [ {
+  											      text: 'Search',
+     											   formBind: true, //only enabled once the form is valid
+    											     
+  											      handler: function() {
+ 										           var form = this.up('form').getForm();
+  													          if (form.isValid()) {
+   													              artifactStore.setProxy({
+									 						           type : 'ajax',
+  							      									   url: '/j2ep-1.0/prov/entities/values-range?runId='+currentRun+"&"+form.getValues(true),
+  				         
+ 					   									               reader: {
+   						 											            root: 'entities',
+  																	            totalProperty: 'totalCount'
+  						        	  											}
+  						 			  									});
+        													 		artifactStore.load()
+         														   }
+   															     }
+												    }]
+      			 			     				}
+
+);
+
+
+
+
+Ext.define('CF.view.StreamContentMatchSearch' , {extend:'Ext.form.Panel',
+						           // The fields
+						           title:'Attributes Match',
+  											  defaultType: 'textfield',
+  											  layout: {
+          											  align:  'center',
+       												  pack:   'center',
+    								        type:   'vbox'
+     										   },
+										    items: [ {
+  												      fieldLabel: 'Attributes keys (csv)',
+ 												       name: 'keys',
+ 												       allowBlank: false
+  													  },{
+ 											       fieldLabel: 'Values (csv)',
  											       name: 'values',
  											       allowBlank: false
   													  },
-  													  mimetypescombo
+  													   Ext.create('CF.view.mimeCombo', {})
   													  ],
 						           			
 						           	
@@ -562,9 +698,9 @@ Ext.define('FilterAjax', {
     }
 });
 
-Ext.define('CF.view.FilterOnAnchestor' , {extend:'Ext.form.Panel',
+Ext.define('CF.view.FilterOnAncestor' , {extend:'Ext.form.Panel',
 						           // The fields
-						           title:'FilterOnAnchestor',
+						           title:'Ancestor Attributes\' Match',
   											  defaultType: 'textfield',
   											  layout: {
           											  align:  'center',
@@ -572,14 +708,14 @@ Ext.define('CF.view.FilterOnAnchestor' , {extend:'Ext.form.Panel',
     								        type:   'vbox'
      										   },
 										    items: [ {
-  												      fieldLabel: 'Content keys (csv)',
+  												      fieldLabel: 'Attribute keys (csv)',
  												       name: 'keys',
  												       allowBlank: false
   													  },{
- 											       fieldLabel: 'Content values (csv)',
+ 											       fieldLabel: 'Attribute values (csv)',
  											       name: 'values',
  											       allowBlank: false
-  													  }
+  													  } 
   													  
   													  ],
 						           			
@@ -607,7 +743,194 @@ Ext.define('CF.view.FilterOnAnchestor' , {extend:'Ext.form.Panel',
   													               FilterAjax.request({
 									 						           
 									 						           method: 'POST',
-  							      									   url: '/j2ep-1.0/prov/entities/filterOnAnchestorsMeta',
+  							      									   url: '/j2ep-1.0/prov/entities/filterOnAncestorsMeta',
+  				 												       headers: { 'Content-Type':'application/x-www-form-urlencoded' },
+  				 												       success: function(response){
+  				 												        filtered=Ext.decode(response.responseText)
+  				 												        artifactStore.clearFilter(true);
+  				 												        if (filtered.length==0)
+  				 												       			 artifactStore.removeAll()
+  				 												       	else
+  				 												       	{
+																	    artifactStore.filterBy(function(record, id){
+													  											if(Ext.Array.indexOf(filtered, record.data.ID)==-1)
+													  											{	
+													  											   return false;
+ 																						   		}    
+																							    return true;
+																								}, this);
+																		
+																			}
+																		}
+																		
+																	   ,
+																	   failure: function(response){
+  				 												       
+  				 												       alert("Filter Request Failed")
+  				 												     
+  				 												       
+  				 												       },
+ 					   									               params: {
+   						 											            ids: dataids,
+  																	            keys: form.findField("keys").getValue(),
+  																	            values: form.findField("values").getValue()
+  																	            
+  						        	  											}
+  						 			  									});
+  						 			  									
+         														   } 
+   															 }     
+												    }
+												    ]
+      			 			     				}
+
+);
+
+
+
+Ext.define('CF.view.FilterOnAncestorValuesRange' , {extend:'Ext.form.Panel',
+						           // The fields
+						           title:'Ancestors Values Range',
+  											  defaultType: 'textfield',
+  											  layout: {
+          											  align:  'center',
+       												  pack:   'center',
+    								        type:   'vbox'
+     										   },
+										    items: [ {
+  												      fieldLabel: 'Attribute keys (csv)',
+ 												       name: 'keys',
+ 												       allowBlank: false
+  													  },{
+ 											       fieldLabel: 'Min values (csv)',
+ 											       name: 'minvalues',
+ 											       allowBlank: false
+  													  },
+  													  {
+ 											       fieldLabel: 'Max values (csv)',
+ 											       name: 'maxvalues',
+ 											       allowBlank: false
+  													  } 
+  													
+  													  
+  													  ],
+						           			
+						           	
+						           			buttons: [ {
+  											      text: 'Filter',
+     											   formBind: true, //only enabled once the form is valid
+    											     
+  											      handler: function() {
+													
+												  dataids=""
+  											      if (artifactStore.getAt(0).data.ID) 
+  											     	 dataids=artifactStore.getAt(0).data.ID
+  											      
+  											      for (var i = 1; i < artifactStore.getCount(); i++)
+													{
+													  
+   													  dataids += ',' + artifactStore.getAt(i).data.ID; 
+													}
+  											       
+  											     
+  											      
+ 										          var form = this.up('form').getForm();
+  													          if (form.isValid()) {
+  													               FilterAjax.request({
+									 						           
+									 						           method: 'POST',
+  							      									   url: '/j2ep-1.0/prov/entities/filterOnAncestorsValuesRange',
+  				 												       headers: { 'Content-Type':'application/x-www-form-urlencoded' },
+  				 												       success: function(response){
+  				 												        filtered=Ext.decode(response.responseText)
+  				 												        artifactStore.clearFilter(true);
+  				 												        if (filtered.length==0)
+  				 												       			 artifactStore.removeAll()
+  				 												       	else
+  				 												       	{
+																	    artifactStore.filterBy(function(record, id){
+													  											if(Ext.Array.indexOf(filtered, record.data.ID)==-1)
+													  											{	
+													  											   return false;
+ 																						   		}    
+																							    return true;
+																								}, this);
+																		
+																			}
+																		}
+																		
+																	   ,
+																	   failure: function(response){
+  				 												       
+  				 												       alert("Filter Request Failed")
+  				 												     
+  				 												       
+  				 												       },
+ 					   									               params: {
+   						 											            ids: dataids,
+  																	            keys: form.findField("keys").getValue(),
+  																	            minvalues: form.findField("minvalues").getValue(),
+  																	            maxvalues: form.findField("maxvalues").getValue()
+  						        	  											}
+  						 			  									});
+  						 			  									
+         														   } 
+   															 }     
+												    }
+												    ]
+      			 			     				}
+
+);
+
+
+
+Ext.define('CF.view.FilterOnMeta' , {extend:'Ext.form.Panel',
+						           // The fields
+						           title:'Attributes Match',
+  											  defaultType: 'textfield',
+  											  layout: {
+          											  align:  'center',
+       												  pack:   'center',
+    								        type:   'vbox'
+     										   },
+										    items: [ {
+  												      fieldLabel: 'Attribute keys (csv)',
+ 												       name: 'keys',
+ 												       allowBlank: false
+  													  },{
+ 											       fieldLabel: 'Attribute values (csv)',
+ 											       name: 'values',
+ 											       allowBlank: false
+  													  },
+  													  Ext.create('CF.view.mimeCombo', {})
+  													  
+  													  ],
+						           			
+						           	
+						           			buttons: [ {
+  											      text: 'Filter',
+     											   formBind: true, //only enabled once the form is valid
+    											     
+  											      handler: function() {
+													
+												  dataids=""
+  											      if (artifactStore.getAt(0).data.ID) 
+  											     	 dataids=artifactStore.getAt(0).data.ID
+  											      
+  											      for (var i = 1; i < artifactStore.getCount(); i++)
+													{
+													  
+   													  dataids += ',' + artifactStore.getAt(i).data.ID; 
+													}
+  											       
+  											     
+  											      
+ 										          var form = this.up('form').getForm();
+  													          if (form.isValid()) {
+  													               FilterAjax.request({
+									 						           
+									 						           method: 'POST',
+  							      									   url: '/j2ep-1.0/prov/entities/filterOnMeta',
   				 												       headers: { 'Content-Type':'application/x-www-form-urlencoded' },
   				 												       success: function(response){
   				 												        filtered=Ext.decode(response.responseText)
@@ -656,7 +979,7 @@ Ext.define('CF.view.FilterOnAnchestor' , {extend:'Ext.form.Panel',
 
 Ext.define('CF.view.AnnotationSearch' , {extend:'Ext.form.Panel',
 						           // The fields
-						           title:'Search Annotations',
+						           title:'Annotations',
   											  defaultType: 'textfield',
   											  layout: {
           											  align:  'center',
@@ -703,27 +1026,31 @@ Ext.define('CF.view.AnnotationSearch' , {extend:'Ext.form.Panel',
 var searchartifactspane = Ext.create('Ext.window.Window', {
   								   title:'Search Data',
  								   height: 230,
-								   width: 400,
+								   width: 500,
 							       layout: 'fit',
 							       closeAction: 'hide',
 						           items:[{xtype:'tabpanel',
 						           			items:[
-						        				   Ext.create('CF.view.AnnotationSearch'),
-						      					   Ext.create('CF.view.StreamContentSearch')
+						           			       Ext.create('CF.view.StreamValuesRangeSearch'),
+						        				   Ext.create('CF.view.StreamContentMatchSearch'),
+						        				   Ext.create('CF.view.AnnotationSearch')
+						      					   
 						      					   ]
 						           		 }
 						           		]
 								})
 								
-var filterOnAnchestorspane = Ext.create('Ext.window.Window', {
-  								   title:'Filter Data on anchestors metadata',
+var filterOnAncestorspane = Ext.create('Ext.window.Window', {
+  								   title:'Filter Current View',
  								   height: 230,
-								   width: 400,
+								   width: 500,
 							       layout: 'fit',
 							       closeAction: 'hide',
 						           items:[{xtype:'tabpanel',
 						           			items:[
-						        				   Ext.create('CF.view.FilterOnAnchestor')
+						           				   Ext.create('CF.view.FilterOnMeta'),
+						        				   Ext.create('CF.view.FilterOnAncestor'),
+						        				   Ext.create('CF.view.FilterOnAncestorValuesRange')
 						      					   ]
 						           		 }
 						           		]
@@ -740,12 +1067,12 @@ var searchartifacts = Ext.create('Ext.Action', {
     });		
     
     
-var filterOnAnchestors = Ext.create('Ext.Action', {
+var filterOnAncestors = Ext.create('Ext.Action', {
         text: 'Filter Current',
         iconCls: 'icon-add',
         handler: function(){
       
-         		filterOnAnchestorspane.show();
+         		filterOnAncestorspane.show();
         }
     });
  
@@ -816,7 +1143,7 @@ Ext.define('CF.view.ArtifactView', {
             items: [
                  
                 searchartifacts,
-                filterOnAnchestors
+                filterOnAncestors
                  
             ]
         },
