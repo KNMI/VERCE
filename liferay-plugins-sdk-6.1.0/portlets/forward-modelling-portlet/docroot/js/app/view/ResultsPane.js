@@ -325,7 +325,7 @@ Ext.define('CF.view.WorlflowSelection', {
             {header: 'Description',   dataIndex:'description', flex: 3, sortable: false, field:{
   					              xtype:'textfield',
   					              allowBlank:true,
-  					              maxLength: 50
+  					              maxLength: 100
   						          }
 						        },
             {header: 'Date',   dataIndex:'date', flex: 3, sortable: false,
