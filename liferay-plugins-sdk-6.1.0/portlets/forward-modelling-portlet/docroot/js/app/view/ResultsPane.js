@@ -367,7 +367,7 @@ Ext.define('CF.view.WorlflowSelection', {
                     sortable: false,
                     groupable: false
                 }, // custom mapping
-                {
+               /* {
                     xtype: 'actioncolumn',
                     width: 40,
                     tdCls: 'Delete',
@@ -409,7 +409,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
                     }]
-                }
+                }*/
             ],
             flex: 1,
             selType: 'cellmodel',
