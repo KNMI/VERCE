@@ -211,7 +211,7 @@ function selectSolver(selectedSolver)
 	solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
 	solverConfStore.setProxy({
        type : 'ajax',
-       url : localResourcesPath+'/js/solvers/'+selectedSolver+'.json',
+       url : '/j2ep-1.0/prov/solver/'+selectedSolver,
        reader : {
                 type : 'json',
                 root : 'fields'
@@ -223,7 +223,7 @@ function selectSolver(selectedSolver)
 	meshescombo.store.removeAll();
 	meshesstore.setProxy({
 		type : 'ajax',
-		url : localResourcesPath+'/js/solvers/'+selectedSolver+'.json',
+		url : '/j2ep-1.0/prov/solver/'+selectedSolver,
 		reader : {
                 type : 'json',
                 root : 'meshes'
