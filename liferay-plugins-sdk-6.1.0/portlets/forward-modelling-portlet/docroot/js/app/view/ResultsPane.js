@@ -242,7 +242,7 @@ var action = Ext.create('Ext.Action', {
 								
 				 			
          		workflowSel.show();
-								
+         		workflowStore.data.clear()				
 				workflowStore.load()
         }
     });
@@ -264,6 +264,7 @@ var refreshAction = Ext.create('Ext.Action', {
     
      					   } 					    
     					);
+                activityStore.data.clear()
          		activityStore.load()
          		 
         }
@@ -414,6 +415,7 @@ Ext.define('CF.view.WorlflowSelection', {
   									  simpleSortMode: true
     
      					   });
+         		activityStore.data.clear()
          		activityStore.load({ callback: function() {currentRun=record.get("runId")}})
             
         }
