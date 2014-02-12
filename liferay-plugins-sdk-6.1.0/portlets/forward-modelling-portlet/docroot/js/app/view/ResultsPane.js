@@ -611,7 +611,7 @@ function is_image(url, callback, errorcallback) {
 
 }
 
-var IRODS_URL = "https://www.irods.org/web/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
+var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
 
     function viewData(url) { //var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
 
