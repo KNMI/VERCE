@@ -491,8 +491,8 @@ function checkStatus(elem, resp, options, type)
         var errorMsg;
         if (resp.requestType != "delete")
         {
-        	if(elem.url.indexOf("/documents/")> -1)
-        		Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the map.<br>You can manage your uploaded files in the File Manager');
+        	//if(elem.url.indexOf("/documents/")> -1)
+        	//	Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the map.<br>You can manage your uploaded files in the File Manager');
         	
         	resp.features = elem.parseFeatures(request);
         	
