@@ -544,7 +544,7 @@ img.src = url;
 
 }
 		
-var IRODS_URL="https://www.irods.org/web/rodsproxy/aspinuso.UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"		
+var IRODS_URL="https://www.irods.org/web/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"		
 function viewData(url)
 {//var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
 
@@ -552,7 +552,7 @@ function viewData(url)
 htmlcontent="<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
 for (var i=0;i<url.length;i++)
 {
-	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/aspinuso/verce/")
+	url[i]=url[i].replace(/file:\/\/[\w-]+/,IRODS_URL+"/home/"+userSN+"/verce/")
 	 
 	    
  		htmlcontent=htmlcontent+"<center><div id='"+url[i]+"'><img   src='"+localResourcesPath+"/img/loading.gif'/></div></center><br/><br/>"
