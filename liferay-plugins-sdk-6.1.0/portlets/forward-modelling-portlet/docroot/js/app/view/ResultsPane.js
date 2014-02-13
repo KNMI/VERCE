@@ -358,7 +358,7 @@ Ext.define('CF.view.WorlflowSelection', {
                     field: {
                         xtype: 'textfield',
                         allowBlank: true,
-                        maxLength: 100
+                        maxLength: 50
                     }
                 }, {
                     header: 'Date',
@@ -367,13 +367,13 @@ Ext.define('CF.view.WorlflowSelection', {
                     sortable: false,
                     groupable: false
                 }, // custom mapping
-               /* {
+                /*{
                     xtype: 'actioncolumn',
                     width: 40,
                     tdCls: 'Delete',
                     items: [{
                         icon: localResourcesPath + '/img/delete-icon.png', // Use a URL in the icon config
-                        tooltip: 'Show',
+                        tooltip: 'Delete',
                         handler: function (grid, rowIndex, colIndex) {
                             var rec = grid.getStore().getAt(rowIndex);
 
@@ -409,7 +409,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
                     }]
-                }*/
+                } */
             ],
             flex: 1,
             selType: 'cellmodel',
@@ -575,6 +575,7 @@ Ext.define('CF.view.ActivityMonitor', {
 
 
                 });
+                artifactStore.data.clear()
                 artifactStore.load()
 
             }
@@ -695,8 +696,17 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
                         reader: {
                             root: 'entities',
                             totalProperty: 'totalCount'
+                        },
+                        
+                        failure: function (response) {
+
+                            alert("Search Request Failed")
+
+
                         }
+                        
                     });
+                    artifactStore.data.clear()
                     artifactStore.load()
                 }
             }
@@ -747,6 +757,7 @@ Ext.define('CF.view.StreamContentMatchSearch', {
                             totalProperty: 'totalCount'
                         }
                     });
+                    artifactStore.data.clear()
                     artifactStore.load()
                 }
             }
@@ -1083,6 +1094,7 @@ Ext.define('CF.view.AnnotationSearch', {
                             totalProperty: 'totalCount'
                         }
                     });
+                    artifactStore.data.clear()
                     artifactStore.load()
                 }
             }
@@ -1181,6 +1193,7 @@ Ext.define('CF.view.ArtifactView', {
     extend: 'Ext.grid.Panel',
     region: 'south',
     width: '65%',
+    height: 300,
     store: artifactStore,
     disableSelection: true,
     hideHeaders: true,
@@ -1192,15 +1205,19 @@ Ext.define('CF.view.ArtifactView', {
         'CF.store.ArtifactStore',
         'Ext.grid.plugin.BufferedRenderer'
     ],
-    height: 200,
-    autoSroll: true,
+    trackOver: true,
+    autoScroll: true,
+    collapsible: true,
+    verticalScroller: {
+        xtype: 'paginggridscroller'
+    },
+    
     viewConfig: {
         enableTextSelection: true
     },
     plugins: [{
         ptype: 'bufferedrenderer',
-        trailingBufferZone: 20,
-        leadingBufferZone: 50
+         
     }],
 
     columns: [
@@ -1293,6 +1310,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
 
 
                     });
+                    artifactStore.data.clear()
                     artifactStore.load()
 
                 }
