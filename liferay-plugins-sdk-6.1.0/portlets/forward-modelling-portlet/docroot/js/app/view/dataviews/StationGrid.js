@@ -49,7 +49,7 @@ Ext.define('CF.view.dataviews.StationGrid' ,{
             		}),            
             columns: [
                 {
-                    header: '0/0',
+                    header: '0/0',	//it will be updated on selectionchange and when the grid reloads (in Map.js)
                     id: 'stationSelColumn',
                     dataIndex: 'symbolizer',
                     menuDisabled: true,
