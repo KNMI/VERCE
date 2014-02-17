@@ -41,7 +41,14 @@ Ext.define('CF.view.WfGrid', {
 	                text     : 'Desc',
 	                flex     : 1,
 	                sortable : true,
-	                dataIndex: 'desc'
+	                dataIndex: 'desc',
+	                renderer: function(value, metaData, record, row, col, store, gridView) {
+	                	if (value == null || value === '' || value === 'null') {
+	                		return '-';
+	                	}
+
+	                	return value;
+	                }
 	            },
 	            {
 	                text     : 'Status',
