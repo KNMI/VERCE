@@ -36,6 +36,7 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -60,6 +61,8 @@ import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.mail.service.MailServiceUtil;
+import com.liferay.portal.kernel.mail.MailMessage;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMJob;
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
@@ -85,14 +88,17 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
 	{
-		   if(resourceRequest.getResourceID().equals("uploadFile"))
-			   uploadFile(resourceRequest, resourceResponse);
-		   else if(resourceRequest.getResourceID().equals("submit"))
-			   submit(resourceRequest, resourceResponse);
-		   else if (resourceRequest.getResourceID().equals("downloadOutput"))
-			   downloadOutput(resourceRequest, resourceResponse);
-		   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
-			   deleteWorkflow(resourceRequest, resourceResponse);
+	   System.out.println("#### " + resourceRequest.getResourceID());
+	   if(resourceRequest.getResourceID().equals("uploadFile"))
+		   uploadFile(resourceRequest, resourceResponse);
+	   else if(resourceRequest.getResourceID().equals("submit"))
+		   submit(resourceRequest, resourceResponse);
+	   else if (resourceRequest.getResourceID().equals("downloadOutput"))
+		   downloadOutput(resourceRequest, resourceResponse);
+	   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
+		   deleteWorkflow(resourceRequest, resourceResponse);
+	   else if (resourceRequest.getResourceID().equals("meshVelocityModelUpload"))
+		   meshVelocityModelUpload(resourceRequest, resourceResponse);
 	}
 	
 	public void getWorkflowList(ActionRequest req, ActionResponse res)
@@ -339,55 +345,141 @@ public class ForwardPortlet extends MVCPortlet{
 		   // TODO send error to client
 	   }
    }
- 
+
+   private void meshVelocityModelUpload(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+       try {
+   		   UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(resourceRequest);
+
+   		   String meshURL = uploadRequest.getParameter("mesh-link");
+   		   if (uploadRequest.getFileName("mesh-file") != null && uploadRequest.getFileName("mesh-file").length() > 0) {
+
+		       meshURL = saveFileUpload(resourceRequest, uploadRequest.getFileAsStream("mesh-file"), uploadRequest.getFileName("mesh-file"), "mesh");
+   		   }
+	       System.out.println(meshURL);
+
+   		   if (meshURL == null || meshURL.equals("")) {
+		       resourceResponse.getWriter().write("{ success: false, errors: { \"mesh-file\": \"No mesh file or URL included or included file too large.\" } }");
+		       return;
+   		   }
+
+   		   String velocityModelURL = uploadRequest.getParameter("velocity-model-link");
+   		   if (uploadRequest.getFileName("velocity-model-file") != null && uploadRequest.getFileName("velocity-model-file").length() > 0) {
+
+	           velocityModelURL = saveFileUpload(resourceRequest, uploadRequest.getFileAsStream("velocity-model-file"), uploadRequest.getFileName("velocity-model-file"), "velocitymodel");
+	       }
+           System.out.println(velocityModelURL);
+
+   		   if (velocityModelURL == null || velocityModelURL.equals("")) {
+		       resourceResponse.getWriter().write("{ success: false, errors: { \"velocity-model-file\": \"No velocity model file or URL included or included file too large.\" } }");
+		       return;
+   		   }
+
+	       // MailMessage mailMessage = new MailMessage(
+	       // 	new InternetAddress("jonas.matser@knmi.nl"),
+	       // 	new InternetAddress("jonas.matser@knmi.nl"),
+	       // 	"VERCE: Mesh and velocity model submitted",
+	       // 	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+	       // 	"\n" +
+	       // 	"The mesh and velocity model are available at the following links." +
+	       // 	"Mesh: " + meshURL +
+	       // 	"Velocity Model: " + velocityModelURL +
+	       // 	"\n" +
+	       // 	"The user also added the following note: " +
+	       // 	HtmlUtil.escape(uploadRequest.getParameter("note")),
+	       // 	true
+	       // );
+	       // MailServiceUtil.sendEmail(mailMessage);
+
+	       // System.out.println(1);
+	       // MailMessage mailMessage = new MailMessage();
+	       // System.out.println(1.1);
+	       // mailMessage.setSubject("VERCE: Mesh and velocity model submitted");
+	       // System.out.println(2);
+        //    InternetAddress email = new InternetAddress("jonas.matser@knmi.nl");
+	       // try {
+		      //  System.out.println(2.1);
+		      //  mailMessage.setTo(new InternetAddress[] {email});
+	       // } catch (Exception e) {
+       	//        System.out.println(e.getMessage() + "\n" + e.getStackTrace());
+	       // }
+	       // System.out.println(2.2);	       
+	       // mailMessage.setFrom(email);
+	       // System.out.println(3);
+	       // mailMessage.setBody(
+	       // 	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+	       // 	"\n" +
+	       // 	"The mesh and velocity model are available at the following links." +
+	       // 	"Mesh: " + meshURL +
+	       // 	"Velocity Model: " + velocityModelURL +
+	       // 	"\n" +
+	       // 	"The user also added the following note: " +
+	       // 	HtmlUtil.escape(uploadRequest.getParameter("note"))
+	       // );
+	       // System.out.println(4);
+	       // mailMessage.setHTMLFormat(true);
+	       // System.out.println(5);
+	       // System.out.println(mailMessage.getBody());
+	       // MailServiceUtil.sendEmail(mailMessage);
+	       // System.out.println(6);
+
+	       resourceResponse.getWriter().write("{ success: true }");
+	   } catch (Exception e) {
+	   	   System.out.println(e);
+	       catchError(e, resourceResponse, "500", e.getMessage());
+	   }
+   }
+
    private void uploadFile(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
    {
 	   resourceResponse.setContentType("text/html");
-	   try 
-	   {
-		   UploadPortletRequest uploadrequest = PortalUtil.getUploadPortletRequest(resourceRequest);
-		   String name = ParamUtil.getString(uploadrequest, "name");
-		   String filetype = ParamUtil.getString(uploadrequest, "filetype");
-		   InputStream inputStream = uploadrequest.getFileAsStream("form-file");
-		   long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
-		   User u = PortalUtil.getUser(resourceRequest);
-		   String userSN =  u.getScreenName();
-		   
-		   if(inputStream!=null){
-			   File file = FileUtil.createTempFile(inputStream);
-			   String uploadString = getFileAsString(file);		//content
+	   try {
+		   UploadPortletRequest uploadRequest = PortalUtil.getUploadPortletRequest(resourceRequest);
+		   InputStream inputStream = uploadRequest.getFileAsStream("form-file");
 
-			   if (uploadString!=null)
-			   {
-				   try
-				   {
-					   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
-					   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
-					   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
-					   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
-					   //System.out.println("[ForwardModellingPortlet.serveResource] " +portalUrl+" "+currentURL+" "+portal);
-					   //if(portalUrl.startsWith("http://localhost"))	
-						   portalUrl += portal;
-					   publicPath = portalUrl+publicPath;
-					   String successString = " {'success':'true', 'path':'"+publicPath+"'}";
-					   resourceResponse.getWriter().write(successString);
-					   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
-				   }
-				   catch (Exception spe) 
-				   {	
-					   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN);
-				   } 
-			   }
-			   else
-			   {
-				   catchError(null, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Failed!! The file is empty. User: "+userSN);
-			   }
+		   if(inputStream == null){
+		       throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: FileInput \"form-file\" not found in request.");
 		   }
+
+		   String name = ParamUtil.getString(resourceRequest, "name");
+		   String filetype = ParamUtil.getString(resourceRequest, "filetype");
+	       String publicPath = saveFileUpload(resourceRequest, inputStream, filetype, name);
+		   String successString = " {'success':'true', 'path':'"+publicPath+"'}";
+		   resourceResponse.getWriter().write(successString);
+	   } catch (Exception e) {
+	       catchError(e, resourceResponse, "500", e.getMessage());
 	   }
-	   catch (Exception e)
+   }
+
+   private String saveFileUpload(ResourceRequest resourceRequest, InputStream inputStream, String name, String filetype)
+   throws Exception
+   {
+	   long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
+	   String userSN =  PortalUtil.getUser(resourceRequest).getScreenName();
+	   
+	   File file = FileUtil.createTempFile(inputStream);
+	   if (file.length() < 1)
 	   {
-		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.uploadFile] Exception catched!");
+		   throw new Exception("[ForwardModellingPortlet.uploadFile] Failed!! The file is empty. User: "+userSN);
 	   }
+
+	   try
+	   {
+		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
+		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
+		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
+		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
+		   portalUrl += portal;
+		   publicPath = portalUrl+publicPath;
+
+		   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
+
+		   return publicPath;
+	   }
+	   catch (Exception e) 
+	   {
+	   		System.out.println(e.getStackTrace());
+	       throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN, e);
+	   } 
    }
    
    private String addFileToDL(File file, String name, long groupId, String userSN, String filetype) throws SystemException, PortalException

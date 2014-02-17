@@ -144,6 +144,30 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
 	}
 });
 
+Ext.define('LinkButton', {
+    alias: 'widget.LinkButton',
+    extend: 'Ext.Component',
+    renderTpl: '<a href="{url}">{text}</a>',
+    renderSelectors: {
+        linkEl: 'a'
+    },
+    
+    initComponent: function() {
+        this.callParent(arguments);
+        this.renderData = {
+            url: this.url || '#',
+            text: this.text
+        }
+    },
+    listeners: {
+        render: function (c) {
+            c.el.on('click', c.handler);
+        }
+    },
+    handler: function (e) {
+    }
+});
+
 var formSolverSelect = Ext.create('Ext.form.Panel', {
      extend:'Ext.form.Panel',
      alias: 'widget.solverselect',
@@ -162,6 +186,14 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     solvercombo,
     meshescombo,
     velocitycombo,
+    {
+      xtype: 'LinkButton',
+      text: 'Click here to submit a new mesh and velocity model',
+      handler: function(e) {
+        e.stopEvent();
+        meshSolverPopup();
+      }
+    },
     {
     	xtype: 'hidden',
     	id: 'solver-filetype',
@@ -186,6 +218,111 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
          }
       ]
 });
+
+var meshSolverPopup = function() {
+  var win = Ext.widget('window', {
+    title: 'Submit a new mesh and velocity model',
+    closeAction: 'destroy',
+    width: 600,
+    height: 400,
+    layout: 'fit',
+    modal: true,
+    autoScroll: true,
+    resizable: false,
+    items: [{
+      xtype: 'form',
+      frame: false,
+      border: false,
+      bodyPadding: '10 10 0 10',
+      items: [{
+        xtype: 'displayfield',
+        value: 'You can submit a new mesh and velocity model here. Currently we will check your submission by hand before adding them to the list of available meshes and models.'
+      },
+      {
+        xtype: 'fieldset',
+        title: 'Mesh',
+        items: [
+        {
+          xtype: 'filefield',
+          fieldLabel: 'Upload a file...',
+          name: 'mesh-file',
+          id: 'mesh-file',
+          msgTarget: 'side',
+        },
+        {
+          xtype: 'textfield',
+          fieldLabel: '...or paste a link',
+          name: 'mesh-link',
+          id: 'mesh-link',
+          msgTarget: 'side',
+        }
+        ]
+      },
+      {
+        xtype: 'fieldset',
+        title: 'Velocity Model',
+        items: [
+        {
+          xtype: 'filefield',
+          fieldLabel: 'Upload a file...',
+          name: 'velocity-model-file',
+          id: 'velocity-model-file',
+          msgTarget: 'side',
+        },
+        {
+          xtype: 'textfield',
+          fieldLabel: '...or paste a link',
+          name: 'velocity-model-link',
+          id: 'velocity-model-link',
+          msgTarget: 'side',
+        }
+        ]
+      },
+      {
+        xtype: 'fieldset',
+        // title: 'Velocity Model',
+        items: [
+        {
+          xtype: 'textareafield',
+          fieldLabel: 'note',
+          height: 120,
+          width: 'auto',
+          name: 'note',
+          msgTarget: 'side',
+        }]
+      }],
+      buttons: [{
+        text: 'Submit',
+        handler: function(button, event) {
+          button.up('form').getForm().submit({
+            url: meshVelocityModelUploadURL,
+            waitMsg: 'Please wait while your submission is saved.',
+            success: function(form, action) {
+              Ext.Msg.alert('Success', 'Your mesh and velocity model have been submitted. We will keep you informed via email.', function() {
+                form.owner.up('window').close();
+              });
+            },
+            failure: function(form, action) {
+              if (action.failureType === Ext.form.action.Action.CLIENT_INVALID) {
+              } else if (action.failureType === Ext.form.action.Action.CONNECT_FAILURE) {
+                Ext.Msg.alert('Connection Error', 'There was an error connecting to the server. Please try again.');
+              } else if (action.failureType === Ext.form.action.Action.SERVER_INVALID) {
+                // Ext.Msg.alert('Error', 'There was an error submitting your mesh and velocity model:\n' + action.result.message);
+              }
+            }
+          });
+        },
+      },
+      {
+        text: 'Cancel',
+        handler: function(e) {
+          this.up('window').close();
+        }
+      }]
+    }]
+  });
+  win.show();
+}
 
 Ext.define('CF.view.SolverSelect', {
 	  extend:'Ext.form.Panel',

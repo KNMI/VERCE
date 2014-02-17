@@ -36,6 +36,8 @@
 
 <liferay-portlet:resourceURL id="downloadOutput" var="downloadWorkflowOutputURL" />
 
+<portlet:resourceURL id="meshVelocityModelUpload" var="meshVelocityModelUploadURL" />
+
 <portlet:resourceURL id="uploadFile" var="uploadFileURL" />
 
 <portlet:resourceURL id="submit" var="submitSolverURL" />
@@ -95,6 +97,7 @@ catch(Exception e){
 	var updateWorkflowDescriptionURL='<%=updateWorkflowDescriptionURL.toString()%>';
 	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
 	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
+	var meshVelocityModelUploadURL='<%=meshVelocityModelUploadURL.toString()%>';
 	var uploadFileURL='<%=uploadFileURL.toString()%>';
 	var getFileListURL='<%=getFileListURL.toString()%>';
 	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
