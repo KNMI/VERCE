@@ -248,6 +248,8 @@ var activityStore = Ext.create('CF.store.ActivityStore');
 
 var artifactStore = Ext.create('CF.store.ArtifactStore');
 
+var singleArtifactStore = Ext.create('CF.store.ArtifactStore');
+
 var workflowStore = Ext.create('CF.store.WorkflowStore');
 
 var action = Ext.create('Ext.Action', {
@@ -262,15 +264,29 @@ var action = Ext.create('Ext.Action', {
         }
         workflowSel = Ext.create('Ext.window.Window', {
             title: 'Workflows Runs',
-            height: 230,
+            height: 430,
             width: 800,
-            layout: 'fit',
-            items: [Ext.create('CF.view.WorlflowSelection')]
+
+            layout: {
+                type: 'vbox',
+                align: 'stretch',
+                pack: 'start',
+            },
+            items: [{
+                    xtype: 'panel',
+                    collapsible: true,
+                    items: [Ext.create('CF.view.WorkflowValuesRangeSearch')],
+
+                },
+                Ext.create('CF.view.WorlflowSelection')
+            ]
 
         })
 
 
         workflowSel.show();
+        workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/'+ userSN
+
         workflowStore.data.clear()
         workflowStore.load()
     }
@@ -612,14 +628,14 @@ function is_image(url, callback, errorcallback) {
 
 }
 
-var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
+var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
 
-    function viewData(url) { //var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
+    function viewData(url, open) { //var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
 
 
         htmlcontent = "<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
         for (var i = 0; i < url.length; i++) {
-            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + userSN + "/verce/")
+            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/"+ userSN+"/verce/")
 
 
             htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/><br/>"
@@ -634,26 +650,75 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + 
 
         }
 
-        Ext.create('Ext.window.Window', {
-            title: 'Data File',
-            height: 400,
-            width: 800,
-            layout: 'fit',
-            items: [{
-                overflowY: 'auto',
-                overflowX: 'auto',
+        if (open) {
+            Ext.create('Ext.window.Window', {
+                title: 'Data File',
+                height: 400,
+                width: 800,
+                layout: 'fit',
+                items: [{
+                    overflowY: 'auto',
+                    overflowX: 'auto',
 
-                xtype: 'panel',
-                html: htmlcontent
-            }]
+                    xtype: 'panel',
+                    html: htmlcontent
+                }]
 
-        }).show();
+            }).show();
+        }
+
+
     }
 
     //activityStore.load();
 
 
+Ext.define('CF.view.WorkflowValuesRangeSearch', {
+        extend: 'Ext.form.Panel',
+        // The fields
 
+        defaultType: 'textfield',
+        layout: {
+            align: 'center',
+            pack: 'center',
+            type: 'vbox'
+        },
+        items: [{
+                fieldLabel: 'Attributes keys (csv)',
+                name: 'keys',
+                allowBlank: false
+            }, {
+                fieldLabel: 'Min values (csv)',
+                name: 'minvalues',
+                allowBlank: false
+            }, {
+                fieldLabel: 'Max values (csv)',
+                name: 'maxvalues',
+                allowBlank: false
+            }
+
+        ],
+
+
+        buttons: [{
+            text: 'Search',
+            formBind: true, //only enabled once the form is valid
+
+            handler: function () {
+                var form = this.up('form').getForm();
+
+                if (form.isValid()) {
+                    workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/'+ userSN+'?' + form.getValues(true)
+                };
+
+
+
+                workflowStore.load()
+            }
+        }]
+    }
+
+);
 
 Ext.define('CF.view.StreamValuesRangeSearch', {
         extend: 'Ext.form.Panel',
@@ -697,14 +762,14 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
                             root: 'entities',
                             totalProperty: 'totalCount'
                         },
-                        
+
                         failure: function (response) {
 
                             alert("Search Request Failed")
 
 
                         }
-                        
+
                     });
                     artifactStore.data.clear()
                     artifactStore.load()
@@ -1113,7 +1178,6 @@ var searchartifactspane = Ext.create('Ext.window.Window', {
         xtype: 'tabpanel',
         items: [
             Ext.create('CF.view.StreamValuesRangeSearch'),
-            Ext.create('CF.view.StreamContentMatchSearch'),
             Ext.create('CF.view.AnnotationSearch')
 
         ]
@@ -1130,7 +1194,6 @@ var filterOnAncestorspane = Ext.create('Ext.window.Window', {
         xtype: 'tabpanel',
         items: [
             Ext.create('CF.view.FilterOnMeta'),
-            Ext.create('CF.view.FilterOnAncestor'),
             Ext.create('CF.view.FilterOnAncestorValuesRange')
         ]
     }]
@@ -1170,7 +1233,7 @@ function renderStream(value, p, record) {
         '<strong>Generated By :</strong> {1} <br/> <br/>' +
         '<strong>Run Id :</strong> {6} <br/> <br/>' +
         '<strong>Date :</strong>{7}<br/> <br/>' +
-        '<strong>Output Files :</strong><a href="javascript:viewData(\'{4}\'.split(\',\'))">Open</a><br/> <br/>' +
+        '<strong>Output Files :</strong><a href="javascript:viewData(\'{4}\'.split(\',\'),true)">Open</a><br/> <br/>' +
         '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
         '<strong>Parameters :</strong>{2}<br/> <br/>' +
         '<strong>Annotations :</strong>{3}<br/> <br/>' +
@@ -1187,6 +1250,73 @@ function renderStream(value, p, record) {
         record.data.errors
     );
 }
+
+function renderStreamSingle(value, p, record) {
+    return Ext.String.format(
+        '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
+        '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
+        '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
+        '<strong><a href="javascript:wasDerivedFromNewGraph(\'/j2ep-1.0/prov/wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
+        '<strong><a href="javascript:derivedDataNewGraph(\'/j2ep-1.0/prov/derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+        '<strong>Generated By :</strong> {1} <br/> <br/>' +
+        '<strong>Run Id :</strong> {6} <br/> <br/>' +
+        '<strong>Date :</strong>{7}<br/> <br/>' +
+        '<strong>Output Files :</strong><a href="javascript:viewData(\'{4}\'.split(\',\'),true)">Open</a><br/> <br/>' +
+        '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
+        '<strong>Parameters :</strong>{2}<br/> <br/>' +
+        '<strong>Annotations :</strong>{3}<br/> <br/>' +
+        '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
+        '</div>',
+        record.data.ID,
+        record.data.wasGeneratedBy,
+        record.data.parameters,
+        record.data.annotations,
+        record.data.location,
+        record.data.content.substring(0, 1000) + "...",
+        record.data.runId,
+        record.data.endTime,
+        record.data.errors
+    );
+}
+
+
+
+
+Ext.define('CF.view.SingleArtifactView', {
+
+    extend: 'Ext.grid.Panel',
+    region: 'south',
+    width: '100%',
+    height: 300,
+    store: singleArtifactStore,
+    disableSelection: true,
+    hideHeaders: true,
+    split: true,
+    trackOver: true,
+    autoScroll: true,
+
+    verticalScroller: {
+        xtype: 'paginggridscroller'
+    },
+
+    viewConfig: {
+        enableTextSelection: true
+    },
+
+
+    columns: [
+
+        {
+            dataIndex: 'ID',
+            field: 'ID',
+            flex: 3,
+            renderer: renderStreamSingle
+        }
+    ],
+
+});
+
+
 
 Ext.define('CF.view.ArtifactView', {
     id: 'ArtifactView',
@@ -1211,13 +1341,13 @@ Ext.define('CF.view.ArtifactView', {
     verticalScroller: {
         xtype: 'paginggridscroller'
     },
-    
+
     viewConfig: {
         enableTextSelection: true
     },
     plugins: [{
         ptype: 'bufferedrenderer',
-         
+
     }],
 
     columns: [
@@ -1286,6 +1416,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
         render: function () {
 
             $(viewportprov).bind('contextmenu', function (e) {
+                e.preventDefault();
                 var pos = $(this).offset();
                 var p = {
                     x: e.pageX - pos.left,
@@ -1294,14 +1425,13 @@ Ext.define('CF.view.provenanceGraphsViewer', {
                 selected = nearest = dragged = sys.nearest(p);
 
                 if (selected.node !== null) {
+
                     // dragged.node.tempMass = 10000
                     dragged.node.fixed = true;
                     //   addMeta('/j2ep-1.0/prov/streamchunk/?runid='+currentRun+'&id='+selected.node.name)
-
-                    artifactStore.setProxy({
+                    singleArtifactStore.setProxy({
                         type: 'ajax',
                         url: '/j2ep-1.0/prov/entities/run?runId=' + currentRun + '&dataId=' + selected.node.name,
-
                         reader: {
                             root: 'entities',
                             totalProperty: 'totalCount'
@@ -1309,12 +1439,35 @@ Ext.define('CF.view.provenanceGraphsViewer', {
 
 
 
-                    });
-                    artifactStore.data.clear()
-                    artifactStore.load()
+
+                    })
+
+                    var singleArtifactView = Ext.create('CF.view.SingleArtifactView')
+
+
+                    Ext.create('Ext.window.Window', {
+                        title: 'Data Detail',
+                        height: 350,
+                        width: 800,
+                        layout: 'fit',
+                        closeAction: 'hide',
+                        items: [{
+                                xtype: 'tabpanel',
+                                items: [
+                                    singleArtifactView
+                                ]
+                            }
+
+                        ]
+                    }).show()
+
+
+                    singleArtifactStore.data.clear()
+                    singleArtifactStore.load()
+                    window.event.returnValue = false;
+
 
                 }
-                return false;
             })
 
 
