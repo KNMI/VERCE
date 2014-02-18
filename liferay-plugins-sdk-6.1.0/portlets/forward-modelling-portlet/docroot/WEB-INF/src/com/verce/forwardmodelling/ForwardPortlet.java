@@ -221,7 +221,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   stationFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(portalUrl2+stationUrl);
 			   FileUtil.write(stationFile, wsUrl.openStream());
-			   String stFileName = "stations_"+formatter.format(new Date()).toString();
+			   String stFileName = "stations_"+runIds[0];
 			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
 			   stPublicPath = portalUrl + stPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by "+userSN+", accessible in: "+stPublicPath);
@@ -241,7 +241,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   eventFile = FileUtil.createTempFile();
 			   URL wsUrl = new URL(portalUrl2+eventUrl);
 			   FileUtil.write(eventFile, wsUrl.openStream());
-			   String evFileName = "events_"+formatter.format(new Date()).toString();
+			   String evFileName = "events_"+runIds[0];
 			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
 			   evPublicPath = portalUrl + evPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
@@ -273,7 +273,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //5. Create the solver file and store it
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
-			   String fileName = solverType+"_"+i+"_"+formatter.format(new Date()).toString()+".json";
+			   String fileName = solverType+"_"+runIds[i]+".json";
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
