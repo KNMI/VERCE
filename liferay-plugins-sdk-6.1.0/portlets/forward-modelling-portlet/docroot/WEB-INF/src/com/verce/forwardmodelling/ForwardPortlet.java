@@ -440,8 +440,8 @@ public class ForwardPortlet extends MVCPortlet{
 		       throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: FileInput \"form-file\" not found in request.");
 		   }
 
-		   String name = ParamUtil.getString(resourceRequest, "name");
-		   String filetype = ParamUtil.getString(resourceRequest, "filetype");
+		   String name = ParamUtil.getString(uploadRequest, "name");
+		   String filetype = ParamUtil.getString(uploadRequest, "filetype");
 	       String publicPath = saveFileUpload(resourceRequest, inputStream, filetype, name);
 		   String successString = " {'success':'true', 'path':'"+publicPath+"'}";
 		   resourceResponse.getWriter().write(successString);
