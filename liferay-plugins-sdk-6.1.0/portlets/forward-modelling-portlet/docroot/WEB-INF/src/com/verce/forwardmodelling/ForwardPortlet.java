@@ -442,7 +442,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 		   String name = ParamUtil.getString(uploadRequest, "name");
 		   String filetype = ParamUtil.getString(uploadRequest, "filetype");
-	       String publicPath = saveFileUpload(resourceRequest, inputStream, filetype, name);
+	       String publicPath = saveFileUpload(resourceRequest, inputStream, name, filetype);
 		   String successString = " {'success':'true', 'path':'"+publicPath+"'}";
 		   resourceResponse.getWriter().write(successString);
 	   } catch (Exception e) {
