@@ -252,6 +252,8 @@ var singleArtifactStore = Ext.create('CF.store.ArtifactStore');
 
 var workflowStore = Ext.create('CF.store.WorkflowStore');
 
+var workflowInputStore = Ext.create('CF.store.WorkflowInputStore');
+
 var action = Ext.create('Ext.Action', {
     tooltip: 'Open Run',
     text: 'Open Run',
@@ -272,12 +274,9 @@ var action = Ext.create('Ext.Action', {
                 align: 'stretch',
                 pack: 'start',
             },
-            items: [{
-                    xtype: 'panel',
-                    collapsible: true,
-                    items: [Ext.create('CF.view.WorkflowValuesRangeSearch')],
+            items: [
 
-                },
+                Ext.create('CF.view.WorkflowValuesRangeSearch'),
                 Ext.create('CF.view.WorlflowSelection')
             ]
 
@@ -285,7 +284,7 @@ var action = Ext.create('Ext.Action', {
 
 
         workflowSel.show();
-        workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/'+ userSN
+        workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/user/'+ userSN
 
         workflowStore.data.clear()
         workflowStore.load()
@@ -310,6 +309,47 @@ var refreshAction = Ext.create('Ext.Action', {
         });
         activityStore.data.clear()
         activityStore.load()
+
+    }
+});
+
+
+var viewInputAction = Ext.create('Ext.Action', {
+    tooltip: 'View Run Inputs',
+    text: 'View Run Inputs',
+    id: 'viewworkflowinput',
+    disabled: 'true',
+
+    handler: function () {
+        workflowInputStore.setProxy({
+            type: 'ajax',
+            url: '/j2ep-1.0/prov/workflow/' + encodeURIComponent(currentRun),
+            reader: {
+                root: 'input',
+                totalProperty: 'totalCount'
+            },
+
+            failure: function () {
+                alert("Error loading Workflow Inputs")
+            },
+            simpleSortMode: true
+
+        });
+
+        if (typeof workflowIn != "undefined") {
+            workflowIn.close();
+        }
+
+        workflowIn = Ext.create('Ext.window.Window', {
+            title: 'Workflow input',
+            height: 300,
+            width: 400,
+            layout: 'fit',
+            items: [Ext.create('CF.view.WorkflowInputView')]
+
+        }).show();
+        workflowInputStore.data.clear()
+        workflowInputStore.load()
 
     }
 });
@@ -475,6 +515,7 @@ Ext.define('CF.view.WorlflowSelection', {
                 })
                 Ext.getCmp('filtercurrent').enable();
                 Ext.getCmp('searchartifacts').enable();
+                Ext.getCmp('viewworkflowinput').enable();
 
             }
         }
@@ -487,10 +528,11 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
 Ext.define('CF.view.ActivityMonitor', {
-    region: 'west',
-    width: '35%',
+
+
     title: 'Processing Elements - Double Click on the PE to access the produced Sream Data',
-    height: '100%',
+    width: '25%',
+    region: 'west',
     extend: 'Ext.grid.Panel',
     alias: 'widget.activitymonitor',
     id: 'activitymonitor',
@@ -513,7 +555,8 @@ Ext.define('CF.view.ActivityMonitor', {
         items: [
 
             action,
-            refreshAction
+            refreshAction,
+            viewInputAction,
         ]
     },
 
@@ -554,12 +597,12 @@ Ext.define('CF.view.ActivityMonitor', {
                     flex: 3,
                     sortable: false
                 }, // custom mapping
-                {
+                /*{
                     header: 'IterationIndex',
                     dataIndex: 'iterationIndex',
                     flex: 3,
                     sortable: false
-                } // custom mapping
+                } // custom mapping*/
 
             ],
             flex: 1,
@@ -635,7 +678,7 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
 
         htmlcontent = "<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
         for (var i = 0; i < url.length; i++) {
-            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/"+ userSN+"/verce/")
+            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/aspinuso/verce/")
 
 
             htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/><br/>"
@@ -677,24 +720,28 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
         extend: 'Ext.form.Panel',
         // The fields
 
+
         defaultType: 'textfield',
         layout: {
             align: 'center',
             pack: 'center',
-            type: 'vbox'
+            type: 'hbox'
         },
         items: [{
-                fieldLabel: 'Attributes keys (csv)',
+                fieldLabel: 'Attributes (csv)',
                 name: 'keys',
-                allowBlank: false
+                allowBlank: false,
+                margin: '10 10 30 10'
             }, {
-                fieldLabel: 'Min values (csv)',
+                fieldLabel: '  Min values (csv)',
                 name: 'minvalues',
-                allowBlank: false
+                allowBlank: false,
+                margin: '10 10 30 10'
             }, {
-                fieldLabel: 'Max values (csv)',
+                fieldLabel: '  Max values (csv)',
                 name: 'maxvalues',
-                allowBlank: false
+                allowBlank: false,
+                margin: '10 20 30 10'
             }
 
         ],
@@ -708,7 +755,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
                 var form = this.up('form').getForm();
 
                 if (form.isValid()) {
-                    workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/'+ userSN+'?' + form.getValues(true)
+                    workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/user/aspinuso?' + form.getValues(true)
                 };
 
 
@@ -1224,6 +1271,10 @@ var filterOnAncestors = Ext.create('Ext.Action', {
 });
 
 function renderStream(value, p, record) {
+    var location = '</br>'
+    if (record.data.location != "")
+        location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
+
     return Ext.String.format(
         '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
         '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
@@ -1233,7 +1284,7 @@ function renderStream(value, p, record) {
         '<strong>Generated By :</strong> {1} <br/> <br/>' +
         '<strong>Run Id :</strong> {6} <br/> <br/>' +
         '<strong>Date :</strong>{7}<br/> <br/>' +
-        '<strong>Output Files :</strong><a href="javascript:viewData(\'{4}\'.split(\',\'),true)">Open</a><br/> <br/>' +
+        '<strong>Output Files :</strong> {4} <br/>' +
         '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
         '<strong>Parameters :</strong>{2}<br/> <br/>' +
         '<strong>Annotations :</strong>{3}<br/> <br/>' +
@@ -1243,7 +1294,7 @@ function renderStream(value, p, record) {
         record.data.wasGeneratedBy,
         record.data.parameters,
         record.data.annotations,
-        record.data.location,
+        location,
         record.data.content.substring(0, 1000) + "...",
         record.data.runId,
         record.data.endTime,
@@ -1252,6 +1303,10 @@ function renderStream(value, p, record) {
 }
 
 function renderStreamSingle(value, p, record) {
+    var location = '</br>'
+    if (record.data.location != "")
+        location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
+
     return Ext.String.format(
         '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
         '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
@@ -1261,7 +1316,7 @@ function renderStreamSingle(value, p, record) {
         '<strong>Generated By :</strong> {1} <br/> <br/>' +
         '<strong>Run Id :</strong> {6} <br/> <br/>' +
         '<strong>Date :</strong>{7}<br/> <br/>' +
-        '<strong>Output Files :</strong><a href="javascript:viewData(\'{4}\'.split(\',\'),true)">Open</a><br/> <br/>' +
+        '<strong>Output Files :</strong> {4} <br/>' +
         '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
         '<strong>Parameters :</strong>{2}<br/> <br/>' +
         '<strong>Annotations :</strong>{3}<br/> <br/>' +
@@ -1271,11 +1326,24 @@ function renderStreamSingle(value, p, record) {
         record.data.wasGeneratedBy,
         record.data.parameters,
         record.data.annotations,
-        record.data.location,
+        location,
         record.data.content.substring(0, 1000) + "...",
         record.data.runId,
         record.data.endTime,
         record.data.errors
+    );
+}
+
+
+function renderWorkflowInput(value, p, record) {
+
+    return Ext.String.format(
+        '<br/><strong>Name: </strong>{0} <br/> <br/>' +
+        '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
+        '<strong>mime-type: </strong>{2}<br/> ',
+        record.data.name,
+        record.data.url,
+        record.data.mimetype
     );
 }
 
@@ -1316,6 +1384,35 @@ Ext.define('CF.view.SingleArtifactView', {
 
 });
 
+Ext.define('CF.view.WorkflowInputView', {
+
+    extend: 'Ext.grid.Panel',
+
+    width: '100%',
+    height: 100,
+
+    store: workflowInputStore,
+    disableSelection: true,
+    hideHeaders: true,
+
+
+
+    viewConfig: {
+        enableTextSelection: true
+    },
+
+
+    columns: [
+
+        {
+            dataIndex: 'ID',
+            field: 'ID',
+            flex: 3,
+            renderer: renderWorkflowInput
+        }
+    ],
+
+});
 
 
 Ext.define('CF.view.ArtifactView', {

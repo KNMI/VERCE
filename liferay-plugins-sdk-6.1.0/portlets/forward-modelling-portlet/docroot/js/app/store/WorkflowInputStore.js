@@ -1,4 +1,6 @@
 
+
+*/
  Ext.define('CF.model.Worflow', {
      extend: 'Ext.data.Model',
 
@@ -28,7 +30,40 @@
  
  
  
-  
+ Ext.define('CF.model.WorkflowInput', {
+     extend: 'Ext.data.Model',
+
+     fields: [
+
+         {
+             name: 'url',
+             type: 'string',
+             mapping: 'url'
+         }, {
+             name: 'mimetype',
+             type: 'string',
+             mapping: 'mime-type'
+         }, {
+             name: 'name',
+             type: 'string',
+             mapping: 'name'
+         }
+
+
+     ],
+ });
+
+
+
+Ext.define('CF.store.WorkflowInputStore', {
+	extend:'Ext.data.Store',
+   	requires:['CF.model.WorkflowInput'],
+   	model:   'CF.model.WorkflowInput',
+   	alias: 'store.workflowinput',
+   	storeId: 'workflowinputStore'
+});
+
+
  /**
   * The store used for summits
   */
@@ -61,9 +96,9 @@
          },
 
          api: {
-             read: '/j2ep-1.0/prov/workflow/user/' + userSN,
-             update: '/j2ep-1.0/prov/workflow',
-             destroy: '/j2ep-1.0/prov/workflow',
+             read: '/j2ep-1.0/prov/workflow/user/aspinuso',
+             update: '/j2ep-1.0/prov/workflow/user/aspinuso',
+             destroy: '/j2ep-1.0/prov/workflow/user/aspinuso',
          },
 
          reader: {
