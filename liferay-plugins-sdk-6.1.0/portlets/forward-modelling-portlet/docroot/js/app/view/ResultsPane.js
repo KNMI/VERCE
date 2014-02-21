@@ -1,3 +1,7 @@
+
+PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
+
+
 var mimetypes = [{
     "mime": "application/octet-stream",
     "desc": ""
@@ -241,6 +245,56 @@ function addMeta(url) {
     });
 }
 
+Ext.define('CF.view.WorkflowValuesRangeSearch', {
+        extend: 'Ext.form.Panel',
+        // The fields
+
+		height:100,
+        defaultType: 'textfield',
+        layout: {
+            align: 'center',
+            pack: 'center',
+            type: 'hbox'
+        },
+        items: [{
+                fieldLabel: 'Attributes (csv)',
+                name: 'keys',
+                allowBlank: false,
+                margin: '10 10 30 10'
+            }, {
+                fieldLabel: '  Min values (csv)',
+                name: 'minvalues',
+                allowBlank: false,
+                margin: '10 10 30 10'
+            }, {
+                fieldLabel: '  Max values (csv)',
+                name: 'maxvalues',
+                allowBlank: false,
+                margin: '10 20 30 10'
+            }
+
+        ],
+
+
+        buttons: [{
+            text: 'Search',
+            formBind: true, //only enabled once the form is valid
+			
+            handler: function () {
+                var form = this.up('form').getForm();
+				
+                if (form.isValid()) {
+                    workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/'+userSN+'?' + form.getValues(true)
+                };
+
+
+			 
+                workflowStore.load()
+            }
+        }]
+    }
+
+);
 
 
 
@@ -254,11 +308,13 @@ var workflowStore = Ext.create('CF.store.WorkflowStore');
 
 var workflowInputStore = Ext.create('CF.store.WorkflowInputStore');
 
+ 
+
 var action = Ext.create('Ext.Action', {
     tooltip: 'Open Run',
     text: 'Open Run',
 
-    handler: function () {
+    handler: function (url) {
 
 
         if (typeof workflowSel != "undefined") {
@@ -266,7 +322,7 @@ var action = Ext.create('Ext.Action', {
         }
         workflowSel = Ext.create('Ext.window.Window', {
             title: 'Workflows Runs',
-            height: 430,
+            height: 530,
             width: 800,
 
             layout: {
@@ -282,9 +338,9 @@ var action = Ext.create('Ext.Action', {
 
         })
 
-
+		
         workflowSel.show();
-        workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/user/'+ userSN
+        workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/'+ userSN
 
         workflowStore.data.clear()
         workflowStore.load()
@@ -299,7 +355,7 @@ var refreshAction = Ext.create('Ext.Action', {
     handler: function () {
         activityStore.setProxy({
             type: 'ajax',
-            url: '/j2ep-1.0/prov/activities/' + encodeURIComponent(currentRun),
+            url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
             reader: {
                 root: 'activities',
                 totalProperty: 'totalCount'
@@ -323,7 +379,7 @@ var viewInputAction = Ext.create('Ext.Action', {
     handler: function () {
         workflowInputStore.setProxy({
             type: 'ajax',
-            url: '/j2ep-1.0/prov/workflow/' + encodeURIComponent(currentRun),
+            url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
             reader: {
                 root: 'input',
                 totalProperty: 'totalCount'
@@ -360,8 +416,8 @@ var viewInputAction = Ext.create('Ext.Action', {
 Ext.define('CF.view.WorlflowSelection', {
 
     width: 780,
-
-    height: 200,
+disableSelection: true,
+    height: 430,
     extend: 'Ext.grid.Panel',
 
 
@@ -372,28 +428,33 @@ Ext.define('CF.view.WorlflowSelection', {
     store: workflowStore,
     trackOver: true,
     autoScroll: true,
-    verticalScroller: {
+ /*   verticalScroller: {
         xtype: 'paginggridscroller'
-    },
+    },*/
 
 
 
-    plugins: [{
+   /* plugins: [{
         ptype: 'bufferedrenderer',
-    }],
+    }],*/
 
 
-    selModel: {
+   /* selModel: {
         pruneRemoved: false
     },
-
+*/
     initComponent: function () {
         Ext.apply(this, {
             border: false,
-
+			 
             loadMask: true,
 
             columns: [
+            {
+            xtype: 'rownumberer',
+            
+            sortable: false
+        },
 
                 {
                     header: 'Run ID',
@@ -423,7 +484,7 @@ Ext.define('CF.view.WorlflowSelection', {
                     sortable: false,
                     groupable: false
                 }, // custom mapping
-                /*{
+                {
                     xtype: 'actioncolumn',
                     width: 40,
                     tdCls: 'Delete',
@@ -442,22 +503,29 @@ Ext.define('CF.view.WorlflowSelection', {
                             Ext.Msg.confirm('Remove Run', 'Are you sure?', function (button) {
                                 if (button == 'yes') {
 
-
+									 
                                     var tempx = tempStore.getProxy()
-                                    tempx.api.destroy = "/j2ep-1.0/prov/workflow/" + xx.get("runId");
-
+                                    tempx.api.destroy = "/j2ep-1.0/prov/workflow/delete/" + xx.get("runId");
+									 
                                     tempStore.remove(xx);
+                                    
                                     tempStore.sync({
                                         success: function (args) {
 
-
-                                            grid.getStore().data.clear();
-                                            grid.getStore().load();
+											 
+											
+											
+											
+											workflowStore.load()
+                                            
+                                            
                                         }
 
                                     })
+                                
                                 }
                             })
+                          
 
 
                         }
@@ -465,7 +533,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
                     }]
-                } */
+                } 
             ],
             flex: 1,
             selType: 'cellmodel',
@@ -476,7 +544,10 @@ Ext.define('CF.view.WorlflowSelection', {
                         'validateedit': function (c, e, eOpts) {
                             var r = e.rowIdx;
                             var sr = workflowStore.getAt(r);
+                            
                             sr.set(e.field, e.value);
+                            
+							workflowStore.load()
                         }
                     }
                 })
@@ -499,7 +570,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
                 activityStore.setProxy({
                     type: 'ajax',
-                    url: '/j2ep-1.0/prov/activities/' + encodeURIComponent(record.get("runId")),
+                    url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("runId")),
                     reader: {
                         root: 'activities',
                         totalProperty: 'totalCount'
@@ -513,6 +584,7 @@ Ext.define('CF.view.WorlflowSelection', {
                         currentRun = record.get("runId")
                     }
                 })
+                
                 Ext.getCmp('filtercurrent').enable();
                 Ext.getCmp('searchartifacts').enable();
                 Ext.getCmp('viewworkflowinput').enable();
@@ -624,7 +696,7 @@ Ext.define('CF.view.ActivityMonitor', {
 
                 artifactStore.setProxy({
                     type: 'ajax',
-                    url: '/j2ep-1.0/prov/entities/generatedby?iterationId=' + record.get("ID"),
+                    url: PROV_SERVICE_BASEURL + 'entities/generatedby?iterationId=' + record.get("ID"),
 
                     reader: {
                         root: 'entities',
@@ -678,7 +750,7 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
 
         htmlcontent = "<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
         for (var i = 0; i < url.length; i++) {
-            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/aspinuso/verce/")
+            url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/"+userSN+"/verce/")
 
 
             htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/><br/>"
@@ -716,56 +788,7 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
     //activityStore.load();
 
 
-Ext.define('CF.view.WorkflowValuesRangeSearch', {
-        extend: 'Ext.form.Panel',
-        // The fields
 
-
-        defaultType: 'textfield',
-        layout: {
-            align: 'center',
-            pack: 'center',
-            type: 'hbox'
-        },
-        items: [{
-                fieldLabel: 'Attributes (csv)',
-                name: 'keys',
-                allowBlank: false,
-                margin: '10 10 30 10'
-            }, {
-                fieldLabel: '  Min values (csv)',
-                name: 'minvalues',
-                allowBlank: false,
-                margin: '10 10 30 10'
-            }, {
-                fieldLabel: '  Max values (csv)',
-                name: 'maxvalues',
-                allowBlank: false,
-                margin: '10 20 30 10'
-            }
-
-        ],
-
-
-        buttons: [{
-            text: 'Search',
-            formBind: true, //only enabled once the form is valid
-
-            handler: function () {
-                var form = this.up('form').getForm();
-
-                if (form.isValid()) {
-                    workflowStore.getProxy().api.read = '/j2ep-1.0/prov/workflow/user/aspinuso?' + form.getValues(true)
-                };
-
-
-
-                workflowStore.load()
-            }
-        }]
-    }
-
-);
 
 Ext.define('CF.view.StreamValuesRangeSearch', {
         extend: 'Ext.form.Panel',
@@ -803,7 +826,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
                 if (form.isValid()) {
                     artifactStore.setProxy({
                         type: 'ajax',
-                        url: '/j2ep-1.0/prov/entities/values-range?runId=' + currentRun + "&" + form.getValues(true),
+                        url: PROV_SERVICE_BASEURL + 'entities/values-range?runId=' + currentRun + "&" + form.getValues(true),
 
                         reader: {
                             root: 'entities',
@@ -862,7 +885,7 @@ Ext.define('CF.view.StreamContentMatchSearch', {
                 if (form.isValid()) {
                     artifactStore.setProxy({
                         type: 'ajax',
-                        url: '/j2ep-1.0/prov/entities/contentmatch-eachtoone?runId=' + currentRun + "&" + form.getValues(true),
+                        url: PROV_SERVICE_BASEURL + 'entities/contentmatch-eachtoone?runId=' + currentRun + "&" + form.getValues(true),
 
                         reader: {
                             root: 'entities',
@@ -938,7 +961,7 @@ Ext.define('CF.view.FilterOnAncestor', {
                     FilterAjax.request({
 
                         method: 'POST',
-                        url: '/j2ep-1.0/prov/entities/filterOnAncestorsMeta',
+                        url: PROV_SERVICE_BASEURL + 'entities/filterOnAncestorsMeta',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
@@ -1032,7 +1055,7 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
                     FilterAjax.request({
 
                         method: 'POST',
-                        url: '/j2ep-1.0/prov/entities/filterOnAncestorsValuesRange',
+                        url: PROV_SERVICE_BASEURL + 'entities/filterOnAncestorsValuesRange',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
@@ -1122,7 +1145,7 @@ Ext.define('CF.view.FilterOnMeta', {
                     FilterAjax.request({
 
                         method: 'POST',
-                        url: '/j2ep-1.0/prov/entities/filterOnMeta',
+                        url: PROV_SERVICE_BASEURL + 'entities/filterOnMeta',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
@@ -1199,7 +1222,7 @@ Ext.define('CF.view.AnnotationSearch', {
                 if (form.isValid()) {
                     artifactStore.setProxy({
                         type: 'ajax',
-                        url: '/j2ep-1.0/prov/entities/annotations?' + form.getValues(true),
+                        url: PROV_SERVICE_BASEURL + 'entities/annotations?' + form.getValues(true),
 
                         reader: {
                             root: 'entities',
@@ -1279,8 +1302,8 @@ function renderStream(value, p, record) {
         '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
         '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
         '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
-        '<strong><a href="javascript:wasDerivedFromNewGraph(\'/j2ep-1.0/prov/wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-        '<strong><a href="javascript:derivedDataNewGraph(\'/j2ep-1.0/prov/derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+        '<strong><a href="javascript:wasDerivedFromNewGraph(\''+PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
+        '<strong><a href="javascript:derivedDataNewGraph(\''+PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
         '<strong>Generated By :</strong> {1} <br/> <br/>' +
         '<strong>Run Id :</strong> {6} <br/> <br/>' +
         '<strong>Date :</strong>{7}<br/> <br/>' +
@@ -1311,8 +1334,8 @@ function renderStreamSingle(value, p, record) {
         '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
         '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
         '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
-        '<strong><a href="javascript:wasDerivedFromNewGraph(\'/j2ep-1.0/prov/wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-        '<strong><a href="javascript:derivedDataNewGraph(\'/j2ep-1.0/prov/derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+        '<strong><a href="javascript:wasDerivedFromNewGraph(\''+PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
+        '<strong><a href="javascript:derivedDataNewGraph(\''+PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
         '<strong>Generated By :</strong> {1} <br/> <br/>' +
         '<strong>Run Id :</strong> {6} <br/> <br/>' +
         '<strong>Date :</strong>{7}<br/> <br/>' +
@@ -1528,7 +1551,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
                     //   addMeta('/j2ep-1.0/prov/streamchunk/?runid='+currentRun+'&id='+selected.node.name)
                     singleArtifactStore.setProxy({
                         type: 'ajax',
-                        url: '/j2ep-1.0/prov/entities/run?runId=' + currentRun + '&dataId=' + selected.node.name,
+                        url: PROV_SERVICE_BASEURL + 'entities/run?runId=' + currentRun + '&dataId=' + selected.node.name,
                         reader: {
                             root: 'entities',
                             totalProperty: 'totalCount'
@@ -1580,10 +1603,10 @@ Ext.define('CF.view.provenanceGraphsViewer', {
                     // dragged.node.tempMass = 10000
                     dragged.node.fixed = true;
                     if (graphMode == "WASDERIVEDFROM")
-                        wasDerivedFromAddBranch('/j2ep-1.0/prov/wasDerivedFrom/' + selected.node.name + "?level=" + level)
+                        wasDerivedFromAddBranch(PROV_SERVICE_BASEURL + 'wasDerivedFrom/' + selected.node.name + "?level=" + level)
 
                     if (graphMode == "DERIVEDDATA")
-                        derivedDataAddBranch('/j2ep-1.0/prov/derivedData/' + selected.node.name + "?level=" + level)
+                        derivedDataAddBranch(PROV_SERVICE_BASEURL + 'derivedData/' + selected.node.name + "?level=" + level)
 
 
                 }

@@ -48,8 +48,8 @@
 
      // allow the grid to interact with the paging scroller by buffering
      buffered: true,
-     leadingBufferZone: 30,
-     pageSize: 15,
+     leadingBufferZone: 300,
+     pageSize: 100,
 
 
      proxy: {
@@ -57,13 +57,13 @@
          actionMethods: {
              read: 'GET',
              update: 'POST',
-             destroy: 'DELETE'
+             destroy: 'POST'
          },
 
          api: {
-             read: '/j2ep-1.0/prov/workflow/user/' + userSN,
-             update: '/j2ep-1.0/prov/workflow',
-             destroy: '/j2ep-1.0/prov/workflow',
+             read: PROV_SERVICE_BASEURL + 'workflow/user/' + userSN,
+             update: PROV_SERVICE_BASEURL + 'workflow',
+             destroy: PROV_SERVICE_BASEURL + 'workflow/delete/',
          },
 
          reader: {
@@ -84,7 +84,48 @@
 
                  Ext.Ajax.request({
                      method: 'POST',
-                               url:  '/j2ep-1.0/prov/workflow/' + r.get('runId'),
+                               url:  PROV_SERVICE_BASEURL + 'workflow/edit/' + r.get('runId'),
+                               params: {          
+                         "doc": '{ "description":"' + r.get('description') + '"}'          
+                     },
+                      
+                     failure: function (response) {
+
+                         alert("Workflow Run update failed")
+
+
+                     },
+
+                     success: function (response) {
+
+                         Ext.Ajax.request({          
+                             url:  updateWorkflowDescriptionURL,
+                                       params: {          
+                                 "workflowId": r.get('runId'),
+                                 "newText": r.get('description')          
+                             },
+                             success: function (response) {
+
+                                 wfStore.load();
+                             } 
+                         });
+
+
+                     }
+
+
+                 });
+
+             }
+
+
+         },
+         destroy: {
+             fn: function (s, r, o) {
+					alert("DD");
+                 Ext.Ajax.request({
+                     method: 'POST',
+                               url:  PROV_SERVICE_BASEURL + 'workflow/delete/' + r.get('runId'),
                                params: {          
                          "doc": '{ "description":"' + r.get('description') + '"}'          
                      },
@@ -120,6 +161,7 @@
 
 
          }
+         
      }
 
 
