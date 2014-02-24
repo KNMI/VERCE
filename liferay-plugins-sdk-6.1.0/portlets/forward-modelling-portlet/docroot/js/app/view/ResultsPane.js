@@ -163,7 +163,26 @@ function derivedDataDephtree(data, graph, parent) {
     if (typeof data["derivedData"] != "undefined" && data["derivedData"].length > 0) {
         for (var i = 0; i < data["derivedData"].length; i++) {
             if (data["derivedData"][i]) {
-                derivedDataDephtree(data["derivedData"][i], graph, nodea)
+            	if (i<20)
+                	derivedDataDephtree(data["derivedData"][i], graph, nodea)
+                else
+                 { var nodeb = graph.addNode(data["derivedData"][i], {
+     														   label: "...too many",
+     														   'color': colour.purple,
+    														    'shape': 'dot',
+   															     'radius': 19,
+ 															       'alpha': 1,
+  																      mass: 2
+  															  })
+  															  
+  															   
+  					 graph.addEdge(nodea, nodeb, {
+         										   length: 0.75,
+        										    directed: true,
+         										   weight: 2
+     									   })		
+     									   break						
+             }   	
             }
         }
     }
