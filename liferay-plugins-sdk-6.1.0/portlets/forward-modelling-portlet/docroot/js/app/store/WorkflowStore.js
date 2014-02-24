@@ -46,10 +46,11 @@
      alias: 'store.workflowstore',
      storeId: 'workflowStore',
 
-     // allow the grid to interact with the paging scroller by buffering
+  // allow the grid to interact with the paging scroller by buffering
+     trailingBufferZone: 60,
      buffered: true,
-     leadingBufferZone: 300,
-     pageSize: 100,
+     leadingBufferZone: 10,
+     pageSize: 10,
 
 
      proxy: {
