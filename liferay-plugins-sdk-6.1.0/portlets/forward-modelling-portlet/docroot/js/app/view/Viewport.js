@@ -31,7 +31,7 @@ var eventsTabPanel = Ext.create('Ext.TabPanel',{
                 },
                 {
                     xtype: 'panel',
-                    title: 'WS',
+                    title: 'FDSN',
                     border: false,
                     layout: {
                         type: 'vbox',
@@ -66,7 +66,7 @@ var stationsTabPanel = Ext.create('Ext.TabPanel',{
                 },
                 {
                     xtype: 'panel',
-                    title: 'WS',
+                    title: 'FDSN',
                     border: false,
                     layout: {
                         type: 'vbox',
