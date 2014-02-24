@@ -1,5 +1,5 @@
 var solvers = [
-        {"abbr":"seissol","name":"seisol"},
+        
         {"abbr":"SPECFEM3D_CARTESIAN_21447","name":"SPECFEM3D_CARTESIAN_21447"},
     ];
 
