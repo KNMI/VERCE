@@ -307,7 +307,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
                 };
 
 
-			 
+			 	
                 workflowStore.load()
             }
         }]
@@ -416,7 +416,7 @@ var viewInputAction = Ext.create('Ext.Action', {
         }
 
         workflowIn = Ext.create('Ext.window.Window', {
-            title: 'Workflow input',
+            title: 'Workflow input - '+currentRun,
             height: 300,
             width: 400,
             layout: 'fit',
@@ -436,7 +436,8 @@ Ext.define('CF.view.WorlflowSelection', {
 
     width: 780,
 disableSelection: true,
-    height: 430,
+     
+    autoHeight: true,
     extend: 'Ext.grid.Panel',
 
 
@@ -445,8 +446,8 @@ disableSelection: true,
         'Ext.grid.plugin.BufferedRenderer'
     ],
     store: workflowStore,
-    trackOver: true,
-    autoScroll: true,
+     
+   
  /*   verticalScroller: {
         xtype: 'paginggridscroller'
     },*/
@@ -601,13 +602,18 @@ disableSelection: true,
                 activityStore.load({
                     callback: function () {
                         currentRun = record.get("runId")
-                    }
+                        Ext.getCmp('filtercurrent').enable();
+              			Ext.getCmp('searchartifacts').enable();
+               			
+
+                         
+                    },
+                    
                 })
                 
-                Ext.getCmp('filtercurrent').enable();
-                Ext.getCmp('searchartifacts').enable();
-                Ext.getCmp('viewworkflowinput').enable();
-
+                activityStore.on('load', onStoreLoad, this, {single:true});
+                currentRun = record.get("runId")
+                
             }
         }
     }
@@ -615,13 +621,16 @@ disableSelection: true,
 
 });
 
-
-
+function onStoreLoad(store)
+{
+Ext.getCmp('viewworkflowinput').enable();
+Ext.getCmp("activitymonitor").setTitle('Process View - '+currentRun)
+}
 
 Ext.define('CF.view.ActivityMonitor', {
 
 
-    title: 'Processing Elements - Double Click on the PE to access the produced Sream Data',
+    title: 'Process View',
     width: '25%',
     region: 'west',
     extend: 'Ext.grid.Panel',

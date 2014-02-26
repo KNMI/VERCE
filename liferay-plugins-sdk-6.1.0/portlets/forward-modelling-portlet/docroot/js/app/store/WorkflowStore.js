@@ -46,7 +46,7 @@
      alias: 'store.workflowstore',
      storeId: 'workflowStore',
 
-  // allow the grid to interact with the paging scroller by buffering
+     // allow the grid to interact with the paging scroller by buffering
      trailingBufferZone: 60,
      buffered: true,
      leadingBufferZone: 10,
@@ -79,6 +79,7 @@
 
 
      listeners: {
+     
 
          update: {
              fn: function (s, r, o) {
@@ -123,7 +124,7 @@
          },
          destroy: {
              fn: function (s, r, o) {
-					alert("DD");
+				
                  Ext.Ajax.request({
                      method: 'POST',
                                url:  PROV_SERVICE_BASEURL + 'workflow/delete/' + r.get('runId'),
