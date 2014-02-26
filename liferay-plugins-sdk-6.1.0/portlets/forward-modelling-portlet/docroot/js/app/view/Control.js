@@ -122,8 +122,11 @@ Ext.define('CF.view.WfGrid', {
 		      	      	    			// 		eventGrid.getSelectionModel().select(record);
 		      	      	    			// 	});
 		      	      	    			// }, this, { single: true });
+										
+										// reuse events
 	      	      	    				getEvents(ctrl, object.event_url);
 
+	      	      	    				// reuse stations
 	      	      	    				getStations(ctrl, object.station_url, object.station_format === 'stationXML' ? STXML_TYPE : STPOINTS_TYPE);
       	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
       	      	    				}, this, { single: true });

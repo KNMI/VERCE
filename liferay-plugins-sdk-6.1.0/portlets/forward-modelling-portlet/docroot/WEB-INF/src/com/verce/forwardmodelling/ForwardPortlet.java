@@ -275,7 +275,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //5. Create the solver file and store it
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
-			   String fileName = runIds[i]+".json";
+			   String fileName = solverType+"_"+runIds[i]+".json";
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
