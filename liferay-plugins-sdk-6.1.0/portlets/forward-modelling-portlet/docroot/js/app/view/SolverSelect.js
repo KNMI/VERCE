@@ -40,6 +40,7 @@ var velocitystore = Ext.create('Ext.data.Store', {
 var solvercombo = Ext.create('Ext.form.field.ComboBox', {
     fieldLabel: 'Solvers',
     name: 'solvertype',
+    id: 'solvertype',
     displayField: 'abbr',
     store: solverstore,
     queryMode: 'local',
@@ -53,14 +54,9 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
         	if(gl_mesh!=null){        	
 	     		Ext.Msg.confirm('Alert!', 'You will lose the introduced data for '+combo.getValue()+', do you want to continue?', 
 	                  function(btn) {
-	                  	if(btn === 'yes')
+	                  	if(btn === 'no')
 	                  	{	
-	                  		clearMap();
-	                  		meshescombo.clearValue();
-	                 		meshescombo.store.removeAll();
-	                   	 	//Load meshescombo, load conf form
-	                    	selectSolver(record.get('abbr'));
-	                 		solvercombo.setValue(record.get('name'));
+                        return false;
 	                  	}
 	            });
         	}
@@ -69,14 +65,28 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
             	selectSolver(record.get('abbr'));
             	return true;
         	}
-        	return false;
      	 },
+       'change': function(combo, newValue, oldValue, eOpts) {
+            // inconsistent use of name and abbr
+            var record = combo.store.findRecord('abbr', newValue);
+
+            clearMap();
+            meshescombo.clearValue();
+            meshescombo.store.removeAll();
+
+            if (record == null) {
+              return;
+            }
+            //Load meshescombo, load conf form
+            selectSolver(record.get('abbr'));
+        },
     }
 });
 
 var meshescombo = Ext.create('Ext.form.field.ComboBox', {
     fieldLabel: 'Meshes',
     name: 'meshes',
+    id: 'meshes',
     displayField: 'name',
     store: meshesstore,
     queryMode: 'local',
@@ -86,41 +96,44 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
          'change': function(combo)
          {   
         	 gl_mesh = combo.getValue();
-        	 if(gl_mesh!=null)
+        	 if(gl_mesh == null)
         	 {
-        		 clearMap();
-	        	 var meshModel = combo.store.findRecord('name', gl_mesh);
-	        	 	        	 
-	        	 //Populate the VelocityModel Combo
-	        	 velocitycombo.store.add(meshModel.get('velmod'));	
-	        	 
-	        	 //Update the solver values
-	        	 updateSolverValues(meshModel.get('values'));
-	        	 
-	        	 //Render the bounding box in the map and center it
-	        	 gl_minLat = meshModel.get('geo_minLat');
-	        	 gl_maxLat = meshModel.get('geo_maxLat');
-	        	 gl_minLon = meshModel.get('geo_minLon');
-	        	 gl_maxLon = meshModel.get('geo_maxLon');
-	        	 
-	        	 if (ctrl.mapPanel.map.getLayersByName("Boxes")!="")
-	        		ctrl.mapPanel.map.removeLayer(ctrl.mapPanel.map.getLayersByName("Boxes")[0]);
-	        	 var layers=[];
-	        	 var boxes  = new OpenLayers.Layer.Boxes("Boxes");
-	        	 var coord = [gl_minLon, gl_minLat, gl_maxLon, gl_maxLat];
-	        	 bounds = OpenLayers.Bounds.fromArray(coord);
-	        	 box = new OpenLayers.Marker.Box(bounds);
-	        	 box.setBorder("black");
-	        	 //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
-	        	 boxes.addMarker(box);
-	             layers.push(boxes);        	        	 
-	        	 ctrl.mapPanel.map.addLayers(layers);
-	        	 
-	        	 var centLon = gl_minLon + (gl_maxLon-gl_minLon)/2;
-	        	 var centLat = gl_minLat + (gl_maxLat-gl_minLat)/2;
-	        	 ctrl.mapPanel.map.setCenter([centLon, centLat]);        	
-	        	 ctrl.mapPanel.map.zoomToExtent(bounds);
-        	 }
+             return;
+           }
+           
+      		 clearMap();
+        	 var meshModel = combo.store.findRecord('name', gl_mesh);
+        	 	        	 
+        	 //Populate the VelocityModel Combo
+           velocitycombo.store.removeAll();
+        	 velocitycombo.store.add(meshModel.get('velmod'));	
+
+        	 //Update the solver values
+        	 updateSolverValues(meshModel.get('values'));
+        	 
+        	 //Render the bounding box in the map and center it
+        	 gl_minLat = meshModel.get('geo_minLat');
+        	 gl_maxLat = meshModel.get('geo_maxLat');
+        	 gl_minLon = meshModel.get('geo_minLon');
+        	 gl_maxLon = meshModel.get('geo_maxLon');
+        	 
+        	 if (ctrl.mapPanel.map.getLayersByName("Boxes")!="")
+        		ctrl.mapPanel.map.removeLayer(ctrl.mapPanel.map.getLayersByName("Boxes")[0]);
+        	 var layers=[];
+        	 var boxes  = new OpenLayers.Layer.Boxes("Boxes");
+        	 var coord = [gl_minLon, gl_minLat, gl_maxLon, gl_maxLat];
+        	 bounds = OpenLayers.Bounds.fromArray(coord);
+        	 box = new OpenLayers.Marker.Box(bounds);
+        	 box.setBorder("black");
+        	 //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
+        	 boxes.addMarker(box);
+             layers.push(boxes);        	        	 
+        	 ctrl.mapPanel.map.addLayers(layers);
+        	 
+        	 var centLon = gl_minLon + (gl_maxLon-gl_minLon)/2;
+        	 var centLat = gl_minLat + (gl_maxLat-gl_minLat)/2;
+        	 ctrl.mapPanel.map.setCenter([centLon, centLat]);        	
+        	 ctrl.mapPanel.map.zoomToExtent(bounds);
      	 }
 	}
 });
@@ -128,6 +141,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
 var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
     fieldLabel: 'Velocity Model',
     name: 'velocity',
+    id: 'velocity',
     displayField: 'name',
     valueField: 'name',
     store: velocitystore,

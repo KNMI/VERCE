@@ -77,6 +77,66 @@ Ext.define('CF.view.WfGrid', {
 		                    window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
 		                }
 		            },
+		            {
+		                icon   : localResourcesPath+'/img/Farm-Fresh_arrow_rotate_clockwise.png', 
+		                tooltip: 'Reuse',
+		                handler: function(grid, rowIndex, colIndex) {
+		                    var rec = wfStore.getAt(rowIndex);
+		
+		                    Ext.Ajax.request({
+		                    	url: getWorkflowSettingsURL,
+      	      	    			params: {
+      	      	    				"wfName": rec.get('name')
+      	      	    			},
+      	      	    			success: function(response){
+      	      	    				var object = JSON.parse(response.responseText);
+
+      	      	    				// reuse solver
+      	      	    				var solverType = Ext.getCmp('solvertype');
+      	      	    				var solver = solverType.store.findRecord('name', object.solver);
+      	      	    				solverType.clearValue();
+      	      	    				solverType.setValue(solver.get('abbr'));
+
+      	      	    				// reuse velocity when store is loaded
+									var velocityCombo = Ext.getCmp('velocity');
+      	      	    				velocityCombo.store.addListener('add', function() {
+	  	      	    					velocityCombo.setValue(object.velocity_model);
+
+	      	      	    				solverConfStore.loadData(object.fields);
+
+	      	      	    				// TODO fix selecting events and stations
+	      	      	    				// var eventGrid = Ext.getCmp('gridEvents');
+	      	      	    				// Ext.util.Observable.capture(ctrl, function(evname) {console.log("ctrl: ", evname, arguments);});
+	      	      	    				// Ext.util.Observable.capture(ctrl.eventstore, function(evname) {console.log("store: ", evname, arguments);});
+	      	      	    				// Ext.util.Observable.capture(eventGrid, function(evname) {console.log("grid: ", evname, arguments);});
+	      	      	    				// eventGrid.on('add', function() {
+	      	      	    				// 	console.log('add', arguments);
+	      	      	    				// }, this);
+	      	      	    				// Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {console.log("grid: ", evname, arguments);});
+	      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {console.log("mapPanel: ", evname, arguments);});
+	      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {console.log("map: ", evname, arguments);});
+
+	      	      	    				// ctrl.eventstore.addListener('refresh', function() {
+		      	      	    			// 	object.events.forEach(function(eventId) {
+		      	      	    			// 		var record = eventGrid.store.findRecord('eventId', eventId);
+		      	      	    			// 		eventGrid.getSelectionModel().select(record);
+		      	      	    			// 	});
+		      	      	    			// }, this, { single: true });
+	      	      	    				getEvents(ctrl, object.event_url);
+
+	      	      	    				getStations(ctrl, object.station_url, object.station_format === 'stationXML' ? STXML_TYPE : STPOINTS_TYPE);
+      	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
+      	      	    				}, this, { single: true });
+
+      	      	    				// reuse mesh and trigger velocity store reload
+      	      	    				Ext.getCmp('meshes').setValue(object.mesh);
+      	      	    			},
+      	      	    			failure: function(response) {
+      	      	    				Ext.Msg.alert("Error", "Failed to get workflow settings!");
+      	      	                }
+		                    })
+		                }
+		            },
 	                {
 	                    icon   : localResourcesPath+'/img/delete-icon.png',
 	                    tooltip: 'Delete instance',
