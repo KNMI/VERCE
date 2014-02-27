@@ -84,58 +84,73 @@ Ext.define('CF.view.WfGrid', {
 		                    var rec = wfStore.getAt(rowIndex);
 		
 		                    Ext.Ajax.request({
-		                    	url: getWorkflowSettingsURL,
+		                    	url: "/j2ep-1.0/prov/workflow/"+encodeURIComponent(rec.get('name')),
       	      	    			params: {
-      	      	    				"wfName": rec.get('name')
       	      	    			},
+      	      	    			method: 'GET',
       	      	    			success: function(response){
       	      	    				var object = JSON.parse(response.responseText);
 
-      	      	    				// reuse solver
-      	      	    				var solverType = Ext.getCmp('solvertype');
-      	      	    				var solver = solverType.store.findRecord('name', object.solver);
-      	      	    				solverType.clearValue();
-      	      	    				solverType.setValue(solver.get('abbr'));
+      	      	    				var input = {};
+      	      	    				object.input.forEach(function(item) {
+      	      	    					input[item.name] = item;
+      	      	    				});
 
-      	      	    				// reuse velocity when store is loaded
-									var velocityCombo = Ext.getCmp('velocity');
-      	      	    				velocityCombo.store.addListener('add', function() {
-	  	      	    					velocityCombo.setValue(object.velocity_model);
+				                    Ext.Ajax.request({
+				                    	url: input.solverconf.url,
+		      	      	    			success: function(response){
+		      	      	    				var object = JSON.parse(response.responseText);
 
-	      	      	    				solverConfStore.loadData(object.fields);
+		      	      	    				// reuse solver
+		      	      	    				var solverType = Ext.getCmp('solvertype');
+		      	      	    				var solver = solverType.store.findRecord('name', object.solver);
+		      	      	    				solverType.clearValue();
+		      	      	    				solverType.setValue(solver.get('abbr'));
 
-	      	      	    				// TODO fix selecting events and stations
-	      	      	    				// var eventGrid = Ext.getCmp('gridEvents');
-	      	      	    				// Ext.util.Observable.capture(ctrl, function(evname) {console.log("ctrl: ", evname, arguments);});
-	      	      	    				// Ext.util.Observable.capture(ctrl.eventstore, function(evname) {console.log("store: ", evname, arguments);});
-	      	      	    				// Ext.util.Observable.capture(eventGrid, function(evname) {console.log("grid: ", evname, arguments);});
-	      	      	    				// eventGrid.on('add', function() {
-	      	      	    				// 	console.log('add', arguments);
-	      	      	    				// }, this);
-	      	      	    				// Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {console.log("grid: ", evname, arguments);});
-	      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {console.log("mapPanel: ", evname, arguments);});
-	      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {console.log("map: ", evname, arguments);});
+		      	      	    				// reuse velocity when store is loaded
+											var velocityCombo = Ext.getCmp('velocity');
+		      	      	    				velocityCombo.store.addListener('add', function() {
+			  	      	    					velocityCombo.setValue(object.velocity_model);
 
-	      	      	    				// ctrl.eventstore.addListener('refresh', function() {
-		      	      	    			// 	object.events.forEach(function(eventId) {
-		      	      	    			// 		var record = eventGrid.store.findRecord('eventId', eventId);
-		      	      	    			// 		eventGrid.getSelectionModel().select(record);
-		      	      	    			// 	});
-		      	      	    			// }, this, { single: true });
-										
-										// reuse events
-	      	      	    				getEvents(ctrl, object.event_url);
+			      	      	    				solverConfStore.loadData(object.fields);
 
-	      	      	    				// reuse stations
-	      	      	    				getStations(ctrl, object.station_url, object.station_format === 'stationXML' ? STXML_TYPE : STPOINTS_TYPE);
-      	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
-      	      	    				}, this, { single: true });
+			      	      	    				// TODO fix selecting events and stations
+			      	      	    				// var eventGrid = Ext.getCmp('gridEvents');
+			      	      	    				// Ext.util.Observable.capture(ctrl, function(evname) {console.log("ctrl: ", evname, arguments);});
+			      	      	    				// Ext.util.Observable.capture(ctrl.eventstore, function(evname) {console.log("store: ", evname, arguments);});
+			      	      	    				// Ext.util.Observable.capture(eventGrid, function(evname) {console.log("grid: ", evname, arguments);});
+			      	      	    				// eventGrid.on('add', function() {
+			      	      	    				// 	console.log('add', arguments);
+			      	      	    				// }, this);
+			      	      	    				// Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {console.log("grid: ", evname, arguments);});
+			      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {console.log("mapPanel: ", evname, arguments);});
+			      	      	    				// Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {console.log("map: ", evname, arguments);});
 
-      	      	    				// reuse mesh and trigger velocity store reload
-      	      	    				Ext.getCmp('meshes').setValue(object.mesh);
+			      	      	    				// ctrl.eventstore.addListener('refresh', function() {
+				      	      	    			// 	object.events.forEach(function(eventId) {
+				      	      	    			// 		var record = eventGrid.store.findRecord('eventId', eventId);
+				      	      	    			// 		eventGrid.getSelectionModel().select(record);
+				      	      	    			// 	});
+				      	      	    			// }, this, { single: true });
+												
+												// reuse events
+			      	      	    				getEvents(ctrl, input.quakeml.url);
+
+			      	      	    				// reuse stations
+			      	      	    				getStations(ctrl, input.stations.url, input.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE);
+		      	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
+		      	      	    				}, this, { single: true });
+
+		      	      	    				// reuse mesh and trigger velocity store reload
+		      	      	    				Ext.getCmp('meshes').setValue(object.mesh);
+		      	      	    			},
+		      	      	    			failure: function(response) {
+		      	      	    				Ext.Msg.alert("Error", "Failed to get workflow settings!");
+		      	      	                }
+				                    })
       	      	    			},
       	      	    			failure: function(response) {
-      	      	    				Ext.Msg.alert("Error", "Failed to get workflow settings!");
+      	      	    				Ext.Msg.alert("Error", "Failed to get workflow from provenance api!");
       	      	                }
 		                    })
 		                }

@@ -99,8 +99,6 @@ public class ForwardPortlet extends MVCPortlet{
 		   deleteWorkflow(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("meshVelocityModelUpload"))
 		   meshVelocityModelUpload(resourceRequest, resourceResponse);
-	   else if (resourceRequest.getResourceID().equals("getWorkflowSettings"))
-		   getWorkflowSettings(resourceRequest, resourceResponse);
 	}
 	
 	public void getWorkflowList(ActionRequest req, ActionResponse res)
@@ -327,38 +325,6 @@ public class ForwardPortlet extends MVCPortlet{
 	   }
    }
 
-   public void getWorkflowSettings(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
-		try {
-			long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
-			long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-			String userSN = PortalUtil.getUser(resourceRequest).getScreenName();
-			ServiceContext serviceContext = new ServiceContext();
-			serviceContext.setScopeGroupId(groupId);
-			long folderId = getFolderId(repositoryId, userSN, "Solvers", serviceContext);
-			String wfName = ParamUtil.getString(resourceRequest, "wfName");
-
-			FileEntry file = DLAppServiceUtil.getFileEntry(groupId, folderId, wfName+".json");
-			InputStream is = file.getContentStream();
-			OutputStream os = resourceResponse.getPortletOutputStream();
-
-			resourceResponse.setContentType("application/json");
-			resourceResponse.setContentLength((int)file.getSize());
-			resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"logs.zip\"");
-			
-			byte[] buffer = new byte[4096];
-			int bytesRead;
-			while ((bytesRead = is.read(buffer)) > 0) {
-				os.write(buffer, 0, bytesRead);
-			}
-
-			os.flush();
-			is.close();
-			os.close();
-		} catch(Exception e) {
-			catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception caught!");
-		}
-   }
-   
    public void downloadOutput(ResourceRequest resourceRequest,
 		   ResourceResponse resourceResponse)
 		   {
