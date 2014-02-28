@@ -100,6 +100,10 @@ Ext.define('CF.view.WfGrid', {
 				                    	url: input.solverconf.url,
 		      	      	    			success: function(response){
 		      	      	    				var object = JSON.parse(response.responseText);
+		      	      	    				if (object === null) {
+		      	      	    					Ext.Msg.alert("Failed to get workflow settings");
+		      	      	    					return;
+		      	      	    				}
 
 		      	      	    				// reuse solver
 		      	      	    				var solverType = Ext.getCmp('solvertype');
