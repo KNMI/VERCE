@@ -520,7 +520,7 @@ disableSelection: true,
                             });
                             tempStore.add(rec);
                             var xx = tempStore.getAt(0)
-                            Ext.Msg.confirm('Remove Run', 'Are you sure?', function (button) {
+                            messagebox=Ext.Msg.confirm('Remove Run', 'Are you sure?', function (button) {
                                 if (button == 'yes') {
 
 									 
@@ -545,6 +545,7 @@ disableSelection: true,
                                 
                                 }
                             })
+                            messagebox.zIndexManager.bringToFront(messagebox);
                           
 
 
@@ -676,6 +677,13 @@ Ext.define('CF.view.ActivityMonitor', {
             loadMask: true,
 
             columns: [
+            
+            {
+            xtype: 'rownumberer',
+            width:35,
+             
+            sortable: false
+        },
 
                 {
                     header: 'ID',
@@ -1036,7 +1044,7 @@ Ext.define('CF.view.FilterOnAncestor', {
 Ext.define('CF.view.FilterOnAncestorValuesRange', {
         extend: 'Ext.form.Panel',
         // The fields
-        title: 'Ancestors Values Range',
+        title: 'Ancestors Values\' Range',
         defaultType: 'textfield',
         layout: {
             align: 'center',
