@@ -105,6 +105,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
         	 var meshModel = combo.store.findRecord('name', gl_mesh);
         	 	        	 
         	 //Populate the VelocityModel Combo
+           velocitycombo.clearValue();
            velocitycombo.store.removeAll();
         	 velocitycombo.store.add(meshModel.get('velmod'));	
 
