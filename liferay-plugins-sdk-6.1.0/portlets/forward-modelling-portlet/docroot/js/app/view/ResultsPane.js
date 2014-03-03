@@ -1,4 +1,18 @@
-
+/*
+Ext.Ajax.request({
+	    	      	      	    			url: deleteWorkflowURL,
+	    	      	      	    			params: {
+	    	      	      	    				"workflowId": rec.get('workflowId')
+	    	      	      	    			},
+	    	      	      	    			success: function(response){
+	    	      	      	    				wfStore.load();
+	    	      	      	    			},
+	    	      	      	    			failure: function(response) {
+	    	      	      	    				Ext.Msg.alert("Error", "Delete failed!");
+	    	      	      	                }
+	    	      	                    });
+	    	      	                    */
+	    	      	                    
 PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 
 
@@ -405,7 +419,9 @@ var viewInputAction = Ext.create('Ext.Action', {
             },
 
             failure: function () {
-                alert("Error loading Workflow Inputs")
+            
+            Ext.Msg.alert("Error", "Error loading Workflow Inputs");
+                
             },
             simpleSortMode: true
 
@@ -525,7 +541,7 @@ disableSelection: true,
 
 									 
                                     var tempx = tempStore.getProxy()
-                                    tempx.api.destroy = "/j2ep-1.0/prov/workflow/delete/" + xx.get("runId");
+                                    tempx.api.destroy = PROV_SERVICE_BASEURL+"workflow/delete/" + xx.get("runId");
 									 
                                     tempStore.remove(xx);
                                     
@@ -533,19 +549,36 @@ disableSelection: true,
                                         success: function (args) {
 
 											 
+											Ext.Ajax.request({
+	    	      	      	    			url: deleteWorkflowURL,
+	    	      	      	    			params: {
+	    	      	      	    				"workflowId": xx.get('systemId')
+	    	      	      	    			},
+	    	      	      	    			success: function(response){
+	    	      	      	    				wfStore.load();
+	    	      	      	    			},
+	    	      	      	    			failure: function(response) {
+	    	      	      	    				 
+	    	      	      	                }
+	    	      	                    });
 											
 											
-											
-											workflowStore.load()
+										workflowStore.load()
                                             
                                             
+                                        },
+                                        
+                                        faliure: function (args) {
+                                        
+                                        Ext.Msg.alert("Error", "Delete failed!");
+                                        
                                         }
 
                                     })
                                 
                                 }
                             })
-                            messagebox.zIndexManager.bringToFront(messagebox);
+                             messagebox.zIndexManager.bringToFront(messagebox);
                           
 
 
@@ -784,17 +817,17 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
     function viewData(url, open) { //var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
 
 
-        htmlcontent = "<br/><br/><center><strong>Link to data files or data images preview....</strong></center><br/><br/>"
+        htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
         for (var i = 0; i < url.length; i++) {
             url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/"+userSN+"/verce/")
 
 
-            htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/><br/>"
+            htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
             var id = url[i];
             var im = new Object()
             im.func = is_image
             im.func(id, function (val) {
-                document.getElementById(val).innerHTML = "<img  width='100%' height='100%' src='" + val + "'/>"
+                document.getElementById(val).innerHTML = "<img  width='80%' height='70%' src='" + val + "'/>"
             }, function (val) {
                 document.getElementById(val).innerHTML = "<center><strong><a target='_blank'  href='" + val + "'>" + val.substring(val.lastIndexOf('/') + 1) + "</a></strong></center>"
             })
@@ -804,8 +837,8 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
         if (open) {
             Ext.create('Ext.window.Window', {
                 title: 'Data File',
-                height: 400,
-                width: 800,
+                height: 300,
+                width: 500,
                 layout: 'fit',
                 items: [{
                     overflowY: 'auto',
@@ -871,7 +904,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
 
                         failure: function (response) {
 
-                            alert("Search Request Failed")
+                            Ext.Msg.alert("Error","Search Request Failed")
 
 
                         }
@@ -1020,7 +1053,7 @@ Ext.define('CF.view.FilterOnAncestor', {
                         ,
                         failure: function (response) {
 
-                            alert("Filter Request Failed")
+                            Ext.Msg.alert("Error","Filter Request Failed")
 
 
                         },
@@ -1114,7 +1147,7 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
                         ,
                         failure: function (response) {
 
-                            alert("Filter Request Failed")
+                            Ext.Msg.alert("Error","Filter Request Failed")
 
 
                         },
@@ -1204,7 +1237,7 @@ Ext.define('CF.view.FilterOnMeta', {
                         ,
                         failure: function (response) {
 
-                            alert("Filter Request Failed")
+                            Ext.Msg.alert("Error","Filter Request Failed")
 
 
                         },

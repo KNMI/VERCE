@@ -20,6 +20,11 @@
              name: 'date',
              type: 'string',
              mapping: 'startTime'
+         },
+         {
+             name: 'systemId',
+             type: 'string',
+             mapping: 'system_id'
          }
 
 
@@ -128,30 +133,18 @@
                  Ext.Ajax.request({
                      method: 'POST',
                                url:  PROV_SERVICE_BASEURL + 'workflow/delete/' + r.get('runId'),
-                               params: {          
-                         "doc": '{ "description":"' + r.get('description') + '"}'          
-                     },
+                                
                       
                      failure: function (response) {
 
-                         alert("Workflow Run update failed")
+                         alert("Workflow Run delete failed")
 
 
                      },
 
                      success: function (response) {
 
-                         Ext.Ajax.request({          
-                             url:  updateWorkflowDescriptionURL,
-                                       params: {          
-                                 "workflowId": r.get('runId'),
-                                 "newText": r.get('description')          
-                             },
-                             success: function (response) {
-
-                                 wfStore.load();
-                             } 
-                         });
+                         
 
 
                      }

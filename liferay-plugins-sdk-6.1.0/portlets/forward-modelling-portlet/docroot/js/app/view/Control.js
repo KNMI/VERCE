@@ -178,7 +178,7 @@ Ext.define('CF.view.WfGrid', {
 	    	      	      	    				wfStore.load();
 	    	      	      	    				
 		    	      	      	    			Ext.Ajax.request({	//delete from provenance
-			    	      	      	    		    url: PROV_SERVICE_BASEURL+"/workflow/delete/" + rec.get('workflowId'),
+			    	      	      	    		    url: PROV_SERVICE_BASEURL+"workflow/delete/" + rec.get('name'),
 			    	      	      	    		    method: 'POST',          
 			    	      	      	    		    waitTitle: 'Deleting from provenance',
 			    	      	      	    		    waitMsg: 'Sending data...',                                
