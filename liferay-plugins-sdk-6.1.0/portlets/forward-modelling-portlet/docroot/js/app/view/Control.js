@@ -172,9 +172,18 @@ Ext.define('CF.view.WfGrid', {
 	    	      	      	    			url: deleteWorkflowURL,
 	    	      	      	    			params: {
 	    	      	      	    				"workflowId": rec.get('workflowId')
-	    	      	      	    			},
+	    	      	      	    			},          
+	    	      	      	    		    waitTitle: 'Deleting from data base',
 	    	      	      	    			success: function(response){
 	    	      	      	    				wfStore.load();
+	    	      	      	    				
+		    	      	      	    			Ext.Ajax.request({	//delete from provenance
+			    	      	      	    		    url: PROV_SERVICE_BASEURL+"/workflow/delete/" + rec.get('workflowId'),
+			    	      	      	    		    method: 'POST',          
+			    	      	      	    		    waitTitle: 'Deleting from provenance',
+			    	      	      	    		    waitMsg: 'Sending data...',                                
+			    	      	      	    		    failure: function(){Ext.Msg.alert("Error", "The workflow has been deleted from the data base but couldn't be deleted from the provenance");}
+			    	      	      	    		});
 	    	      	      	    			},
 	    	      	      	    			failure: function(response) {
 	    	      	      	    				Ext.Msg.alert("Error", "Delete failed!");
