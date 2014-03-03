@@ -146,7 +146,10 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"runId": runId
           	    			},
           	    			success: function(response){
-          	    				Ext.Msg.alert("Success", "The information has been submited. RunId is "+runId);
+          	    				var successMsg = "The information has been submited";
+          	    				if(checkboxNSubmit)	
+          	    					successMsg = Ext.getCmp('gridEvents').getSelectionModel().selected.length + " processes have been submited";
+          	    				Ext.Msg.alert("Success", successMsg);
           	    				Ext.getCmp('submitbutton').enable();
           	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();
