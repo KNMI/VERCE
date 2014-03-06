@@ -37,7 +37,7 @@ Ext.define('CF.view.help.Action', {
             handler: function() {
                 if (!this._window) {
                     this._window = Ext.create('CF.view.help.Window', {
-                        contentEl: this.windowContentEl
+                        //contentEl: this.windowContentEl
                     });
                 }
                 this._window.show();
