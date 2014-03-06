@@ -19,6 +19,7 @@ var fileTypes = Ext.create('Ext.form.ComboBox', {
     fieldLabel: 'File format',
     allowBlank: false,
     name: 'filetype',
+    id: 'station-filetype',
     store: fileTypesStore,
     queryMode: 'local',
     displayField: 'name',
@@ -66,12 +67,11 @@ var formStationSearchByFile = Ext.create('Ext.form.Panel', {
             	var n = form.getValues()['name'];
             	if(n.indexOf(" ") < 0)
             	{
-            		gl_stFileType = form.getValues()['filetype'];
 	                form.submit({
 	                    url: uploadFileURL,
 	                    waitMsg: 'Uploading your file...',
 	                    success: function(fp, o) {
-	                    	 getStations(ctrl, o.result.path, gl_stFileType);
+	                    	 getStations(ctrl, o.result.path, form.getValues()['filetype']);
 	                    },
 	                    failure: function(rec, op) {
 	                    	Ext.Msg.alert("Error!", "Was not possible to upload the file");
@@ -100,14 +100,12 @@ openMenuStations.push({
         	Ext.create('Ext.button.Button', {
         	    text: 'StationXML',     
         	    handler: function() {
-        	    	gl_stFileType = STXML_TYPE;
         	    	fileSelection(STXML_TYPE);			//declared in Viewport.js
         	    }
         	}),
         	Ext.create('Ext.button.Button', {
         	    text: 'List of points',     
         	    handler: function() {
-        	    	gl_stFileType = STPOINTS_TYPE;
         	    	fileSelection(STPOINTS_TYPE);			//declared in Viewport.js
         	    }
         	})

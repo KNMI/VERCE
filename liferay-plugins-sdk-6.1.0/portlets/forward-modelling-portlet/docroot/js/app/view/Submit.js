@@ -141,7 +141,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    				"ownerId": ownerId,
           	    				"stationUrl": gl_stationUrl,
           	    				"eventUrl": gl_eventUrl,
-          	    				"stationType": gl_stFileType,
+          	    				"stationType": gl_stationFormat,
           	    				"nProc": nProc,
           	    				"runId": runId
           	    			},

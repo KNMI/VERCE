@@ -140,8 +140,13 @@ Ext.define('CF.view.WfGrid', {
 												// reuse events
 			      	      	    				getEvents(ctrl, input.quakeml.url);
 
+			      	      	    				var stationFileType = input.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
+
+			      	      	    				// var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
+			      	      	    				// Ext.getCmp('station-filetype').select(stationFileType);
+
 			      	      	    				// reuse stations
-			      	      	    				getStations(ctrl, input.stations.url, input.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE);
+			      	      	    				getStations(ctrl, input.stations.url, stationFileType);
 		      	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 		      	      	    				}, this, { single: true });
 

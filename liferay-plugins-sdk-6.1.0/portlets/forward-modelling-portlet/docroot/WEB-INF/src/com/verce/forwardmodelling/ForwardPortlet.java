@@ -63,6 +63,7 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.mail.service.MailServiceUtil;
 import com.liferay.portal.kernel.mail.MailMessage;
+import com.liferay.util.mail.MailEngine;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMJob;
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
@@ -88,7 +89,7 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
 	{
-	   System.out.println("#### " + resourceRequest.getResourceID());
+	   System.out.println("###### " + resourceRequest.getResourceID());
 	   if(resourceRequest.getResourceID().equals("uploadFile"))
 		   uploadFile(resourceRequest, resourceResponse);
 	   else if(resourceRequest.getResourceID().equals("submit"))
@@ -229,8 +230,9 @@ public class ForwardPortlet extends MVCPortlet{
 		   }
 		   else	 				//1b. Retrieve StationFile
 		   {
-			   long folderId = getFolderId(repositoryId, userSN, stFileType, serviceContext);
-			   String stFileName = stationUrl.substring(stationUrl.lastIndexOf(CharPool.SLASH)+1);
+			   String[] urlParts = stationUrl.split("/");
+			   long folderId = Long.parseLong(urlParts[urlParts.length - 2]);
+			   String stFileName = urlParts[urlParts.length - 1];
 			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, stFileName);
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 			   stPublicPath = stationUrl;
@@ -248,8 +250,9 @@ public class ForwardPortlet extends MVCPortlet{
 		   }
 		   else	 			//2b. Retrieve EventFile
 		   {
-			   long folderId = getFolderId(repositoryId, userSN, Constants.EVENT_TYPE, serviceContext);
-			   String evFileName = eventUrl.substring(eventUrl.lastIndexOf(CharPool.SLASH)+1);
+			   String[] urlParts = eventUrl.split("/");
+			   long folderId = Long.parseLong(urlParts[urlParts.length - 2]);
+			   String evFileName = urlParts[urlParts.length - 1];
 			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, evFileName);
 			   eventFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 			   evPublicPath = eventUrl;
@@ -390,39 +393,58 @@ public class ForwardPortlet extends MVCPortlet{
 	       // );
 	       // MailServiceUtil.sendEmail(mailMessage);
 
-	       System.out.println(1);
-	       MailMessage mailMessage = new MailMessage();
-	       System.out.println(1.1);
-	       mailMessage.setSubject("VERCE: Mesh and velocity model submitted");
-	       System.out.println(2);
-           InternetAddress email = new InternetAddress("jonas.matser@knmi.nl");
-	       try {
-		       System.out.println(2.1);
-		       mailMessage.setTo(new InternetAddress[] {email});
-		       System.out.println(2.11);
-	       } catch (Exception e) {
-	           System.out.println("HERE");
-       	       System.out.println(e.getMessage() + "\n" + e.getStackTrace());
-	       }
-	       System.out.println(2.2);	       
-	       mailMessage.setFrom(email);
-	       System.out.println(3);
-	       mailMessage.setBody(
-	       	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
-	       	"\n" +
-	       	"The mesh and velocity model are available at the following links." +
-	       	"Mesh: " + meshURL +
-	       	"Velocity Model: " + velocityModelURL +
-	       	"\n" +
-	       	"The user also added the following note: " +
-	       	HtmlUtil.escape(uploadRequest.getParameter("note"))
+	       // System.out.println(1);
+	       // MailMessage mailMessage = new MailMessage();
+	       // System.out.println(1.1);
+	       // mailMessage.setSubject("VERCE: Mesh and velocity model submitted");
+	       // System.out.println(2);
+        //    InternetAddress email = new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser");
+	       // try {
+		      //  System.out.println(2.1);
+		      //  // mailMessage.setTo(new InternetAddress[] {email});
+		      //  mailMessage.setTo(email);
+		      //  System.out.println(2.11);
+	       // } catch (Exception e) {
+	       //     System.out.println("HERE");
+       	//        System.out.println(e.getMessage() + "\n" + e.getStackTrace());
+	       // }
+	       // System.out.println(2.2);	       
+	       // mailMessage.setFrom(email);
+	       // System.out.println(3);
+	       // mailMessage.setBody(
+	       // 	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+	       // 	"\n" +
+	       // 	"The mesh and velocity model are available at the following links." +
+	       // 	"Mesh: " + meshURL +
+	       // 	"Velocity Model: " + velocityModelURL +
+	       // 	"\n" +
+	       // 	"The user also added the following note: " +
+	       // 	HtmlUtil.escape(uploadRequest.getParameter("note"))
+	       // );
+	       // System.out.println(4);
+	       // mailMessage.setHTMLFormat(true);
+	       // System.out.println(5);
+	       // System.out.println(mailMessage.getBody());
+	       // MailServiceUtil.sendEmail(mailMessage);
+	       // System.out.println(6);
+
+
+	       MailEngine.send(
+	       	new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser"),
+	       	new InternetAddress[] { new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser") },
+	       	new InternetAddress[] {},
+	       	new InternetAddress[] {},
+	       	"VERCE: Mesh and velocity model submitted",
+	       	"test"
+	       	// "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+	       	// "\n" +
+	       	// "The mesh and velocity model are available at the following links." +
+	       	// "Mesh: " + meshURL +
+	       	// "Velocity Model: " + velocityModelURL +
+	       	// "\n" +
+	       	// "The user also added the following note: " +
+	       	// HtmlUtil.escape(uploadRequest.getParameter("note"))
 	       );
-	       System.out.println(4);
-	       mailMessage.setHTMLFormat(true);
-	       System.out.println(5);
-	       System.out.println(mailMessage.getBody());
-	       MailServiceUtil.sendEmail(mailMessage);
-	       System.out.println(6);
 
 	       resourceResponse.getWriter().write("{ success: true }");
 	   } catch (Exception e) {
