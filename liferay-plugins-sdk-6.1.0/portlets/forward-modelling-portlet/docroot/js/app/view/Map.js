@@ -79,14 +79,10 @@ Ext.define('CF.view.Map', {
              }
         );
         
-       
-        
          layers.push(hwms);
          layers.push(vecwms);
          layers.push(geowms);
          layers.push(faultswms);
-       
-       
         
         OpenLayers.Control.CustomNavToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
 	
@@ -149,22 +145,14 @@ Ext.define('CF.view.Map', {
             tooltip: "zoom to max extent"
         })));
 
-        
-        
-
         items.push("-");
-
-            items.push("->");
-
-        // Help action
+        items.push("->");
+        
         items.push(
             Ext.create('Ext.button.Button', Ext.create('CF.view.help.Action', {
                 windowContentEl: "help"
             }))
         );
-        
-        
-        
         
         items.push(
         {
@@ -215,18 +203,12 @@ Ext.define('CF.view.Map', {
       			 			     		 }]
       			 			     	 })
       			 			     	]
-							}).show();
-						    
-							}					
+ 						       }).show();
+ 						    }					
 						}),
- 			 		 
- 			 		 
- 			 		 
- 			 		 
- 			 		 
- 			 		  {
-                    text: 'Borders'
-                },
+ 			 		{
+ 			 			  text: 'Borders'
+ 			 		},
                     {    
 				        xtype: "gx_opacityslider",
 				        text: 'Boundaries',
@@ -234,20 +216,18 @@ Ext.define('CF.view.Map', {
 				        aggressive: true,
 				        vertical: false,
 				        height: 10,
-				    
 						x: 10,
      				    y: 20
  			 		  },
- 			 		   { 
-                    text: 'Geology - Europe BGR 5M Geological Units - Onshore'
-                },
-                    {    
+ 			 		  { 
+ 			 			  text: 'Geology - Europe BGR 5M Geological Units - Onshore'
+ 			 		  },
+                      {    
 				        xtype: "gx_opacityslider",
 				        text: 'Geology',
    					    layer: geowms,
 				        aggressive: true,
 				        vertical: false,
-				        
 				        height: 10,
 				        value:50,
 						x: 10,
@@ -266,50 +246,35 @@ Ext.define('CF.view.Map', {
    									 bodyPadding: 5,  // Don't want content to crunch against the borders
  									 width: 600,
  									 autoScroll: true,
-									 
     								 items: [{
-        
- 			 			               
- 				  			           xtype: "gx_legendimage",
-  							           
-  							           
-  							            
-  							           url:'http://www.bgr.de/Service/OneGeology/BGR_Geological_Units_IGME5000/?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=EUROPE_BGR_5M_ONSH&format=image/png&STYLE=default',
-  			        				   padding: 5
-      			 			     		 }]
+    									xtype: "gx_legendimage",
+  							          	url:'http://www.bgr.de/Service/OneGeology/BGR_Geological_Units_IGME5000/?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=EUROPE_BGR_5M_ONSH&format=image/png&STYLE=default',
+  							          	padding: 5
+      			 			     		}]
       			 			     	 })
       			 			     	]
-							}).show();
-						    
+ 						       }).show();
 							}					
 						}),
- 			 		 
  			 		   {
-                    text: 'Faults'
-                },
-                    {    
-				        xtype: "gx_opacityslider",
-				        text: 'Faults',
-   					    layer: faultswms,
-				        aggressive: true,
-				        vertical: false,
-				        height: 10,
-				        value:30,
-						x: 10,
-     				    y: 20
- 			 		  }
- 			 		  
+		                    text: 'Faults'
+		                },
+	                    {    
+					        xtype: "gx_opacityslider",
+					        text: 'Faults',
+	   					    layer: faultswms,
+					        aggressive: true,
+					        vertical: false,
+					        height: 10,
+					        value:30,
+							x: 10,
+	     				    y: 20
+	 			 		  }
                 		]
            		 }
       		  }
-
         );
         
-        
-                                                                                        
-        
-        
-         
         
         Ext.apply(me, {
             map: map,
