@@ -429,22 +429,22 @@ public class ForwardPortlet extends MVCPortlet{
 	       // System.out.println(6);
 
 
-	       MailEngine.send(
-	       	new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser"),
-	       	new InternetAddress[] { new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser") },
-	       	new InternetAddress[] {},
-	       	new InternetAddress[] {},
-	       	"VERCE: Mesh and velocity model submitted",
-	       	"test"
-	       	// "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
-	       	// "\n" +
-	       	// "The mesh and velocity model are available at the following links." +
-	       	// "Mesh: " + meshURL +
-	       	// "Velocity Model: " + velocityModelURL +
-	       	// "\n" +
-	       	// "The user also added the following note: " +
-	       	// HtmlUtil.escape(uploadRequest.getParameter("note"))
-	       );
+	       // MailEngine.send(
+	       // 	new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser"),
+	       // 	new InternetAddress[] { new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser") },
+	       // 	new InternetAddress[] {},
+	       // 	new InternetAddress[] {},
+	       // 	"VERCE: Mesh and velocity model submitted",
+	       // 	"test"
+	       // 	// "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+	       // 	// "\n" +
+	       // 	// "The mesh and velocity model are available at the following links." +
+	       // 	// "Mesh: " + meshURL +
+	       // 	// "Velocity Model: " + velocityModelURL +
+	       // 	// "\n" +
+	       // 	// "The user also added the following note: " +
+	       // 	// HtmlUtil.escape(uploadRequest.getParameter("note"))
+	       // );
 
 	       resourceResponse.getWriter().write("{ success: true }");
 	   } catch (Exception e) {
