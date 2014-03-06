@@ -1,17 +1,4 @@
-/*
-Ext.Ajax.request({
-	    	      	      	    			url: deleteWorkflowURL,
-	    	      	      	    			params: {
-	    	      	      	    				"workflowId": rec.get('workflowId')
-	    	      	      	    			},
-	    	      	      	    			success: function(response){
-	    	      	      	    				wfStore.load();
-	    	      	      	    			},
-	    	      	      	    			failure: function(response) {
-	    	      	      	    				Ext.Msg.alert("Error", "Delete failed!");
-	    	      	      	                }
-	    	      	                    });
-	    	      	                    */
+
 	    	      	                    
 PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 
@@ -548,7 +535,7 @@ disableSelection: true,
                                     tempStore.sync({
                                         success: function (args) {
 
-											 
+											
 											Ext.Ajax.request({
 	    	      	      	    			url: deleteWorkflowURL,
 	    	      	      	    			params: {
@@ -560,10 +547,10 @@ disableSelection: true,
 	    	      	      	    			failure: function(response) {
 	    	      	      	    				 
 	    	      	      	                }
-	    	      	                    });
+	    	      	                    })
 											
 											
-										workflowStore.load()
+										 workflowStore.load()
                                             
                                             
                                         },
@@ -575,6 +562,8 @@ disableSelection: true,
                                         }
 
                                     })
+                                    
+                                   
                                 
                                 }
                             })
