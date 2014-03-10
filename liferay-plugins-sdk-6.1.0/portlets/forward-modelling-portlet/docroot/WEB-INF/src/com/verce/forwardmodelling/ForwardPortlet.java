@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.Format;
@@ -36,7 +37,14 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -61,9 +69,6 @@ import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
-import com.liferay.mail.service.MailServiceUtil;
-import com.liferay.portal.kernel.mail.MailMessage;
-import com.liferay.util.mail.MailEngine;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMJob;
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
@@ -377,74 +382,34 @@ public class ForwardPortlet extends MVCPortlet{
 		       return;
    		   }
 
-	       // MailMessage mailMessage = new MailMessage(
-	       // 	new InternetAddress("jonas.matser@knmi.nl"),
-	       // 	new InternetAddress("jonas.matser@knmi.nl"),
-	       // 	"VERCE: Mesh and velocity model submitted",
-	       // 	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
-	       // 	"\n" +
-	       // 	"The mesh and velocity model are available at the following links." +
-	       // 	"Mesh: " + meshURL +
-	       // 	"Velocity Model: " + velocityModelURL +
-	       // 	"\n" +
-	       // 	"The user also added the following note: " +
-	       // 	HtmlUtil.escape(uploadRequest.getParameter("note")),
-	       // 	true
-	       // );
-	       // MailServiceUtil.sendEmail(mailMessage);
+		   Properties props = new Properties();
+           props.put("mail.smtp.host", "localhost");
+           props.put("mail.smtp.port", "25");
+ 
+           Session session = Session.getInstance(props);
 
-	       // System.out.println(1);
-	       // MailMessage mailMessage = new MailMessage();
-	       // System.out.println(1.1);
-	       // mailMessage.setSubject("VERCE: Mesh and velocity model submitted");
-	       // System.out.println(2);
-        //    InternetAddress email = new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser");
-	       // try {
-		      //  System.out.println(2.1);
-		      //  // mailMessage.setTo(new InternetAddress[] {email});
-		      //  mailMessage.setTo(email);
-		      //  System.out.println(2.11);
-	       // } catch (Exception e) {
-	       //     System.out.println("HERE");
-       	//        System.out.println(e.getMessage() + "\n" + e.getStackTrace());
-	       // }
-	       // System.out.println(2.2);	       
-	       // mailMessage.setFrom(email);
-	       // System.out.println(3);
-	       // mailMessage.setBody(
-	       // 	"User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
-	       // 	"\n" +
-	       // 	"The mesh and velocity model are available at the following links." +
-	       // 	"Mesh: " + meshURL +
-	       // 	"Velocity Model: " + velocityModelURL +
-	       // 	"\n" +
-	       // 	"The user also added the following note: " +
-	       // 	HtmlUtil.escape(uploadRequest.getParameter("note"))
-	       // );
-	       // System.out.println(4);
-	       // mailMessage.setHTMLFormat(true);
-	       // System.out.println(5);
-	       // System.out.println(mailMessage.getBody());
-	       // MailServiceUtil.sendEmail(mailMessage);
-	       // System.out.println(6);
+           try {
+ 
+               Message message = new MimeMessage(session);
+               message.setFrom(InternetAddress.parse(PortalUtil.getUser(resourceRequest).getDisplayEmailAddress())[0]);
+               message.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse("jonas.matser@knmi.nl, spinuso@knmi.nl"));
+               message.setSubject("VERCE: Mesh and velocity model submitted");
+               message.setText(
+	               "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
+			       "\n" +
+			       "The mesh and velocity model are available at the following links." +
+			       "Mesh: " + meshURL +
+			       "Velocity Model: " + velocityModelURL +
+			       "\n" +
+			       "The user also added the following note: " +
+			       HtmlUtil.escape(uploadRequest.getParameter("note"))
+		       );
 
-
-	       // MailEngine.send(
-	       // 	new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser"),
-	       // 	new InternetAddress[] { new InternetAddress("jonas.matser@knmi.nl", "Jonas Matser") },
-	       // 	new InternetAddress[] {},
-	       // 	new InternetAddress[] {},
-	       // 	"VERCE: Mesh and velocity model submitted",
-	       // 	"test"
-	       // 	// "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
-	       // 	// "\n" +
-	       // 	// "The mesh and velocity model are available at the following links." +
-	       // 	// "Mesh: " + meshURL +
-	       // 	// "Velocity Model: " + velocityModelURL +
-	       // 	// "\n" +
-	       // 	// "The user also added the following note: " +
-	       // 	// HtmlUtil.escape(uploadRequest.getParameter("note"))
-	       // );
+               Transport.send(message);
+            } catch (MessagingException e) {
+               throw new RuntimeException(e);
+            }
 
 	       resourceResponse.getWriter().write("{ success: true }");
 	   } catch (Exception e) {
