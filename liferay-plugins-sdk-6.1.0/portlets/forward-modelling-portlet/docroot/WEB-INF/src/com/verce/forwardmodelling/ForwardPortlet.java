@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
@@ -67,8 +68,8 @@ import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
+import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.util.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 
 import hu.sztaki.lpds.pgportal.services.asm.ASMJob;
 import hu.sztaki.lpds.pgportal.services.asm.ASMService;
@@ -228,7 +229,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   URL wsUrl = new URL(portalUrl2+stationUrl);
 			   FileUtil.write(stationFile, wsUrl.openStream());
 			   String stFileName = "stations_"+runIds[0];
-			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
+			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE, null);
 			   stPublicPath = portalUrl + stPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by "+userSN+", accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
@@ -249,7 +250,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   URL wsUrl = new URL(portalUrl2+eventUrl);
 			   FileUtil.write(eventFile, wsUrl.openStream());
 			   String evFileName = "events_"+runIds[0];
-			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
+			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE, null);
 			   evPublicPath = portalUrl + evPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
 		   }
@@ -264,10 +265,10 @@ public class ForwardPortlet extends MVCPortlet{
 		   }
 		   
 		   //3. Generate zip file
-		   String zipName = userSN+"_"+formatter.format(new Date()).toString()+".zip";
+		   String zipName = runIds[0]+".zip";
 		   createZipFile("temp/"+zipName);
 		   File tempZipFile = new File("temp/"+zipName);
-		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
+		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE, null);
 	       zipPublicPath = portalUrl + zipPublicPath;
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
 
@@ -282,7 +283,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
 			   String fileName = solverType+"_"+runIds[i]+".json";
-			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
+			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE, null);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
 	
@@ -453,7 +454,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 	   try
 	   {
-		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
+		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype, null);
 		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
 		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
 		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
@@ -471,7 +472,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   } 
    }
    
-   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype) throws SystemException, PortalException
+   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype, Integer iteration) throws SystemException, PortalException
    {
 	   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	   String sourceFileName = file.getName();
@@ -481,28 +482,28 @@ public class ForwardPortlet extends MVCPortlet{
 	   ServiceContext serviceContext = new ServiceContext();
 	   serviceContext.setScopeGroupId(groupId);
 	   long folderId = getFolderId(repositoryId, userSN, filetype, serviceContext);
+	   String finalName = name;
+	   if (iteration!=null)	finalName = name + "_" + iteration;
 	   //System.out.println("[ForwardModellingPortlet.addFileToDL] "+repositoryId+", "+ folderId+", "+ sourceFileName+", "+ mimeType+", "+description+", "+changeLog+", "+serviceContext.toString()+", "+userSN);
 	   
 	   try {
-		   FileEntry check = DLAppServiceUtil.getFileEntry(groupId, folderId, name);
-		   DLAppServiceUtil.updateFileEntry(check.getFileEntryId(), sourceFileName, mimeType, name,	description, changeLog, false, file, serviceContext);
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN The file "+name+" has been overwritten by "+userSN);
-	   } catch (PortalException pe) {
-		   try {
-			   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, name, description, changeLog, file, serviceContext);
-			   //System.out.println("[ForwardModellingPortlet.addFileToDL] The file "+name+" has been created.");
-		   } catch (Exception e) {
-			   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN);
-			   e.printStackTrace();
-			   return null;
-		   }
-	   } catch (Exception e) {
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN);
+		   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, finalName, description, changeLog, file, serviceContext);
+		   //System.out.println("[ForwardModellingPortlet.addFileToDL] The file "+finalName+" has been created.");
+	   }
+	   catch (DuplicateFileException dupException) {
+		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN Duplicated file "+finalName);
+		   if (iteration==null)	iteration = 1;
+		   if(iteration>49)	return null;
+		   iteration++;
+		   return addFileToDL(file, name, groupId, userSN, filetype, iteration);
+	   }
+	   catch (Exception e) {
+		   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN+", FinalName: "+finalName);
 		   e.printStackTrace();
 		   return null;
 	   }
 	   
-	   return "/documents/" + groupId + "/" + folderId + "/" + HttpUtil.encodeURL(HtmlUtil.unescape(name));
+	   return "/documents/" + groupId + "/" + folderId + "/" + HttpUtil.encodeURL(HtmlUtil.unescape(finalName));
    }
    
    /*
