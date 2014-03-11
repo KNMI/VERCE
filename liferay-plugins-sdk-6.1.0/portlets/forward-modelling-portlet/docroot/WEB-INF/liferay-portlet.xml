@@ -4,7 +4,6 @@
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>forward-modelling</portlet-name>
-		<icon>/icon.png</icon>
 		<configuration-action-class>com.verce.action.ConfigurationActionImpl</configuration-action-class>
 		<instanceable>false</instanceable>
 		<header-portlet-css>/css/main.css</header-portlet-css>
