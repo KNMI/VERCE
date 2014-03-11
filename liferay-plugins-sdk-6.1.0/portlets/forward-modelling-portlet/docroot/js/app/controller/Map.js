@@ -303,10 +303,11 @@ Ext.define('CF.controller.Map', {
             },
             'button[itemId=station_cl_but]':{
 				click:function(button) {
-				 if (this.mapPanel.map.getLayersByName("Stations")!="")
-         			this.mapPanel.map.removeLayer(this.mapPanel.map.getLayersByName("Stations")[0]);
-      			 this.stationstore.removeAll();
-      			 hideStationInfo();
+					 if (this.mapPanel.map.getLayersByName("Stations")!="")
+	         			this.mapPanel.map.removeLayer(this.mapPanel.map.getLayersByName("Stations")[0]);
+	      			 this.stationstore.removeAll();
+	      			 hideStationInfo();
+					 Ext.getCmp('stationSelColumn').setText("0/0");
 				}
 			},
 			'button[itemId=event_cl_but]':{
@@ -315,6 +316,7 @@ Ext.define('CF.controller.Map', {
 						this.mapPanel.map.removeLayer(this.mapPanel.map.getLayersByName("Events")[0]);
 					this.eventstore.removeAll();
 					hideEventInfo();
+					Ext.getCmp('eventSelColumn').setText("0/0");
 				}
 			},
             'button[itemId=station_but]':{
