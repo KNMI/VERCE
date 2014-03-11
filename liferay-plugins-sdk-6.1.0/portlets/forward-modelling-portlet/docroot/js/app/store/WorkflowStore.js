@@ -55,7 +55,7 @@
      trailingBufferZone: 60,
      buffered: true,
      leadingBufferZone: 10,
-     pageSize: 40,
+     pageSize: 1000,
 
 
      proxy: {

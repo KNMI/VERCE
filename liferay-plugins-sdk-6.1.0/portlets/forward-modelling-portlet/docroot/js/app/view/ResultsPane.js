@@ -3,6 +3,21 @@
 PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 
 
+Ext.override(Ext.selection.RowModel,
+{
+    isRowSelected: function (record, index)
+    {
+        try
+        {
+            return this.isSelected(record);
+        }
+        catch (e)
+        {
+            return false;
+        }
+    }
+});
+
 var mimetypes = [{
     "mime": "application/octet-stream",
     "desc": ""
@@ -549,7 +564,7 @@ disableSelection: true,
 	    	      	      	                }
 	    	      	                    })
 											
-											
+										// workflowStore.data.clear()
 										 workflowStore.load()
                                             
                                             
@@ -608,7 +623,11 @@ disableSelection: true,
     },
 
     viewConfig: {
+      
         listeners: {
+          itemclick: function(dv, record, item, index, e) {
+													workflowStore.sync() 
+													},
             itemdblclick: function (dataview, record, item, index, e) {
 
                 activityStore.setProxy({
