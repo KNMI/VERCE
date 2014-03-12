@@ -13,5 +13,12 @@
 </liferay-portlet:renderURL> 
 
 <script>
+	 
+	 
+	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
+	var userId = '<%=themeDisplay.getUser().getUserId() %>';
+	 
+	 
+</script>
 </script>

@@ -1,7 +1,24 @@
 
 	    	      	                    
 PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
+var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
+var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
+
+Ext.override(Ext.selection.RowModel,
+{
+    isRowSelected: function (record, index)
+    {
+        try
+        {
+            return this.isSelected(record);
+        }
+        catch (e)
+        {
+            return false;
+        }
+    }
+});
 
 var mimetypes = [{
     "mime": "application/octet-stream",
@@ -367,6 +384,66 @@ var action = Ext.create('Ext.Action', {
     }
 });
 
+
+
+var downloadBulk = Ext.create('Ext.Action', {
+    tooltip: 'Download',
+    text: 'Produce Download Script',
+    id: 'downloadscript',
+    disabled: 'true',
+
+    handler: function (url) {
+    	var htmlcontent = ""
+    	
+    	artifactStore.each(function(record,id){
+    						 var location = record.get("location")
+    						  
+    						 if (location.indexOf(",")!=-1)
+    						 { 
+    						 var locations=location.split(",")
+    						
+  							  for (var i=0;i<locations.length;i++)
+  							  		 {alert(locations[i])
+	  							  htmlcontent+="globus-url-copy -cred $X509_USER_PROXY "+locations[i].replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/")+" ./ <br/>"
+									}
+							}else
+							htmlcontent+="globus-url-copy -cred $X509_USER_PROXY "+location.replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/")+" ./ <br/>"
+							
+							});
+        
+
+
+        
+        downloadscript = Ext.create('Ext.window.Window', {
+            title: 'Download Script',
+            height: 360,
+            width: 800,
+
+            layout: {
+                type: 'vbox',
+                align: 'stretch',
+                pack: 'start',
+            },
+            items: [
+
+                {
+                    overflowY: 'auto',
+                    overflowX: 'auto',
+                    height: 330,
+        			width: 800,
+
+                    xtype: 'panel',
+                    html: htmlcontent
+                }
+            ]
+
+        }).show();
+
+		 
+    }
+});
+
+
 var refreshAction = Ext.create('Ext.Action', {
     tooltip: 'Refresh View',
     text: 'Refresh View',
@@ -549,7 +626,7 @@ disableSelection: true,
 	    	      	      	                }
 	    	      	                    })
 											
-											
+										// workflowStore.data.clear()
 										 workflowStore.load()
                                             
                                             
@@ -608,7 +685,11 @@ disableSelection: true,
     },
 
     viewConfig: {
+      
         listeners: {
+          itemclick: function(dv, record, item, index, e) {
+													workflowStore.sync() 
+													},
             itemdblclick: function (dataview, record, item, index, e) {
 
                 activityStore.setProxy({
@@ -627,6 +708,8 @@ disableSelection: true,
                         currentRun = record.get("runId")
                         Ext.getCmp('filtercurrent').enable();
               			Ext.getCmp('searchartifacts').enable();
+              			Ext.getCmp('downloadscript').enable();
+              			
                			
 
                          
@@ -801,7 +884,6 @@ function is_image(url, callback, errorcallback) {
 
 }
 
-var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
 
     function viewData(url, open) { //var loc=url.replace(/file:\/\/[\w-]+/,"/intermediate-nas/")
 
@@ -1544,7 +1626,8 @@ Ext.define('RS.view.ArtifactView', {
         items: [
 
             searchartifacts,
-            filterOnAncestors
+            filterOnAncestors,
+            downloadBulk
 
         ]
     },
@@ -1553,7 +1636,7 @@ Ext.define('RS.view.ArtifactView', {
 
 Ext.define('RS.view.ResultsPane', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.resultspaneRS'
+    alias: 'widget.resultspane'
 })
 
 
