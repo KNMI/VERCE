@@ -322,7 +322,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
 			   
 			   //10. Add run info in the Provenance Repository
-			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
+			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
@@ -596,7 +596,7 @@ public class ForwardPortlet extends MVCPortlet{
         System.out.println("[ForwardModellingPortlet.createZipFile] File created in the server file system: "+fileName);
 	}
 		
-	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String asmRunId, 
+	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
 			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType)
     {	
 		String runType = "workflow_run";
@@ -616,7 +616,7 @@ public class ForwardPortlet extends MVCPortlet{
 			if(stationFileType.equals(Constants.STXML_TYPE))	stationFileType = Constants.MIMETYPE_XML;
 			
 			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage
-					+"\", \"name\":\""+wfName+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
+					+"\", \"name\":\""+wfName+"\", \"workflowId\":\""+wfId+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
 			params += "{\"mime-type\":\""+stationFileType+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.EVENT_INPUT_NAME+"\", \"url\":\""+eventUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_JSON+"\", \"name\":\""+Constants.SOLVER_INPUT_NAME+"\", \"url\":\""+solverUrl+"\"},";

@@ -89,15 +89,15 @@ Ext.define('CF.view.WfGrid', {
       	      	    			},
       	      	    			method: 'GET',
       	      	    			success: function(response){
-      	      	    				var object = JSON.parse(response.responseText);
+      	      	    				var prov_object = JSON.parse(response.responseText);
 
-      	      	    				var input = {};
-      	      	    				object.input.forEach(function(item) {
-      	      	    					input[item.name] = item;
+      	      	    				prov_object.input.forEach(function(item) {
+      	      	    					prov_object[item.name] = item;
       	      	    				});
+      	      	    				delete prov_object.input;
 
 				                    Ext.Ajax.request({
-				                    	url: input.solverconf.url,
+				                    	url: prov_object.solverconf.url,
 		      	      	    			success: function(response){
 		      	      	    				var object = JSON.parse(response.responseText);
 		      	      	    				if (object === null) {
@@ -138,16 +138,23 @@ Ext.define('CF.view.WfGrid', {
 				      	      	    			// }, this, { single: true });
 												
 												// reuse events
-			      	      	    				getEvents(ctrl, input.quakeml.url);
+			      	      	    				getEvents(ctrl, prov_object.quakeml.url);
 
-			      	      	    				var stationFileType = input.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
+			      	      	    				var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
 
 			      	      	    				// var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
 			      	      	    				// Ext.getCmp('station-filetype').select(stationFileType);
 
 			      	      	    				// reuse stations
-			      	      	    				getStations(ctrl, input.stations.url, stationFileType);
+			      	      	    				getStations(ctrl, prov_object.stations.url, stationFileType);
 		      	      	    					var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
+
+		      	      	    					if (prov_object.workflowId != null) {
+		      	      	    						Ext.getCmp('wfSelection').setValue(prov_object.workflowId);
+		      	      	    					}
+		      	      	    					
+		      	      	    					Ext.getCmp('submitName').setValue(prov_object._id.slice(0, -14)); // remove runid
+		      	      	    					Ext.getCmp('submitMessage').setValue(prov_object.description);
 		      	      	    				}, this, { single: true });
 
 		      	      	    				// reuse mesh and trigger velocity store reload
