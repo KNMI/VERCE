@@ -53,7 +53,7 @@ var mimetypesStore = Ext.create('Ext.data.Store', {
 // ComboBox with single selection enabled
 
 
-Ext.define('RS.view.mimeCombo', {
+Ext.define('CF.view.mimeCombo', {
     extend: 'Ext.form.field.ComboBox',
     fieldLabel: 'mime-type',
     name: 'mime-type',
@@ -76,7 +76,7 @@ Ext.define('RS.view.mimeCombo', {
 
     }
 });
-var mimetypescombo1 = Ext.create('RS.view.mimeCombo', {
+var mimetypescombo1 = Ext.create('CF.view.mimeCombo', {
 
 });
 
@@ -282,7 +282,7 @@ function addMeta(url) {
     });
 }
 
-Ext.define('RS.view.WorkflowValuesRangeSearch', {
+Ext.define('CF.view.WorkflowValuesRangeSearch', {
         extend: 'Ext.form.Panel',
         // The fields
 
@@ -335,15 +335,15 @@ Ext.define('RS.view.WorkflowValuesRangeSearch', {
 
 
 
-var activityStore = Ext.create('RS.store.ActivityStore');
+var activityStore = Ext.create('CF.store.ActivityStore');
 
-var artifactStore = Ext.create('RS.store.ArtifactStore');
+var artifactStore = Ext.create('CF.store.ArtifactStore');
 
-var singleArtifactStore = Ext.create('RS.store.ArtifactStore');
+var singleArtifactStore = Ext.create('CF.store.ArtifactStore');
 
-var workflowStore = Ext.create('RS.store.WorkflowStore');
+var workflowStore = Ext.create('CF.store.WorkflowStore');
 
-var workflowInputStore = Ext.create('RS.store.WorkflowInputStore');
+var workflowInputStore = Ext.create('CF.store.WorkflowInputStore');
 
  
 
@@ -369,8 +369,8 @@ var action = Ext.create('Ext.Action', {
             },
             items: [
 
-                Ext.create('RS.view.WorkflowValuesRangeSearch'),
-                Ext.create('RS.view.WorlflowSelection')
+                Ext.create('CF.view.WorkflowValuesRangeSearch'),
+                Ext.create('CF.view.WorlflowSelection')
             ]
 
         })
@@ -500,7 +500,7 @@ var viewInputAction = Ext.create('Ext.Action', {
             height: 300,
             width: 400,
             layout: 'fit',
-            items: [Ext.create('RS.view.WorkflowInputView')]
+            items: [Ext.create('CF.view.WorkflowInputView')]
 
         }).show();
         workflowInputStore.data.clear()
@@ -512,7 +512,7 @@ var viewInputAction = Ext.create('Ext.Action', {
 
 
 
-Ext.define('RS.view.WorlflowSelection', {
+Ext.define('CF.view.WorlflowSelection', {
 
     width: 780,
 disableSelection: true,
@@ -522,7 +522,7 @@ disableSelection: true,
 
 
     requires: [
-        'RS.store.WorkflowStore',
+        'CF.store.WorkflowStore',
         'Ext.grid.plugin.BufferedRenderer'
     ],
     store: workflowStore,
@@ -733,7 +733,7 @@ Ext.getCmp('viewworkflowinput').enable();
 Ext.getCmp("activitymonitor").setTitle('Process View - '+currentRun)
 }
 
-Ext.define('RS.view.ActivityMonitor', {
+Ext.define('CF.view.ActivityMonitor', {
 
 
     title: 'Process View',
@@ -743,7 +743,7 @@ Ext.define('RS.view.ActivityMonitor', {
     alias: 'widget.activitymonitor',
     id: 'activitymonitor',
     requires: [
-        'RS.store.ActivityStore',
+        'CF.store.ActivityStore',
         'Ext.grid.plugin.BufferedRenderer'
     ],
 
@@ -930,7 +930,7 @@ function is_image(url, callback, errorcallback) {
 
 
 
-Ext.define('RS.view.StreamValuesRangeSearch', {
+Ext.define('CF.view.StreamValuesRangeSearch', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Values\' Range',
@@ -953,7 +953,7 @@ Ext.define('RS.view.StreamValuesRangeSearch', {
                 name: 'maxvalues',
                 allowBlank: false
             },
-            Ext.create('RS.view.mimeCombo', {})
+            Ext.create('CF.view.mimeCombo', {})
         ],
 
 
@@ -993,7 +993,7 @@ Ext.define('RS.view.StreamValuesRangeSearch', {
 
 
 
-Ext.define('RS.view.StreamContentMatchSearch', {
+Ext.define('CF.view.StreamContentMatchSearch', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Attributes Match',
@@ -1012,7 +1012,7 @@ Ext.define('RS.view.StreamContentMatchSearch', {
                 name: 'values',
                 allowBlank: false
             },
-            Ext.create('RS.view.mimeCombo', {})
+            Ext.create('CF.view.mimeCombo', {})
         ],
 
 
@@ -1056,7 +1056,7 @@ Ext.define('FilterAjax', {
     }
 });
 
-Ext.define('RS.view.FilterOnAncestor', {
+Ext.define('CF.view.FilterOnAncestor', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Ancestor Attributes\' Match',
@@ -1145,7 +1145,7 @@ Ext.define('RS.view.FilterOnAncestor', {
 
 
 
-Ext.define('RS.view.FilterOnAncestorValuesRange', {
+Ext.define('CF.view.FilterOnAncestorValuesRange', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Ancestors Values\' Range',
@@ -1239,7 +1239,7 @@ Ext.define('RS.view.FilterOnAncestorValuesRange', {
 
 
 
-Ext.define('RS.view.FilterOnMeta', {
+Ext.define('CF.view.FilterOnMeta', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Attributes Match',
@@ -1258,7 +1258,7 @@ Ext.define('RS.view.FilterOnMeta', {
                 name: 'values',
                 allowBlank: false
             },
-            Ext.create('RS.view.mimeCombo', {})
+            Ext.create('CF.view.mimeCombo', {})
 
         ],
 
@@ -1330,7 +1330,7 @@ Ext.define('RS.view.FilterOnMeta', {
 
 
 
-Ext.define('RS.view.AnnotationSearch', {
+Ext.define('CF.view.AnnotationSearch', {
         extend: 'Ext.form.Panel',
         // The fields
         title: 'Annotations',
@@ -1387,8 +1387,8 @@ var searchartifactspane = Ext.create('Ext.window.Window', {
     items: [{
         xtype: 'tabpanel',
         items: [
-            Ext.create('RS.view.StreamValuesRangeSearch'),
-            Ext.create('RS.view.AnnotationSearch')
+            Ext.create('CF.view.StreamValuesRangeSearch'),
+            Ext.create('CF.view.AnnotationSearch')
 
         ]
     }]
@@ -1403,8 +1403,8 @@ var filterOnAncestorspane = Ext.create('Ext.window.Window', {
     items: [{
         xtype: 'tabpanel',
         items: [
-            Ext.create('RS.view.FilterOnMeta'),
-            Ext.create('RS.view.FilterOnAncestorValuesRange')
+            Ext.create('CF.view.FilterOnMeta'),
+            Ext.create('CF.view.FilterOnAncestorValuesRange')
         ]
     }]
 })
@@ -1513,7 +1513,7 @@ function renderWorkflowInput(value, p, record) {
 
 
 
-Ext.define('RS.view.SingleArtifactView', {
+Ext.define('CF.view.SingleArtifactView', {
 
     extend: 'Ext.grid.Panel',
     region: 'south',
@@ -1547,7 +1547,7 @@ Ext.define('RS.view.SingleArtifactView', {
 
 });
 
-Ext.define('RS.view.WorkflowInputView', {
+Ext.define('CF.view.WorkflowInputView', {
 
     extend: 'Ext.grid.Panel',
 
@@ -1578,7 +1578,7 @@ Ext.define('RS.view.WorkflowInputView', {
 });
 
 
-Ext.define('RS.view.ArtifactView', {
+Ext.define('CF.view.ArtifactView', {
     id: 'ArtifactView',
     extend: 'Ext.grid.Panel',
     region: 'south',
@@ -1592,7 +1592,7 @@ Ext.define('RS.view.ArtifactView', {
     title: 'Data products',
     alias: 'widget.artifactview',
     requires: [
-        'RS.store.ArtifactStore',
+        'CF.store.ArtifactStore',
         'Ext.grid.plugin.BufferedRenderer'
     ],
     trackOver: true,
@@ -1634,14 +1634,14 @@ Ext.define('RS.view.ArtifactView', {
 
 });
 
-Ext.define('RS.view.ResultsPane', {
+Ext.define('CF.view.ResultsPane', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.resultspane'
 })
 
 
 
-Ext.define('RS.view.provenanceGraphsViewer', {
+Ext.define('CF.view.provenanceGraphsViewer', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.wasDerivedfrom',
 
@@ -1703,7 +1703,7 @@ Ext.define('RS.view.provenanceGraphsViewer', {
 
                     })
 
-                    var singleArtifactView = Ext.create('RS.view.SingleArtifactView')
+                    var singleArtifactView = Ext.create('CF.view.SingleArtifactView')
 
 
                     Ext.create('Ext.window.Window', {

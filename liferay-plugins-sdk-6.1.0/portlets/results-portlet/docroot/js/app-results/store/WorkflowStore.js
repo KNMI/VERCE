@@ -1,5 +1,5 @@
 
- Ext.define('RS.model.Worflow', {
+ Ext.define('CF.model.Worflow', {
      extend: 'Ext.data.Model',
 
      fields: [
@@ -9,9 +9,9 @@
              type: 'string',
              mapping: '_id'
          }, {
-             name: 'name',
+             name: 'workflowName',
              type: 'string',
-             mapping: 'name'
+             mapping: 'workflowName'
          }, {
              name: 'description',
              type: 'string',
@@ -37,7 +37,7 @@
  /**
   * The store used for summits
   */
- Ext.define('RS.store.WorkflowStore', {
+ Ext.define('CF.store.WorkflowStore', {
      extend: 'Ext.data.Store',
      restful: true,
      requires: [
@@ -47,7 +47,7 @@
          'Ext.grid.plugin.BufferedRenderer'
      ],
 
-     model: 'RS.model.Worflow',
+     model: 'CF.model.Worflow',
      alias: 'store.workflowstore',
      storeId: 'workflowStore',
 
@@ -55,7 +55,7 @@
      trailingBufferZone: 60,
      buffered: true,
      leadingBufferZone: 10,
-     pageSize: 40,
+     pageSize: 1000,
 
 
      proxy: {
