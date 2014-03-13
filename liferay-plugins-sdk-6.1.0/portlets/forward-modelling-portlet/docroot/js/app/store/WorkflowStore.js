@@ -9,9 +9,9 @@
              type: 'string',
              mapping: '_id'
          }, {
-             name: 'name',
+             name: 'workflowName',
              type: 'string',
-             mapping: 'name'
+             mapping: 'workflowName'
          }, {
              name: 'description',
              type: 'string',
