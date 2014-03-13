@@ -392,18 +392,19 @@ public class ForwardPortlet extends MVCPortlet{
            try {
  
                Message message = new MimeMessage(session);
-               message.setFrom(InternetAddress.parse(PortalUtil.getUser(resourceRequest).getDisplayEmailAddress())[0]);
+               message.setFrom(InternetAddress.parse("admin@verce.eu")[0]);
+               message.setReplyTo(InternetAddress.parse(PortalUtil.getUser(resourceRequest).getDisplayEmailAddress()));
                message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse("jonas.matser@knmi.nl, spinuso@knmi.nl"));
                message.setSubject("VERCE: Mesh and velocity model submitted");
                message.setText(
 	               "User " + PortalUtil.getUser(resourceRequest).getScreenName() + " has submitted a new mesh and velocity model for review.\n" +
 			       "\n" +
-			       "The mesh and velocity model are available at the following links." +
-			       "Mesh: " + meshURL +
-			       "Velocity Model: " + velocityModelURL +
+			       "The mesh and velocity model are available at the following links.\n" +
+			       "Mesh: " + meshURL + "\n" +
+			       "Velocity Model: " + velocityModelURL + "\n" +
 			       "\n" +
-			       "The user also added the following note: " +
+			       "The user also added the following note:\n" +
 			       HtmlUtil.escape(uploadRequest.getParameter("note"))
 		       );
 
