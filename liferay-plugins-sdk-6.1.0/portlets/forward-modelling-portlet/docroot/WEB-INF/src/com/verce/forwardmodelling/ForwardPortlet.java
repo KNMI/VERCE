@@ -446,8 +446,11 @@ public class ForwardPortlet extends MVCPortlet{
    private String saveFileUpload(ResourceRequest resourceRequest, InputStream inputStream, String name, String filetype)
    throws Exception
    {
-	   long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
+	   if(PortalUtil.getUser(resourceRequest)==null)
+		   throw new Exception("[ForwardModellingPortlet.uploadFile] No user logged in!");
+	   
 	   String userSN =  PortalUtil.getUser(resourceRequest).getScreenName();
+	   long groupId =  PortalUtil.getScopeGroupId(resourceRequest);
 	   
 	   File file = FileUtil.createTempFile(inputStream);
 	   if (file.length() < 1)
@@ -455,8 +458,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   throw new Exception("[ForwardModellingPortlet.uploadFile] Failed!! The file is empty. User: "+userSN);
 	   }
 
-	   try
-	   {
+	   //try
+	   //{
 		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype, null);
 		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
 		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
@@ -467,15 +470,16 @@ public class ForwardPortlet extends MVCPortlet{
 		   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
 
 		   return publicPath;
-	   }
-	   catch (Exception e) 
-	   {
-	   		System.out.println(e.getStackTrace());
-	       throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN, e);
-	   } 
+	   //}
+	   //catch (Exception e) 
+	   //{
+	   //		System.out.println(e.getStackTrace());
+	   //    throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN, e);
+	   //} 
    }
    
-   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype, Integer iteration) throws SystemException, PortalException
+   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype, Integer iteration)
+		   	throws SystemException, PortalException, Exception
    {
 	   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	   String sourceFileName = file.getName();
@@ -496,16 +500,10 @@ public class ForwardPortlet extends MVCPortlet{
 	   catch (DuplicateFileException dupException) {
 		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN Duplicated file "+finalName);
 		   if (iteration==null)	iteration = 1;
-		   if(iteration>49)	return null;
+		   if(iteration>49)	throw new Exception("[ForwardModellingPortlet.addFileToDL] ERROR: The same file name cannot be used more than 50 times");
 		   iteration++;
 		   return addFileToDL(file, name, groupId, userSN, filetype, iteration);
 	   }
-	   catch (Exception e) {
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] Exception catched! User "+userSN+", FinalName: "+finalName);
-		   e.printStackTrace();
-		   return null;
-	   }
-	   
 	   return "/documents/" + groupId + "/" + folderId + "/" + HttpUtil.encodeURL(HtmlUtil.unescape(finalName));
    }
    
@@ -677,12 +675,21 @@ public class ForwardPortlet extends MVCPortlet{
     */
    private void catchError(Exception e, ResourceResponse res, String errorCode, String logMessage)
    {
-	   res.setProperty(res.HTTP_STATUS_CODE, errorCode); 
+	   res.setContentType("text/html");
+	   System.out.println("[ForwardModellingPortlet.catchError] Preparing response...");
+	   try{
+		   res.getWriter().write("{success: false, msg:\""+logMessage+"\"}");	//Submit call expects json success parameter
+	   }catch(Exception e2)
+	   {
+		   System.out.println("[ForwardModellingPortlet.catchError] Could not write in response...");
+	   }
+	   res.setProperty(res.HTTP_STATUS_CODE, errorCode); 						//Ajax call expects status code
+	   //res.setProperty("success", "false"); 
+	   //res.setProperty("msg", logMessage);
 	   //PrintWriter out = res.getWriter();
 	   //out.println(failedString);
 	   //out.close();
 	   System.out.println(logMessage);
 	   if(e!=null)		e.printStackTrace();
    }
-	
 }

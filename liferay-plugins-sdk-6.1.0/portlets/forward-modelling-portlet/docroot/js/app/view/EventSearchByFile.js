@@ -50,8 +50,9 @@ var form2 = Ext.create('Ext.form.Panel', {
 	                    success: function(fp, o) {
 	                    	getEvents(ctrl, o.result.path);
 	                    },
-	                    failure: function(rec, op) {
-	                    	Ext.Msg.alert("Error!", "Was not possible to upload the file");
+	                    failure: function (formPanel, action) {
+	                    	var data = Ext.decode(action.response.responseText);
+	                    	Ext.Msg.alert("Error!", "Was not possible to upload the file. ["+data.msg+"]");
 	                    }
 	                });
             	}
