@@ -1744,7 +1744,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
                     // dragged.node.tempMass = 10000
                     dragged.node.fixed = true;
                     if (graphMode == "WASDERIVEDFROM")
-                      ¤  wasDerivedFromAddBranch(PROV_SERVICE_BASEURL + 'wasDerivedFrom/' + selected.node.name + "?level=" + level)
+                        wasDerivedFromAddBranch(PROV_SERVICE_BASEURL + 'wasDerivedFrom/' + selected.node.name + "?level=" + level)
 
                     if (graphMode == "DERIVEDDATA")
                         derivedDataAddBranch(PROV_SERVICE_BASEURL + 'derivedData/' + selected.node.name + "?level=" + level)
