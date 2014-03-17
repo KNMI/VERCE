@@ -305,7 +305,7 @@ public class ForwardPortlet extends MVCPortlet{
 					   System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+er.getErrorID()+"'! userSN: "+userSN+", runId: "+runIds[i]);
 					   if(er.getErrorID().contains("noproxy") || er.getErrorID().contains("proxyexpired"))
 					   {
-						   catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submition stoped");
+						   catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
 						   return;
 					   }
 				   }
@@ -324,7 +324,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //10. Add run info in the Provenance Repository
 			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
 				   
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Submition finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
 		   tempZipFile.delete();
 	   }

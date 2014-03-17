@@ -157,11 +157,11 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           	    			failure: function(response) {
           	    				//alert("response.status (f): "+response.status);
           	    				if(response.status=="401")			//credentials
-          	    					Ext.Msg.alert("Error", "Submition failed! Check your credentials");
+          	    					Ext.Msg.alert("Error", "Submission failed! Check your credentials");
           	    				else if(response.status=="0")		//timeout
-          	    					Ext.Msg.alert("Alert", "Your submition is being processed. Please, check the status in the Control tab");
+          	    					Ext.Msg.alert("Alert", "Your submission is being processed. Please, check the status in the Control tab");
           	    				else
-          	    					Ext.Msg.alert("Error", "Submition failed!");
+          	    					Ext.Msg.alert("Error", "Submission failed!");
           	    				Ext.getCmp('submitbutton').enable();
           	    				Ext.getCmp('viewport').setLoading(false);
           	    				wfStore.load();
