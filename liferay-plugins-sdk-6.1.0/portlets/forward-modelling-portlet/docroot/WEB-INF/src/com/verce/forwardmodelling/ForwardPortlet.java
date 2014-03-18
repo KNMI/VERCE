@@ -617,7 +617,7 @@ public class ForwardPortlet extends MVCPortlet{
 			if(stationFileType.equals(Constants.STXML_TYPE))	stationFileType = Constants.MIMETYPE_XML;
 			
 			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage
-					+"\", \"name\":\""+wfName+"\", \"workflowId\":\""+wfId+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
+					+"\", \"workflowName\":\""+wfName+"\", \"workflowId\":\""+wfId+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
 			params += "{\"mime-type\":\""+stationFileType+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.EVENT_INPUT_NAME+"\", \"url\":\""+eventUrl+"\"},";
 			params += "{\"mime-type\":\""+Constants.MIMETYPE_JSON+"\", \"name\":\""+Constants.SOLVER_INPUT_NAME+"\", \"url\":\""+solverUrl+"\"},";
