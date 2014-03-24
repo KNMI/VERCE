@@ -364,6 +364,7 @@ function selectSolver(selectedSolver)
 	solverConfStore.setProxy({
        type : 'ajax',
        url : '/j2ep-1.0/prov/solver/'+selectedSolver,
+       extraParams : { 'userId' : userId },
        reader : {
                 type : 'json',
                 root : 'fields'
@@ -376,6 +377,7 @@ function selectSolver(selectedSolver)
 	meshesstore.setProxy({
 		type : 'ajax',
 		url : '/j2ep-1.0/prov/solver/'+selectedSolver,
+    extraParams : { 'userId' : userId },
 		reader : {
                 type : 'json',
                 root : 'meshes'
