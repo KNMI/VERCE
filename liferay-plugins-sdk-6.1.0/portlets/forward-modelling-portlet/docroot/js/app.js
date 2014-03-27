@@ -34,7 +34,7 @@ Ext.application({
     controllers: [
         'Map'
     ],
-    autoCreateViewport: true
+    autoCreateViewport: true,
 });
 
 /**

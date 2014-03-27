@@ -21,7 +21,6 @@ var wfStore = Ext.create('Ext.data.ArrayStore', {
 });
 
 wfStore.load(function() {
-		console.log(arguments);
 });
 
 Ext.define('CF.view.WfGrid', {

@@ -33,7 +33,8 @@ var mimetypes = [{
 
 
 
-Ext.regModel('mimetypeModel', {
+Ext.define('mimetypeModel', {
+    extend: "Ext.data.Model",
     fields: [{
             type: 'string',
             name: 'mime'

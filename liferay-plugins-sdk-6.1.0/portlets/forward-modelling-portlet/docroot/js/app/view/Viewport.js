@@ -3,11 +3,6 @@
  * @extends Ext.Viewport
  */
 
-Ext.require([
-    'CF.view.StationSearch',
-    'CF.view.StationSearchByFile'
-]);
-
 var eventsTabPanel = Ext.create('Ext.TabPanel',{
     region: 'center',
     border: false,
@@ -51,6 +46,7 @@ var stationsTabPanel = Ext.create('Ext.TabPanel',{
         type: 'vbox',
         align: 'stretch'
     },
+    requires: ['CF.view.StationSearchByFile', 'CF.view.StationSearch'],
     items: [
                 {
                     xtype: 'panel',
