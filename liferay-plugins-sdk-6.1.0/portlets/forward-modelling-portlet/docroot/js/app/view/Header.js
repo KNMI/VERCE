@@ -3,17 +3,17 @@
  * @extends Ext.Component
  */
 Ext.define('CF.view.Header', {
-    extend: 'Ext.Component',
+  extend: 'Ext.Component',
 
-    dock: 'top',
-    baseCls: 'cf-header',
+  dock: 'top',
+  baseCls: 'cf-header',
 
-    initComponent: function() {
-        Ext.applyIf(this, {
-            html: 'MVC simple application example called CF ' +
-                '(Cartography Framework)'
-        });
+  initComponent: function() {
+    Ext.applyIf(this, {
+      html: 'MVC simple application example called CF ' +
+        '(Cartography Framework)'
+    });
 
-        this.callParent(arguments);
-    }
+    this.callParent(arguments);
+  }
 });
