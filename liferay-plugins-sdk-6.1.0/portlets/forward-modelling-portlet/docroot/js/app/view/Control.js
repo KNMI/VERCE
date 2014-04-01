@@ -127,7 +127,12 @@ Ext.define('CF.view.WfGrid', {
                       var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 
                       if (prov_object.workflowId != null) {
-                        Ext.getCmp('wfSelection').setValue(prov_object.workflowId);
+                        var workflowDropdown = Ext.getCmp('wfSelection');
+                        if (workflowDropdown.store.findRecord('workflowId', prov_object.workflowId) == null) {
+                          Ext.Msg.alert("Error", "Workflow used in old run not available anymore. Select a new workflow in the submit tab.");
+                          return;
+                        }
+                        workflowDropdown.setValue(prov_object.workflowId);
                       }
 
                       Ext.getCmp('submitName').setValue(prov_object._id.slice(0, -14)); // remove runid
