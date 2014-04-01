@@ -278,6 +278,7 @@ function updateSolverValues(newValues) {
       record.set("value", newValues[i][propertyName]);
     }
   }
+  Ext.getCmp('SolverConfPanel').setDisabled(false);
 }
 
 function selectSolver(selectedSolver) {
