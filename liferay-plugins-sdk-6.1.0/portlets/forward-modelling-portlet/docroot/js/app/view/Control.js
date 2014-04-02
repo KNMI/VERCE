@@ -74,7 +74,7 @@ Ext.define('CF.view.WfGrid', {
                 delete prov_object.input;
 
                 Ext.Ajax.request({
-                  url: prov_object.solverconf.url,
+                  url: prov_object.solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
                   success: function(response) {
                     var object = JSON.parse(response.responseText);
                     if (object === null) {
@@ -128,7 +128,7 @@ Ext.define('CF.view.WfGrid', {
                       // });
 
                       // reuse events
-                      getEvents(ctrl, prov_object.quakeml.url);
+                      getEvents(ctrl, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
 
                       var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
 
@@ -136,7 +136,7 @@ Ext.define('CF.view.WfGrid', {
                       // Ext.getCmp('station-filetype').select(stationFileType);
 
                       // reuse stations
-                      getStations(ctrl, prov_object.stations.url, stationFileType);
+                      getStations(ctrl, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
                       var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 
                       // Only set old workflow if it's still available
