@@ -71,8 +71,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
 
       //Populate the VelocityModel Combo
       velocitycombo.clearValue();
-      velocitycombo.store.removeAll();
-      velocitycombo.store.add(meshModel.get('velmod'));
+      velocitycombo.store.loadData(meshModel.get('velmod'));
 
       //Update the solver values
       updateSolverValues(meshModel.get('values'));

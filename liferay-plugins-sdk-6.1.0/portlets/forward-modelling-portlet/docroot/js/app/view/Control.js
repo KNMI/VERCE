@@ -88,31 +88,44 @@ Ext.define('CF.view.WfGrid', {
                     solverType.clearValue();
                     solverType.setValue(solver.get('abbr'));
 
-                    // reuse velocity when store is loaded
+                    // reuse velocity when velocity model store finishes loading
                     var velocityCombo = Ext.getCmp('velocity');
-                    velocityCombo.store.addListener('add', function() {
+                    velocityCombo.store.addListener('refresh', function() {
                       velocityCombo.setValue(object.velocity_model);
 
                       solverConfStore.loadData(object.fields);
 
-                      // TODO fix selecting events and stations
+                      // // TODO fix selecting events and stations
                       // var eventGrid = Ext.getCmp('gridEvents');
-                      // Ext.util.Observable.capture(ctrl, function(evname) {console.log("ctrl: ", evname, arguments);});
-                      // Ext.util.Observable.capture(ctrl.eventstore, function(evname) {console.log("store: ", evname, arguments);});
-                      // Ext.util.Observable.capture(eventGrid, function(evname) {console.log("grid: ", evname, arguments);});
+                      // Ext.util.Observable.capture(ctrl, function(evname) {
+                      //   console.log("ctrl: ", evname, arguments);
+                      // });
+                      // Ext.util.Observable.capture(ctrl.eventstore, function(evname) {
+                      //   console.log("store: ", evname, arguments);
+                      // });
+                      // Ext.util.Observable.capture(eventGrid, function(evname) {
+                      //   console.log("grid: ", evname, arguments);
+                      // });
                       // eventGrid.on('add', function() {
-                      // 	console.log('add', arguments);
+                      //   console.log('add', arguments);
                       // }, this);
-                      // Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {console.log("grid: ", evname, arguments);});
-                      // Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {console.log("mapPanel: ", evname, arguments);});
-                      // Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {console.log("map: ", evname, arguments);});
-
+                      // Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {
+                      //   console.log("grid: ", evname, arguments);
+                      // });
+                      // Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {
+                      //   console.log("mapPanel: ", evname, arguments);
+                      // });
+                      // Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {
+                      //   console.log("map: ", evname, arguments);
+                      // });
                       // ctrl.eventstore.addListener('refresh', function() {
-                      // 	object.events.forEach(function(eventId) {
-                      // 		var record = eventGrid.store.findRecord('eventId', eventId);
-                      // 		eventGrid.getSelectionModel().select(record);
-                      // 	});
-                      // }, this, { single: true });
+                      //   object.events.forEach(function(eventId) {
+                      //     var record = eventGrid.store.findRecord('eventId', eventId);
+                      //     eventGrid.getSelectionModel().select(record);
+                      //   });
+                      // }, this, {
+                      //   single: true
+                      // });
 
                       // reuse events
                       getEvents(ctrl, prov_object.quakeml.url);
@@ -143,8 +156,13 @@ Ext.define('CF.view.WfGrid', {
                       single: true
                     });
 
-                    // reuse mesh and trigger velocity store reload
-                    Ext.getCmp('meshes').setValue(object.mesh);
+                    // set mesh when solverconfstore finishes loading
+                    solverConfStore.addListener('refresh', function() {
+                      // reuse mesh and trigger velocity store reload
+                      Ext.getCmp('meshes').setValue(object.mesh);
+                    }, this, {
+                      single: true
+                    });
                   },
                   failure: function(response) {
                     Ext.Msg.alert("Error", "Failed to get workflow settings!");
