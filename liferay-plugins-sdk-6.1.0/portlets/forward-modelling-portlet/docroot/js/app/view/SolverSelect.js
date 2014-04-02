@@ -69,12 +69,12 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       clearMap();
       var meshModel = combo.store.findRecord('name', gl_mesh);
 
+      //Update the solver values
+      updateSolverValues(meshModel.get('values'));
+
       //Populate the VelocityModel Combo
       velocitycombo.clearValue();
       velocitycombo.store.loadData(meshModel.get('velmod'));
-
-      //Update the solver values
-      updateSolverValues(meshModel.get('values'));
 
       //Render the bounding box in the map and center it
       gl_minLat = meshModel.get('geo_minLat');
