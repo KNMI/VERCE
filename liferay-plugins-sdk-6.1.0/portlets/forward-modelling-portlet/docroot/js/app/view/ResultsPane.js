@@ -296,7 +296,7 @@ var artifactStore = Ext.create('CF.store.Artifact');
 
 var singleArtifactStore = Ext.create('CF.store.Artifact');
 
-var workflowStore = Ext.create('CF.store.Workflow');
+var workflowStore = Ext.create('CF.store.ProvWorkflow');
 
 var workflowInputStore = Ext.create('CF.store.WorkflowInput');
 
