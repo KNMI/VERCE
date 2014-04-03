@@ -43,5 +43,5 @@ Ext.define('CF.model.Artifact', {
     name: 'location',
     type: 'string',
     mapping: 'location'
-  }],
+  }]
 });

@@ -88,5 +88,5 @@ Ext.define('CF.view.dataviews.StationGrid', {
       flex: 1
     });
     this.callParent(arguments);
-  },
+  }
 });

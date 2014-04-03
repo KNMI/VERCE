@@ -25,5 +25,5 @@ Ext.define('CF.model.Activity', {
     name: 'iterationIndex',
     type: 'string',
     mapping: 'iterationIndex'
-  }],
+  }]
 });

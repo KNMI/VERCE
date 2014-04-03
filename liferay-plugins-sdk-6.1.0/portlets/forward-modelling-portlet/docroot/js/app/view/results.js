@@ -7,7 +7,7 @@ var colour = {
   limegreen: "#c1d72e",
   darkgreen: "#619b45",
   lightblue: "#009fc3",
-  pink: "#d11b67",
+  pink: "#d11b67"
 };
 
 function dephtree(data, graph) {

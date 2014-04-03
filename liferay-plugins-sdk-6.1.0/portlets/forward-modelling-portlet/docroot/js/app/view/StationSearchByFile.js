@@ -35,7 +35,7 @@ var formStationSearchByFile = Ext.create('Ext.form.Panel', {
       name: 'name',
       value: 'DefaultName',
       fieldLabel: 'File name',
-      allowBlank: false,
+      allowBlank: false
 
     },
     fileTypes, {

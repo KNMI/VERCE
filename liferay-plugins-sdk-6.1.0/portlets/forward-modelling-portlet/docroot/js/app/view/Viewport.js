@@ -20,7 +20,7 @@ var eventsTabPanel = Ext.create('Ext.TabPanel', {
       align: 'stretch'
     },
     items: [
-      Ext.create('CF.view.EventSearchByFile'),
+      Ext.create('CF.view.EventSearchByFile')
     ]
   }, {
     xtype: 'panel',
@@ -34,7 +34,7 @@ var eventsTabPanel = Ext.create('Ext.TabPanel', {
       Ext.create('CF.view.EventSearch')
     ]
 
-  }],
+  }]
 });
 
 var stationsTabPanel = Ext.create('Ext.TabPanel', {
@@ -230,7 +230,7 @@ Ext.define('CF.view.Viewport', {
               src: "http://dir-irods.epcc.ed.ac.uk/irodsweb/browse.php?ruri=" + (userSN ? userSN + "@" : "") + "dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/" + (userSN ? userSN + "/verce" : "")
             },
             region: 'center',
-            border: false,
+            border: false
           }]
         }]
 

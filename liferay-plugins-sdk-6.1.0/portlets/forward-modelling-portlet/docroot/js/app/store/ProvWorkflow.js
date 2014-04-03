@@ -34,7 +34,7 @@ Ext.define('CF.store.ProvWorkflow', {
     api: {
       read: PROV_SERVICE_BASEURL + 'workflow/user/' + userSN,
       update: PROV_SERVICE_BASEURL + 'workflow',
-      destroy: PROV_SERVICE_BASEURL + 'workflow/delete/',
+      destroy: PROV_SERVICE_BASEURL + 'workflow/delete/'
     },
 
     reader: {

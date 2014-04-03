@@ -6,5 +6,5 @@ Ext.define('CF.model.Filetype', {
   }, {
     type: 'string',
     name: 'name'
-  }],
+  }]
 });

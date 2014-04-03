@@ -2,7 +2,7 @@ var solverstore = Ext.create('CF.store.Solver', {
   data: [{
     "abbr": "SPECFEM3D_CARTESIAN_21447",
     "name": "SPECFEM3D_CARTESIAN_21447"
-  }],
+  }]
 });
 var meshesstore = Ext.create('CF.store.Mesh', {});
 var velocitystore = Ext.create('CF.store.Velocity', {});
@@ -46,7 +46,7 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
       }
       //Load meshescombo, load conf form
       selectSolver(record.get('abbr'));
-    },
+    }
   }
 });
 
@@ -195,13 +195,13 @@ var meshSolverPopup = function() {
           fieldLabel: 'Upload a file...',
           name: 'mesh-file',
           id: 'mesh-file',
-          msgTarget: 'side',
+          msgTarget: 'side'
         }, {
           xtype: 'textfield',
           fieldLabel: '...or paste a link',
           name: 'mesh-link',
           id: 'mesh-link',
-          msgTarget: 'side',
+          msgTarget: 'side'
         }]
       }, {
         xtype: 'fieldset',
@@ -211,13 +211,13 @@ var meshSolverPopup = function() {
           fieldLabel: 'Upload a file...',
           name: 'velocity-model-file',
           id: 'velocity-model-file',
-          msgTarget: 'side',
+          msgTarget: 'side'
         }, {
           xtype: 'textfield',
           fieldLabel: '...or paste a link',
           name: 'velocity-model-link',
           id: 'velocity-model-link',
-          msgTarget: 'side',
+          msgTarget: 'side'
         }]
       }, {
         xtype: 'fieldset',
@@ -228,7 +228,7 @@ var meshSolverPopup = function() {
           height: 120,
           width: 'auto',
           name: 'note',
-          msgTarget: 'side',
+          msgTarget: 'side'
         }]
       }],
       buttons: [{
@@ -250,7 +250,7 @@ var meshSolverPopup = function() {
               }
             }
           });
-        },
+        }
       }, {
         text: 'Cancel',
         handler: function(e) {

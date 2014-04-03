@@ -30,6 +30,6 @@ Ext.define('CF.model.Station', {
       type: 'string',
       mapping: 'elevation'
     } // custom mapping
-  ],
+  ]
 
 });

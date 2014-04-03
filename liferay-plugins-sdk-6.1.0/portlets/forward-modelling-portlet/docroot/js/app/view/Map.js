@@ -39,7 +39,7 @@ Ext.define('CF.view.Map', {
         "Hazard Map WMS (EFEHR) ",
         "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&", {
           layers: 'hmap469',
-          transparent: 'true',
+          transparent: 'true'
         }, {
           isBaseLayer: false
         }
@@ -51,7 +51,7 @@ Ext.define('CF.view.Map', {
         "Borders",
         "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?map=/var/www/mapfile/worldvector.map&", {
           layers: 'wv_country_ol',
-          transparent: 'true',
+          transparent: 'true'
         }, {
           isBaseLayer: false
         }
@@ -62,7 +62,7 @@ Ext.define('CF.view.Map', {
         "Geology (OneGeology) ",
         " http://www.bgr.de/Service/OneGeology/BGR_Geological_Units_IGME5000/", {
           layers: 'EUROPE_BGR_5M_ONSH',
-          transparent: 'true',
+          transparent: 'true'
         }, {
           isBaseLayer: false
         }
@@ -73,7 +73,7 @@ Ext.define('CF.view.Map', {
         "Faults (OneGeology)",
         " http://mapdmzrec.brgm.fr/cgi-bin/mapserv?map=/carto/ogg/mapFiles/GISEurope_Bedrock_and_Structural_Geology.map&", {
           layers: 'Europe_GISEurope_1500K_Faults',
-          transparent: 'true',
+          transparent: 'true'
         }, {
           isBaseLayer: false
         }
@@ -109,19 +109,7 @@ Ext.define('CF.view.Map', {
         ]);
         // To make the custom navtoolbar use the regular navtoolbar style
         this.displayClass = 'olControlNavToolbar'
-      },
-
-
-
-      /**
-       * Method: draw
-       * calls the default draw, and then activates mouse defaults.
-       */
-      /*  draw: function() {
-				        var div = OpenLayers.Control.Panel.prototype.draw.apply(this, arguments);
-                        this.defaultControl = this.controls[0];
-				        return div;
-				    }*/
+      }
     });
 
 

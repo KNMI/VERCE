@@ -21,5 +21,5 @@
      name: 'systemId',
      type: 'string',
      mapping: 'system_id'
-   }],
+   }]
  });

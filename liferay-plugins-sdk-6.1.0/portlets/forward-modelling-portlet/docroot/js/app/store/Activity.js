@@ -18,5 +18,5 @@ Ext.define('CF.store.Activity', {
   // allow the grid to interact with the paging scroller by buffering
   buffered: true,
   leadingBufferZone: 30,
-  pageSize: 300,
+  pageSize: 300
 });

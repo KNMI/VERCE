@@ -4,9 +4,9 @@
 
 var sys = arbor.ParticleSystem();
 sys.parameters({
-  repulsion : -20,
-  stiffness : 1000,
-  friction : -0.5
+  repulsion: -20,
+  stiffness: 1000,
+  friction: -0.5
 })
 // {repulsion:-10, stiffness:100, friction:1.0,gravity:true, dt:0.015}
 
@@ -17,14 +17,14 @@ Ext.Date.now = function() {
 }
 
 Ext.Loader.setConfig({
-  enabled : true,
-  disableCaching : false,
-  paths : {
-    GeoExt : "../../../forward-modelling-portlet/js/src/GeoExt",
+  enabled: true,
+  disableCaching: false,
+  paths: {
+    GeoExt: "../../../forward-modelling-portlet/js/src/GeoExt",
     // for dev use
-    Ext : "http://cdn.sencha.io/ext-4.1.0-gpl/src"
-  // for build purpose
-  // Ext: "extjs-4.1.0/src"
+    Ext: "http://cdn.sencha.io/ext-4.1.0-gpl/src"
+    // for build purpose
+    // Ext: "extjs-4.1.0/src"
   }
 });
 
@@ -33,10 +33,10 @@ Ext.Loader.setConfig({
  * geospatial data.
  */
 Ext.application({
-  name : 'CF',
-  appFolder : '../../../forward-modelling-portlet/js/app',
-  controllers : [ 'Map' ],
-  autoCreateViewport : true,
+  name: 'CF',
+  appFolder: '../../../forward-modelling-portlet/js/app',
+  controllers: ['Map'],
+  autoCreateViewport: true
 });
 
 /**

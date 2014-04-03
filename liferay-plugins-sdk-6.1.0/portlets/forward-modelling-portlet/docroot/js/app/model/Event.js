@@ -58,5 +58,5 @@
      name: 'tensor_mtp',
      type: 'string',
      mapping: 'tensor_mtp'
-   }],
+   }]
  });

@@ -63,7 +63,7 @@ var colour = {
   limegreen: "#c1d72e",
   darkgreen: "#619b45",
   lightblue: "#009fc3",
-  pink: "#d11b67",
+  pink: "#d11b67"
 }
 
   function wasDerivedFromDephtree(data, graph, parent) {
@@ -320,7 +320,7 @@ var action = Ext.create('Ext.Action', {
       layout: {
         type: 'vbox',
         align: 'stretch',
-        pack: 'start',
+        pack: 'start'
       },
       items: [
 
@@ -376,7 +376,7 @@ var downloadBulk = Ext.create('Ext.Action', {
       layout: {
         type: 'vbox',
         align: 'stretch',
-        pack: 'start',
+        pack: 'start'
       },
       items: [
 
@@ -489,7 +489,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
   /* plugins: [{
-        ptype: 'bufferedrenderer',
+        ptype: 'bufferedrenderer'
     }],*/
 
 
@@ -666,7 +666,7 @@ Ext.define('CF.view.WorlflowSelection', {
 
 
 
-          },
+          }
 
         })
 
@@ -713,15 +713,14 @@ Ext.define('CF.view.ActivityMonitor', {
     itemId: 'toolbar',
     xtype: 'toolbar',
     items: [
-
       action,
       refreshAction,
-      viewInputAction,
+      viewInputAction
     ]
   },
 
   plugins: [{
-    ptype: 'bufferedrenderer',
+    ptype: 'bufferedrenderer'
   }],
 
 
@@ -763,16 +762,9 @@ Ext.define('CF.view.ActivityMonitor', {
           dataIndex: 'errors',
           flex: 3,
           sortable: false
-        }, // custom mapping
-        /*{
-                    header: 'IterationIndex',
-                    dataIndex: 'iterationIndex',
-                    flex: 3,
-                    sortable: false
-                } // custom mapping*/
-
+        }
       ],
-      flex: 1,
+      flex: 1
 
 
 
@@ -1497,7 +1489,7 @@ Ext.define('CF.view.SingleArtifactView', {
       flex: 3,
       renderer: renderStreamSingle
     }
-  ],
+  ]
 
 });
 
@@ -1527,7 +1519,7 @@ Ext.define('CF.view.WorkflowInputView', {
       flex: 3,
       renderer: renderWorkflowInput
     }
-  ],
+  ]
 
 });
 
@@ -1560,7 +1552,7 @@ Ext.define('CF.view.ArtifactView', {
     enableTextSelection: true
   },
   plugins: [{
-    ptype: 'bufferedrenderer',
+    ptype: 'bufferedrenderer'
 
   }],
 
@@ -1584,7 +1576,7 @@ Ext.define('CF.view.ArtifactView', {
       downloadBulk
 
     ]
-  },
+  }
 
 });
 

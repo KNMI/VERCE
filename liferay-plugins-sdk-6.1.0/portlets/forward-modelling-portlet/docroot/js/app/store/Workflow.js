@@ -5,5 +5,5 @@ Ext.define('CF.store.Workflow', {
   sorters: {
     property: 'date2',
     direction: 'DESC'
-  },
+  }
 });

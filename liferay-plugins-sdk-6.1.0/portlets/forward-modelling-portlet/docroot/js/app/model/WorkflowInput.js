@@ -13,5 +13,5 @@
      name: 'name',
      type: 'string',
      mapping: 'name'
-   }],
+   }]
  });

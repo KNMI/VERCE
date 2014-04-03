@@ -16,5 +16,5 @@ Ext.define('CF.store.Artifact', {
   storeId: 'artifactStore',
   /*buffered: true,
     leadingBufferZone: 30,*/
-  pageSize: 1000,
+  pageSize: 1000
 });
