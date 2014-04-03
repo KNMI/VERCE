@@ -2,7 +2,7 @@
 	<html>
 	    <head>
 	        <link rel="stylesheet" type="text/css" href="http://cdn.sencha.io/ext-4.1.0-gpl/resources/css/ext-all.css" />
-	        <link rel="stylesheet" type="text/css" href="http://openlayers.org/api/2.12-rc3/theme/default/style.css" />
+	        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/Openlayers.style.tidy.css" />
 			<script type="text/javascript" src="<%=request.getContextPath()%>/js/lib/OpenLayers.js"></script>
 			<script type="text/javascript" charset="utf-8" src="http://cdn.sencha.io/ext-4.1.0-gpl/ext.js"></script>
 			<script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/app.js"></script>
