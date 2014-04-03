@@ -143,7 +143,7 @@ Ext.define('CF.view.WfGrid', {
                       if (prov_object.workflowId != null) {
                         var workflowDropdown = Ext.getCmp('wfSelection');
                         if (workflowDropdown.store.findRecord('workflowId', prov_object.workflowId) == null) {
-                          Ext.Msg.alert("Error", "Workflow used in old run not available anymore. Select a new workflow in the submit tab.");
+                          Ext.Msg.alert("Error", "Workflow used in old run not available anymore. Select a new workflow in the Submit tab.");
                           workflowDropdown.clearValue();
                         } else {
                           workflowDropdown.setValue(prov_object.workflowId);
