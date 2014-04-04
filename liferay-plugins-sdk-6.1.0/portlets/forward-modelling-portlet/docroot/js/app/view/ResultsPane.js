@@ -1,7 +1,3 @@
-PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/"
-var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
-var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
-
 Ext.override(Ext.selection.RowModel, {
   isRowSelected: function(record, index) {
     try {

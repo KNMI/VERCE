@@ -187,14 +187,14 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
       xmlDoc = OpenLayers.Format.XML.prototype.read.apply(this, [response]);
     }
     var features = [];
-    var lats = xmlDoc.getElementsByTagName("Latitude");
-    var longs = xmlDoc.getElementsByTagName("Longitude");
+    var latitudes = xmlDoc.getElementsByTagName("Latitude");
+    var longitudes = xmlDoc.getElementsByTagName("Longitude");
     var elevs = xmlDoc.getElementsByTagName("Elevation");
     var stations = xmlDoc.getElementsByTagName("Station");
-    for (var i = 0; i < lats.length; i++) {
-      var lat = lats[i].childNodes[0].nodeValue;
-      var long = longs[i].childNodes[0].nodeValue;
-      if (long >= gl_minLon && long <= gl_maxLon && lat >= gl_minLat && lat <= gl_maxLat) {
+    for (var i = 0; i < latitudes.length; i++) {
+      var latitude = latitudes[i].childNodes[0].nodeValue;
+      var longitude = longitudes[i].childNodes[0].nodeValue;
+      if (longitude >= gl_minLon && longitude <= gl_maxLon && latitude >= gl_minLat && latitude <= gl_maxLat) {
         var station = stations[i].getAttribute("code");
         stations[i].setAttribute("network", stations[i].parentNode.getAttribute("code"));
         var network = stations[i].getAttribute("network");
@@ -203,11 +203,11 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
           station: station,
           network: network,
           elevation: elev,
-          longitude: long,
-          latitude: lat
+          longitude: longitude,
+          latitude: latitude
         };
         feature = new OpenLayers.Feature.Vector(
-          new OpenLayers.Geometry.Point(long, lat),
+          new OpenLayers.Geometry.Point(longitude, latitude),
           attributes
         );
         features.push(feature);

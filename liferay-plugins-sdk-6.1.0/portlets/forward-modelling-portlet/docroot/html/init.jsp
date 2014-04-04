@@ -24,10 +24,6 @@
 
 <%ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute("THEME_DISPLAY");%>
 
-<liferay-portlet:renderURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString()%>" var="iframeURL">
-	<portlet:param name="jspPage" value="/html/mapgui.jsp"/>
-</liferay-portlet:renderURL> 
-   
 <liferay-portlet:actionURL name="provant" var="provantURL"/>
 
 <liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
@@ -111,6 +107,9 @@ catch(Exception e){
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
            <% } %>
        ];
+   	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
+	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
+	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";
 </script>
 
 <%!
