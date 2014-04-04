@@ -4,7 +4,15 @@ Ext.require([
   'Ext.data.Store'
 ]);
 
-var fileTypesStore = Ext.create('CF.store.Filetype');
+var fileTypesStore = Ext.create('CF.store.Filetype', {
+  data: [{
+    "abbr": STXML_TYPE,
+    "name": "Station XML"
+  }, {
+    "abbr": STPOINTS_TYPE,
+    "name": "List of points"
+  }]
+});
 
 var fileTypes = Ext.create('Ext.form.ComboBox', {
   fieldLabel: 'File format',
