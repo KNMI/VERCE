@@ -227,7 +227,7 @@ Ext.define('CF.view.Viewport', {
               tag: "iframe",
               seamless: "seamless",
               // TODO real url
-              src: "http://dir-irods.epcc.ed.ac.uk/irodsweb/browse.php?ruri=" + (userSN ? userSN + "@" : "") + "dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/" + (userSN ? userSN + "/verce" : "")
+              src: ((navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) ? "/j2ep-1.0/dir-irods/" : "http://dir-irods.epcc.ed.ac.uk/") + "irodsweb/browse.php?ruri=" + (userSN ? userSN + "@" : "") + "dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/" + (userSN ? userSN + "/verce" : "")
             },
             region: 'center',
             border: false
