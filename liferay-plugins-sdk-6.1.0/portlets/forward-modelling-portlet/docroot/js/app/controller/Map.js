@@ -410,7 +410,9 @@ Ext.define('CF.controller.Map', {
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&nodata=404&';
       var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
-      getStations(this, baseUrl + form.getValues(true) + bbox, STXML_TYPE);
+      var formValues = form.getValues(true);
+      formValues = (formValues === '' || formValues === 'net=') ? 'net=*' : formValues;
+      getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
     }
   }
 });
