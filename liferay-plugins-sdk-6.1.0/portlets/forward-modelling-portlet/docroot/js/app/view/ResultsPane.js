@@ -353,7 +353,7 @@ var downloadBulk = Ext.create('Ext.Action', {
         var locations = location.split(",")
 
         for (var i = 0; i < locations.length; i++) {
-          alert(locations[i])
+          
           htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>"
         }
       } else
