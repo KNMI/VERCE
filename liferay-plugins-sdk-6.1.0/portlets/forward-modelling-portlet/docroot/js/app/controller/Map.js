@@ -411,7 +411,7 @@ Ext.define('CF.controller.Map', {
       var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&';
       var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
       var formValues = form.getValues(true);
-      formValues = (formValues === '' || formValues === 'net=') ? 'net=*' : formValues;
+      formValues = (formValues === 'net=Any%20network') ? 'net=*' : formValues;
       getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
     }
   }

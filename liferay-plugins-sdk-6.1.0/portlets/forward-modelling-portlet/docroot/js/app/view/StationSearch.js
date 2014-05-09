@@ -4,6 +4,10 @@ Ext.Ajax.request({
   dataType: 'xml',
   success: function(response) {
     comboNetworks = [];
+    comboNetworks.push({
+      abbr: 'Any network',
+      name: '*'
+    });
     var xml = response.responseText;
 
     $('Network', xml).each(function() {
@@ -33,12 +37,12 @@ var multiCombo = Ext.create('Ext.form.field.ComboBox', {
   fieldLabel: 'Networks',
   name: 'net',
   displayField: 'abbr',
-  allowBlank: false,
   width: 300,
   labelWidth: 130,
   store: networksStore,
   queryMode: 'local',
-  allowBlank: true,
+  allowBlank: false,
+  value: 'Any network',
   getInnerTpl: function() {
     return '<div data-qtip="{abbr}">{abbr} {name}</div>';
   }
