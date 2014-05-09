@@ -408,7 +408,7 @@ Ext.define('CF.controller.Map', {
   onStationSearch: function(button) {
     var form = button.up('form').getForm();
     if (form.isValid()) {
-      var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&nodata=404&';
+      var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&';
       var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
       var formValues = form.getValues(true);
       formValues = (formValues === '' || formValues === 'net=') ? 'net=*' : formValues;
@@ -540,6 +540,7 @@ function checkStatus(elem, resp, options, type) {
       resp.code = OpenLayers.Protocol.Response.FAILURE;
       if (request.status == 204) errorMsg = "No data returned";
       else if (request.status == 413) errorMsg = "The number of requested results is bigger than the maximum, 3000";
+
       else errorMsg = "The request failed. Error code " + request.status;
       Ext.Msg.alert("Alert!", errorMsg);
     }
