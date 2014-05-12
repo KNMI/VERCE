@@ -174,7 +174,7 @@ var meshSolverPopup = function() {
     title: 'Submit a new mesh and velocity model',
     closeAction: 'destroy',
     width: 600,
-    height: 400,
+    height: 550,
     layout: 'fit',
     modal: true,
     autoScroll: true,
@@ -202,6 +202,46 @@ var meshSolverPopup = function() {
           name: 'mesh-link',
           id: 'mesh-link',
           msgTarget: 'side'
+        }]
+      }, {
+        xtype: 'fieldset',
+        title: 'Mesh Bounds',
+        items: [{
+          xtype: 'fieldcontainer',
+          layout: 'hbox',
+          items: [{
+            xtype: 'textfield',
+            fieldLabel: 'Minimum latitude',
+            name: 'min_lat',
+            id: 'min_lat',
+            msgTarget: 'side',
+            width: 200
+          }, {
+            xtype: 'textfield',
+            fieldLabel: 'Maximum latitude',
+            name: 'max_lat',
+            id: 'max_lat',
+            msgTarget: 'side',
+            width: 200
+          }]
+        }, {
+          xtype: 'fieldcontainer',
+          layout: 'hbox',
+          items: [{
+            xtype: 'textfield',
+            fieldLabel: 'Minimum longitude',
+            name: 'min_lon',
+            id: 'min_lon',
+            msgTarget: 'side',
+            width: 200
+          }, {
+            xtype: 'textfield',
+            fieldLabel: 'Maximum longitude',
+            name: 'max_lon',
+            id: 'max_lon',
+            msgTarget: 'side',
+            width: 200
+          }]
         }]
       }, {
         xtype: 'fieldset',

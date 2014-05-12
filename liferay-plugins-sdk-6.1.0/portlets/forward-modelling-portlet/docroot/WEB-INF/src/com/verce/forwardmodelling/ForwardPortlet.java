@@ -125,7 +125,7 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
-	      	
+
 	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+wf.getStatusbean().getStatus()+
 	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
 			}
@@ -383,6 +383,11 @@ public class ForwardPortlet extends MVCPortlet{
 		       return;
    		   }
 
+   		   String minLat = uploadRequest.getParameter("min_lat");
+   		   String maxLat = uploadRequest.getParameter("max_lat");
+   		   String minLon = uploadRequest.getParameter("min_lon");
+   		   String maxLon = uploadRequest.getParameter("max_lon");
+
 		   Properties props = new Properties();
            props.put("mail.smtp.host", "localhost");
            props.put("mail.smtp.port", "25");
@@ -390,7 +395,6 @@ public class ForwardPortlet extends MVCPortlet{
            Session session = Session.getInstance(props);
 
            try {
- 
                Message message = new MimeMessage(session);
                message.setFrom(InternetAddress.parse("admin@verce.eu")[0]);
                // message.setReplyTo(InternetAddress.parse(PortalUtil.getUser(resourceRequest).getDisplayEmailAddress()));
@@ -405,6 +409,12 @@ public class ForwardPortlet extends MVCPortlet{
 			       "The mesh and velocity model are available at the following links.\n" +
 			       "Mesh: " + meshURL + "\n" +
 			       "Velocity Model: " + velocityModelURL + "\n" +
+			       "\n" +
+			       "The bounds for the mesh are:\n" +
+			       "Minimum latitude: " + minLat + "\n" +
+			       "Maximum latitude: " + maxLat + "\n" +
+			       "Minimum longitude: " + minLon + "\n" +
+			       "Maximum longitude: " + maxLon + "\n" +
 			       "\n" +
 			       "The user also added the following note:\n" +
 			       HtmlUtil.escape(uploadRequest.getParameter("note"))
