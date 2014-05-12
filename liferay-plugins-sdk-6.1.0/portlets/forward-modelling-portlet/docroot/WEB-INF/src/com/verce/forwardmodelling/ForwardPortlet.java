@@ -125,6 +125,17 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
+                // System.out.println("****** 1");
+                // WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
+                // System.out.println("****** 2");
+                // System.out.println(wfIB.getJobs().size());
+                // for (RunningJobDetailsBean job : wfIB.getJobs()) {
+                //  System.out.println(job.getInstances().size());
+                //  for (hu.sztaki.lpds.pgportal.services.asm.beans.ASMJobInstanceBean jobInstance : job.getInstances()) {
+                //      System.out.println(jobInstance.getStatus());
+                //  }
+                // }
+                // System.out.println("****** 3");
 
 	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+wf.getStatusbean().getStatus()+
 	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
@@ -141,6 +152,7 @@ public class ForwardPortlet extends MVCPortlet{
 		}
 		catch(Exception e)
 		{
+            e.printStackTrace();
 			System.out.println("[ForwardModellingPortlet.getWorkflowList] Could not update the workflow list");
 		}
     }
@@ -272,6 +284,11 @@ public class ForwardPortlet extends MVCPortlet{
 	       zipPublicPath = portalUrl + zipPublicPath;
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
 
+           // //4. Generate Mesh/Model zip file
+           // String meshModelZipFileName = runIds[0]+"_meshmodel.zip";
+           // createMeshModelZipFile("temp/"+meshModelZipFileName, "data/mesh", "data/model");
+           // File meshModelZipFile = new File("temp/"+meshModelZipFileName);
+
 		   for(int i=0;i<jsonContentArray.length;i++)
 		   {
 			   String jsonContent = jsonContentArray[i];
@@ -292,6 +309,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
 			   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
 			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
+               // asm_service.placeUploadedFile(userId, meshModelZipFile, importedWfId, jobName, "4");
 			   
 			   //7. Check for credential errors
 			   //TODO: we should check just once
@@ -606,6 +624,21 @@ public class ForwardPortlet extends MVCPortlet{
         append.close();
         System.out.println("[ForwardModellingPortlet.createZipFile] File created in the server file system: "+fileName);
 	}
+
+    private void createMeshModelZipFile(String fileName, String meshFileName, String modelFileName) throws IOException
+    {
+         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileName));
+
+         zos.putNextEntry(new ZipEntry("meshfile"));
+         copy(new FileInputStream(meshFileName), zos);
+         zos.closeEntry();
+
+         zos.putNextEntry(new ZipEntry("modelfile"));
+         copy(new FileInputStream(modelFileName), zos);
+         zos.closeEntry();
+
+         zos.close();
+    }
 		
 	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
 			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType)
