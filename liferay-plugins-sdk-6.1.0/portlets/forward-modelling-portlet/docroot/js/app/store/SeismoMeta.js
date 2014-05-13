@@ -1,0 +1,31 @@
+var meta = [{"term":"_event_id"},
+       {"term":"calib" },
+       {"term":"channel"},
+       {"term":" delta"},
+       {"term":"depth_in_km"}, 
+       {"term":"description"}, 
+       {"term":"endtime"}, 
+       {"term":"latitude"}, 
+       {"term":"location"}, 
+       {"term":"longitude"}, 
+       {"term":"m_pp"}, 
+       {"term":"m_rp"}, 
+       {"term":"m_rr"}, 
+       {"term":"m_rt"}, 
+       {"term":"m_tp"}, 
+       {"term":"m_tt"}, 
+       {"term":"magnitude"},
+       {"term":" network"}, 
+       {"term":"npts"}, 
+       {"term":"origin_time"},
+       {"term":" path"}, 
+       {"term":"sampling_rate"},
+       {"term":" starttime"}, 
+       {"term":"station"}, 
+       {"term":"type"}];
+
+Ext.define('CF.store.SeismoMeta', {
+  extend: 'Ext.data.Store',
+  model: 'CF.model.SeismoMeta',
+  data: meta
+});
