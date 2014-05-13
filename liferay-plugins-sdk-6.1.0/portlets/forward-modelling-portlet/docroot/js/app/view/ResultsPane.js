@@ -1,3 +1,28 @@
+var metadataStore = Ext.create('CF.store.SeismoMeta');
+
+// ComboBox with multiple selection enabled
+Ext.define('CF.view.metaCombo', {
+    extend: 'Ext.form.field.ComboBox',
+    fieldLabel: 'Attributes (csv)',
+  name: 'keys',
+  displayField: 'term',
+  width: 300,
+  labelWidth: 130,
+  margin: '10 10 30 10',
+  colspan: 4,
+  multiSelect:true,
+  store: metadataStore,
+  queryMode: 'local',
+  getInnerTpl: function() {
+    return '<div data-qtip="{term}">{term}</div>';
+  },
+  initComponent: function() {
+    this.callParent();
+  }
+});
+
+var mimetypesStore = Ext.create('CF.store.Mimetype');
+
 Ext.override(Ext.selection.RowModel, {
   isRowSelected: function(record, index) {
     try {
@@ -45,6 +70,12 @@ var mimetypescombo2 = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
+var metaCombo1 = Ext.create('CF.view.metaCombo', {});
+var metaCombo2 = Ext.create('CF.view.metaCombo', {});
+var metaCombo3 = Ext.create('CF.view.metaCombo', {});
+var metaCombo4 = Ext.create('CF.view.metaCombo', {});
+var metaCombo5 = Ext.create('CF.view.metaCombo', {});
+var metaCombo6 = Ext.create('CF.view.metaCombo', {});
 
 var graphMode = ""
 
@@ -244,12 +275,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
       pack: 'center',
       type: 'hbox'
     },
-    items: [{
-        fieldLabel: 'Attributes (csv)',
-        name: 'keys',
-        allowBlank: false,
-        margin: '10 10 30 10'
-      }, {
+    items: [metaCombo1, {
         fieldLabel: '  Min values (csv)',
         name: 'minvalues',
         allowBlank: false,
@@ -882,11 +908,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [{
-        fieldLabel: 'Attributes keys (csv)',
-        name: 'keys',
-        allowBlank: false
-      }, {
+    items: [metaCombo2, {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
         allowBlank: false
@@ -945,11 +967,7 @@ Ext.define('CF.view.StreamContentMatchSearch', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [{
-        fieldLabel: 'Attributes keys (csv)',
-        name: 'keys',
-        allowBlank: false
-      }, {
+    items: [metaCombo3, {
         fieldLabel: 'Values (csv)',
         name: 'values',
         allowBlank: false
@@ -1008,11 +1026,7 @@ Ext.define('CF.view.FilterOnAncestor', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [{
-        fieldLabel: 'Attribute keys (csv)',
-        name: 'keys',
-        allowBlank: false
-      }, {
+    items: [metaCombo4, {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
         allowBlank: false
@@ -1097,11 +1111,7 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [{
-        fieldLabel: 'Attribute keys (csv)',
-        name: 'keys',
-        allowBlank: false
-      }, {
+    items: [metaCombo5, {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
         allowBlank: false
@@ -1191,11 +1201,7 @@ Ext.define('CF.view.FilterOnMeta', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [{
-        fieldLabel: 'Attribute keys (csv)',
-        name: 'keys',
-        allowBlank: false
-      }, {
+    items: [metaCombo6, {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
         allowBlank: false
@@ -1699,4 +1705,3 @@ Ext.define('CF.view.provenanceGraphsViewer', {
       //		
     }
   }
-});
