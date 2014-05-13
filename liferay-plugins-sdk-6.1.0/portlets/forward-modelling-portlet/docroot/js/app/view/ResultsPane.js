@@ -337,7 +337,7 @@ var action = Ext.create('Ext.Action', {
     workflowSel = Ext.create('Ext.window.Window', {
       title: 'Workflows Runs',
       height: 530,
-      width: 800,
+      width: 850,
 
       layout: {
         type: 'vbox',
@@ -1705,3 +1705,4 @@ Ext.define('CF.view.provenanceGraphsViewer', {
       //		
     }
   }
+});
