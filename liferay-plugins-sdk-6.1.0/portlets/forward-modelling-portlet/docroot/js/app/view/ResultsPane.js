@@ -1,4 +1,4 @@
-var metadataStore = Ext.create('CF.store.SeismoMeta');
+
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
@@ -11,7 +11,7 @@ Ext.define('CF.view.metaCombo', {
   margin: '10 10 30 10',
   colspan: 4,
   multiSelect:true,
-  store: metadataStore,
+  store: Ext.create('CF.store.SeismoMeta'),
   queryMode: 'local',
   getInnerTpl: function() {
     return '<div data-qtip="{term}">{term}</div>';
@@ -70,12 +70,6 @@ var mimetypescombo2 = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-var metaCombo1 = Ext.create('CF.view.metaCombo', {});
-var metaCombo2 = Ext.create('CF.view.metaCombo', {});
-var metaCombo3 = Ext.create('CF.view.metaCombo', {});
-var metaCombo4 = Ext.create('CF.view.metaCombo', {});
-var metaCombo5 = Ext.create('CF.view.metaCombo', {});
-var metaCombo6 = Ext.create('CF.view.metaCombo', {});
 
 var graphMode = ""
 
@@ -264,6 +258,7 @@ function addMeta(url) {
   });
 }
 
+
 Ext.define('CF.view.WorkflowValuesRangeSearch', {
     extend: 'Ext.form.Panel',
     // The fields
@@ -275,7 +270,9 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
       pack: 'center',
       type: 'hbox'
     },
-    items: [metaCombo1, {
+    
+    initComponent: function(){
+        this.items = [Ext.create('CF.view.metaCombo', {}) ,{
         fieldLabel: '  Min values (csv)',
         name: 'minvalues',
         allowBlank: false,
@@ -287,7 +284,10 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
         margin: '10 20 30 10'
       }
 
-    ],
+    ]
+        this.callParent();
+    },
+     
 
 
     buttons: [{
@@ -296,9 +296,12 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
 
       handler: function() {
         var form = this.up('form').getForm();
-
+		var keys = this.up('form').getForm().findField("keys").getValue(false)
+		var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
+		var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+		
         if (form.isValid()) {
-          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?' + form.getValues(true)
+          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys='+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues
         };
 
 
@@ -338,7 +341,7 @@ var action = Ext.create('Ext.Action', {
       title: 'Workflows Runs',
       height: 530,
       width: 850,
-
+      closeAction: 'destroy',
       layout: {
         type: 'vbox',
         align: 'stretch',
@@ -354,8 +357,8 @@ var action = Ext.create('Ext.Action', {
 
 
     workflowSel.show();
+    
     workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN
-
     workflowStore.data.clear()
     workflowStore.load()
   }
@@ -908,7 +911,9 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [metaCombo2, {
+    
+    initComponent: function() {
+    this.items= [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
         allowBlank: false
@@ -918,7 +923,10 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
         allowBlank: false
       },
       Ext.create('CF.view.mimeCombo', {})
-    ],
+    ];
+    this.callParent();
+  },
+    
 
 
     buttons: [{
@@ -927,10 +935,14 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
 
       handler: function() {
         var form = this.up('form').getForm();
+		var keys = this.up('form').getForm().findField("keys").getValue(false)
+		var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
+		var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+		var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
         if (form.isValid()) {
           artifactStore.setProxy({
             type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'entities/values-range?runId=' + currentRun + "&" + form.getValues(true),
+            url: PROV_SERVICE_BASEURL + 'entities/values-range?runId=' + currentRun + "&keys="+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues+"&mime-type="+mimetype,
 
             reader: {
               root: 'entities',
@@ -957,49 +969,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
 
 
 
-Ext.define('CF.view.StreamContentMatchSearch', {
-    extend: 'Ext.form.Panel',
-    // The fields
-    title: 'Attributes Match',
-    defaultType: 'textfield',
-    layout: {
-      align: 'center',
-      pack: 'center',
-      type: 'vbox'
-    },
-    items: [metaCombo3, {
-        fieldLabel: 'Values (csv)',
-        name: 'values',
-        allowBlank: false
-      },
-      Ext.create('CF.view.mimeCombo', {})
-    ],
 
-
-    buttons: [{
-      text: 'Search',
-      formBind: true, //only enabled once the form is valid
-
-      handler: function() {
-        var form = this.up('form').getForm();
-        if (form.isValid()) {
-          artifactStore.setProxy({
-            type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'entities/contentmatch-eachtoone?runId=' + currentRun + "&" + form.getValues(true),
-
-            reader: {
-              root: 'entities',
-              totalProperty: 'totalCount'
-            }
-          });
-          artifactStore.data.clear()
-          artifactStore.load()
-        }
-      }
-    }]
-  }
-
-);
 
 Ext.define('FilterAjax', {
   extend: 'Ext.data.Connection',
@@ -1026,7 +996,9 @@ Ext.define('CF.view.FilterOnAncestor', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [metaCombo4, {
+    
+    
+    items: [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
         allowBlank: false
@@ -1053,6 +1025,10 @@ Ext.define('CF.view.FilterOnAncestor', {
 
 
         var form = this.up('form').getForm();
+        var keys = form.findField("keys").getValue(false)
+		var minvalues = form.findField("minvalues").getValue(false)
+		var maxvalues = form.findField("maxvalues").getValue(false)
+		
         if (form.isValid()) {
           FilterAjax.request({
 
@@ -1086,7 +1062,7 @@ Ext.define('CF.view.FilterOnAncestor', {
             },
             params: {
               ids: dataids,
-              keys: form.findField("keys").getValue(),
+              keys: keys,
               values: form.findField("values").getValue()
 
             }
@@ -1111,7 +1087,9 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [metaCombo5, {
+    
+      initComponent: function() {
+    this.items=[Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
         allowBlank: false
@@ -1119,10 +1097,12 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
         fieldLabel: 'Max values (csv)',
         name: 'maxvalues',
         allowBlank: false
-      }
+      }];
+       this.callParent();
+       },
 
 
-    ],
+    
 
 
     buttons: [{
@@ -1201,15 +1181,15 @@ Ext.define('CF.view.FilterOnMeta', {
       pack: 'center',
       type: 'vbox'
     },
-    items: [metaCombo6, {
+    
+    initComponent: function() {
+    this.items= [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
         allowBlank: false
-      },
-      Ext.create('CF.view.mimeCombo', {})
-
-    ],
-
+      }],
+      this.callParent()
+    },
 
     buttons: [{
       text: 'Filter',
@@ -1262,7 +1242,7 @@ Ext.define('CF.view.FilterOnMeta', {
             },
             params: {
               ids: dataids,
-              keys: form.findField("keys").getValue(),
+              keys: form.findField("keys").getValue(false),
               values: form.findField("values").getValue()
 
             }
@@ -1382,11 +1362,31 @@ var filterOnAncestors = Ext.create('Ext.Action', {
 });
 
 function renderStream(value, p, record) {
-  var location = '</br>'
-  if (record.data.location != "")
-    location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
-
-  return Ext.String.format(
+    var location = "</br>"
+    var contenthtm=""
+    
+    if (record.data.location != "")
+      location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
+	
+	contentvis=JSON.parse(record.data.content)
+	
+    for (var key in contentvis) 
+	    {
+	    if (typeof contentvis[key]=="object")
+	     {
+	     for (var key2 in contentvis[key]) 
+	 	    contenthtm+="<strong>"+key2+":</strong> "+contentvis[key][key2]+"<br/><br/>"
+	     }
+	    else
+			contenthtm="<strong> Output Content: </strong>"+contentvis+"<br/><br/>"
+	
+    }
+   
+	
+	   
+	
+  
+    return Ext.String.format(
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
     '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
@@ -1396,7 +1396,7 @@ function renderStream(value, p, record) {
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
+    '<strong>Output Metadata:</strong><br/><div style="height:400px; font-size:16px; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :100%; max-height:100px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
     '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
@@ -1406,7 +1406,7 @@ function renderStream(value, p, record) {
     record.data.parameters,
     record.data.annotations,
     location,
-    record.data.content.substring(0, 1000) + "...",
+    contenthtm,
     record.data.runId,
     record.data.endTime,
     record.data.errors
