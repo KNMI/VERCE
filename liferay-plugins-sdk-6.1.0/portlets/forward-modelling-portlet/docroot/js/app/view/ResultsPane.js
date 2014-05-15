@@ -1,5 +1,3 @@
-
-
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
     extend: 'Ext.form.field.ComboBox',
@@ -259,10 +257,91 @@ function addMeta(url) {
 }
 
 
+Ext.define('CF.view.WorkflowOpenByRunID', {
+    extend: 'Ext.form.Panel',
+    // The fields
+	title: 'Insert Run ID',
+    height: 100,
+    defaultType: 'textfield',
+    layout: {
+      align: 'center',
+      pack: 'center',
+      type: 'vbox'
+    },
+    
+    initComponent: function(){
+        this.items = [
+       {
+            html: "<strong><span style=\"color: DarkBlue\">Here you can open Runs that other users have shared with you!</strong><br/><br/>",
+            width: 800,
+            border:0,
+            xtype: "panel",
+            margin: '5 5 5'},
+        {
+        fieldLabel: 'Run ID',
+        width: 300,
+        name: 'runId',
+        allowBlank: false,
+         
+      }
+
+    ]
+        this.callParent();
+    },
+     
+
+
+    buttons: [{
+      text: 'Open',
+      formBind: true, //only enabled once the form is valid
+
+      handler: function() {
+        var form = this.up('form').getForm();
+		
+        if (form.isValid()) {
+          
+          activityStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false)),
+          reader: {
+            root: 'activities',
+            totalProperty: 'totalCount'
+          },
+          simpleSortMode: true
+
+        });
+        
+        activityStore.data.clear();
+        activityStore.load({
+          callback: function() {
+            currentRun = form.findField("runId").getValue(false)
+            Ext.getCmp('filtercurrent').enable();
+            Ext.getCmp('searchartifacts').enable();
+            Ext.getCmp('downloadscript').enable();
+          }
+
+        })
+
+        activityStore.on('load', onStoreLoad, this, {
+          single: true
+        });
+        currentRun = form.findField("runId").getValue(false)
+          
+          };
+
+
+
+        activityStore.load()
+      }
+    }]
+  }
+
+);
+
 Ext.define('CF.view.WorkflowValuesRangeSearch', {
     extend: 'Ext.form.Panel',
     // The fields
-
+	title: 'Search by Data Attributes',
     height: 100,
     defaultType: 'textfield',
     layout: {
@@ -348,9 +427,20 @@ var action = Ext.create('Ext.Action', {
         pack: 'start'
       },
       items: [
+			{
+                xtype: 'tabpanel',
+                border: 'false',
+                layout: 'border',
+                
+                defaults: {
+                    split: true
+                },
 
-        Ext.create('CF.view.WorkflowValuesRangeSearch'),
-        Ext.create('CF.view.WorlflowSelection')
+                items: [Ext.create('CF.view.WorkflowValuesRangeSearch'),
+                		Ext.create('CF.view.WorkflowOpenByRunID')
+                	]
+                },
+       		Ext.create('CF.view.WorlflowSelection')
       ]
 
     })
@@ -527,7 +617,7 @@ Ext.define('CF.view.WorlflowSelection', {
       border: false,
 
       loadMask: true,
-
+       
       columns: [{
           xtype: 'rownumberer',
 
@@ -663,8 +753,9 @@ Ext.define('CF.view.WorlflowSelection', {
   },
 
   viewConfig: {
-
+     enableTextSelection: true,
     listeners: {
+   
       itemclick: function(dv, record, item, index, e) {
         workflowStore.sync()
       },
@@ -701,6 +792,10 @@ Ext.define('CF.view.WorlflowSelection', {
         currentRun = record.get("runId")
 
       }
+      
+      
+     
+    
     }
   }
 
@@ -709,13 +804,13 @@ Ext.define('CF.view.WorlflowSelection', {
 
 function onStoreLoad(store) {
   Ext.getCmp('viewworkflowinput').enable();
-  Ext.getCmp("activitymonitor").setTitle('Process View - ' + currentRun)
+  Ext.getCmp("activitymonitor").setTitle('Run\'s activities monitor - ' + currentRun)
 }
 
 Ext.define('CF.view.ActivityMonitor', {
 
 
-  title: 'Process View',
+  title: 'Run activity monitor ',
   width: '25%',
   region: 'west',
   extend: 'Ext.grid.Panel',
@@ -1396,7 +1491,7 @@ function renderStream(value, p, record) {
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><br/><div style="height:400px; font-size:16px; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :100%; max-height:100px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
+    '<strong>Output Metadata:</strong><br/><div style="font-size:14px;height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
     '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
@@ -1489,7 +1584,7 @@ Ext.define('CF.view.SingleArtifactView', {
       dataIndex: 'ID',
       field: 'ID',
       flex: 3,
-      renderer: renderStreamSingle
+      renderer: renderStream
     }
   ]
 
