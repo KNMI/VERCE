@@ -20,6 +20,7 @@ import java.util.zip.*;
 import java.util.TimeZone;
 import java.util.Enumeration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -85,6 +86,7 @@ import hu.sztaki.lpds.dcibridge.client.ResourceConfigurationFace;
 import hu.sztaki.lpds.information.local.InformationBase;
 import hu.sztaki.lpds.pgportal.service.workflow.RealWorkflowUtils;
 import hu.sztaki.lpds.wfs.com.WorkflowConfigErrorBean;
+import hu.sztaki.lpds.pgportal.services.asm.constants.StatusConstants;
 
 import com.verce.forwardmodelling.Constants;
 
@@ -125,19 +127,47 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1, wf.getWorkflowName().lastIndexOf("-"));
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
-                // System.out.println("****** 1");
-                // WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
-                // System.out.println("****** 2");
-                // System.out.println(wfIB.getJobs().size());
-                // for (RunningJobDetailsBean job : wfIB.getJobs()) {
-                //  System.out.println(job.getInstances().size());
-                //  for (hu.sztaki.lpds.pgportal.services.asm.beans.ASMJobInstanceBean jobInstance : job.getInstances()) {
-                //      System.out.println(jobInstance.getStatus());
-                //  }
-                // }
-                // System.out.println("****** 3");
 
-	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+wf.getStatusbean().getStatus()+
+                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
+                if (wfIB == null) {
+                	continue;
+                }
+
+                HashMap<String,String> statuses = new HashMap();
+
+                StatusConstants statusConstants = new StatusConstants();
+                for (RunningJobDetailsBean job : wfIB.getJobs()) {
+                 if (job.getInstances().size() <= 0) {
+                 	statuses.put(job.getName(), "UNKNOWN");
+                 	continue;
+                 }
+                 statuses.put(job.getName(), statusConstants.getStatus(job.getInstances().get(0).getStatus()));
+                }
+				System.out.println(statuses);
+
+				String computeStatus = statuses.containsKey("COMPUTE") ? statuses.get("COMPUTE") : statuses.containsKey("Job0") ? statuses.get("Job0") : null;
+				String stageOutStatus = statuses.containsKey("STAGEOUT") ? statuses.get("STAGEOUT") : statuses.containsKey("Job1") ? statuses.get("Job1") : null;
+
+				String status = "UNKNOWN";
+				if (statuses.containsValue("ERROR")) {
+					status = "ERROR";
+				} else if (computeStatus == null) {
+					status = "INIT";
+				} else if (computeStatus == "PENDING") {
+					status = "PENDING";
+				} else if (computeStatus == "RUNNING") {
+					status = "RUNNING";
+				} else if (stageOutStatus == "RUNNING") {
+					status = "STAGE OUT";
+				} else if (stageOutStatus == "FINISHED") {
+					status = "FINISHED";
+				} else {
+					// Fallback to overall workflow status
+					System.out.println("FALLBACK to workflow status");
+					status = wf.getStatusbean().getStatus();
+				}
+
+	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+status+
 	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
 			}
 			jsWfArray.substring(0, jsWfArray.length()-1);
@@ -295,7 +325,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   
 			   //4. Import the workflow
 			   String importedWfId = importWorkflow(userId, ownerId, workflowId, runIds[i]);
-		  
+
 			   //5. Create the solver file and store it
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
@@ -314,6 +344,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //7. Check for credential errors
 			   //TODO: we should check just once
 			   WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
+
 			   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
 			   List resources = rc.get();
 			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources, userId, wfData);
