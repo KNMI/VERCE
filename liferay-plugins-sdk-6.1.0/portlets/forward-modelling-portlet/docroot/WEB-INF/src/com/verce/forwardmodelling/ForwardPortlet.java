@@ -128,44 +128,46 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfDate2 = wf.getWorkflowName().substring(wf.getWorkflowName().lastIndexOf("_")+1);
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
 
-                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
-                if (wfIB == null) {
-                	continue;
+                String status = wf.getStatusbean().getStatus();
+
+                if (status != "ERROR" && status != "FINISHED") {
+	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
+	                if (wfIB == null) {
+	                	continue;
+	                }
+
+	                HashMap<String,String> statuses = new HashMap();
+
+	                StatusConstants statusConstants = new StatusConstants();
+	                for (RunningJobDetailsBean job : wfIB.getJobs()) {
+	                 if (job.getInstances().size() <= 0) {
+	                 	statuses.put(job.getName(), "UNKNOWN");
+	                 	continue;
+	                 }
+	                 statuses.put(job.getName(), statusConstants.getStatus(job.getInstances().get(0).getStatus()));
+	                }
+					System.out.println(statuses);
+
+					String computeStatus = statuses.containsKey("COMPUTE") ? statuses.get("COMPUTE") : statuses.containsKey("Job0") ? statuses.get("Job0") : null;
+					String stageOutStatus = statuses.containsKey("STAGEOUT") ? statuses.get("STAGEOUT") : statuses.containsKey("Job1") ? statuses.get("Job1") : null;
+
+					if (statuses.containsValue("ERROR")) {
+						status = "ERROR";
+					} else if (computeStatus == null) {
+						status = "INIT";
+					} else if (computeStatus == "PENDING") {
+						status = "PENDING";
+					} else if (computeStatus == "RUNNING") {
+						status = "RUNNING";
+					} else if (stageOutStatus == "RUNNING") {
+						status = "STAGE OUT";
+					} else if (stageOutStatus == "FINISHED") {
+						status = "FINISHED";
+					} else {
+						// Fallback to overall workflow status
+						System.out.println("FALLBACK to workflow status");
+					}
                 }
-
-                HashMap<String,String> statuses = new HashMap();
-
-                StatusConstants statusConstants = new StatusConstants();
-                for (RunningJobDetailsBean job : wfIB.getJobs()) {
-                 if (job.getInstances().size() <= 0) {
-                 	statuses.put(job.getName(), "UNKNOWN");
-                 	continue;
-                 }
-                 statuses.put(job.getName(), statusConstants.getStatus(job.getInstances().get(0).getStatus()));
-                }
-				System.out.println(statuses);
-
-				String computeStatus = statuses.containsKey("COMPUTE") ? statuses.get("COMPUTE") : statuses.containsKey("Job0") ? statuses.get("Job0") : null;
-				String stageOutStatus = statuses.containsKey("STAGEOUT") ? statuses.get("STAGEOUT") : statuses.containsKey("Job1") ? statuses.get("Job1") : null;
-
-				String status = "UNKNOWN";
-				if (statuses.containsValue("ERROR")) {
-					status = "ERROR";
-				} else if (computeStatus == null) {
-					status = "INIT";
-				} else if (computeStatus == "PENDING") {
-					status = "PENDING";
-				} else if (computeStatus == "RUNNING") {
-					status = "RUNNING";
-				} else if (stageOutStatus == "RUNNING") {
-					status = "STAGE OUT";
-				} else if (stageOutStatus == "FINISHED") {
-					status = "FINISHED";
-				} else {
-					// Fallback to overall workflow status
-					System.out.println("FALLBACK to workflow status");
-					status = wf.getStatusbean().getStatus();
-				}
 
 	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+status+
 	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
