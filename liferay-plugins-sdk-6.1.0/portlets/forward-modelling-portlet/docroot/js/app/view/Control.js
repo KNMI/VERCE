@@ -96,13 +96,13 @@ Ext.define('CF.view.WfGrid', {
                       solverConfStore.loadData(object.fields);
 
                       // // TODO fix selecting events and stations
-                      // var eventGrid = Ext.getCmp('gridEvents');
                       // Ext.util.Observable.capture(ctrl, function(evname) {
                       //   console.log("ctrl: ", evname, arguments);
                       // });
                       // Ext.util.Observable.capture(ctrl.eventstore, function(evname) {
                       //   console.log("store: ", evname, arguments);
                       // });
+                      // var eventGrid = Ext.getCmp('gridEvents');
                       // Ext.util.Observable.capture(eventGrid, function(evname) {
                       //   console.log("grid: ", evname, arguments);
                       // });
@@ -217,7 +217,7 @@ Ext.define('CF.view.WfGrid', {
 });
 
 var refreshMenuControl = [{
-    html: '<strong style="color: #416DA3; position: relative; font-size: 12px; top: -1px;">Submited workflows</strong>'
+    html: '<strong style="color: #416DA3; position: relative; font-size: 12px; top: -1px;">Submitted workflows</strong>'
   },
   "->", {
     tooltip: 'Refresh list',
