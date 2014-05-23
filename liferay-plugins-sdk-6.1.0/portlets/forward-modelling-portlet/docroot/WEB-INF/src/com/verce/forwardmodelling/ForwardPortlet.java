@@ -130,7 +130,7 @@ public class ForwardPortlet extends MVCPortlet{
 
                 String status = wf.getStatusbean().getStatus();
 
-                if (status != "ERROR" && status != "FINISHED") {
+                if (!status.equals("ERROR") && !status.equals("FINISHED")) {
 	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
 	                if (wfIB == null) {
 	                	continue;
@@ -155,13 +155,13 @@ public class ForwardPortlet extends MVCPortlet{
 						status = "ERROR";
 					} else if (computeStatus == null) {
 						status = "INIT";
-					} else if (computeStatus == "PENDING") {
+					} else if ("PENDING".equals(computeStatus)) {
 						status = "PENDING";
-					} else if (computeStatus == "RUNNING") {
+					} else if ("RUNNING".equals(computeStatus)) {
 						status = "RUNNING";
-					} else if (stageOutStatus == "RUNNING") {
+					} else if ("RUNNING".equals(stageOutStatus)) {
 						status = "STAGE OUT";
-					} else if (stageOutStatus == "FINISHED") {
+					} else if ("FINISHED".equals(stageOutStatus)) {
 						status = "FINISHED";
 					} else {
 						// Fallback to overall workflow status
