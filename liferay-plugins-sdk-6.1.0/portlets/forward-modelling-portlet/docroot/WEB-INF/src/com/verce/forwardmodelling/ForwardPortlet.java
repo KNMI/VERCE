@@ -153,16 +153,16 @@ public class ForwardPortlet extends MVCPortlet{
 
 					if (statuses.containsValue("ERROR")) {
 						status = "ERROR";
-					} else if (computeStatus == null) {
+					} else if (computeStatus == null || "UNKNOWN".equals(computeStatus)) {
 						status = "INIT";
-					} else if ("PENDING".equals(computeStatus)) {
+					} else if ("PENDING".equals(computeStatus) || "INIT".equals(computeStatus)) {
 						status = "PENDING";
-					} else if ("RUNNING".equals(computeStatus)) {
-						status = "RUNNING";
 					} else if ("RUNNING".equals(stageOutStatus)) {
 						status = "STAGE OUT";
 					} else if ("FINISHED".equals(stageOutStatus)) {
 						status = "FINISHED";
+					} else if ("RUNNING".equals(computeStatus)) {
+						status = "RUNNING";
 					} else {
 						// Fallback to overall workflow status
 						System.out.println("FALLBACK to workflow status");
