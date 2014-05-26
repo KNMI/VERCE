@@ -74,6 +74,16 @@
 				.cf-helpwindow h2 {
 				    margin: 2px 0 0 0;
 				}
+				
+				.x-tip {
+				width: auto !important;
+				}
+				.x-tip-body {
+				width: auto !important;
+				}
+				.x-tip-body span {
+				width: auto !important;
+				}
 			</style>
 	    </head>
 	
