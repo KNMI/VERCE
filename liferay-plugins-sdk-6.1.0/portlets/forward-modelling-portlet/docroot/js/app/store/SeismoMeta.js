@@ -17,6 +17,7 @@ var meta = [
        {"term":"m_tp"}, 
        {"term":"m_tt"}, 
        {"term":"magnitude"},
+       {"term":"mime-type"},
        {"term":" network"}, 
        {"term":"npts"}, 
        {"term":"origin_time"},

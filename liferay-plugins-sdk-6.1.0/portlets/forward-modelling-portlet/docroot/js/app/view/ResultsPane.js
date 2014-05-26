@@ -1,11 +1,15 @@
+ 
+
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
     extend: 'Ext.form.field.ComboBox',
-    fieldLabel: 'Attributes (csv)',
+    fieldLabel: 'Terms',
   name: 'keys',
   displayField: 'term',
-  width: 300,
-  labelWidth: 130,
+  width: 200,
+  inputAttrTpl: " data-qtip='Insert here a sequence of Terms divided by commas.<br/> Eg. magnitude,station' ",
+  labelWidth: 40,
+  labelAlign : 'right',
   margin: '10 10 30 10',
   colspan: 4,
   multiSelect:true,
@@ -260,7 +264,7 @@ function addMeta(url) {
 Ext.define('CF.view.WorkflowOpenByRunID', {
     extend: 'Ext.form.Panel',
     // The fields
-	title: 'Insert Run ID',
+	title: 'Open',
     height: 100,
     defaultType: 'textfield',
     layout: {
@@ -279,9 +283,11 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
             margin: '5 5 5'},
         {
         fieldLabel: 'Run ID',
+         
         width: 300,
         name: 'runId',
         allowBlank: false,
+        inputAttrTpl: " data-qtip='Insert here any Run ID and press Open!' "
          
       }
 
@@ -341,29 +347,64 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
 Ext.define('CF.view.WorkflowValuesRangeSearch', {
     extend: 'Ext.form.Panel',
     // The fields
-	title: 'Search by Data Attributes',
-    height: 100,
+	title: 'Search',
+    height: 150,
+    
     defaultType: 'textfield',
     layout: {
       align: 'center',
       pack: 'center',
       type: 'hbox'
+       
     },
     
     initComponent: function(){
-        this.items = [Ext.create('CF.view.metaCombo', {}) ,{
-        fieldLabel: '  Min values (csv)',
+        this.items = [
+         
+            {
+                xtype: 'fieldset',
+                title: 'Search for runs across products metadata, data formats and parameters',
+                collapsible: false,
+                width: '95%',
+                margins: '20,10,10,10',
+                defaults: {
+                    labelWidth: 10,
+                    anchor: '100%',
+                    layout: {
+                        type: 'hbox'
+                         
+                    }
+                     
+                },items:[
+                {
+                        xtype: 'fieldcontainer',
+                         
+                        combineErrors: true,
+                        msgTarget: 'under',
+                         
+                        items: [
+        
+        Ext.create('CF.view.metaCombo', {}) ,{
+        xtype: 'textfield',
+        fieldLabel: 'Min values',
         name: 'minvalues',
+        anchor: '80%',
         allowBlank: false,
-        margin: '10 10 30 10'
-      }, {
-        fieldLabel: '  Max values (csv)',
+         labelAlign : 'right',
+         inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+        margin: '10 0 10 0'
+      }, {xtype: 'textfield',
+        fieldLabel: 'Max values',
+        labelAlign : 'right',
         name: 'maxvalues',
+        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+       
+        anchor: '80%',
         allowBlank: false,
-        margin: '10 20 30 10'
+        margin: '10 0 10 0'
       }
 
-    ]
+    ]}]}]
         this.callParent();
     },
      
@@ -771,6 +812,8 @@ Ext.define('CF.view.WorlflowSelection', {
           simpleSortMode: true
 
         });
+        sys.prune();
+        artifactStore.data.clear();
         activityStore.data.clear();
         activityStore.load({
           callback: function() {
@@ -913,6 +956,7 @@ Ext.define('CF.view.ActivityMonitor', {
 
 
         });
+         
         artifactStore.data.clear()
         artifactStore.load()
 
@@ -996,6 +1040,7 @@ function viewData(url, open) { //var loc=url.replace(/file:\/\/[\w-]+/,"/interme
 
 
 
+
 Ext.define('CF.view.StreamValuesRangeSearch', {
     extend: 'Ext.form.Panel',
     // The fields
@@ -1011,11 +1056,15 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
     this.items= [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
-        allowBlank: false
+        inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+        
+        allowBlank: true
       }, {
         fieldLabel: 'Max values (csv)',
         name: 'maxvalues',
-        allowBlank: false
+        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+      
+        allowBlank: true
       },
       Ext.create('CF.view.mimeCombo', {})
     ];
@@ -1187,10 +1236,14 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
     this.items=[Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
+        inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+        
         allowBlank: false
       }, {
         fieldLabel: 'Max values (csv)',
         name: 'maxvalues',
+        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+      
         allowBlank: false
       }];
        this.callParent();
