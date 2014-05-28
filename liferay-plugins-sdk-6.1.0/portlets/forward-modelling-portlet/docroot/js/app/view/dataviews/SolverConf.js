@@ -9,6 +9,13 @@ Ext.define('CF.view.dataviews.SolverConf', {
     'Ext.form.field.Number'
   ],
   store: solverConfStore,
+  viewConfig: {
+    getRowClass: function(record, index) {
+      if (!record.get('editable')) {
+        return 'x-item-disabled';
+      }
+    },
+  },
   initComponent: function() {
     var me = this;
     Ext.apply(this, {
@@ -41,6 +48,9 @@ Ext.define('CF.view.dataviews.SolverConf', {
               var r = e.rowIdx;
               var sr = solverConfStore.getAt(r);
               sr.set(e.field, e.value);
+            },
+            'beforeedit': function(editor, e, eOpts) {
+              return e.record.get('editable');
             }
           }
         })

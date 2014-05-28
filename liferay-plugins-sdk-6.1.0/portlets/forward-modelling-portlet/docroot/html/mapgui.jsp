@@ -2,6 +2,7 @@
 	    <head>
             <link rel="stylesheet" type="text/css" href="http://cdn.sencha.io/ext-4.2.0-gpl/resources/css/ext-all.css" />
             <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/theme/default/style.css" />
+            <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/main.css" ></script>
 			<style>
 			#search-results a {
             color: #385F95;
@@ -96,16 +97,18 @@
             <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
 
             <!-- comment these lines when using compiled scripts -->
-            
+<!--             
             <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/lib/arbor.js" ></script>
             <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/_/graphics.js" ></script>
             <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/_/renderer.js" ></script>
-            <!--
+ -->            
             <script type="text/javascript" charset="utf-8" src="http://cdn.sencha.io/ext-4.2.0-gpl/ext-all-dev.js"></script>
             <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/app.js"></script>
-            -->
+            
 
             <!-- uncomment this line to use compiled scripts. Scripts can be compiled with compile.sh -->
+
             <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/app-all.js"></script>
+
 	    </body>
 	</html>
