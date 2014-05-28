@@ -32,6 +32,11 @@ Ext.define('CF.view.WfGrid', {
 
           return value;
         }
+        // }, {
+        //   text: 'Workflow',
+        //   width: 120,
+        //   sortable: true,
+        //   dataIndex: 'workflowId'
       }, {
         text: 'Status',
         width: 75,

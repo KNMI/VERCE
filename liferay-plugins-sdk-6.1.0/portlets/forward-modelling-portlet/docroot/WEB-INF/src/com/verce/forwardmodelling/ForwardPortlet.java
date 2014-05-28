@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Properties;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -112,14 +113,19 @@ public class ForwardPortlet extends MVCPortlet{
 	
 	public void getWorkflowList(ActionRequest req, ActionResponse res)
     {
-		ArrayList<ASMWorkflow> importedWfs;
 		try{
 			asm_service = ASMService.getInstance();
-			importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+
+			// ConcurrentHashMap<String, WorkflowData> workflows = PortalCacheService.getInstance().getUser(req.getRemoteUser()).getWorkflows();
 
 			String jsWfArray = "{\"list\":[";
 			for(ASMWorkflow wf : importedWfs)
 			{ 
+				// WorkflowData workflowData = workflows.get(wf.getWorkflowName());
+				// System.out.println(workflowData.getWorkflowID());
+				// System.out.println(workflowData.getGraf());
+
 				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
 				//wfDate is YYYY-MM-DD
 				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
