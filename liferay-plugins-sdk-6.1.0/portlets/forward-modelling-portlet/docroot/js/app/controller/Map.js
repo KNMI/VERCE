@@ -546,7 +546,9 @@ function checkStatus(elem, resp, options, type) {
     }
     if (type === "event") ctrl.getEventsGrid().setLoading(false);
     if (type === "station") ctrl.getStationsGrid().setLoading(false);
+    console.log('HERE 1');
     options.callback.call(options.scope, resp);
+    console.log('HERE 2');
   }
 }
 

@@ -96,28 +96,28 @@ Ext.define('CF.view.WfGrid', {
                       solverConfStore.loadData(object.fields);
 
                       // // TODO fix selecting events and stations
-                      // Ext.util.Observable.capture(ctrl, function(evname) {
-                      //   console.log("ctrl: ", evname, arguments);
-                      // });
-                      // Ext.util.Observable.capture(ctrl.eventstore, function(evname) {
-                      //   console.log("store: ", evname, arguments);
-                      // });
-                      // var eventGrid = Ext.getCmp('gridEvents');
-                      // Ext.util.Observable.capture(eventGrid, function(evname) {
-                      //   console.log("grid: ", evname, arguments);
-                      // });
-                      // eventGrid.on('add', function() {
-                      //   console.log('add', arguments);
-                      // }, this);
-                      // Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {
-                      //   console.log("grid: ", evname, arguments);
-                      // });
-                      // Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {
-                      //   console.log("mapPanel: ", evname, arguments);
-                      // });
-                      // Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {
-                      //   console.log("map: ", evname, arguments);
-                      // });
+                      Ext.util.Observable.capture(ctrl, function(evname) {
+                        console.log("ctrl: ", evname, arguments);
+                      });
+                      Ext.util.Observable.capture(ctrl.eventstore, function(evname) {
+                        console.log("store: ", evname, arguments);
+                      });
+                      var eventGrid = Ext.getCmp('gridEvents');
+                      Ext.util.Observable.capture(eventGrid, function(evname) {
+                        console.log("grid: ", evname, arguments);
+                      });
+                      eventGrid.on('add', function() {
+                        console.log('add', arguments);
+                      }, this);
+                      Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {
+                        console.log("grid: ", evname, arguments);
+                      });
+                      Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {
+                        console.log("mapPanel: ", evname, arguments);
+                      });
+                      Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {
+                        console.log("map: ", evname, arguments);
+                      });
                       // ctrl.eventstore.addListener('refresh', function() {
                       //   object.events.forEach(function(eventId) {
                       //     var record = eventGrid.store.findRecord('eventId', eventId);

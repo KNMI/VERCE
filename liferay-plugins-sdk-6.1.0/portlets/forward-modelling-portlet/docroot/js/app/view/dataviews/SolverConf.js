@@ -26,15 +26,12 @@ Ext.define('CF.view.dataviews.SolverConf', {
       }, {
         header: 'Value',
         dataIndex: 'value',
-        flex: 1,
         field: {
           xtype: 'textfield',
           allowBlank: true
         }
       }, {
-        header: 'Required',
-        dataIndex: 'req'
-      }, {
+        flex: 1,
         header: 'Description',
         dataIndex: 'desc'
       }],
