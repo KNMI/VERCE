@@ -19,5 +19,8 @@ Ext.define('CF.model.SolverConf', {
     name: 'editable',
     type: 'boolean',
     defaultValue: true,
+  }, {
+    name: 'group',
+    type: 'string'
   }]
 });
