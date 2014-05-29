@@ -15,6 +15,10 @@ Ext.define('CF.view.WfGrid', {
     Ext.apply(this, {
       store: wfStore,
       id: 'wfGrid',
+      // selType: 'cellmodel',
+      viewConfig: {
+        enableTextSelection: true,
+      },
       columns: [{
         text: 'Name',
         flex: 1,
