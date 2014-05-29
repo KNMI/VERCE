@@ -99,13 +99,14 @@ Ext.define('CF.view.Map', {
       initialize: function(options) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
         this.addControls([
-          new OpenLayers.Control.LayerSwitcher({
-            'ascending': false
-          }),
-
           new OpenLayers.Control.ZoomBox({
             alwaysZoom: false
-          })
+          }),
+          // new OpenLayers.Control.SelectFeature({
+          //   multiple: true,
+          //   box: true,
+          //   geometryTypes: ['Point']
+          // })
         ]);
         // To make the custom navtoolbar use the regular navtoolbar style
         this.displayClass = 'olControlNavToolbar'
@@ -121,6 +122,12 @@ Ext.define('CF.view.Map', {
 
     });
     map.addControl(panel);
+    map.addControl(
+      new OpenLayers.Control.LayerSwitcher({
+        'ascending': false
+      })
+    );
+
     map.addLayers(layers)
     hwms.setOpacity(0.5);
     geowms.setOpacity(0.5);
