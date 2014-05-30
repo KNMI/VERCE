@@ -1,4 +1,4 @@
-.x-item-disabled.x-grid-row td {
+.x-item-disabled.x-grid-row td, .x-item-disabled.x-grid-row-alt td {
 	filter:alpha(opacity=30);
 	opacity:.3;
 }
