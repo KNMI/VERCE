@@ -323,6 +323,15 @@ function updateSolverValues(newValues) {
 function selectSolver(selectedSolver) {
   gl_solver = selectedSolver;
   solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+
+  // Start with only the first group expanded
+  solverConfStore.addListener('load', function() {
+    Ext.getCmp('SolverConfPanel').getView().getFeature('grouping').collapseAll();
+    Ext.getCmp('SolverConfPanel').getView().getFeature('grouping').expand(solverConfStore.groups.first().key, false);
+  }, {
+    single: true
+  });
+
   solverConfStore.setProxy({
     type: 'ajax',
     url: '/j2ep-1.0/prov/solver/' + selectedSolver,

@@ -38,7 +38,9 @@ Ext.define('CF.view.dataviews.SolverConf', {
       flex: 1,
       selType: 'cellmodel',
       features: [{
-        ftype: 'grouping'
+        id: 'grouping',
+        ftype: 'grouping',
+        startCollapsed: true
       }],
       plugins: [
         Ext.create('Ext.grid.plugin.CellEditing', {
