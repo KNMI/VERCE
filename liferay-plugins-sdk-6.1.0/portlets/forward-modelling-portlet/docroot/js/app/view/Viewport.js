@@ -13,17 +13,6 @@ var eventsTabPanel = Ext.create('Ext.TabPanel', {
   requires: ['CF.view.EventSearchByFile', 'CF.view.EventSearch'],
   items: [{
     xtype: 'panel',
-    title: 'File',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [
-      Ext.create('CF.view.EventSearchByFile')
-    ]
-  }, {
-    xtype: 'panel',
     title: 'FDSN',
     border: false,
     layout: {
@@ -33,7 +22,17 @@ var eventsTabPanel = Ext.create('Ext.TabPanel', {
     items: [
       Ext.create('CF.view.EventSearch')
     ]
-
+  }, {
+    xtype: 'panel',
+    title: 'File',
+    border: false,
+    layout: {
+      type: 'vbox',
+      align: 'stretch'
+    },
+    items: [
+      Ext.create('CF.view.EventSearchByFile')
+    ]
   }]
 });
 
@@ -46,17 +45,6 @@ var stationsTabPanel = Ext.create('Ext.TabPanel', {
   requires: ['CF.view.StationSearchByFile', 'CF.view.StationSearch'],
   items: [{
     xtype: 'panel',
-    title: 'File',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [
-      Ext.create('CF.view.StationSearchByFile')
-    ]
-  }, {
-    xtype: 'panel',
     title: 'FDSN',
     border: false,
     layout: {
@@ -66,7 +54,17 @@ var stationsTabPanel = Ext.create('Ext.TabPanel', {
     items: [
       Ext.create('CF.view.StationSearch')
     ]
-
+  }, {
+    xtype: 'panel',
+    title: 'File',
+    border: false,
+    layout: {
+      type: 'vbox',
+      align: 'stretch'
+    },
+    items: [
+      Ext.create('CF.view.StationSearchByFile')
+    ]
   }]
 });
 
