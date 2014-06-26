@@ -6,7 +6,8 @@ Ext.define('CF.view.dataviews.SolverConf', {
   disabled: true,
   requires: [
     'Ext.grid.plugin.CellEditing',
-    'Ext.form.field.Number'
+    'Ext.form.field.Number',
+    'CF.view.Component'
   ],
   store: solverConfStore,
   viewConfig: {
@@ -26,9 +27,75 @@ Ext.define('CF.view.dataviews.SolverConf', {
       }, {
         header: 'Value',
         dataIndex: 'value',
-        field: {
-          xtype: 'textfield',
-          allowBlank: true
+        xtype: 'componentcolumn',
+        renderer: function(value, meta, record) {
+          var change = function(element, newValue, oldValue, options) {
+            setTimeout(function() {
+              record.set('value', newValue);
+            }, 100);
+          }
+
+          if (record.get('type') === 'bool') {
+            if (value === 'true' || value === 1 || value === '1' || value === 'on') {
+              value = true;
+            } else {
+              value = false;
+            }
+            return {
+              checked: value,
+              xtype: 'checkbox',
+              listeners: {
+                'change': change
+              }
+            }
+          } else if (record.get('type') === 'int') {
+            return {
+              value: value,
+              xtype: 'numberfield',
+              allowDecimals: false,
+              step: record.get('step'),
+              listeners: {
+                'change': change
+              }
+            }
+          } else if (record.get('type') === 'float') {
+            return {
+              value: value,
+              xtype: 'numberfield',
+              allowDecimals: true,
+              allowExponential: true,
+              decimalPrecision: 3,
+              step: record.get('step'),
+              listeners: {
+                'change': change
+              }
+            }
+          } else if (record.get('type') === 'option') {
+            var options = record.get('options');
+            options.forEach(function(option) {
+              if (option[0] === value) {
+                value = option;
+                return;
+              }
+            });
+            return {
+              value: value,
+              store: options,
+              queryMode: 'local',
+              xtype: 'combobox',
+              listeners: {
+                'change': change
+              }
+            }
+          } else {
+            return {
+              value: value,
+              xtype: 'textfield',
+              listeners: {
+                'change': change
+              }
+            }
+          }
         }
       }, {
         flex: 1,
