@@ -10,13 +10,6 @@ Ext.define('CF.view.dataviews.SolverConf', {
     'CF.view.Component'
   ],
   store: solverConfStore,
-  viewConfig: {
-    // getRowClass: function(record, index) {
-    //   if (!record.get('editable')) {
-    //     return 'x-item-disabled';
-    //   }
-    // },
-  },
   initComponent: function() {
     var me = this;
     Ext.apply(this, {
@@ -118,21 +111,6 @@ Ext.define('CF.view.dataviews.SolverConf', {
         ftype: 'grouping',
         startCollapsed: true
       }],
-      plugins: [
-        Ext.create('Ext.grid.plugin.CellEditing', {
-          clicksToEdit: 1,
-          listeners: {
-            'validateedit': function(c, e, eOpts) {
-              var r = e.rowIdx;
-              var sr = solverConfStore.getAt(r);
-              sr.set(e.field, e.value);
-            },
-            'beforeedit': function(editor, e, eOpts) {
-              return e.record.get('editable');
-            }
-          }
-        })
-      ]
     });
     this.callParent(arguments);
   }
