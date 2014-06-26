@@ -11,11 +11,11 @@ Ext.define('CF.view.dataviews.SolverConf', {
   ],
   store: solverConfStore,
   viewConfig: {
-    getRowClass: function(record, index) {
-      if (!record.get('editable')) {
-        return 'x-item-disabled';
-      }
-    },
+    // getRowClass: function(record, index) {
+    //   if (!record.get('editable')) {
+    //     return 'x-item-disabled';
+    //   }
+    // },
   },
   initComponent: function() {
     var me = this;
@@ -32,7 +32,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
           var change = function(element, newValue, oldValue, options) {
             setTimeout(function() {
               record.set('value', newValue);
-            }, 100);
+            }, 1);
           }
 
           if (record.get('type') === 'bool') {
@@ -46,7 +46,8 @@ Ext.define('CF.view.dataviews.SolverConf', {
               xtype: 'checkbox',
               listeners: {
                 'change': change
-              }
+              },
+              disabled: !record.get('editable')
             }
           } else if (record.get('type') === 'int') {
             return {
@@ -56,7 +57,10 @@ Ext.define('CF.view.dataviews.SolverConf', {
               step: record.get('step'),
               listeners: {
                 'change': change
-              }
+              },
+              minValue: record.get('minValue'),
+              maxValue: record.get('maxValue'),
+              disabled: !record.get('editable')
             }
           } else if (record.get('type') === 'float') {
             return {
@@ -68,7 +72,10 @@ Ext.define('CF.view.dataviews.SolverConf', {
               step: record.get('step'),
               listeners: {
                 'change': change
-              }
+              },
+              minValue: record.get('minValue'),
+              maxValue: record.get('maxValue'),
+              disabled: !record.get('editable')
             }
           } else if (record.get('type') === 'option') {
             var options = record.get('options');
@@ -85,7 +92,8 @@ Ext.define('CF.view.dataviews.SolverConf', {
               xtype: 'combobox',
               listeners: {
                 'change': change
-              }
+              },
+              disabled: !record.get('editable')
             }
           } else {
             return {
@@ -93,7 +101,8 @@ Ext.define('CF.view.dataviews.SolverConf', {
               xtype: 'textfield',
               listeners: {
                 'change': change
-              }
+              },
+              disabled: !record.get('editable')
             }
           }
         }

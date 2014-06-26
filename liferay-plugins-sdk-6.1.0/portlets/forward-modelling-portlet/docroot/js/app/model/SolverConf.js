@@ -28,5 +28,11 @@ Ext.define('CF.model.SolverConf', {
   }, {
     name: 'step',
     type: 'auto'
+  }, {
+    name: 'minValue',
+    type: 'auto'
+  }, {
+    name: 'maxValue',
+    type: 'auto'
   }]
 });
