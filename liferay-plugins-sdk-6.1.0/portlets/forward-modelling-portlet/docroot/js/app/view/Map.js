@@ -33,6 +33,13 @@ Ext.define('CF.view.Map', {
 
     var layers = [];
 
+    // OpenLayers object creating
+    var wms = new OpenLayers.Layer.WMS(
+      "World Base Layer (KNMI)",
+      "http://geoservices.knmi.nl/cgi-bin/worldmaps.cgi?", {
+        layers: 'world_raster'
+      }
+    );
 
     var hwms =
       new OpenLayers.Layer.WMS(
@@ -79,10 +86,145 @@ Ext.define('CF.view.Map', {
         }
     );
 
+    var stationcontext = {
+      getColor: function(feature) {
+        if (feature.attributes.elevation < 1000) {
+          return '#3333FF';
+        }
+        return '#000066';
+      }
+    };
+    var stationtemplate = {
+      cursor: "pointer",
+      fillOpacity: 0.3,
+      fillColor: "#111188",
+      pointRadius: 5,
+      strokeWidth: 1,
+      strokeOpacity: 1,
+      strokeColor: "#222299",
+      graphicName: "triangle"
+    };
+
+    var stationtemplateselected = {
+      cursor: "pointer",
+      fillOpacity: 0.9,
+      fillColor: "#3333FF",
+      pointRadius: 7,
+      strokeWidth: 1,
+      strokeOpacity: 1,
+      strokeColor: "#3333FF",
+      graphicName: "triangle"
+    };
+    var stationrenderer = OpenLayers.Layer.Vector.prototype.renderers;
+    var stationstyle = new OpenLayers.Style(stationtemplate, {
+      context: stationcontext
+    });
+    var stationstyleselected = new OpenLayers.Style(stationtemplateselected, {
+      context: stationcontext
+    });
+    var stationstylemap = new OpenLayers.StyleMap({
+      'default': stationstyle,
+      'gridSelect': stationstyleselected
+    });
+
+    var stationLayer = new OpenLayers.Layer.Vector("Stations", {
+      styleMap: stationstylemap,
+      strategies: [new OpenLayers.Strategy.Fixed()],
+      renderers: stationrenderer,
+      protocol: new OpenLayers.Protocol.HTTP({
+        format: new StationXMLFormat(),
+        handleResponse: function(resp, options) {
+          // initialization request, don't need to do anything in this case
+          if (options.url == null) {
+            return;
+          }
+          checkStatus(this, resp, options, "station");
+        }
+      })
+    });
+    stationLayer.events.on({
+      'beforefeatureselected': function(evt) {
+        showStationInfo(evt.feature);
+        // return false;
+      },
+      'beforefeatureunselected': function(evt) {
+        hideStationInfo(evt.feature);
+        // return false;
+      }
+    });
+
+    var eventcontext = {
+      getRadius: function(feature) {
+        return feature.attributes.magnitude * 1.5;
+      }
+    };
+    var eventtemplate = {
+      cursor: "pointer",
+      fillOpacity: 0.3,
+      fillColor: "#AA0000",
+      pointRadius: "${getRadius}",
+      strokeWidth: 1,
+      strokeOpacity: 1,
+      strokeColor: "#AA0000"
+    };
+    var eventtemplateselected = {
+      cursor: "pointer",
+      fillOpacity: 0.9,
+      fillColor: "#FF3333",
+      pointRadius: "${getRadius}",
+      strokeWidth: 1,
+      strokeOpacity: 1,
+      strokeColor: "#FF3333"
+    };
+    var eventrenderer = OpenLayers.Layer.Vector.prototype.renderers;
+    var eventstyle = new OpenLayers.Style(eventtemplate, {
+      context: eventcontext
+    });
+    var eventstyleselected = new OpenLayers.Style(eventtemplateselected, {
+      context: eventcontext
+    });
+    var eventstylemap = new OpenLayers.StyleMap({
+      'default': eventstyle,
+      'gridSelect': eventstyleselected
+    });
+
+    eventLayer = new OpenLayers.Layer.Vector("Events", {
+      styleMap: eventstylemap,
+      protocol: new OpenLayers.Protocol.HTTP({
+        format: new QuakeMLXMLFormat(),
+        handleResponse: function(resp, options) {
+          if (options.url == null) {
+            return;
+          }
+          checkStatus(this, resp, options, "event");
+        }
+      }),
+      strategies: [new OpenLayers.Strategy.Fixed()],
+      renderers: eventrenderer
+    });
+    eventLayer.events.on({
+      'beforefeatureselected': function(evt) {
+        showEventInfo(evt.feature);
+        return false;
+      },
+      'beforefeatureunselected': function(evt) {
+        hideEventInfo(evt.feature);
+        return false;
+      }
+    });
+
+    layers.push(wms);
     layers.push(hwms);
     layers.push(vecwms);
     layers.push(geowms);
     layers.push(faultswms);
+    layers.push(stationLayer);
+    layers.push(eventLayer);
+
+    map = new OpenLayers.Map('map', {
+      numZoomLevels: 10
+    });
+    map.addLayers(layers)
 
     OpenLayers.Control.CustomNavToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
 
@@ -99,42 +241,40 @@ Ext.define('CF.view.Map', {
       initialize: function(options) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
         this.addControls([
-          new OpenLayers.Control.ZoomBox({
-            alwaysZoom: false
+          new OpenLayers.Control.DragPan({
+            autoActivate: true
           }),
-          // new OpenLayers.Control.SelectFeature({
-          //   multiple: true,
-          //   box: true,
-          //   geometryTypes: ['Point']
-          // })
+          new OpenLayers.Control.ZoomBox({
+            alwaysZoom: false,
+          }),
+          new OpenLayers.Control.SelectFeature(map.getLayersByName('Stations')[0], {
+            multiple: true,
+            box: true,
+          }),
         ]);
         // To make the custom navtoolbar use the regular navtoolbar style
         this.displayClass = 'olControlNavToolbar'
       }
     });
 
-
     var panel = new OpenLayers.Control.CustomNavToolbar();
 
-    map = new OpenLayers.Map('map', {
-
-      numZoomLevels: 10
-
-    });
-    map.addControl(panel);
-    map.addControl(
+    map.addControls([
+      panel,
       new OpenLayers.Control.LayerSwitcher({
         'ascending': false
+      }),
+      new OpenLayers.Control.SelectFeature([stationLayer, eventLayer], {
+        click: true,
+        autoActivate: true
       })
-    );
+    ]);
 
-    map.addLayers(layers)
     hwms.setOpacity(0.5);
     geowms.setOpacity(0.5);
     faultswms.setOpacity(0.3);
 
     layerStore.bind(map)
-
 
     // ZoomToMaxExtent control, a "button" control
     items.push(Ext.create('Ext.button.Button', Ext.create('GeoExt.Action', {
