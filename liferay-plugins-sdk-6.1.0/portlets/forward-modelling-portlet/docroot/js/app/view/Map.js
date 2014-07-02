@@ -28,8 +28,7 @@ Ext.define('CF.view.Map', {
 
   initComponent: function() {
     var me = this,
-      items = [],
-      ctrl;
+      items = [];
 
     var layers = [];
 
@@ -143,14 +142,14 @@ Ext.define('CF.view.Map', {
       })
     });
     stationLayer.events.on({
-      'beforefeatureselected': function(evt) {
+      beforefeatureselected: function(evt) {
         showStationInfo(evt.feature);
         // return false;
       },
-      'beforefeatureunselected': function(evt) {
+      beforefeatureunselected: function(evt) {
         hideStationInfo(evt.feature);
         // return false;
-      }
+      },
     });
 
     var eventcontext = {
@@ -250,6 +249,26 @@ Ext.define('CF.view.Map', {
           new OpenLayers.Control.SelectFeature(map.getLayersByName('Stations')[0], {
             multiple: true,
             box: true,
+            id: 'dragselect',
+            selectStyle: 'gridSelect',
+            onSelect: function(feature) {
+              var stationsGrid = ctrl.getStationsGrid();
+              var records = stationsGrid.store.each(function(record) {
+                if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
+                  stationsGrid.getSelectionModel().select(record, true /* keep existing selections */ );
+                  return false;
+                }
+              });
+            },
+            onUnselect: function(feature) {
+              var stationsGrid = ctrl.getStationsGrid();
+              var records = stationsGrid.store.each(function(record) {
+                if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
+                  stationsGrid.getSelectionModel().deselect(record);
+                  return false;
+                }
+              });
+            },
           }),
         ]);
         // To make the custom navtoolbar use the regular navtoolbar style
