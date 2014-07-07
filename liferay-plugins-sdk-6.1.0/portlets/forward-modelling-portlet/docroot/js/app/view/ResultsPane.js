@@ -1,5 +1,8 @@
  
 
+// specifies the userhome of whom we are going to access the data from (for sharing purposes)
+owner=userSN
+
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
     extend: 'Ext.form.field.ComboBox',
@@ -265,7 +268,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
     extend: 'Ext.form.Panel',
     // The fields
 	title: 'Open',
-    height: 100,
+    height: 150,
     defaultType: 'textfield',
     layout: {
       align: 'center',
@@ -274,24 +277,58 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
     },
     
     initComponent: function(){
+    
+      
         this.items = [
-       {
-            html: "<strong><span style=\"color: DarkBlue\">Here you can open Runs that other users have shared with you!</strong><br/><br/>",
-            width: 800,
-            border:0,
-            xtype: "panel",
-            margin: '5 5 5'},
+        
         {
-        fieldLabel: 'Run ID',
-         
-        width: 300,
-        name: 'runId',
-        allowBlank: false,
-        inputAttrTpl: " data-qtip='Insert here any Run ID and press Open!' "
-         
-      }
+	                xtype: 'fieldset',
+	                title: 'Here you can open Runs that other users have shared with you!',
+	                collapsible: false,
+	                width: '95%',
+	                margins: '20,10,10,10',
+	                defaults: {
+	                    labelWidth: 10,
+	                    anchor: '100%',
+	                    layout: {
+	                        type: 'hbox'
+	                         
+	                    }
+	                     
+	                },items:[
+        { xtype: 'fieldcontainer',
+	                         
+	                        combineErrors: true,
+	                        msgTarget: 'under',
+	                        items:[
+        
+        { xtype: 'textfield',
+	        fieldLabel: 'Run ID',
+	         labelAlign : 'right',
+	        width: 300,
+	        name: 'runId',
+	        allowBlank: false,
+	        inputAttrTpl: " data-qtip='Insert here any Run ID' ",
+	        anchor: '80%',
+	        allowBlank: false,
+	        margin: '10 0 10 0'
+	         
+	      },
+	      {xtype: 'textfield',
+		        fieldLabel: 'Username',
+		         labelAlign : 'right',
+		        width: 300,
+		        name: 'usename',
+		        allowBlank: false,
+		        inputAttrTpl: " data-qtip='Insert here the username of who is sharing data with you!' ",
+		        anchor: '80%',
+	        allowBlank: false,
+	        margin: '10 0 10 0'
+		         
+		      }
+      
 
-    ]
+    ]}]}],
         this.callParent();
     },
      
@@ -321,6 +358,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
         activityStore.load({
           callback: function() {
             currentRun = form.findField("runId").getValue(false)
+            owner = form.findField("usename").getValue(false)
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
@@ -419,6 +457,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
 		var keys = this.up('form').getForm().findField("keys").getValue(false)
 		var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
 		var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+		owner = userSN
 		
         if (form.isValid()) {
           workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys='+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues
@@ -488,7 +527,6 @@ var action = Ext.create('Ext.Action', {
 
 
     workflowSel.show();
-    
     workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN
     workflowStore.data.clear()
     workflowStore.load()
@@ -833,6 +871,7 @@ Ext.define('CF.view.WorlflowSelection', {
           single: true
         });
         currentRun = record.get("runId")
+        owner = userSN
 
       }
       
@@ -1000,7 +1039,7 @@ function viewData(url, open) { //var loc=url.replace(/file:\/\/[\w-]+/,"/interme
 
   htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
   for (var i = 0; i < url.length; i++) {
-    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + userSN + "/verce/")
+    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + owner + "/verce/")
 
 
     htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
