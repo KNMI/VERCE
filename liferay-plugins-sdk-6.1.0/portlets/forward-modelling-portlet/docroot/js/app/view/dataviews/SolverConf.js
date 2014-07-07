@@ -29,7 +29,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
           }
 
           if (record.get('type') === 'bool') {
-            if (value === 'true' || value === 1 || value === '1' || value === 'on') {
+            if (value === true || value === 'true' || value === 1 || value === '1' || value === 'on') {
               value = true;
             } else {
               value = false;
