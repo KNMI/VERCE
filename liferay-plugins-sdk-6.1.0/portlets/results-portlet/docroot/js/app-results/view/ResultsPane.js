@@ -5,14 +5,20 @@ var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UE
 var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 
+	 
+	// specifies the userhome of whom we are going to access the data from (for sharing purposes)
+	owner=userSN
+
 	// ComboBox with multiple selection enabled
 	Ext.define('RS.view.metaCombo', {
 	    extend: 'Ext.form.field.ComboBox',
-	    fieldLabel: 'Attributes (csv)',
+	    fieldLabel: 'Terms',
 	  name: 'keys',
 	  displayField: 'term',
-	  width: 300,
-	  labelWidth: 130,
+	  width: 200,
+	  inputAttrTpl: " data-qtip='Insert here a sequence of Terms divided by commas.<br/> Eg. magnitude,station' ",
+	  labelWidth: 40,
+	  labelAlign : 'right',
 	  margin: '10 10 30 10',
 	  colspan: 4,
 	  multiSelect:true,
@@ -267,8 +273,8 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	Ext.define('RS.view.WorkflowOpenByRunID', {
 	    extend: 'Ext.form.Panel',
 	    // The fields
-		title: 'Insert Run ID',
-	    height: 100,
+		title: 'Open',
+	    height: 150,
 	    defaultType: 'textfield',
 	    layout: {
 	      align: 'center',
@@ -277,22 +283,58 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	    },
 	    
 	    initComponent: function(){
+	    
+	      
 	        this.items = [
-	       {
-	            html: "<strong><span style=\"color: DarkBlue\">Here you can open Runs that other users have shared with you!</strong><br/><br/>",
-	            width: 800,
-	            border:0,
-	            xtype: "panel",
-	            margin: '5 5 5'},
+	        
 	        {
-	        fieldLabel: 'Run ID',
-	        width: 300,
-	        name: 'runId',
-	        allowBlank: false,
-	         
-	      }
+		                xtype: 'fieldset',
+		                title: 'Here you can open Runs that other users have shared with you!',
+		                collapsible: false,
+		                width: '95%',
+		                margins: '20,10,10,10',
+		                defaults: {
+		                    labelWidth: 10,
+		                    anchor: '100%',
+		                    layout: {
+		                        type: 'hbox'
+		                         
+		                    }
+		                     
+		                },items:[
+	        { xtype: 'fieldcontainer',
+		                         
+		                        combineErrors: true,
+		                        msgTarget: 'under',
+		                        items:[
+	        
+	        { xtype: 'textfield',
+		        fieldLabel: 'Run ID',
+		         labelAlign : 'right',
+		        width: 300,
+		        name: 'runId',
+		        allowBlank: false,
+		        inputAttrTpl: " data-qtip='Insert here any Run ID' ",
+		        anchor: '80%',
+		        allowBlank: false,
+		        margin: '10 0 10 0'
+		         
+		      },
+		      {xtype: 'textfield',
+			        fieldLabel: 'Username',
+			         labelAlign : 'right',
+			        width: 300,
+			        name: 'usename',
+			        allowBlank: false,
+			        inputAttrTpl: " data-qtip='Insert here the username of who is sharing data with you!' ",
+			        anchor: '80%',
+		        allowBlank: false,
+		        margin: '10 0 10 0'
+			         
+			      }
+	      
 
-	    ]
+	    ]}]}],
 	        this.callParent();
 	    },
 	     
@@ -322,6 +364,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	        activityStore.load({
 	          callback: function() {
 	            currentRun = form.findField("runId").getValue(false)
+	            owner = form.findField("usename").getValue(false)
 	            Ext.getCmp('filtercurrent').enable();
 	            Ext.getCmp('searchartifacts').enable();
 	            Ext.getCmp('downloadscript').enable();
@@ -348,29 +391,64 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	Ext.define('RS.view.WorkflowValuesRangeSearch', {
 	    extend: 'Ext.form.Panel',
 	    // The fields
-		title: 'Search by Data Attributes',
-	    height: 100,
+		title: 'Search',
+	    height: 150,
+	    
 	    defaultType: 'textfield',
 	    layout: {
 	      align: 'center',
 	      pack: 'center',
 	      type: 'hbox'
+	       
 	    },
 	    
 	    initComponent: function(){
-	        this.items = [Ext.create('RS.view.metaCombo', {}) ,{
-	        fieldLabel: '  Min values (csv)',
+	        this.items = [
+	         
+	            {
+	                xtype: 'fieldset',
+	                title: 'Search for runs across products metadata, data formats and parameters',
+	                collapsible: false,
+	                width: '95%',
+	                margins: '20,10,10,10',
+	                defaults: {
+	                    labelWidth: 10,
+	                    anchor: '100%',
+	                    layout: {
+	                        type: 'hbox'
+	                         
+	                    }
+	                     
+	                },items:[
+	                {
+	                        xtype: 'fieldcontainer',
+	                         
+	                        combineErrors: true,
+	                        msgTarget: 'under',
+	                         
+	                        items: [
+	        
+	        Ext.create('RS.view.metaCombo', {}) ,{
+	        xtype: 'textfield',
+	        fieldLabel: 'Min values',
 	        name: 'minvalues',
+	        anchor: '80%',
 	        allowBlank: false,
-	        margin: '10 10 30 10'
-	      }, {
-	        fieldLabel: '  Max values (csv)',
+	         labelAlign : 'right',
+	         inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+	        margin: '10 0 10 0'
+	      }, {xtype: 'textfield',
+	        fieldLabel: 'Max values',
+	        labelAlign : 'right',
 	        name: 'maxvalues',
+	        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+	       
+	        anchor: '80%',
 	        allowBlank: false,
-	        margin: '10 20 30 10'
+	        margin: '10 0 10 0'
 	      }
 
-	    ]
+	    ]}]}]
 	        this.callParent();
 	    },
 	     
@@ -385,6 +463,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 			var keys = this.up('form').getForm().findField("keys").getValue(false)
 			var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
 			var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+			owner = userSN
 			
 	        if (form.isValid()) {
 	          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys='+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues
@@ -454,7 +533,6 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 
 	    workflowSel.show();
-	    
 	    workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN
 	    workflowStore.data.clear()
 	    workflowStore.load()
@@ -778,6 +856,8 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	          simpleSortMode: true
 
 	        });
+	        sys.prune();
+	        artifactStore.data.clear();
 	        activityStore.data.clear();
 	        activityStore.load({
 	          callback: function() {
@@ -797,6 +877,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	          single: true
 	        });
 	        currentRun = record.get("runId")
+	        owner = userSN
 
 	      }
 	      
@@ -920,6 +1001,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 
 	        });
+	         
 	        artifactStore.data.clear()
 	        artifactStore.load()
 
@@ -963,7 +1045,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 	  htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
 	  for (var i = 0; i < url.length; i++) {
-	    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + userSN + "/verce/")
+	    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + owner + "/verce/")
 
 
 	    htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
@@ -1003,6 +1085,7 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 
 
+
 	Ext.define('RS.view.StreamValuesRangeSearch', {
 	    extend: 'Ext.form.Panel',
 	    // The fields
@@ -1018,11 +1101,15 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	    this.items= [Ext.create('RS.view.metaCombo', {}), {
 	        fieldLabel: 'Min values (csv)',
 	        name: 'minvalues',
-	        allowBlank: false
+	        inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+	        
+	        allowBlank: true
 	      }, {
 	        fieldLabel: 'Max values (csv)',
 	        name: 'maxvalues',
-	        allowBlank: false
+	        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+	      
+	        allowBlank: true
 	      },
 	      Ext.create('RS.view.mimeCombo', {})
 	    ];
@@ -1194,10 +1281,14 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 	    this.items=[Ext.create('RS.view.metaCombo', {}), {
 	        fieldLabel: 'Min values (csv)',
 	        name: 'minvalues',
+	        inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+	        
 	        allowBlank: false
 	      }, {
 	        fieldLabel: 'Max values (csv)',
 	        name: 'maxvalues',
+	        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+	      
 	        allowBlank: false
 	      }];
 	       this.callParent();
@@ -1783,28 +1874,28 @@ var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
 
 
 	      $(viewportprov).bind('dblclick', function(e) {
-	          var pos = $(this).offset();
-	          var p = {
-	            x: e.pageX - pos.left,
-	            y: e.pageY - pos.top
-	          }
-	          selected = nearest = dragged = sys.nearest(p);
+	        var pos = $(this).offset();
+	        var p = {
+	          x: e.pageX - pos.left,
+	          y: e.pageY - pos.top
+	        }
+	        selected = nearest = dragged = sys.nearest(p);
 
-	          if (selected.node !== null) {
-	            // dragged.node.tempMass = 10000
-	            dragged.node.fixed = true;
-	            if (graphMode == "WASDERIVEDFROM")
-	              wasDerivedFromAddBranch(PROV_SERVICE_BASEURL + 'wasDerivedFrom/' + selected.node.name + "?level=" + level)
+	        if (selected.node !== null) {
+	          // dragged.node.tempMass = 10000
+	          dragged.node.fixed = true;
+	          if (graphMode == "WASDERIVEDFROM")
+	            wasDerivedFromAddBranch(PROV_SERVICE_BASEURL + 'wasDerivedFrom/' + selected.node.name + "?level=" + level)
 
-	            if (graphMode == "DERIVEDDATA")
-	              derivedDataAddBranch(PROV_SERVICE_BASEURL + 'derivedData/' + selected.node.name + "?level=" + level)
+	          if (graphMode == "DERIVEDDATA")
+	            derivedDataAddBranch(PROV_SERVICE_BASEURL + 'derivedData/' + selected.node.name + "?level=" + level)
 
 
-	          }
-	          return false;
-	        })
-	        sys.renderer = Renderer("#viewportprov");
-	        //		
-	      }
+	        }
+	        return false;
+	      })
+	      sys.renderer = Renderer("#viewportprov");
+	      //		
 	    }
-	  });
+	  }
+	});

@@ -18,6 +18,7 @@
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
+	var deleteWorkflowURL = "/j2ep-1.0/prov/workflow/delete/"
 	 
 	 
 </script>

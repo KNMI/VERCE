@@ -7,7 +7,13 @@ var mimetypes = [{
 }, {
   "mime": "video/mpeg",
   "desc": ""
-}]
+},
+{
+	  "mime": "application/vnd.google-earth.kmz",
+	  "desc": ""
+	}
+
+]
 
 var mimetypesStore = Ext.define('RS.store.Mimetype', {
   extend: 'Ext.data.Store',

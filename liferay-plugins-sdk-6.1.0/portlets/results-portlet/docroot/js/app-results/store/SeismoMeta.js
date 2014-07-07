@@ -17,6 +17,7 @@ var meta = [
        {"term":"m_tp"}, 
        {"term":"m_tt"}, 
        {"term":"magnitude"},
+       {"term":"mime-type"},
        {"term":" network"}, 
        {"term":"npts"}, 
        {"term":"origin_time"},
@@ -36,6 +37,7 @@ var meta = [
        {"term": "GRAVITY"},
        {"term": "HDUR_MOVIE"}, 
        {"term": "LOCAL_PATH"},
+       {"term": "mesh"},
        {"term": "MODEL"},
        {"term": "MOVIE_SURFACE"},
        {"term": "MOVIE_TYPE"},
@@ -68,7 +70,10 @@ var meta = [
        {"term": "USE_HIGHRES_FOR_MOVIES"}, 
        {"term": "USE_OLSEN_ATTENUATION"}, 
        {"term": "USE_RICKER_TIME_FUNCTION"}, 
-       {"term": "UTM_PROJECTION_ZONE"}
+       {"term": "UTM_PROJECTION_ZONE"},
+       {"term": "velocity-model"}
+       
+       
        ];
 
 Ext.define('RS.store.SeismoMeta', {
