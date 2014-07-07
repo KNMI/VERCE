@@ -289,22 +289,23 @@ Ext.define('CF.controller.Map', {
 
   onStationStoreLoad: function(store, records) {
     //if the solver, the stations and the events are selected, enable the submit button
-    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0)
+    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0) {
       Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(false);
+    }
     //Set the number of stations in the grid (shown as header of selected colum)
     Ext.getCmp('stationSelColumn').setText("0/" + store.getTotalCount());
   },
 
   onEventStoreLoad: function(store, records) {
     //if the solver, the stations and the events are selected, enable the submit button
-    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0)
+    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0) {
       Ext.getCmp('tabpanel_principal').down('#submit').enable();
+    }
     //Set the number of events in the grid (shown as header of selected colum)
     Ext.getCmp('eventSelColumn').setText("0/" + store.getTotalCount());
   },
 
   onEventSearch: function(button) {
-
     var form = button.up('form').getForm();
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';

@@ -24,11 +24,9 @@ Ext.define('CF.view.dataviews.StationGrid', {
         checkOnly: true,
         listeners: {
           select: function(rowmodel, record, index) {
-            var stationLayer = map.getLayersByName('Stations')[0];
             map.getControl('dragselect').select(record.raw);
           },
           deselect: function(rowmodel, record, index) {
-            var stationLayer = map.getLayersByName('Stations')[0];
             map.getControl('dragselect').unselect(record.raw);
           },
         }
