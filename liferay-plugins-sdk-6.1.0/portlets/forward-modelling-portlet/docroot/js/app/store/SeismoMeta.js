@@ -73,7 +73,6 @@ var meta = [
        {"term": "UTM_PROJECTION_ZONE"},
        {"term": "velocity_model"}
        
-       
        ];
 
 Ext.define('CF.store.SeismoMeta', {

@@ -71,7 +71,7 @@ var meta = [
        {"term": "USE_OLSEN_ATTENUATION"}, 
        {"term": "USE_RICKER_TIME_FUNCTION"}, 
        {"term": "UTM_PROJECTION_ZONE"},
-       {"term": "velocity-model"}
+       {"term": "velocity_model"}
        
        
        ];
