@@ -274,7 +274,7 @@ function addMeta(url) {
 }
 
 
-var workflowgrid=Ext.create('CF.view.WorlflowSelection')
+var workflowgrid=Ext.create('CF.view.WorkflowSelection')
 
 Ext.define('CF.view.WorkflowOpenByRunID', {
     extend: 'Ext.form.Panel',
