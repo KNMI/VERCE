@@ -22,10 +22,12 @@ Ext.define('CF.view.dataviews.SolverConf', {
         dataIndex: 'value',
         xtype: 'componentcolumn',
         renderer: function(value, meta, record) {
+          var timeout;
           var change = function(element, newValue, oldValue, options) {
-            setTimeout(function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
               record.set('value', newValue);
-            }, 1);
+            }, 500);
           }
 
           if (record.get('type') === 'bool') {
