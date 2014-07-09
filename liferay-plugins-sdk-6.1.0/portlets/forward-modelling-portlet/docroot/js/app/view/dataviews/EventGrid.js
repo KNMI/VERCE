@@ -33,22 +33,19 @@ Ext.define('CF.view.dataviews.EventGrid', {
         checkOnly: true,
         listeners: {
           select: function(t, r, i) {
-            var eventLayer = map.getLayersByName('Events')[0];
             //upate to selected image
-            var newSymbolizer = eventLayer.styleMap.createSymbolizer(r.raw, 'gridSelect');
+            var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'gridSelect');
             r.data.symbolizer = newSymbolizer;
           },
           deselect: function(t, r, i) {
-            var eventLayer = map.getLayersByName('Events')[0];
             //update to unselected image
-            var newSymbolizer = eventLayer.styleMap.createSymbolizer(r.raw, 'default');
+            var newSymbolizer = eventstylemap.createSymbolizer(r.raw, 'default');
             r.data.symbolizer = newSymbolizer;
           },
           selectionchange: function(t, s) {
-            var eventLayer = map.getLayersByName('Events')[0];
             //render grid and layer to update the selected/unselected symbols
             //Ext.getCmp('gridEvents').getView().refresh();
-            eventLayer.redraw();
+            ctrl.eventLayer.redraw();
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
             else Ext.getCmp('checkboxNSubmit').setDisabled(true);
             Ext.getCmp('eventSelColumn').setText(s.length + "/" + eventStore.getTotalCount());
