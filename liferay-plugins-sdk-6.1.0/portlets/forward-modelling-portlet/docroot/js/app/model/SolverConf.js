@@ -1,6 +1,9 @@
 Ext.define('CF.model.SolverConf', {
   extend: 'Ext.data.Model',
   fields: [{
+    name: 'xtype',
+    type: 'string'
+  }, {
     name: 'name',
     type: 'string'
   }, {
@@ -8,7 +11,7 @@ Ext.define('CF.model.SolverConf', {
     type: 'string'
   }, {
     name: 'value',
-    type: 'auto'
+    type: 'string'
   }, {
     name: 'req',
     type: 'string'
@@ -19,20 +22,5 @@ Ext.define('CF.model.SolverConf', {
   }, {
     name: 'group',
     type: 'string'
-  }, {
-    name: 'type',
-    type: 'string'
-  }, {
-    name: 'options',
-    type: 'auto'
-  }, {
-    name: 'step',
-    type: 'auto'
-  }, {
-    name: 'minValue',
-    type: 'auto'
-  }, {
-    name: 'maxValue',
-    type: 'auto'
   }]
 });
