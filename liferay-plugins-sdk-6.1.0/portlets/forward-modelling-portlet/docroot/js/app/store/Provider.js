@@ -1,10 +1,4 @@
 var providers = [{
-  "abbr": "EMSC",
-  "name": "European blah.."
-}, {
-  "abbr": "GFZ",
-  "name": "Geo..Germany"
-}, {
   "abbr": "INGV",
   "name": "Istituto Nazionale di Geofisica e Vulcanologia"
 }];
