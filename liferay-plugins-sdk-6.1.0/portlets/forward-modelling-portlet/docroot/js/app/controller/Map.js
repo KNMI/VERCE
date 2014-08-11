@@ -254,14 +254,14 @@ Ext.define('CF.controller.Map', {
       'button[itemId=station_cl_but]': {
         click: function(button) {
           this.stationstore.removeAll();
-          hideStationInfo();
+          this.hideStationInfo();
           Ext.getCmp('stationSelColumn').setText("0/0");
         }
       },
       'button[itemId=event_cl_but]': {
         click: function(button) {
           this.eventstore.removeAll();
-          hideEventInfo();
+          this.hideEventInfo();
           Ext.getCmp('eventSelColumn').setText("0/0");
         }
       },
@@ -283,8 +283,6 @@ Ext.define('CF.controller.Map', {
 
   onLaunch: function() {
     var me = this;
-    // for dev purpose
-    ctrl = this;
   },
 
   onStationStoreLoad: function(store, records) {
@@ -310,7 +308,7 @@ Ext.define('CF.controller.Map', {
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';
       var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
-      getEvents(this, baseUrl + form.getValues(true) + bbox);
+      this.getEvents(this, baseUrl + form.getValues(true) + bbox);
     }
   },
   onStationSearch: function(button) {
@@ -320,130 +318,123 @@ Ext.define('CF.controller.Map', {
       var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
       var formValues = form.getValues(true);
       formValues = (formValues === 'net=Any%20network') ? 'net=*' : formValues;
-      getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
+      this.getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
     }
+  },
+  getStations: function(elem, purl, formatType) {
+    if (formatType === STXML_TYPE) var f = new StationXMLFormat();
+    else if (formatType === STPOINTS_TYPE) var f = new PointsListFormat();
+    gl_stationFormat = formatType;
+
+    gl_stationUrl = purl;
+    this.stationstore.removeAll();
+    this.getStationsGrid().setLoading(true);
+    this.hideStationInfo();
+
+    var stationLayer = map.getLayersByName('Stations')[0];
+    this.stationstore.bind(stationLayer);
+
+    stationLayer.refresh({
+      url: purl,
+      format: f,
+    });
+  },
+  getEvents: function(elem, purl) {
+    gl_eventUrl = purl;
+    this.eventstore.removeAll();
+    this.getEventsGrid().setLoading(true);
+    this.hideEventInfo();
+    // The getForm() method returns the Ext.form.Basic instance:
+
+    var eventLayer = map.getLayersByName('Events')[0];
+    this.eventstore.bind(eventLayer);
+
+    eventLayer.refresh({
+      url: purl,
+    });
+  },
+  checkStatus: function(elem, resp, options, type) {
+    //type is a string "event" or "station"
+    var request = resp.priv;
+    if (options.callback) {
+      if (request.status == 200) // success
+      {
+        var errorMsg;
+        if (resp.requestType != "delete") {
+          //if(elem.url.indexOf("/documents/")> -1)
+          //	Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the map.<br>You can manage your uploaded files in the File Manager');
+
+          resp.features = elem.parseFeatures(request);
+
+          if (resp.features.length < 1)
+            Ext.Msg.alert("Alert!", "No data returned");
+        }
+        resp.code = OpenLayers.Protocol.Response.SUCCESS;
+      } else // failure
+      {
+        resp.code = OpenLayers.Protocol.Response.FAILURE;
+        if (request.status == 204) errorMsg = "No data returned";
+        else if (request.status == 413) errorMsg = "The number of requested results is bigger than the maximum, 3000";
+
+        else errorMsg = "The request failed. Error code " + request.status;
+        Ext.Msg.alert("Alert!", errorMsg);
+      }
+      if (type === "event") this.getEventsGrid().setLoading(false);
+      if (type === "station") this.getStationsGrid().setLoading(false);
+      options.callback.call(options.scope, resp);
+    }
+  },
+  hideEventInfo: function(evtfeature) {
+    if (evtfeature) evisfeature = evtfeature;
+    if (evisfeature) {
+      if (evisfeature.popup) {
+        map.removePopup(evisfeature.popup);
+        evisfeature.popup.destroy();
+        evisfeature.popup = null;
+      }
+      evisfeature = null;
+    }
+  },
+  showEventInfo: function(evtfeature) {
+    this.hideEventInfo();
+    evisfeature = evtfeature;
+    var popuptext = "<div style='font-size:.8em'><br>Description: " + evisfeature.attributes.description + "</div>";
+    var popup = new OpenLayers.Popup.FramedCloud("popup",
+      OpenLayers.LonLat.fromString(evisfeature.geometry.toShortString()),
+      null,
+      popuptext,
+      null,
+      true
+    );
+    var grid = Ext.ComponentQuery.query('eventsgrid')[0];
+    grid.getView().focusRow(eventStore.getByFeature(evisfeature));
+    evisfeature.popup = popup;
+    map.addPopup(popup);
+  },
+  hideStationInfo: function(stfeature) {
+    if (stfeature) svisfeature = stfeature;
+    if (svisfeature) {
+      if (svisfeature.popup) {
+        map.removePopup(svisfeature.popup);
+        svisfeature.popup.destroy();
+        svisfeature.popup = null;
+      }
+      svisfeature = null;
+    }
+  },
+  showStationInfo: function(stfeature) {
+    this.hideStationInfo();
+    svisfeature = stfeature;
+    var popup = new OpenLayers.Popup.FramedCloud("popup",
+      OpenLayers.LonLat.fromString(svisfeature.geometry.toShortString()),
+      null,
+      "<div style='font-size:.8em'><br>Station: " + svisfeature.attributes.station + "</div>",
+      null,
+      true
+    );
+    var grid = Ext.ComponentQuery.query('stationsgrid')[0];
+    grid.getView().focusRow(stationStore.getByFeature(svisfeature));
+    svisfeature.popup = popup;
+    map.addPopup(popup);
   }
 });
-
-function getStations(elem, purl, formatType) {
-  if (formatType === STXML_TYPE) var f = new StationXMLFormat();
-  else if (formatType === STPOINTS_TYPE) var f = new PointsListFormat();
-  gl_stationFormat = formatType;
-
-  gl_stationUrl = purl;
-  elem.stationstore.removeAll();
-  elem.getStationsGrid().setLoading(true);
-  hideStationInfo();
-
-  var stationLayer = map.getLayersByName('Stations')[0];
-  elem.stationstore.bind(stationLayer);
-
-  stationLayer.refresh({
-    url: purl,
-    format: f,
-  });
-}
-
-function getEvents(elem, purl) {
-  gl_eventUrl = purl;
-  elem.eventstore.removeAll();
-  elem.getEventsGrid().setLoading(true);
-  hideEventInfo();
-  // The getForm() method returns the Ext.form.Basic instance:
-
-  var eventLayer = map.getLayersByName('Events')[0];
-  elem.eventstore.bind(eventLayer);
-
-  eventLayer.refresh({
-    url: purl,
-  });
-}
-
-//type is a string "event" or "station"
-function checkStatus(elem, resp, options, type) {
-  var request = resp.priv;
-  if (options.callback) {
-    if (request.status == 200) // success
-    {
-      var errorMsg;
-      if (resp.requestType != "delete") {
-        //if(elem.url.indexOf("/documents/")> -1)
-        //	Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the map.<br>You can manage your uploaded files in the File Manager');
-
-        resp.features = elem.parseFeatures(request);
-
-        if (resp.features.length < 1)
-          Ext.Msg.alert("Alert!", "No data returned");
-      }
-      resp.code = OpenLayers.Protocol.Response.SUCCESS;
-    } else // failure
-    {
-      resp.code = OpenLayers.Protocol.Response.FAILURE;
-      if (request.status == 204) errorMsg = "No data returned";
-      else if (request.status == 413) errorMsg = "The number of requested results is bigger than the maximum, 3000";
-
-      else errorMsg = "The request failed. Error code " + request.status;
-      Ext.Msg.alert("Alert!", errorMsg);
-    }
-    if (type === "event") this.getEventsGrid().setLoading(false);
-    if (type === "station") this.getStationsGrid().setLoading(false);
-    options.callback.call(options.scope, resp);
-  }
-}
-
-function hideEventInfo(evtfeature) {
-  if (evtfeature) evisfeature = evtfeature;
-  if (evisfeature) {
-    if (evisfeature.popup) {
-      map.removePopup(evisfeature.popup);
-      evisfeature.popup.destroy();
-      evisfeature.popup = null;
-    }
-    evisfeature = null;
-  }
-}
-
-function showEventInfo(evtfeature) {
-  hideEventInfo();
-  evisfeature = evtfeature;
-  var popuptext = "<div style='font-size:.8em'><br>Description: " + evisfeature.attributes.description + "</div>";
-  var popup = new OpenLayers.Popup.FramedCloud("popup",
-    OpenLayers.LonLat.fromString(evisfeature.geometry.toShortString()),
-    null,
-    popuptext,
-    null,
-    true
-  );
-  var grid = Ext.ComponentQuery.query('eventsgrid')[0];
-  grid.getView().focusRow(eventStore.getByFeature(evisfeature));
-  evisfeature.popup = popup;
-  map.addPopup(popup);
-}
-
-function hideStationInfo(stfeature) {
-  if (stfeature) svisfeature = stfeature;
-  if (svisfeature) {
-    if (svisfeature.popup) {
-      map.removePopup(svisfeature.popup);
-      svisfeature.popup.destroy();
-      svisfeature.popup = null;
-    }
-    svisfeature = null;
-  }
-}
-
-function showStationInfo(stfeature) {
-  hideStationInfo();
-  svisfeature = stfeature;
-  var popup = new OpenLayers.Popup.FramedCloud("popup",
-    OpenLayers.LonLat.fromString(svisfeature.geometry.toShortString()),
-    null,
-    "<div style='font-size:.8em'><br>Station: " + svisfeature.attributes.station + "</div>",
-    null,
-    true
-  );
-  var grid = Ext.ComponentQuery.query('stationsgrid')[0];
-  grid.getView().focusRow(stationStore.getByFeature(svisfeature));
-  svisfeature.popup = popup;
-  map.addPopup(popup);
-}

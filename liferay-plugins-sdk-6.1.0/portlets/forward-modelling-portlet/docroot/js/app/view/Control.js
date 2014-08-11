@@ -13,7 +13,7 @@ Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.WfGrid',
   initComponent: function() {
-    var controller = this.getController();
+    var controller = CF.app.getController('Map');
 
     Ext.apply(this, {
       store: wfStore,
@@ -130,7 +130,7 @@ Ext.define('CF.view.WfGrid', {
                       });
 
                       // reuse events
-                      getEvents(controller, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
+                      controller.getEvents(controller, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
 
                       var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
                       var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
@@ -159,7 +159,7 @@ Ext.define('CF.view.WfGrid', {
                       });
 
                       // reuse stations
-                      getStations(controller, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
+                      controller.getStations(controller, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
 
                       // Only set old workflow if it's still available
                       if (prov_object.workflowId != null) {

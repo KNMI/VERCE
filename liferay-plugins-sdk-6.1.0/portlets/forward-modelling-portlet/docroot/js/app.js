@@ -48,4 +48,4 @@ Ext.application({
 /**
  * For dev purpose only
  */
-var ctrl, map, mapPanel;
+var map, mapPanel;

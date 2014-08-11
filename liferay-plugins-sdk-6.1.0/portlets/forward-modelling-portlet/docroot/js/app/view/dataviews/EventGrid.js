@@ -25,6 +25,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
   ],
   initComponent: function() {
     eventgrid = this;
+    var controller = CF.app.getController('Map');
     Ext.apply(this, {
       id: 'gridEvents',
       border: false,
@@ -91,7 +92,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
           tooltip: 'Show',
           handler: function(grid, rowIndex, colIndex) {
             var rec = grid.getStore().getAt(rowIndex);
-            showEventInfo(rec.data);
+            controller.showEventInfo(rec.data);
           }
         }]
       }],

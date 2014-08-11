@@ -318,12 +318,13 @@ function showFileSelector(htmlFileList, filetype) {
 }
 
 function parseSelectedFile(win, filetype) {
+  var controller = CF.app.getController('Map');
   if (selectedFile === "") {
     Ext.Msg.alert("Alert!", "Please, select a file by clicking on it");
   } else {
-    if (filetype === EVENT_TYPE) getEvents(ctrl, selectedFile);
+    if (filetype === EVENT_TYPE) controller.getEvents(controller, selectedFile);
     if (filetype === STXML_TYPE || filetype === STPOINTS_TYPE)
-      getStations(ctrl, selectedFile, filetype);
+      controller.getStations(controller, selectedFile, filetype);
     selectedFile = "";
     win.hide();
   }

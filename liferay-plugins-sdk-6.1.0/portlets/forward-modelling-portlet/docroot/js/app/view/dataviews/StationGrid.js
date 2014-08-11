@@ -16,6 +16,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
   ],
 
   initComponent: function() {
+    var controller = CF.app.getController('Map');
     Ext.apply(this, {
       id: 'gridStations',
       border: false,
@@ -73,7 +74,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
           tooltip: 'Show',
           handler: function(grid, rowIndex, colIndex) {
             var rec = grid.getStore().getAt(rowIndex);
-            showStationInfo(rec.data);
+            controller.showStationInfo(rec.data);
           }
         }]
       }],

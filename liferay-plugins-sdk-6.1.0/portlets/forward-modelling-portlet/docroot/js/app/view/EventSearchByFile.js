@@ -47,7 +47,8 @@ var form2 = Ext.create('Ext.form.Panel', {
             url: uploadFileURL,
             waitMsg: 'Uploading your file...',
             success: function(fp, o) {
-              getEvents(ctrl, o.result.path);
+              var controller = CF.app.getController('Map');
+              controller.getEvents(controller, o.result.path);
             },
             failure: function(formPanel, action) {
               var data = Ext.decode(action.response.responseText);

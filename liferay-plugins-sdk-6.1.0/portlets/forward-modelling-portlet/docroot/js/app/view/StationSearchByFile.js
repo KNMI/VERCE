@@ -68,7 +68,8 @@ Ext.define('CF.view.StationSearchByFilePanel', {
             url: uploadFileURL,
             waitMsg: 'Uploading your file...',
             success: function(fp, o) {
-              getStations(ctrl, o.result.path, form.getValues()['filetype']);
+              var controller = CF.app.getController('Map');
+              controller.getStations(controller, o.result.path, form.getValues()['filetype']);
             },
             failure: function(rec, op) {
               Ext.Msg.alert("Error!", "Was not possible to upload the file");

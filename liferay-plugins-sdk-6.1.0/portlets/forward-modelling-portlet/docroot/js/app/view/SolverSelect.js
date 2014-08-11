@@ -83,8 +83,10 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       gl_minLon = meshModel.get('geo_minLon');
       gl_maxLon = meshModel.get('geo_maxLon');
 
-      if (ctrl.mapPanel.map.getLayersByName("Boxes") != "")
-        ctrl.mapPanel.map.removeLayer(ctrl.mapPanel.map.getLayersByName("Boxes")[0]);
+      var controller = CF.app.getController('Map');
+      if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
+        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
+      }
       var layers = [];
       var boxes = new OpenLayers.Layer.Boxes("Boxes");
       var coord = [gl_minLon, gl_minLat, gl_maxLon, gl_maxLat];
@@ -94,12 +96,12 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
       boxes.addMarker(box);
       layers.push(boxes);
-      ctrl.mapPanel.map.addLayers(layers);
+      controller.mapPanel.map.addLayers(layers);
 
       var centLon = gl_minLon + (gl_maxLon - gl_minLon) / 2;
       var centLat = gl_minLat + (gl_maxLat - gl_minLat) / 2;
-      ctrl.mapPanel.map.setCenter([centLon, centLat]);
-      ctrl.mapPanel.map.zoomToExtent(bounds);
+      controller.mapPanel.map.setCenter([centLon, centLat]);
+      controller.mapPanel.map.zoomToExtent(bounds);
 
       Ext.getCmp('mesh_doc_button').setDisabled(false);
     }
@@ -445,10 +447,11 @@ function postRequest(path, paramName, paramValue) {
 
 //Clear map, clear velocityCombo and disable tabs for stations and events
 function clearMap() {
-  ctrl.eventstore.removeAll();
-  ctrl.stationstore.removeAll();
-  hideEventInfo();
-  hideStationInfo();
+  var controller = CF.app.getController('Map');
+  controller.eventstore.removeAll();
+  controller.stationstore.removeAll();
+  controller.hideEventInfo();
+  controller.hideStationInfo();
   velocitycombo.clearValue();
   velocitycombo.store.removeAll();
   Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);

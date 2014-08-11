@@ -27,8 +27,9 @@ Ext.define('CF.view.Map', {
   layers: layerStore,
 
   initComponent: function() {
-    var me = this,
-      items = [];
+    var me = this;
+    var controller = CF.app.getController('Map');
+    var items = [];
 
     var layers = [];
 
@@ -137,17 +138,17 @@ Ext.define('CF.view.Map', {
           if (options.url == null) {
             return;
           }
-          checkStatus(this, resp, options, "station");
+          controller.checkStatus(this, resp, options, "station");
         }
       })
     });
     stationLayer.events.on({
       beforefeatureselected: function(evt) {
-        showStationInfo(evt.feature);
+        controller.showStationInfo(evt.feature);
         // return false;
       },
       beforefeatureunselected: function(evt) {
-        hideStationInfo(evt.feature);
+        controller.hideStationInfo(evt.feature);
         // return false;
       },
     });
@@ -195,7 +196,7 @@ Ext.define('CF.view.Map', {
           if (options.url == null) {
             return;
           }
-          checkStatus(this, resp, options, "event");
+          controller.checkStatus(this, resp, options, "event");
         }
       }),
       strategies: [new OpenLayers.Strategy.Fixed()],
@@ -203,11 +204,11 @@ Ext.define('CF.view.Map', {
     });
     eventLayer.events.on({
       'beforefeatureselected': function(evt) {
-        showEventInfo(evt.feature);
+        controller.showEventInfo(evt.feature);
         // return false;
       },
       'beforefeatureunselected': function(evt) {
-        hideEventInfo(evt.feature);
+        controller.hideEventInfo(evt.feature);
         // return false;
       }
     });
@@ -251,7 +252,7 @@ Ext.define('CF.view.Map', {
             box: true,
             id: 'dragselect',
             onSelect: function(feature) {
-              var stationsGrid = ctrl.getStationsGrid();
+              var stationsGrid = controller.getStationsGrid();
               var records = stationsGrid.store.each(function(record) {
                 if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
                   stationsGrid.getSelectionModel().select(record, true /* keep existing selections */ );
@@ -260,7 +261,7 @@ Ext.define('CF.view.Map', {
               });
             },
             onUnselect: function(feature) {
-              var stationsGrid = ctrl.getStationsGrid();
+              var stationsGrid = controller.getStationsGrid();
               var records = stationsGrid.store.each(function(record) {
                 if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
                   stationsGrid.getSelectionModel().deselect(record);
@@ -287,7 +288,7 @@ Ext.define('CF.view.Map', {
         click: true,
         autoActivate: true,
         onUnselect: function(feature) {
-          var stationsGrid = ctrl.getStationsGrid();
+          var stationsGrid = controller.getStationsGrid();
           var records = stationsGrid.store.each(function(record) {
             if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
               stationsGrid.getSelectionModel().deselect(record);
