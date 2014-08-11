@@ -4,10 +4,6 @@
  */
 
 //Global variables
-var gl_minLat; //bounding box
-var gl_maxLat; //bounding box
-var gl_minLon; //bounding box
-var gl_maxLon; //bounding box
 var gl_stationUrl;
 var gl_eventUrl;
 var gl_stationFormat;
@@ -27,7 +23,8 @@ var PointsListFormat = OpenLayers.Class(OpenLayers.Format.Text, {
     for (var l = 1; l < lines.length; l++) {
       var tokens = lines[l].split(" ");
       if (tokens.length > 3) {
-        if (tokens[2] >= gl_minLon && tokens[2] <= gl_maxLon && tokens[3] >= gl_minLat && tokens[3] <= gl_maxLat) //Check if it is inside the bounding box
+        var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+        if (tokens[2] >= mesh.get('geo_minLon') && tokens[2] <= mesh.get('geo_maxLon') && tokens[3] >= mesh.get('geo_minLat') && tokens[3] <= mesh.get('geo_maxLat')) //Check if it is inside the bounding box
         {
           //alert("station: "+tokens[0]+", network: "+tokens[1]+", elevation: '', longitude: "+tokens[2]+", latitude: "+tokens[3]);
           var attributes = {
@@ -139,7 +136,8 @@ var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
       //alert("id: "+eventId+", description: "+desc+", datetime: "+time+", magnitude: "+mag+", depth: "+depth+
       //	", longitude: "+lon+", latitude: "+lat+", tensor: "+mrr+", "+mtt+", "+mpp+", "+mrt+", "+mtp+". Valid event: "+valid);
 
-      if (valid && lon >= gl_minLon && lon <= gl_maxLon && lat >= gl_minLat && lat <= gl_maxLat) {
+      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      if (valid && lon >= mesh.get('geo_minLon') && lon <= mesh.get('geo_maxLon') && lat >= mesh.get('geo_minLat') && lat <= mesh.get('geo_maxLat')) {
         var attributes = {
           eventId: eventId,
           description: desc,
@@ -182,7 +180,8 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
     for (var i = 0; i < latitudes.length; i++) {
       var latitude = latitudes[i].childNodes[0].nodeValue;
       var longitude = longitudes[i].childNodes[0].nodeValue;
-      if (longitude >= gl_minLon && longitude <= gl_maxLon && latitude >= gl_minLat && latitude <= gl_maxLat) {
+      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      if (longitude >= mesh.get('geo_minLon') && longitude <= mesh.get('geo_maxLon') && latitude >= mesh.get('geo_minLat') && latitude <= mesh.get('geo_maxLat')) {
         var station = stations[i].getAttribute("code");
         stations[i].setAttribute("network", stations[i].parentNode.getAttribute("code"));
         var network = stations[i].getAttribute("network");
@@ -208,14 +207,14 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
 Ext.define('CF.controller.Map', {
   extend: 'Ext.app.Controller',
   refs: [{
-    ref: 'stationsGrid',
-    selector: 'stationsgrid'
+    ref: 'stationGrid',
+    selector: 'stationgrid'
   }, {
     ref: 'eventSearch',
     selector: 'eventsearch'
   }, {
-    ref: 'eventsGrid',
-    selector: 'eventsgrid'
+    ref: 'eventGrid',
+    selector: 'eventgrid'
   }, {
     ref: 'commons',
     selector: 'commons'
@@ -292,7 +291,8 @@ Ext.define('CF.controller.Map', {
     var form = button.up('form').getForm();
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';
-      var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
+      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       this.getEvents(this, baseUrl + form.getValues(true) + bbox);
     }
   },
@@ -300,39 +300,44 @@ Ext.define('CF.controller.Map', {
     var form = button.up('form').getForm();
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&';
-      var bbox = "&maxlat=" + gl_maxLat + "&minlon=" + gl_minLon + "&maxlon=" + gl_maxLon + "&minlat=" + gl_minLat;
+      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       var formValues = form.getValues(true);
       formValues = (formValues === 'net=Any%20network') ? 'net=*' : formValues;
       this.getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
     }
   },
   getStations: function(elem, purl, formatType) {
-    if (formatType === STXML_TYPE) var f = new StationXMLFormat();
-    else if (formatType === STPOINTS_TYPE) var f = new PointsListFormat();
+    if (formatType === STXML_TYPE) var format = new StationXMLFormat();
+    else if (formatType === STPOINTS_TYPE) var format = new PointsListFormat();
     gl_stationFormat = formatType;
 
     gl_stationUrl = purl;
     this.getStore('Station').removeAll();
-    this.getStationsGrid().setLoading(true);
+    this.getStationGrid().setLoading(true);
     this.hideStationInfo();
 
     var stationLayer = this.mapPanel.map.getLayersByName('Stations')[0];
     this.getStore('Station').bind(stationLayer);
 
+    stationLayer.protocol.format = format;
+
     stationLayer.refresh({
       url: purl,
-      format: f,
     });
   },
   getEvents: function(elem, purl) {
     gl_eventUrl = purl;
+    var format = new QuakeMLXMLFormat();
     this.getStore('Event').removeAll();
-    this.getEventsGrid().setLoading(true);
+    this.getEventGrid().setLoading(true);
     this.hideEventInfo();
     // The getForm() method returns the Ext.form.Basic instance:
 
     var eventLayer = this.mapPanel.map.getLayersByName('Events')[0];
     this.getStore('Event').bind(eventLayer);
+
+    eventLayer.protocol.format = format;
 
     eventLayer.refresh({
       url: purl,
@@ -364,8 +369,8 @@ Ext.define('CF.controller.Map', {
         else errorMsg = "The request failed. Error code " + request.status;
         Ext.Msg.alert("Alert!", errorMsg);
       }
-      if (type === "event") this.getEventsGrid().setLoading(false);
-      if (type === "station") this.getStationsGrid().setLoading(false);
+      if (type === "event") this.getEventGrid().setLoading(false);
+      if (type === "station") this.getStationGrid().setLoading(false);
       options.callback.call(options.scope, resp);
     }
   },
@@ -391,7 +396,7 @@ Ext.define('CF.controller.Map', {
       null,
       true
     );
-    var grid = Ext.ComponentQuery.query('eventsgrid')[0];
+    var grid = Ext.getCmp('eventgrid');
     grid.getView().focusRow(CF.app.getController('Map').getStore('Event').getByFeature(evisfeature));
     evisfeature.popup = popup;
     this.mapPanel.map.addPopup(popup);
@@ -417,7 +422,7 @@ Ext.define('CF.controller.Map', {
       null,
       true
     );
-    var grid = Ext.ComponentQuery.query('stationsgrid')[0];
+    var grid = Ext.getCmp('stationgrid');
     grid.getView().focusRow(CF.app.getController('Map').getStore('Station').getByFeature(svisfeature));
     svisfeature.popup = popup;
     this.mapPanel.map.addPopup(popup);

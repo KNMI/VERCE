@@ -132,7 +132,7 @@ Ext.define('CF.view.Map', {
       strategies: [new OpenLayers.Strategy.Fixed()],
       renderers: stationrenderer,
       protocol: new OpenLayers.Protocol.HTTP({
-        format: new StationXMLFormat(),
+        // format: new StationXMLFormat(),
         handleResponse: function(resp, options) {
           // initialization request, don't need to do anything in this case
           if (options.url == null) {
@@ -191,7 +191,7 @@ Ext.define('CF.view.Map', {
     eventLayer = new OpenLayers.Layer.Vector("Events", {
       styleMap: eventstylemap,
       protocol: new OpenLayers.Protocol.HTTP({
-        format: new QuakeMLXMLFormat(),
+        // format: new QuakeMLXMLFormat(),
         handleResponse: function(resp, options) {
           if (options.url == null) {
             return;
@@ -242,19 +242,19 @@ Ext.define('CF.view.Map', {
             box: true,
             id: 'dragselect',
             onSelect: function(feature) {
-              var stationsGrid = controller.getStationsGrid();
-              var records = stationsGrid.store.each(function(record) {
+              var stationGrid = controller.getStationGrid();
+              var records = stationGrid.store.each(function(record) {
                 if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-                  stationsGrid.getSelectionModel().select(record, true /* keep existing selections */ );
+                  stationGrid.getSelectionModel().select(record, true /* keep existing selections */ );
                   return false;
                 }
               });
             },
             onUnselect: function(feature) {
-              var stationsGrid = controller.getStationsGrid();
-              var records = stationsGrid.store.each(function(record) {
+              var stationGrid = controller.getStationGrid();
+              var records = stationGrid.store.each(function(record) {
                 if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-                  stationsGrid.getSelectionModel().deselect(record);
+                  stationGrid.getSelectionModel().deselect(record);
                   return false;
                 }
               });
@@ -278,10 +278,10 @@ Ext.define('CF.view.Map', {
         click: true,
         autoActivate: true,
         onUnselect: function(feature) {
-          var stationsGrid = controller.getStationsGrid();
-          var records = stationsGrid.store.each(function(record) {
+          var stationGrid = controller.getStationGrid();
+          var records = stationGrid.store.each(function(record) {
             if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-              stationsGrid.getSelectionModel().deselect(record);
+              stationGrid.getSelectionModel().deselect(record);
               return false;
             }
           });

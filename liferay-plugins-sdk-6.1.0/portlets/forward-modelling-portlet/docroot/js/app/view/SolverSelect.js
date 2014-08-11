@@ -3,7 +3,9 @@ var meshesstore = Ext.create('CF.store.Mesh', {});
 var velocitystore = Ext.create('CF.store.Velocity', {});
 
 // ComboBox with multiple selection enabled
-var solvercombo = Ext.create('Ext.form.field.ComboBox', {
+Ext.define('CF.view.SolverCombo', {
+  extend: 'Ext.form.field.ComboBox',
+  alias: 'widget.solvercombo',
   fieldLabel: 'Solvers',
   name: 'solvertype',
   id: 'solvertype',
@@ -34,6 +36,7 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
       var record = combo.store.findRecord('abbr', newValue);
 
       clearMap();
+      var meshescombo = Ext.getCmp('meshes');
       meshescombo.clearValue();
       meshescombo.store.removeAll();
 
@@ -49,7 +52,9 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-var meshescombo = Ext.create('Ext.form.field.ComboBox', {
+Ext.define('CF.view.MeshesCombo', {
+  extend: 'Ext.form.field.ComboBox',
+  alias: 'widget.meshescombo',
   fieldLabel: 'Meshes',
   name: 'meshes',
   id: 'meshes',
@@ -68,20 +73,15 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       }
 
       clearMap();
-      var meshModel = combo.store.findRecord('name', gl_mesh);
+      var mesh = combo.store.findRecord('name', gl_mesh);
 
       //Update the solver values
-      updateSolverValues(meshModel.get('values'));
+      updateSolverValues(mesh.get('values'));
 
       //Populate the VelocityModel Combo
+      var velocitycombo = Ext.getCmp('velocity');
       velocitycombo.clearValue();
-      velocitycombo.store.loadData(meshModel.get('velmod'));
-
-      //Render the bounding box in the map and center it
-      gl_minLat = meshModel.get('geo_minLat');
-      gl_maxLat = meshModel.get('geo_maxLat');
-      gl_minLon = meshModel.get('geo_minLon');
-      gl_maxLon = meshModel.get('geo_maxLon');
+      velocitycombo.store.loadData(mesh.get('velmod'));
 
       var controller = CF.app.getController('Map');
       if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
@@ -89,7 +89,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       }
       var layers = [];
       var boxes = new OpenLayers.Layer.Boxes("Boxes");
-      var coord = [gl_minLon, gl_minLat, gl_maxLon, gl_maxLat];
+      var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
       bounds = OpenLayers.Bounds.fromArray(coord);
       box = new OpenLayers.Marker.Box(bounds);
       box.setBorder("black");
@@ -98,8 +98,8 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       layers.push(boxes);
       controller.mapPanel.map.addLayers(layers);
 
-      var centLon = gl_minLon + (gl_maxLon - gl_minLon) / 2;
-      var centLat = gl_minLat + (gl_maxLat - gl_minLat) / 2;
+      var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
+      var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
       controller.mapPanel.map.setCenter([centLon, centLat]);
       controller.mapPanel.map.zoomToExtent(bounds);
 
@@ -108,7 +108,9 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
+Ext.define('CF.view.VelocityCombo', {
+  extend: 'Ext.form.field.ComboBox',
+  alias: 'widget.velocitycombo',
   fieldLabel: 'Velocity Model',
   name: 'velocity',
   id: 'velocity',
@@ -132,9 +134,9 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-var formSolverSelect = Ext.create('Ext.form.Panel', {
+Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',
-  alias: 'widget.solverselect',
+  alias: 'widget.solverselectform',
   requires: ['CF.view.LinkButton'],
   width: 500,
   frame: false,
@@ -150,19 +152,19 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     xtype: 'container',
     width: '100%',
     margin: '5 0',
-    items: [
-      solvercombo, {
-        xtype: 'button',
-        id: 'solver_doc_button',
-        icon: localResourcesPath + '/img/download-icon.png',
-        margin: '0 0 0 5',
-        tabIndex: 99,
-        disabled: true,
-        handler: function() {
-          window.open(solvercombo.store.findRecord('abbr', solvercombo.getValue()).get('doc'), '_self');
-        }
+    items: [{
+      xtype: 'solvercombo'
+    }, {
+      xtype: 'button',
+      id: 'solver_doc_button',
+      icon: localResourcesPath + '/img/download-icon.png',
+      margin: '0 0 0 5',
+      tabIndex: 99,
+      disabled: true,
+      handler: function() {
+        window.open(solvercombo.store.findRecord('abbr', solvercombo.getValue()).get('doc'), '_self');
       }
-    ],
+    }],
     layout: {
       type: 'hbox'
     },
@@ -170,19 +172,19 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     xtype: 'container',
     width: '100%',
     margin: '5 0',
-    items: [
-      meshescombo, {
-        xtype: 'button',
-        id: 'mesh_doc_button',
-        icon: localResourcesPath + '/img/download-icon.png',
-        margin: '0 0 0 5',
-        tabIndex: 99,
-        disabled: true,
-        handler: function() {
-          window.open(downloadMeshDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue(), '_self');
-        }
+    items: [{
+      xtype: 'meshescombo'
+    }, {
+      xtype: 'button',
+      id: 'mesh_doc_button',
+      icon: localResourcesPath + '/img/download-icon.png',
+      margin: '0 0 0 5',
+      tabIndex: 99,
+      disabled: true,
+      handler: function() {
+        window.open(downloadMeshDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue(), '_self');
       }
-    ],
+    }],
     layout: {
       type: 'hbox'
     },
@@ -190,19 +192,19 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     xtype: 'container',
     width: '100%',
     margin: '5 0',
-    items: [
-      velocitycombo, {
-        xtype: 'button',
-        id: 'velocitymodel_doc_button',
-        icon: localResourcesPath + '/img/download-icon.png',
-        margin: '0 0 0 5',
-        tabIndex: 99,
-        disabled: true,
-        handler: function() {
-          window.open(downloadVelocityModelDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue() + '&velocityModelName=' + velocitycombo.getValue(), '_self');
-        }
+    items: [{
+      xtype: 'velocitycombo'
+    }, {
+      xtype: 'button',
+      id: 'velocitymodel_doc_button',
+      icon: localResourcesPath + '/img/download-icon.png',
+      margin: '0 0 0 5',
+      tabIndex: 99,
+      disabled: true,
+      handler: function() {
+        window.open(downloadVelocityModelDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue() + '&velocityModelName=' + velocitycombo.getValue(), '_self');
       }
-    ],
+    }],
     layout: {
       type: 'hbox'
     },
@@ -371,8 +373,11 @@ var meshSolverPopup = function() {
 
 Ext.define('CF.view.SolverSelect', {
   extend: 'Ext.form.Panel',
+  alias: 'widget.solverselect',
   bodyPadding: '0 0 10 0',
-  items: [formSolverSelect]
+  items: [{
+    xtype: 'solverselectform'
+  }]
 });
 
 function updateSolverValues(newValues) {
@@ -413,6 +418,7 @@ function selectSolver(selectedSolver) {
   });
   solverConfStore.load();
 
+  var meshescombo = Ext.getCmp('meshes');
   meshescombo.clearValue();
   meshescombo.store.removeAll();
   meshesstore.setProxy({
@@ -452,6 +458,7 @@ function clearMap() {
   controller.getStore('Station').removeAll();
   controller.hideEventInfo();
   controller.hideStationInfo();
+  var velocitycombo = Ext.getCmp('velocity');
   velocitycombo.clearValue();
   velocitycombo.store.removeAll();
   Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);

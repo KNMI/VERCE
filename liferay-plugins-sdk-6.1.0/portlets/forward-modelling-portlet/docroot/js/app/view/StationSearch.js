@@ -33,7 +33,9 @@ Ext.Ajax.request({
 var networksStore = Ext.create('CF.store.Network', {});
 
 // ComboBox with multiple selection enabled
-var multiCombo = Ext.create('Ext.form.field.ComboBox', {
+Ext.define('CF.view.MultiCombo', {
+  extend: 'Ext.form.field.ComboBox',
+  alias: 'widget.multicombo',
   fieldLabel: 'Networks',
   name: 'net',
   displayField: 'abbr',
@@ -60,7 +62,9 @@ Ext.define('CF.view.StationSearchPanel', {
     type: 'xml',
     model: 'CF.model.Station'
   },
-  items: [multiCombo],
+  items: [{
+    xtype: 'multicombo'
+  }],
   buttons: [{
     itemId: 'station_but',
     text: 'Search'
@@ -72,6 +76,7 @@ Ext.define('CF.view.StationSearchPanel', {
 
 Ext.define('CF.view.StationSearch', {
   extend: 'Ext.form.Panel',
+  alias: 'widget.stationsearch',
   bodyPadding: '0 0 10 0',
   items: [{
     xtype: 'StationSearchPanel'

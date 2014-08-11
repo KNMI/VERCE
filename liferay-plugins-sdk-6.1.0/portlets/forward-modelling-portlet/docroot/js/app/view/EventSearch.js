@@ -109,11 +109,9 @@ Ext.define('CF.view.EventSearchForm', {
   buttons: [{
     itemId: 'event_but', //action defined in controller/Map.js
     text: 'Search'
-
   }, {
     itemId: 'event_cl_but',
     text: 'Clear'
-
   }]
 });
 

@@ -2,7 +2,9 @@ Ext.require([
   'Ext.form.field.File'
 ]);
 
-var form2 = Ext.create('Ext.form.Panel', {
+Ext.define('CF.view.EventSearchByFileForm', {
+  extend: 'Ext.form.Panel',
+  alias: 'widget.eventsearchbyfileform',
   width: 500,
   frame: false,
   border: false,
@@ -47,8 +49,7 @@ var form2 = Ext.create('Ext.form.Panel', {
             url: uploadFileURL,
             waitMsg: 'Uploading your file...',
             success: function(fp, o) {
-              var controller = CF.app.getController('Map');
-              controller.getEvents(controller, o.result.path);
+              CF.app.getController('Map').getEvents(CF.app.getController('Map'), o.result.path);
             },
             failure: function(formPanel, action) {
               var data = Ext.decode(action.response.responseText);
@@ -63,25 +64,25 @@ var form2 = Ext.create('Ext.form.Panel', {
   }]
 });
 
-var openMenuEvents = [];
-//openMenuEvents.push("->");
-openMenuEvents.push(Ext.create('Ext.button.Button', {
-  text: 'Open',
-  handler: function() {
-    fileSelection(EVENT_TYPE); //declared in Viewport.js
-  }
-}));
-
 Ext.define('CF.view.EventSearchByFile', {
   extend: 'Ext.form.Panel',
+  alias: 'widget.eventsearchbyfile',
   dockedItems: [{
     xtype: 'toolbar',
     dock: 'top',
-    items: openMenuEvents,
+    items: [{
+      xtype: 'button',
+      text: 'Open',
+      handler: function() {
+        fileSelection(EVENT_TYPE); //declared in Viewport.js
+      }
+    }],
     style: {
       border: 0,
       padding: 0
     }
   }],
-  items: [form2]
+  items: [{
+    xtype: 'eventsearchbyfileform'
+  }]
 });

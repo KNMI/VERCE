@@ -12,92 +12,88 @@ function renderMomentTensor(value, p, record) {
 
 Ext.define('CF.view.dataviews.EventGrid', {
   extend: 'Ext.grid.Panel',
-  alias: 'widget.eventsgrid',
-  id: 'gridEvent',
+  alias: 'widget.eventgrid',
+  id: 'eventgrid',
   multiSelect: true,
   requires: [
-    'CF.store.Event',
     'GeoExt.selection.FeatureModel',
     'GeoExt.grid.column.Symbolizer',
     'Ext.grid.plugin.CellEditing',
     'Ext.form.field.Number',
     'Ext.grid.plugin.BufferedRenderer'
   ],
+  border: false,
+  selType: 'checkboxmodel',
+  selModel: {
+    checkOnly: true,
+    injectCheckbox: 0,
+    listeners: {
+      select: function(rowmodel, record, index) {
+        CF.app.getController('Map').mapPanel.map.getControl('clickselect').select(record.data);
+      },
+      deselect: function(rowmodel, record, index) {
+        CF.app.getController('Map').mapPanel.map.getControl('clickselect').unselect(record.data);
+      },
+      selectionchange: function(t, s) {
+        if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
+        else Ext.getCmp('checkboxNSubmit').setDisabled(true);
+        Ext.getCmp('eventSelColumn').setText(s.length + "/" + CF.app.getController('Map').getStore('Event').getTotalCount());
+      }
+    }
+  },
+  loadMask: true,
+  columns: [{
+    header: '0/0', //it will be updated on selectionchange and when the grid reloads (in Map.js)
+    id: 'eventSelColumn',
+    dataIndex: 'symbolizer',
+    menuDisabled: true,
+    sortable: false,
+    xtype: 'gx_symbolizercolumn',
+    width: 40
+  }, {
+    header: 'Desc',
+    dataIndex: 'description',
+    flex: 3
+  }, {
+    header: 'Date',
+    dataIndex: 'date',
+    flex: 3
+  }, {
+    header: 'Depth',
+    dataIndex: 'depth',
+    flex: 3
+  }, {
+    header: 'Latitude',
+    dataIndex: 'latitude',
+    flex: 3
+  }, {
+    header: 'Longitude',
+    dataIndex: 'longitude',
+    flex: 3
+  }, {
+    header: 'Magnitude',
+    dataIndex: 'magnitude',
+    flex: 3
+  }, {
+    header: 'MT',
+    renderer: renderMomentTensor,
+    flex: 3
+  }, {
+    xtype: 'actioncolumn',
+    width: 40,
+    tdCls: 'show',
+    items: [{
+      icon: localResourcesPath + '/img/eye-3-256.png', // Use a URL in the icon config
+      tooltip: 'Show',
+      handler: function(grid, rowIndex, colIndex) {
+        var rec = grid.getStore().getAt(rowIndex);
+        CF.app.getController('Map').showEventInfo(rec.data);
+      }
+    }]
+  }],
+  flex: 1,
   initComponent: function() {
-    eventgrid = this;
-    var controller = CF.app.getController('Map');
-    Ext.apply(this, {
-      id: 'gridEvents',
-      border: false,
-      store: controller.getStore('Event'),
-      selModel: Ext.create('Ext.selection.CheckboxModel', {
-        checkOnly: true,
-        listeners: {
-          select: function(rowmodel, record, index) {
-            controller.mapPanel.map.getControl('clickselect').select(record.data);
-          },
-          deselect: function(rowmodel, record, index) {
-            controller.mapPanel.map.getControl('clickselect').unselect(record.data);
-          },
-          selectionchange: function(t, s) {
-            if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
-            else Ext.getCmp('checkboxNSubmit').setDisabled(true);
-            Ext.getCmp('eventSelColumn').setText(s.length + "/" + controller.getStore('Event').getTotalCount());
-          }
-        }
-      }),
-      loadMask: true,
-      columns: [{
-        header: '0/0', //it will be updated on selectionchange and when the grid reloads (in Map.js)
-        id: 'eventSelColumn',
-        dataIndex: 'symbolizer',
-        menuDisabled: true,
-        sortable: false,
-        xtype: 'gx_symbolizercolumn',
-        width: 40
-      }, {
-        header: 'Desc',
-        dataIndex: 'description',
-        flex: 3
-      }, {
-        header: 'Date',
-        dataIndex: 'date',
-        flex: 3
-      }, {
-        header: 'Depth',
-        dataIndex: 'depth',
-        flex: 3
-      }, {
-        header: 'Latitude',
-        dataIndex: 'latitude',
-        flex: 3
-      }, {
-        header: 'Longitude',
-        dataIndex: 'longitude',
-        flex: 3
-      }, {
-        header: 'Magnitude',
-        dataIndex: 'magnitude',
-        flex: 3
-      }, {
-        header: 'MT',
-        renderer: renderMomentTensor,
-        flex: 3
-      }, {
-        xtype: 'actioncolumn',
-        width: 40,
-        tdCls: 'show',
-        items: [{
-          icon: localResourcesPath + '/img/eye-3-256.png', // Use a URL in the icon config
-          tooltip: 'Show',
-          handler: function(grid, rowIndex, colIndex) {
-            var rec = grid.getStore().getAt(rowIndex);
-            controller.showEventInfo(rec.data);
-          }
-        }]
-      }],
-      flex: 1
-    });
+    this.store = CF.app.getController('Map').getStore('Event');
     this.callParent(arguments);
   }
 });

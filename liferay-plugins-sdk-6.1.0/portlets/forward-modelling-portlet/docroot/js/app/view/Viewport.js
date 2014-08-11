@@ -3,73 +3,6 @@
  * @extends Ext.Viewport
  */
 
-var eventsTabPanel = Ext.create('Ext.TabPanel', {
-  region: 'center',
-  border: false,
-  layout: {
-    type: 'vbox',
-    align: 'stretch'
-  },
-  requires: ['CF.view.EventSearchByFile', 'CF.view.EventSearch'],
-  items: [{
-    xtype: 'panel',
-    title: 'FDSN',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [
-      Ext.create('CF.view.EventSearch')
-    ]
-  }, {
-    xtype: 'panel',
-    title: 'File',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [
-      Ext.create('CF.view.EventSearchByFile')
-    ]
-  }]
-});
-
-Ext.define('CF.view.StationsTabPanel', {
-  extend: 'Ext.TabPanel',
-  alias: 'widget.StationsTabPanel',
-  requires: ['CF.view.StationSearchByFile', 'CF.view.StationSearch'],
-  border: false,
-  layout: {
-    type: 'vbox',
-    align: 'stretch'
-  },
-  items: [{
-    xtype: 'panel',
-    title: 'FDSN',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [
-      Ext.create('CF.view.StationSearch')
-    ]
-  }, {
-    xtype: 'panel',
-    title: 'File',
-    border: false,
-    layout: {
-      type: 'vbox',
-      align: 'stretch'
-    },
-    items: [{
-      xtype: 'StationSearchByFile'
-    }]
-  }]
-});
-
 Ext.define('CF.view.Viewport', {
   extend: 'Ext.Viewport',
   layout: 'fit',
@@ -77,170 +10,173 @@ Ext.define('CF.view.Viewport', {
     'Ext.layout.container.Border',
     'Ext.resizer.Splitter',
     'CF.view.Commons',
-    'CF.view.ResultsPane',
+    'CF.view.Map',
+    'CF.view.SolverSelect',
+    'CF.view.dataviews.SolverConf',
+    'CF.view.EventsTabPanel',
+    'CF.view.dataviews.EventGrid',
+    'CF.view.StationsTabPanel',
+    'CF.view.dataviews.StationGrid',
+    'CF.view.Submit',
     'CF.view.Control',
-    'CF.view.Map'
+    'CF.view.ResultsPane',
   ],
 
-  initComponent: function() {
-    var me = this;
-
-    Ext.apply(me, {
-      id: 'viewport',
+  id: 'viewport',
+  items: [{
+    xtype: 'tabpanel',
+    border: 'false',
+    layout: 'border',
+    defaults: {
+      split: true
+    },
+    items: [{
+      title: 'Setup',
+      xtype: 'panel',
+      border: 'false',
+      layout: 'border',
+      defaults: {
+        split: true
+      },
       items: [{
-        xtype: 'tabpanel',
-        border: 'false',
-        layout: 'border',
-        defaults: {
-          split: true
-        },
-        items: [{
-          title: 'Setup',
-          xtype: 'panel',
-          border: 'false',
-          layout: 'border',
-          defaults: {
-            split: true
-          },
-          items: [{
-              xtype: 'cf_mappanel'
-            }, {
-              xtype: 'tabpanel', // Search & Upload
-              region: 'center',
-              border: false,
-              id: 'tabpanel_principal',
-              name: 'tabpanel_principal',
-              layout: {
-                type: 'vbox',
-                align: 'stretch'
-              },
-              items: [{
-                xtype: 'panel',
-                title: 'Solver',
-                border: false,
-                layout: {
-                  type: 'vbox',
-                  align: 'stretch'
-                },
-                items: [
-                  Ext.create('CF.view.SolverSelect'),
-                  Ext.create('CF.view.dataviews.SolverConf')
-                ]
-              }, {
-                xtype: 'panel',
-                title: 'Earthquakes',
-                id: 'earthquakes',
-                name: 'earthquakes',
-                border: false,
-                disabled: true,
-                layout: {
-                  type: 'vbox',
-                  align: 'stretch'
-                },
-                items: [
-                  eventsTabPanel,
-                  Ext.create('CF.view.dataviews.EventGrid')
-                ]
-              }, {
-                xtype: 'panel',
-                title: 'Stations',
-                id: 'stations',
-                name: 'stations',
-                disabled: true,
-                border: false,
-                layout: {
-                  type: 'vbox',
-                  align: 'stretch'
-                },
-                items: [{
-                    xtype: 'StationsTabPanel'
-                  },
-                  Ext.create('CF.view.dataviews.StationGrid')
-                ]
-              }, {
-                xtype: 'panel',
-                title: 'Submit',
-                id: 'submit',
-                disabled: true,
-                border: false,
-                layout: {
-                  type: 'vbox',
-                  align: 'stretch'
-                },
-                items: [
-                  Ext.create('CF.view.Submit')
-                ]
-              }, {
-                xtype: 'panel',
-                title: 'Control',
-                border: false,
-                layout: 'fit',
-                items: [Ext.create('CF.view.Control')]
-              }],
-              listeners: {
-                'tabchange': function(tabPanel, tab) {
-                  if (tab.id == "submit") updateSubmitOverview();
-                }
-              }
-            }
-
-          ]
+          xtype: 'cf_mappanel'
         }, {
-          xtype: 'panel', // Earthquake & Station & Common
-          title: 'Results',
+          xtype: 'tabpanel', // Search & Upload
           region: 'center',
           border: false,
-          autoScroll: true,
+          id: 'tabpanel_principal',
+          name: 'tabpanel_principal',
           layout: {
-            type: 'border',
-            padding: 5
+            type: 'vbox',
+            align: 'stretch'
           },
-          defaults: {
-            split: true
-          },
-          items: [Ext.create('CF.view.ActivityMonitor'), {
-              region: 'center',
-              layout: 'border',
-              border: false,
-              autoScroll: true,
-              items: [
-
-                Ext.create('CF.view.provenanceGraphsViewer')
-
-                ,
-                Ext.create('CF.view.ArtifactView')
-              ]
-            }
-
-
-          ]
-        }, {
-          xtype: 'panel',
-          title: 'iRods',
-          region: 'center',
-          border: false,
-          autoScroll: true,
-          layout: 'border',
-          defaults: {},
           items: [{
-            xtype: "component",
-            autoEl: {
-              tag: "iframe",
-              seamless: "seamless",
-              // TODO real url
-              src: ((navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) ? "/j2ep-1.0/dir-irods/" : "http://dir-irods.epcc.ed.ac.uk/") + "irodsweb/browse.php?ruri=" + (userSN ? userSN + "@" : "") + "dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/" + (userSN ? userSN + "/verce" : "")
+            xtype: 'panel',
+            title: 'Solver',
+            border: false,
+            layout: {
+              type: 'vbox',
+              align: 'stretch'
             },
-            region: 'center',
-            border: false
-          }]
+            items: [{
+              xtype: 'solverselect'
+            }, {
+              xtype: 'solverconf'
+            }]
+          }, {
+            xtype: 'panel',
+            title: 'Earthquakes',
+            id: 'earthquakes',
+            name: 'earthquakes',
+            border: false,
+            disabled: true,
+            layout: {
+              type: 'vbox',
+              align: 'stretch'
+            },
+            items: [{
+              xtype: 'eventstabpanel'
+            }, {
+              xtype: 'eventgrid'
+            }]
+          }, {
+            xtype: 'panel',
+            title: 'Stations',
+            id: 'stations',
+            name: 'stations',
+            disabled: true,
+            border: false,
+            layout: {
+              type: 'vbox',
+              align: 'stretch'
+            },
+            items: [{
+              xtype: 'stationstabpanel'
+            }, {
+              xtype: 'stationgrid'
+            }]
+          }, {
+            xtype: 'panel',
+            title: 'Submit',
+            id: 'submit',
+            disabled: true,
+            border: false,
+            layout: {
+              type: 'vbox',
+              align: 'stretch'
+            },
+            items: [{
+              xtype: 'submit'
+            }]
+          }, {
+            xtype: 'panel',
+            title: 'Control',
+            border: false,
+            layout: 'fit',
+            items: [{
+              xtype: 'control'
+            }]
+          }],
+          listeners: {
+            'tabchange': function(tabPanel, tab) {
+              if (tab.id == "submit") updateSubmitOverview();
+            }
+          }
+        }
+
+      ]
+    }, {
+      xtype: 'panel', // Earthquake & Station & Common
+      title: 'Results',
+      region: 'center',
+      border: false,
+      autoScroll: true,
+      layout: {
+        type: 'border',
+        padding: 5
+      },
+      defaults: {
+        split: true
+      },
+      items: [{
+        xtype: 'activitymonitor',
+        region: 'west',
+        border: false,
+        autoScroll: true,
+      }, {
+        xtype: 'panel',
+        layout: 'border',
+        region: 'center',
+        border: false,
+        autoScroll: true,
+        items: [{
+          xtype: 'provenancegraphsviewer'
+        }, {
+          xtype: 'artifactview'
         }]
-
       }]
+    }, {
+      xtype: 'panel',
+      title: 'iRods',
+      region: 'center',
+      border: false,
+      autoScroll: true,
+      layout: 'border',
+      defaults: {},
+      items: [{
+        xtype: "component",
+        autoEl: {
+          tag: "iframe",
+          seamless: "seamless",
+          // TODO real url
+          src: ((navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) ? "/j2ep-1.0/dir-irods/" : "http://dir-irods.epcc.ed.ac.uk/") + "irodsweb/browse.php?ruri=" + (userSN ? userSN + "@" : "") + "dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/" + (userSN ? userSN + "/verce" : "")
+        },
+        region: 'center',
+        border: false
+      }]
+    }]
 
-    });
-
-    me.callParent(arguments);
-  }
+  }],
 });
 
 selectedFile = "";
@@ -259,7 +195,7 @@ function updateSubmitOverview() {
   linkToUrl = "<a href='" + sStationUrl + "' target='_blank'>" + sStationUrl + "</a>";
   $("div#submit_overview div#surl").html(linkToUrl);
 
-  var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
+  var selectedStations = Ext.getCmp('stationgrid').getSelectionModel().selected;
   var sStations = "";
   selectedStations.each(function(item, ind, l) {
     if (ind > 0) sStations += ', ';
@@ -267,7 +203,7 @@ function updateSubmitOverview() {
   });
   $("div#submit_overview div#ssel").html(sStations);
 
-  var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
+  var selectedEvents = Ext.getCmp('eventgrid').getSelectionModel().selected;
   var sEvents = "";
   selectedEvents.each(function(item, ind, l) {
     if (ind > 0) sEvents += ', ';

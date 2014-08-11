@@ -2,14 +2,16 @@ var runId = new Array();
 
 var reposWorkflowsStore = Ext.create('CF.store.ExportedWorkflow', {});
 
-var wfcombo = Ext.create('Ext.form.field.ComboBox', {
+Ext.define('CF.view.WorkflowCombo', {
+  extend: 'Ext.form.field.ComboBox',
+  alias: 'widget.workflowcombo',
   fieldLabel: 'Workflow',
   id: 'wfSelection',
   name: 'wfSelection',
   queryMode: 'local',
   width: 350,
   listWidth: 400,
-  store: reposWorkflowsStore, //defined in init.jsp
+  store: reposWorkflowsStore,
   displayField: 'workflowName',
   valueField: 'workflowId',
   allowBlank: false,
@@ -20,52 +22,55 @@ var wfcombo = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-var formSubmit = Ext.create('Ext.form.Panel', {
+Ext.define('CF.view.SubmitFormPanel', {
+  extend: 'Ext.form.Panel',
+  alias: 'widget.submitformpanel',
   height: '100%',
   frame: false,
   border: false,
   bodyPadding: '10 10 0 10',
-  items: [
-    wfcombo, {
-      xtype: 'textfield',
-      id: 'submitName',
-      name: 'submitName',
-      width: 350,
-      fieldLabel: 'Name',
-      allowBlank: false,
-      listeners: {
-        change: function(f, e) {
-          $("div#submit_overview div#submitname").html(e);
-        }
+  items: [{
+    xtype: 'workflowcombo'
+  }, {
+    xtype: 'textfield',
+    id: 'submitName',
+    name: 'submitName',
+    width: 350,
+    fieldLabel: 'Name',
+    allowBlank: false,
+    listeners: {
+      change: function(f, e) {
+        $("div#submit_overview div#submitname").html(e);
       }
-    }, {
-      xtype: 'textfield',
-      id: 'submitMessage',
-      name: 'submitMessage',
-      width: 350,
-      fieldLabel: 'Description',
-      listeners: {
-        change: function(f, e) {
-          $("div#submit_overview div#submitdesc").html(e);
-        }
-      }
-    }, {
-      xtype: 'fieldcontainer',
-      defaultType: 'checkboxfield',
-      items: [{
-        boxLabel: 'Process the events in parallel',
-        name: 'nsubmit',
-        disabled: true,
-        id: 'checkboxNSubmit'
-      }]
     }
-  ],
+  }, {
+    xtype: 'textfield',
+    id: 'submitMessage',
+    name: 'submitMessage',
+    width: 350,
+    fieldLabel: 'Description',
+    listeners: {
+      change: function(f, e) {
+        $("div#submit_overview div#submitdesc").html(e);
+      }
+    }
+  }, {
+    xtype: 'fieldcontainer',
+    defaultType: 'checkboxfield',
+    items: [{
+      boxLabel: 'Process the events in parallel',
+      name: 'nsubmit',
+      disabled: true,
+      id: 'checkboxNSubmit'
+    }]
+  }],
   buttons: [{
     text: 'Submit',
     id: 'submitbutton',
     handler: function() {
       var submitName = Ext.getCmp('submitName').getValue().split(" ").join("_"); //replace ' ' by '_'
       var submitMessage = Ext.getCmp('submitMessage').getValue();
+      var wfcombo = Ext.getCmp('wfSelection');
       var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
       var checkboxNSubmit = Ext.getCmp('checkboxNSubmit').getValue() && !Ext.getCmp('checkboxNSubmit').isDisabled();
 
@@ -124,7 +129,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
           success: function(response) {
             var successMsg = "The information has been submitted";
             if (checkboxNSubmit)
-              successMsg = Ext.getCmp('gridEvents').getSelectionModel().selected.length + " processes have been submitted";
+              successMsg = Ext.getCmp('eventgrid').getSelectionModel().selected.length + " processes have been submitted";
             Ext.Msg.alert("Success", successMsg);
             Ext.getCmp('submitbutton').enable();
             Ext.getCmp('viewport').setLoading(false);
@@ -150,9 +155,12 @@ var formSubmit = Ext.create('Ext.form.Panel', {
 
 Ext.define('CF.view.SubmitForm', {
   extend: 'Ext.form.Panel',
+  alias: 'widget.submitform',
   bodyPadding: '0 0 10 0',
   height: '100%',
-  items: [formSubmit]
+  items: [{
+    xtype: 'submitformpanel'
+  }]
 });
 
 //TODO! Nicer style
@@ -171,6 +179,7 @@ var submitInformation = "<div id='submit_overview'>" +
 
 Ext.define('CF.view.Submit', {
   extend: 'Ext.form.Panel',
+  alias: 'widget.submit',
   border: false,
   items: [
     Ext.create('CF.view.SubmitForm'), {
@@ -191,8 +200,8 @@ Ext.define('CF.view.Submit', {
  * and two lists of the selected stations and events
  */
 function createJsonString(submitName, multipleSubmits) {
-  var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
-  var selectedEvents = Ext.getCmp('gridEvents').getSelectionModel().selected;
+  var selectedStations = Ext.getCmp('stationgrid').getSelectionModel().selected;
+  var selectedEvents = Ext.getCmp('eventgrid').getSelectionModel().selected;
 
   if (selectedStations.length < 1) {
     Ext.Msg.alert("Alert!", "You must select at least one station");
