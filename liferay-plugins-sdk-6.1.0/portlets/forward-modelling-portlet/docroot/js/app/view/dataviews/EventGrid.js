@@ -32,6 +32,12 @@ Ext.define('CF.view.dataviews.EventGrid', {
       selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true,
         listeners: {
+          select: function(rowmodel, record, index) {
+            map.getControl('clickselect').select(record.data);
+          },
+          deselect: function(rowmodel, record, index) {
+            map.getControl('clickselect').unselect(record.data);
+          },
           selectionchange: function(t, s) {
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
             else Ext.getCmp('checkboxNSubmit').setDisabled(true);
@@ -85,7 +91,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
           tooltip: 'Show',
           handler: function(grid, rowIndex, colIndex) {
             var rec = grid.getStore().getAt(rowIndex);
-            showEventInfo(rec.raw);
+            showEventInfo(rec.data);
           }
         }]
       }],

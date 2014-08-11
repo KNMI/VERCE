@@ -24,11 +24,16 @@ Ext.define('CF.view.dataviews.StationGrid', {
         checkOnly: true,
         listeners: {
           select: function(rowmodel, record, index) {
-            map.getControl('dragselect').select(record.raw);
+            map.getControl('dragselect').select(record.data);
           },
           deselect: function(rowmodel, record, index) {
-            map.getControl('dragselect').unselect(record.raw);
+            map.getControl('dragselect').unselect(record.data);
           },
+          selectionchange: function(t, s) {
+            if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
+            else Ext.getCmp('checkboxNSubmit').setDisabled(true);
+            Ext.getCmp('stationSelColumn').setText(s.length + "/" + stationStore.getTotalCount());
+          }
         }
       }),
       columns: [{
@@ -68,7 +73,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
           tooltip: 'Show',
           handler: function(grid, rowIndex, colIndex) {
             var rec = grid.getStore().getAt(rowIndex);
-            showStationInfo(rec.raw);
+            showStationInfo(rec.data);
           }
         }]
       }],

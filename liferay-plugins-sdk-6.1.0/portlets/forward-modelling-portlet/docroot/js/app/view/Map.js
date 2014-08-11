@@ -250,7 +250,6 @@ Ext.define('CF.view.Map', {
             multiple: true,
             box: true,
             id: 'dragselect',
-            selectStyle: 'gridSelect',
             onSelect: function(feature) {
               var stationsGrid = ctrl.getStationsGrid();
               var records = stationsGrid.store.each(function(record) {
@@ -284,8 +283,18 @@ Ext.define('CF.view.Map', {
         'ascending': false
       }),
       new OpenLayers.Control.SelectFeature([stationLayer, eventLayer], {
+        id: 'clickselect',
         click: true,
-        autoActivate: true
+        autoActivate: true,
+        onUnselect: function(feature) {
+          var stationsGrid = ctrl.getStationsGrid();
+          var records = stationsGrid.store.each(function(record) {
+            if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
+              stationsGrid.getSelectionModel().deselect(record);
+              return false;
+            }
+          });
+        },
       })
     ]);
 
