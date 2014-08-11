@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -8,33 +8,38 @@
 
 /*
  * @include OpenLayers/Format/CSWGetRecords.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.data.reader.CswRecords
- * Data reader class to create an array of records from a CSW
- * GetRecords response. The raw response from the OpenLayers parser
- * is available through the jsonData property.
+ * Data reader class to create an array of records from a CSW GetRecords
+ * response. The raw response from the OpenLayers parser is available through
+ * the jsonData property.
+ *
  * Example:
-<pre><code>
-var store = new Ext.data.Store({
-    proxy: new GeoExt.data.ProtocolProxy({
-        protocol: new OpenLayers.Protocol.CSW({
-            url: "http://demo.geonode.org/geonetwork/srv/en/csw"
-        })
-    }),
-    reader: new GeoExt.data.reader.CswRecords()
-});
-</code></pre>
+ *
+ *     var store = Ext.create('Ext.data.Store', {
+ *         proxy: Ext.create('GeoExt.data.proxy.Protocol', {
+ *             protocol: new OpenLayers.Protocol.CSW({
+ *                 url: "http://demo.geonode.org/geonetwork/srv/en/csw"
+ *             })
+ *         }),
+ *         reader: Ext.create('GeoExt.data.reader.CswRecords')
+ *     });
+ *
+ * @class GeoExt.data.reader.CswRecords
  */
 Ext.define('GeoExt.data.reader.CswRecords', {
     alternateClassName: ['GeoExt.data.CSWRecordsReader'],
     extend: 'Ext.data.reader.Json',
     alias: 'reader.gx_cswrecords',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
      * Creates new Reader.
-     * @param {Object} config (optional) Config object.
+     *
+     * @param {Object} [config] Config object.
      */
     constructor: function(config) {
         if (!this.model) {
@@ -46,14 +51,14 @@ Ext.define('GeoExt.data.reader.CswRecords', {
         }
     },
 
-    /*
-     * @private
+    /**
      * @param {XMLHttpRequest/OpenLayers.Protocol.Response} data If a
-     * ProtocolProxy is configured with OpenLayers.Protocol.CSW data will be
-     * {OpenLayers.Protocol.Response}. Otherwise data will be the
-     * {XMLHttpRequest} object.
-     * @return  {Object} A data block which is used by an
-     * {Ext.data.Store} as a cache of {Ext.data.Model} objects.
+     *     ProtocolProxy is configured with OpenLayers.Protocol.CSW data will be
+     *     OpenLayers.Protocol.Response. Otherwise data will be the
+     *     XMLHttpRequest object.
+     * @return  {Object} A data block which is used by an Ext.data.Store as a
+     *     cache of Ext.data.Model objects.
+     * @private
      */
     read: function(data) {
         var o = data.data;
@@ -68,14 +73,15 @@ Ext.define('GeoExt.data.reader.CswRecords', {
 
     /**
      * Create a data block containing Ext.data.Records from an XML document.
-     * @private
+     *
      * @param {DOMElement/String/Object} data A document element or XHR
-     * response string.  As an alternative to fetching capabilities data
-     * from a remote source, an object representing the capabilities can
-     * be provided given that the structure mirrors that returned from the
-     * capabilities parser.
-     * @return  {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     response string.  As an alternative to fetching capabilities data
+     *     from a remote source, an object representing the capabilities can
+     *     be provided given that the structure mirrors that returned from the
+     *     capabilities parser.
+     * @return  {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
+     * @private
      */
     readRecords: function(data) {
         if(typeof data === "string" || data.nodeType) {

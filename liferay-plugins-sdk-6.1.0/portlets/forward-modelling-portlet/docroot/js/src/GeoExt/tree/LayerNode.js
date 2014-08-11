@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -7,25 +7,37 @@
  */
 
 /**
+ * @requires GeoExt/Version.js
+ */
+
+/**
  * The LayerNode plugin. This is used to create a node that is connected to
  * a layer, so the checkbox and the layer's visibility are in sync. A basic
  * layer node would be configured like this:
- *     {plugins: ['gx_layernode'], layer: myLayer}
+ *
+ *     {
+ *         plugins: ['gx_layernode'],
+ *         layer: myLayer
+ *     }
  *
  * See GeoExt.data.LayerTreeModel for more details on GeoExt extensions to the
  * node configuration.
+ *
+ * @class GeoExt.tree.LayerNode
  */
 Ext.define('GeoExt.tree.LayerNode', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.gx_layer',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
-     * @private
      * The init method is invoked after initComponent method has been run for
-     * the client Component.
-     *
-     * It perform plugin initialization.
-     * @param {Ext.Component} target The client Component which owns this plugin.
+     * the client Component. It performs plugin initialization.
+     * 
+     * @param {Ext.Component} target The client Component which owns this
+     *     plugin.
+     * @private
      */
     init: function(target) {
 
@@ -37,9 +49,9 @@ Ext.define('GeoExt.tree.LayerNode', {
             target.set('checkedGroup', 'gx_baselayer');
         }
         target.set('fixedText', !!target.text);
-        
+
         target.set('leaf', true);
-        
+
         if(!target.get('iconCls')) {
             target.set('iconCls', "gx-tree-layer-icon");
         }
@@ -49,14 +61,15 @@ Ext.define('GeoExt.tree.LayerNode', {
             "visibilitychanged": this.onLayerVisibilityChanged,
             scope: this
         });
+        this.enforceOneVisible();
     },
 
     /**
-     * @private
      * Handler for the node's afteredit event.
      *
      * @param {GeoExt.data.LayerTreeModel} node
      * @param {String[]} modifiedFields
+     * @private
      */
     onAfterEdit: function(node, modifiedFields) {
         var me = this;
@@ -65,21 +78,23 @@ Ext.define('GeoExt.tree.LayerNode', {
             me.onCheckChange();
         }
     },
-    
+
     /**
+     * Handler for visibilitychanged events on the layer.
+     *
      * @private
-     * Handler for visibilitychanged events on the layer
      */
     onLayerVisibilityChanged: function() {
         if(!this._visibilityChanging) {
             this.target.set('checked', this.target.get('layer').getVisibility());
         }
     },
-    
+
     /**
-     * @private
      * Updates the visibility of the layer that is connected to the target
-     * node. 
+     * node.
+     *
+     * @private
      */
     onCheckChange: function() {
         var node = this.target,
@@ -90,10 +105,41 @@ Ext.define('GeoExt.tree.LayerNode', {
             var layer = node.get('layer');
             if(checked && layer.isBaseLayer && layer.map) {
                 layer.map.setBaseLayer(layer);
+            } else if(!checked && layer.isBaseLayer && layer.map &&
+                      layer.map.baseLayer && layer.id == layer.map.baseLayer.id) {
+                // Must prevent the unchecking of radio buttons
+                node.set('checked', layer.getVisibility());
             } else {
                 layer.setVisibility(checked);
             }
             delete node._visibilityChanging;
+        }
+        this.enforceOneVisible();
+    },
+
+    enforceOneVisible: function() {
+        var attributes = this.target.data;
+        var group = attributes.checkedGroup;
+        // If we are in the baselayer group, the map will take care of
+        // enforcing visibility.
+        if(group && group !== "gx_baselayer") {
+            var layer = this.target.get('layer');
+            var checkedNodes = this.target.getOwnerTree().getChecked();
+            var checkedCount = 0;
+            // enforce "not more than one visible"
+            Ext.each(checkedNodes, function(n){
+                var l = n.data.layer;
+                if(!n.data.hidden && n.data.checkedGroup === group) {
+                    checkedCount++;
+                    if(l != layer && attributes.checked) {
+                        l.setVisibility(false);
+                    }
+                }
+            });
+            // enforce "at least one visible"
+            if(checkedCount === 0 && attributes.checked == false) {
+                layer.setVisibility(true);
+            }
         }
     }
 

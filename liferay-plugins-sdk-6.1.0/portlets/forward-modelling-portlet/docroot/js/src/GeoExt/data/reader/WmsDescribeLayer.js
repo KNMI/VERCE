@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -8,21 +8,38 @@
 
 /*
  * @include OpenLayers/Format/WMSDescribeLayer.js
+ * @requires GeoExt/Version.js
  */
 
 /**
+ * Data reader class to create an array of layer description objects from a WMS
+ * DescribeLayer response.
+ *
  * @class GeoExt.data.reader.WmsDescribeLayer
- * Data reader class to create an array of
- * layer description objects from a WMS DescribeLayer
- * response.
  */
 Ext.define('GeoExt.data.reader.WmsDescribeLayer', {
     alternateClassName: ['GeoExt.data.reader.WMSDescribeLayer', 'GeoExt.data.WMSCapabilitiesReader'],
     extend: 'Ext.data.reader.Json',
     alias: 'reader.gx_wmsdescribelayer',
-
+    requires: [
+        'GeoExt.Version'
+    ],
+    /**
+     * Should we keep the raw parsed result? If true, the result will be stored
+     * under the #raw property. Default is false. When using ExtJS5 a reference
+     * to the raw data is always available via the property #data.
+     *
+     * @cfg {Boolean}
+     */
+    keepRaw: false,
+    /**
+     * The raw parsed result, only set if #keepRaw is true.
+     * @cfg {Object}
+     */
+    raw: null,
     /**
      * Creates new Reader.
+     *
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
@@ -39,9 +56,9 @@ Ext.define('GeoExt.data.reader.WmsDescribeLayer', {
      * Gets the records.
      *
      * @param {Object} request The XHR object which contains the parsed XML
-     * document.
-     * @return {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     document.
+     * @return {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
      */
     getResponseData: function(request) {
         var data = request.responseXML;
@@ -53,14 +70,14 @@ Ext.define('GeoExt.data.reader.WmsDescribeLayer', {
 
     /**
      * Create a data block containing Ext.data.Records from an XML document.
-     * @private
+     *
      * @param {DOMElement/String/Object} data A document element or XHR
-     * response string.  As an alternative to fetching capabilities data
-     * from a remote source, an object representing the capabilities can
-     * be provided given that the structure mirrors that returned from the
-     * capabilities parser.
-     * @return  {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     response string.  As an alternative to fetching capabilities data
+     *     from a remote source, an object representing the capabilities can
+     *     be provided given that the structure mirrors that returned from the
+     *     capabilities parser.
+     * @return {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
      */
     readRecords: function(data) {
         if(typeof data === "string" || data.nodeType) {
@@ -69,6 +86,19 @@ Ext.define('GeoExt.data.reader.WmsDescribeLayer', {
         if (!!data.error) {
             Ext.Error.raise({msg: "Error parsing WMS DescribeLayer", arg: data.error});
         }
+        if (this.keepRaw) {
+            this.raw = data;
+        }
         return this.callParent([data]);
+    },
+
+    /**
+     * @private
+     */
+    destroyReader: function() {
+        var me = this;
+        delete me.raw;
+        this.callParent();
     }
+
 });

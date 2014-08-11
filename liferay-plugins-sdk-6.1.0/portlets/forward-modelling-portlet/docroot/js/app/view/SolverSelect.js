@@ -160,6 +160,7 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     disabled: true,
     tooltip: 'Download solver input file',
     handler: function() {
+      var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
       solverConfStore.commitChanges();
       solverConfStore.save();
       var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
@@ -309,7 +310,7 @@ Ext.define('CF.view.SolverSelect', {
 });
 
 function updateSolverValues(newValues) {
-  solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+  var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
   for (var i = 0; i < newValues.length; i++) {
     //alert(JSON.stringify(newValues[i]));
     for (var propertyName in newValues[i]) {
@@ -322,12 +323,13 @@ function updateSolverValues(newValues) {
 
 function selectSolver(selectedSolver) {
   gl_solver = selectedSolver;
-  solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+  var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
 
   // Start with only the first group expanded
   solverConfStore.addListener('load', function() {
     Ext.getCmp('SolverConfPanel').getView().getFeature('grouping').collapseAll();
-    Ext.getCmp('SolverConfPanel').getView().getFeature('grouping').expand(solverConfStore.groups.first().key, false);
+    // TODO how to do this correctly in ExtJS 5?
+    Ext.getCmp('SolverConfPanel').getView().getFeature('grouping').expand(Object.keys(solverConfStore.getGroups().map)[0], false);
   }, {
     single: true
   });
@@ -340,7 +342,7 @@ function selectSolver(selectedSolver) {
     },
     reader: {
       type: 'json',
-      root: 'fields'
+      rootProperty: 'fields'
     }
   });
   solverConfStore.load();
@@ -355,7 +357,7 @@ function selectSolver(selectedSolver) {
     },
     reader: {
       type: 'json',
-      root: 'meshes'
+      rootProperty: 'meshes'
     }
   });
   meshesstore.load();

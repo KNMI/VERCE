@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -8,20 +8,26 @@
 
 /*
  * @include OpenLayers/Format/WMC.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.data.reader.Wmc
  * Data reader class to create an array of records from a WMC document.
+ *
+ * @class GeoExt.data.reader.Wmc
  */
 Ext.define('GeoExt.data.reader.Wmc', {
     alternateClassName: ['GeoExt.data.WMCReader'],
     extend: 'Ext.data.reader.Json',
     alias: 'reader.gx_wmc',
+    requires: [
+        'GeoExt.Version'
+    ],
 
     /**
      * Creates new Reader.
-     * @param {Object} config (optional) Config object.
+     *
+     * @param {Object} [config] Config object.
      */
     constructor: function(config) {
         if (!this.model) {
@@ -37,9 +43,9 @@ Ext.define('GeoExt.data.reader.Wmc', {
      * Gets the records.
      *
      * @param {Object} request The XHR object which contains the parsed XML
-     * document.
-     * @return {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     document.
+     * @return {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
      */
     getResponseData: function(request) {
         var data = request.responseXML;
@@ -51,14 +57,15 @@ Ext.define('GeoExt.data.reader.Wmc', {
 
     /**
      * Create a data block containing Ext.data.Records from an XML document.
-     * @private
+     *
      * @param {DOMElement/String/Object} data A document element or XHR
-     * response string.  As an alternative to fetching capabilities data
-     * from a remote source, an object representing the capabilities can
-     * be provided given that the structure mirrors that returned from the
-     * capabilities parser.
-     * @return  {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     response string.  As an alternative to fetching capabilities data
+     *     from a remote source, an object representing the capabilities can
+     *     be provided given that the structure mirrors that returned from the
+     *     capabilities parser.
+     * @return  {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
+     * @private
      */
     readRecords: function(data) {
         if(typeof data === "string" || data.nodeType) {

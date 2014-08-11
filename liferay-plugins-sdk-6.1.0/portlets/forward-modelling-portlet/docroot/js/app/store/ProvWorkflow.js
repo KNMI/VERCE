@@ -38,7 +38,7 @@ Ext.define('CF.store.ProvWorkflow', {
     },
 
     reader: {
-      root: 'runIds',
+      rootProperty: 'runIds',
       totalProperty: 'totalCount'
     },
     simpleSortMode: true

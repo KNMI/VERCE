@@ -34,7 +34,7 @@ Ext.define('CF.view.WorkflowSelection', {
       border: false,
 
       loadMask: true,
-       
+
       columns: [{
           xtype: 'rownumberer',
 
@@ -170,9 +170,9 @@ Ext.define('CF.view.WorkflowSelection', {
   },
 
   viewConfig: {
-     enableTextSelection: true,
+    enableTextSelection: true,
     listeners: {
-   
+
       itemclick: function(dv, record, item, index, e) {
         workflowStore.sync()
       },
@@ -182,7 +182,7 @@ Ext.define('CF.view.WorkflowSelection', {
           type: 'ajax',
           url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("runId")),
           reader: {
-            root: 'activities',
+            rootProperty: 'activities',
             totalProperty: 'totalCount'
           },
           simpleSortMode: true
@@ -212,10 +212,10 @@ Ext.define('CF.view.WorkflowSelection', {
         owner = userSN
 
       }
-      
-      
-     
-    
+
+
+
+
     }
   }
 

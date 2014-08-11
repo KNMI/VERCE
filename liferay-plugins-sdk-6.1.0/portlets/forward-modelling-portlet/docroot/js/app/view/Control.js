@@ -3,7 +3,7 @@ var wfStore = Ext.create('CF.store.Workflow', {
     type: 'ajax',
     url: getWorkflowListURL,
     reader: {
-      root: 'list'
+      rootProperty: 'list'
     }
   },
   autoLoad: true
@@ -11,6 +11,7 @@ var wfStore = Ext.create('CF.store.Workflow', {
 
 Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
+  alias: 'widget.WfGrid',
   initComponent: function() {
     Ext.apply(this, {
       store: wfStore,
@@ -283,7 +284,9 @@ Ext.define('CF.view.Control', {
     height: 35,
     items: refreshMenuControl
   }],
-  items: [Ext.create('CF.view.WfGrid')]
+  items: [{
+    xtype: 'WfGrid'
+  }]
 });
 
 function statusRenderer(val) {

@@ -3,10 +3,7 @@ Ext.define('CF.model.Station', {
 
   fields: [{
       name: 'symbolizer',
-      convert: function(v, r) {
-        //alert("selected: "+r.get('station'));
-        return r.raw.layer.styleMap.createSymbolizer(r.raw, 'default');
-      }
+      defaultValue: 'default'
     }, {
       name: 'station',
       type: 'string',

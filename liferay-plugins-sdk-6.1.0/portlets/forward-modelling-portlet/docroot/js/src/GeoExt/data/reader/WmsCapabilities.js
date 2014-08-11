@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -10,21 +10,29 @@
  * @include OpenLayers/Format/WMSCapabilities.js
  * @include OpenLayers/Layer/WMS.js
  * @include OpenLayers/Util.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.data.reader.WmsCapabilities
- * Data reader class to create {GeoExt.data.WmsCapabilitiesLayerModel[]}
+ * Data reader class to create GeoExt.data.WmsCapabilitiesLayerModel[]
  * from a WMS GetCapabilities response.
+ *
+ * @class GeoExt.data.reader.WmsCapabilities
  */
 Ext.define('GeoExt.data.reader.WmsCapabilities', {
-    alternateClassName: ['GeoExt.data.reader.WMSCapabilities', 'GeoExt.data.WMSCapabilitiesReader'],
+    alternateClassName: [
+        'GeoExt.data.reader.WMSCapabilities',
+        'GeoExt.data.WMSCapabilitiesReader'
+    ],
     extend: 'Ext.data.reader.Json',
     alias: 'reader.gx_wmscapabilities',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
      * Creates new Reader.
-     * @param {Object} config (optional) Config object.
+     *
+     * @param {Object} [config] Config object.
      */
     constructor: function(config) {
         if (!this.model) {
@@ -37,10 +45,26 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
     },
 
     /**
-     * @cfg {String}
+     * Should we keep the raw parsed result? If true, the result will be stored
+     * under the #raw property. Default is false. When using ExtJS5 a reference
+     * to the raw data is always available via the property #data.
+     *
+     * @cfg {Boolean}
+     */
+    keepRaw: false,
+
+    /**
+     * The raw parsed result, only set if #keepRaw is true.
+     * @cfg {Object}
+     */
+    raw: null,
+
+    /**
      * CSS class name for the attribution DOM elements.
      * Element class names append "-link", "-image", and "-title" as
      * appropriate.  Default is "gx-attribution".
+     *
+     * @cfg {String}
      */
     attributionCls: "gx-attribution",
 
@@ -48,9 +72,9 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
      * Gets the records.
      *
      * @param {Object} request The XHR object which contains the parsed XML
-     * document.
-     * @return {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     document.
+     * @return {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
      */
     getResponseData: function(request) {
         var data = request.responseXML;
@@ -61,9 +85,9 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
     },
 
     /**
-     * @private
      * @param {String[]} formats An array of service exception format strings.
      * @return {String} The (supposedly) best service exception format.
+     * @private
      */
     serviceExceptionFormat: function(formats) {
         if (OpenLayers.Util.indexOf(formats,
@@ -78,10 +102,10 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
     },
 
     /**
-     * @private
      * @param {Object} layer The layer's capabilities object.
      * @return {String} The (supposedly) best mime type for requesting
-     * tiles.
+     *     tiles.
+     * @private
      */
     imageFormat: function(layer) {
         var formats = layer.formats;
@@ -102,31 +126,47 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
     },
 
     /**
-     * @private
      * @param {Object} layer The layer's capabilities object.
      * @return {Boolean} The TRANSPARENT param.
+     * @private
      */
     imageTransparent: function(layer) {
         return layer.opaque == undefined || !layer.opaque;
     },
 
     /**
-     * Create a data block containing Ext.data.Records from an XML document.
      * @private
+     */
+    destroyReader: function() {
+        var me = this;
+        delete me.raw;
+        this.callParent();
+    },
+
+    /**
+     * Create a data block containing Ext.data.Records from an XML document.
+     *
      * @param {DOMElement/String/Object} data A document element or XHR
-     * response string.  As an alternative to fetching capabilities data
-     * from a remote source, an object representing the capabilities can
-     * be provided given that the structure mirrors that returned from the
-     * capabilities parser.
-     * @return  {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     response string.  As an alternative to fetching capabilities data
+     *     from a remote source, an object representing the capabilities can
+     *     be provided given that the structure mirrors that returned from the
+     *     capabilities parser.
+     * @return  {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
+     * @private
      */
     readRecords: function(data) {
+        if (Ext.isArray(data)) {
+            return this.callParent(data);
+        }
         if(typeof data === "string" || data.nodeType) {
             data = this.format.read(data);
         }
         if (!!data.error) {
             Ext.Error.raise({msg: "Error parsing WMS GetCapabilities", arg: data.error});
+        }
+        if (this.keepRaw) {
+            this.raw = data;
         }
         var version = data.version;
         var capability = data.capability || {};
@@ -183,12 +223,12 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
 
     /**
      * Generates attribution markup using the Attribution metadata
-     * from WMS Capabilities
-     * @private
+     * from WMS Capabilities.
+     *
      * @param {Object} attribution The attribution property of the layer
-     * object as parsed from a WMS Capabilities document
-     * @return {String} HTML markup to display attribution
-     * information.
+     *     object as parsed from a WMS Capabilities document
+     * @return {String} HTML markup to display attribution information.
+     * @private
      */
     attributionMarkup : function(attribution){
         var markup = [];
@@ -206,13 +246,14 @@ Ext.define('GeoExt.data.reader.WmsCapabilities', {
 
         if(attribution.href){
             for(var i = 0; i < markup.length; i++){
-                markup[i] = "<a class='"
-              + this.attributionCls + "-link' "
-                    + "href="
-                    + attribution.href
-                    + ">"
-                    + markup[i]
-                    + "</a>";
+                markup[i] = "<a class='" +
+                    this.attributionCls +
+                    "-link' " +
+                    "href=" +
+                    attribution.href +
+                    ">" +
+                    markup[i] +
+                    "</a>";
             }
         }
 

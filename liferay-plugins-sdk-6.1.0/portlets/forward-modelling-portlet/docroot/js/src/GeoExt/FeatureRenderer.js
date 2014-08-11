@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -13,104 +13,119 @@
  * @include OpenLayers/Geometry/Polygon.js
  * @include OpenLayers/Geometry/LineString.js
  * @include OpenLayers/Renderer/SVG.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.FeatureRenderer
  * The feature renderer
+ *
+ * @class GeoExt.FeatureRenderer
  */
 Ext.define('GeoExt.FeatureRenderer', {
     extend: 'Ext.Component',
     alias: 'widget.gx_renderer',
+    requires: [
+        'GeoExt.Version'
+    ],
 
     /**
-     * @cfg {OpenLayers.Feature.Vector}
-     * Optional vector to be drawn.  If not provided, and if ``symbolizers``
-     * is configured with an array of plain symbolizer objects, ``symbolType``
+     * Optional vector to be drawn.  If not provided, and if `symbolizers`
+     * is configured with an array of plain symbolizer objects, `symbolType`
      * should be configured.
+     *
+     * @cfg {OpenLayers.Feature.Vector}
      */
     feature: undefined,
 
     /**
-     * @cfg {Object[]}
-     * An array of ``OpenLayers.Symbolizer`` instances or plain symbolizer
+     * An array of `OpenLayers.Symbolizer` instances or plain symbolizer
      * objects (in painters order) for rendering a  feature.  If no
      * symbolizers are provided, the OpenLayers default will be used. If a
-     * symbolizer is an instance of ``OpenLayers.Symbolizer``, its type will
+     * symbolizer is an instance of `OpenLayers.Symbolizer`, its type will
      * override the symbolType for rendering.
+     *
+     * @cfg {Object[]}
      */
     symbolizers: [OpenLayers.Feature.Vector.style["default"]],
 
     /**
-     * @cfg {String}
-     * One of ``"Point"``, ``"Line"``, or ``"Polygon"`` or ``"Text"``.  Only
-     * pertinent if OpenLayers.Symbolizer objects are not used.  If ``feature``
+     * One of `"Point"`, `"Line"`, `"Polygon"` or `"Text"`.  Only
+     * pertinent if OpenLayers.Symbolizer objects are not used.  If `feature`
      * is provided, it will be preferred.
+     *
+     * @cfg {String}
      */
     symbolType: "Polygon",
 
     /**
-     * @private
+     * The resolution for the renderer.
+     *
      * @property {Number}
-     *  The resolution for the renderer.
+     * @private
      */
     resolution: 1,
 
     /**
-     * @private
      * @property {Number}
+     * @private
      */
     minWidth: 20,
 
     /**
-     * @private
      * @property {Number}
+     * @private
      */
     minHeight: 20,
 
     /**
-     * @private
-     * @property {String[]}
      * List of supported Renderer classes. Add to this list to add support for
      * additional renderers. The first renderer in the list that returns
-     * ``true`` for the ``supported`` method will be used, if not defined in
-     * the ``renderer`` config property.
+     * `true` for the `supported` method will be used, if not defined in
+     * the `renderer` config property.
+     *
+     * @property {String[]}
+     * @private
      */
     renderers: ["SVG", "VML", "Canvas"],
 
     /**
-     * @private
-     * @property {Object}
-     * Options for the renderer. See ``OpenLayers.Renderer`` for supported
+     * Options for the renderer. See `OpenLayers.Renderer` for supported
      * options.
+     *
+     * @property {Object}
+     * @private
      */
     rendererOptions: null,
 
     /**
-     * @private
-     * @property {OpenLayers.Feature.Vector}
      * Feature with point geometry.
+     *
+     * @property {OpenLayers.Feature.Vector}
+     * @private
      */
     pointFeature: undefined,
 
     /**
-     * @private
-     * @property {OpenLayers.Feature.Vector}
      * Feature with LineString geometry.  Default zig-zag is provided.
+     *
+     * @property {OpenLayers.Feature.Vector}
+     * @private
      */
     lineFeature: undefined,
 
     /**
-     * @private
-     * @property {OpenLayers.Feature.Vector}
      * Feature with Polygon geometry.  Default is a soft cornered rectangle.
+     *
+     * @property {OpenLayers.Feature.Vector}
+     * @private
      */
     polygonFeature: undefined,
 
     /**
-     * @private
-     * @property {OpenLayers.Feature.Vector}
      * Feature with invisible Point geometry and text label.
+     *
+     * @property {OpenLayers.Feature.Vector}
+     * @private
      */
     textFeature: undefined,
 
@@ -120,6 +135,19 @@ Ext.define('GeoExt.FeatureRenderer', {
      */
     renderer: null,
 
+    /**
+     * Fires when the feature is clicked on.
+     *
+     * Listener arguments:
+     *
+     *  * renderer - GeoExt.FeatureRenderer This feature renderer.
+     *
+     * @event click
+     */
+
+    /**
+     *
+     */
     initComponent: function(){
         var me = this;
 
@@ -165,19 +193,11 @@ Ext.define('GeoExt.FeatureRenderer', {
                 draw: false
             });
         }
-        this.addEvents(
-            /**
-             * @event
-             *  Fires when the feature is clicked on.
-             *
-             *  Listener arguments:
-             *
-             *  * renderer - GeoExt.FeatureRenderer This feature renderer.
-             */
-            "click"
-        );
     },
+
     /**
+     * (Re-)Initializes our custom event listeners, mainly #onClick.
+     *
      * @private
      */
     initCustomEvents: function() {
@@ -187,15 +207,19 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
+     * Unbinds previously bound listeners on #el.
+     *
      * @private
      */
     clearCustomEvents: function() {
-        if (this.el && this.el.removeAllListeners) {
-            this.el.removeAllListeners();
+        if (this.el && this.el.clearListeners) {
+            this.el.clearListeners();
         }
     },
 
     /**
+     * Bound to the click event on the #el, this fires the click event.
+     *
      * @private
      */
     onClick: function() {
@@ -203,10 +227,12 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
+     * When we are rendered, we setup our own DOM structure and eventually
+     * call #drawFeature.
+     *
      * @private
      */
     onRender: function(ct, position) {
-
         if(!this.el) {
             this.el = document.createElement("div");
             this.el.id = this.getId();
@@ -230,15 +256,19 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
+     * After rendering we setup our own custom events using #initCustomEvents.
+     *
      * @private
      */
     afterRender: function() {
-
         this.callParent(arguments);
         this.initCustomEvents();
     },
 
     /**
+     * When resizing has happened, we might need to re-set the renderer's
+     * dimensions via #setRendererDimensions.
+     *
      * @private
      */
     onResize: function(w, h) {
@@ -247,6 +277,9 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
+     * Sets the dimensions of the renderer according to the #feature geometry
+     * and our own dimensions.
+     *
      * @private
      */
     setRendererDimensions: function() {
@@ -280,9 +313,10 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
+     * Iterate through the available renderer implementations and selects
+     * and assign the first one whose `supported` method returns `true`.
+     *
      * @private
-     *  Iterate through the available renderer implementations and selects
-     *  and assign the first one whose ``supported`` method returns ``true``.
      */
     assignRenderer: function()  {
         for(var i=0, len=this.renderers.length; i<len; ++i) {
@@ -297,12 +331,12 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Update the symbolizers used to render the feature.
+     * Update the symbolizers used to render the feature.
      *
-     *  @param symbolizers {Object[]} An array of symbolizers
-     *  @param options {Object}
-     *  @param options.draw {Boolean} Draw the feature after setting it.  Default is ``true``.
-     *
+     * @param symbolizers {Object[]} An array of symbolizers
+     * @param options {Object}
+     * @param options.draw {Boolean} Draw the feature after setting it.
+     *     Default is `true`.
      */
     setSymbolizers: function(symbolizers, options) {
         this.symbolizers = symbolizers;
@@ -312,11 +346,12 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Create a new feature based on the geometry type and render it.
+     * Create a new feature based on the geometry type and render it.
      *
-     * @param type {String} One of the ``symbolType`` strings.
+     * @param type {String} One of the `symbolType` strings.
      * @param options {Object}
-     * @param options.draw {Boolean} Draw the feature after setting it.  Default is ``true``.
+     * @param options.draw {Boolean} Draw the feature after setting it.
+     *     Default is `true`.
      *
      */
     setSymbolType: function(type, options) {
@@ -325,12 +360,13 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Update the feature and redraw.
+     * Update the feature and redraw.
      *
      * @param feature {OpenLayers.Feature.Vector} The feature to be rendered.
-     *      If none is provided, one will be created based on ``symbolType``.
+     *     If none is provided, one will be created based on `symbolType`.
      * @param options {Object}
-     * @param options.draw {Boolean} Draw the feature after setting it.  Default is ``true``.
+     * @param options.draw {Boolean} Draw the feature after setting it.
+     *     Default is `true`.
      *
      */
     setFeature: function(feature, options) {
@@ -341,7 +377,8 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Render the feature with the symbolizers.
+     * Render the feature with the symbolizers.
+     *
      * @private
      */
     drawFeature: function() {
@@ -375,16 +412,17 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Update the ``symbolType`` or ``feature`` and ``symbolizer`` and redraw
-     *  the feature.
+     * Update the `symbolType` or `feature` and `symbolizer` and redraw
+     * the feature.
      *
-     *  Valid options:
+     * Valid options:
      *
-     *  @param options {Object} Object with properties to be updated.
-     *  @param options.feature {OpenLayers.Feature.Vector} The new or updated feature.
-     *      If provided, the feature gets precedence over ``symbolType``.
-     *  @param options.symbolType {String} One of the allowed ``symbolType`` values.
-     *  @param options.symbolizers {Object[]} An array of symbolizer objects.
+     * @param options {Object} Object with properties to be updated.
+     * @param options.feature {OpenLayers.Feature.Vector} The new or updated
+     *     feature. If provided, the feature gets precedence over `symbolType`.
+     * @param options.symbolType {String} One of the allowed `symbolType`
+     *     values.
+     * @param options.symbolizers {Object[]} An array of symbolizer objects.
      */
     update: function(options) {
         options = options || {};
@@ -406,7 +444,8 @@ Ext.define('GeoExt.FeatureRenderer', {
     },
 
     /**
-     *  Private method called during the destroy sequence.
+     * Private method called during the destroy sequence.
+     *
      * @private
      */
     beforeDestroy: function() {

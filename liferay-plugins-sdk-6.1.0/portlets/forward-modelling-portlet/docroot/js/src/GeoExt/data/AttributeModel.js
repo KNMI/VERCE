@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -7,23 +7,21 @@
  */
 
 /*
- * @include GeoExt/data/reader/Attribute.js
+ * @requires GeoExt/data/reader/Attribute.js
  */
 
 /**
  * @class GeoExt.data.AttributeModel
- * <p>A specific model for WFS DescribeFeatureType records.<p>
  *
- * Preconfigured with an Ajax proxy and a
- * {@link GeoExt.data.reader.Attribute}.
+ * A specific model for WFS DescribeFeatureType records.
+ *
+ * Preconfigured with an Ajax proxy and a GeoExt.data.reader.Attribute.
  */
-
-
 Ext.define('GeoExt.data.AttributeModel', {
     alternateClassName: 'GeoExt.data.AttributeRecord',
     extend: 'Ext.data.Model',
     requires: [
-        'Ext.data.proxy.Ajax', 
+        'Ext.data.proxy.Ajax',
         'GeoExt.data.reader.Attribute'
     ],
     alias: 'model.gx_attribute',
@@ -32,7 +30,7 @@ Ext.define('GeoExt.data.AttributeModel', {
         {name: 'type', defaultValue: null},
         {name: 'restriction', defaultValue: null},
         {name: 'nillable', type: 'bool'}
-        // No 'value' field by default. The 'value' field gets added by the 
+        // No 'value' field by default. The 'value' field gets added by the
         // GeoExt.data.reader.Attribute constructor if it is given a feature.
     ],
     proxy: {

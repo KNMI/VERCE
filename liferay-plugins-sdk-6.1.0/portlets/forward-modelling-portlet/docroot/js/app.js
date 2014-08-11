@@ -2,6 +2,12 @@
  * Ext.Loader
  */
 
+Ext.manifest = { // the same content as "app.json"
+  compatibility: {
+    ext: '4.2'
+  }
+}
+
 var sys = arbor.ParticleSystem();
 sys.parameters({
   repulsion: -20,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -8,52 +8,50 @@
 
 /*
  * @include OpenLayers/Util.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.state.PermalinkProvider
- *
  * The permalink provider.
  *
- *  Sample code displaying a new permalink each time the map is moved.
+ * Sample code displaying a new permalink each time the map is moved:
  *
- * Example:
-<pre><code>
-// create permalink provider
-var permalinkProvider = new GeoExt.state.PermalinkProvider();
-
-// set it in the state manager
-Ext.state.Manager.setProvider(permalinkProvider);
-
-// create a map panel, and make it stateful
-var mapPanel = new GeoExt.MapPanel({
-    renderTo: "map",
-    layers: [
-        new OpenLayers.Layer.WMS(
-            "Global Imagery",
-            "http://maps.opengeo.org/geowebcache/service/wms",
-            {layers: "bluemarble"}
-        )
-    ],
-    stateId: "map",
-    prettyStateKeys: true // for pretty permalinks
-});
-
-// display permalink each time state is changed
-permalinkProvider.on({
-    statechanged: function(provider, name, value) {
-        alert(provider.getLink());
-    }
-});
-</code></pre>
+ *     // create permalink provider
+ *     var permalinkProvider = Ext.create('GeoExt.state.PermalinkProvider', {});
+ *     // set it in the state manager
+ *     Ext.state.Manager.setProvider(permalinkProvider);
+ *     // create a map panel, and make it stateful
+ *     var mapPanel = Ext.create('GeoExt.panel.Map', {
+ *         renderTo: "map",
+ *         layers: [
+ *             new OpenLayers.Layer.WMS(
+ *                 "Global Imagery",
+ *                 "http://maps.opengeo.org/geowebcache/service/wms",
+ *                 {layers: "bluemarble"}
+ *             )
+ *         ],
+ *         stateId: "map",
+ *         prettyStateKeys: true // for pretty permalinks
+ *     });
+ *     // display permalink each time state is changed
+ *     permalinkProvider.on({
+ *         statechanged: function(provider, name, value) {
+ *             alert(provider.getLink());
+ *         }
+ *     });
+ *
+ * @class GeoExt.state.PermalinkProvider
  */
 Ext.define('GeoExt.state.PermalinkProvider', {
     extend : 'Ext.state.Provider',
     requires : [
-    //    'GeoExt.data.LayerStore'
+        'GeoExt.Version'
     ],
     alias : 'widget.gx_permalinkprovider',
-    //    alternateClassName : 'GeoExt.MapPanel',
+
+    /**
+     *
+     */
     constructor: function(config){
         this.callParent(arguments);
         config = config || {};
@@ -68,26 +66,21 @@ Ext.define('GeoExt.state.PermalinkProvider', {
     },
 
     /**
-     * @private
+     * Specifies whether type of state values should be encoded and decoded.
+     * Set it to `false` if you work with components that don't require
+     * encoding types, and want pretty permalinks.
+     *  
      * @property{Boolean}
-     *  Specifies whether type of state values should be encoded
-     *  and decoded. Set it to false if you work with components that don't
-     *  require encoding types, and want pretty permalinks. Defaults to true.
+     * @private
      */
     encodeType: true,
-
-    initComponent: function(){
-        var me = this;
-
-        me.callParent(arguments);
-    },
 
     /**
      * Create a state object from a URL.
      *
-     * @private
      * @param url {String} The URL to get the state from.
      * @return {Object} The state object.
+     * @private
      */
     readURL: function(url) {
         var state = {};
@@ -141,12 +134,4 @@ Ext.define('GeoExt.state.PermalinkProvider', {
 
         return Ext.urlAppend(base, paramsStr);
     }
-
-
 });
-
-
-
-
-
-

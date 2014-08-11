@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -7,19 +7,23 @@
  */
 
 /*
-* @include OpenLayers/Format/CQL.js
-*/
-
-/**
- * @class GeoExt.data.VectorStyleModel
- * <p>A specific model for CQL Style Rules<p>
- *
- * Preconfigured with an Ajax proxy and a JSON reader
+ * @include OpenLayers/Format/CQL.js
+ * @requires GeoExt/Version.js
  */
 
+/**
+ * A specific model for CQL Style Rules.
+ *
+ * Preconfigured with an Ajax proxy and a JSON reader.
+ *
+ * @class GeoExt.data.VectorStyleModel
+ */
 Ext.define('GeoExt.data.VectorStyleModel', {
     extend : 'Ext.data.Model',
-    requires : ['Ext.data.JsonReader'],
+    requires : [
+        'Ext.data.JsonReader',
+        'GeoExt.Version'
+    ],
     fields : [{
         name : "elseFilter",
         defaultValue : null

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -8,39 +8,47 @@
 
 /*
  * @include OpenLayers/Util.js
+ * @requires GeoExt/Version.js
  */
 
 /**
  * The legend image.
+ *
  * @class GeoExt.LegendImage
  */
 Ext.define('GeoExt.LegendImage', {
     extend : 'Ext.Component',
     alias : 'widget.gx_legendimage',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
+     * The url of the image to load.
+     *
      * @cfg {String} url
-     * The url of the image to load
      */
     url: null,
 
     /**
-     * @cfg {String} defaultImgSrc
      * Path to image that will be used if the legend image fails
      * to load.  Default is Ext.BLANK_IMAGE_URL.
+     *
+     * @cfg {String} defaultImgSrc
      */
     defaultImgSrc: null,
 
     /**
+     * Optional CSS class to apply to img tag.
+     *
      * @cfg {String} imgCls
-     * Optional css class to apply to img tag
      */
     imgCls: null,
 
     /**
+     * CSS class applied to img tag when no image is available or the default
+     * image was loaded.
+     * 
      * @cfg {String}
-     * CSS class applied to img tag when no image is available or
-     * the default image was loaded.
      */
     noImgCls: "gx-legend-noimage",
 
@@ -56,9 +64,10 @@ Ext.define('GeoExt.LegendImage', {
             src: this.defaultImgSrc
         };
     },
-    
+
     /**
      * Sets the url of the legend image.
+     *
      * @param {String} url The new URL.
      */
     setUrl: function(url) {
@@ -75,9 +84,9 @@ Ext.define('GeoExt.LegendImage', {
         }
     },
 
-    /** 
-     * Private method called when the legend image component is being
-     * rendered.
+    /**
+     * Private method called when the legend image component is being rendered.
+     *
      * @private
      */
     onRender: function(ct, position) {
@@ -87,8 +96,9 @@ Ext.define('GeoExt.LegendImage', {
         }
     },
 
-    /** 
+    /**
      * Private method called during the destroy sequence.
+     *
      * @private
      */
     onDestroy: function() {
@@ -99,9 +109,10 @@ Ext.define('GeoExt.LegendImage', {
         }
         this.callParent();
     },
-    
+
     /**
      * Private method called if the legend image fails loading.
+     *
      * @private
      */
     onImageLoadError: function() {
@@ -112,6 +123,7 @@ Ext.define('GeoExt.LegendImage', {
 
     /**
      * Private method called after the legend image finished loading.
+     *
      * @private
      */
     onImageLoad: function() {
@@ -119,6 +131,7 @@ Ext.define('GeoExt.LegendImage', {
         if (!OpenLayers.Util.isEquivalentUrl(el.dom.src, this.defaultImgSrc)) {
             el.removeCls(this.noImgCls);
         }
+        this.fireEvent('legendimageloaded', this);
     }
 
 });

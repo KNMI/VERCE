@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -11,10 +11,9 @@
  */
 
 /**
- * @class GeoExt.grid.column.Symbolizer
+ * An Ext.grid.column.Column pre-configured with a GeoExt.FeatureRenderer
  *
- * An {@link Ext.grid.column.Column} pre-configured with a
- * {@link GeoExt.FeatureRenderer}
+ * @class GeoExt.grid.column.Symbolizer
  */
 Ext.define('GeoExt.grid.column.Symbolizer', {
     extend: 'Ext.grid.column.Column',
@@ -22,13 +21,19 @@ Ext.define('GeoExt.grid.column.Symbolizer', {
     alias: ['widget.gx_symbolizercolumn'],
     requires: ['GeoExt.FeatureRenderer'],
 
+    /**
+     * The default renderer Method for Features.
+     */
     defaultRenderer: function(value, meta, record) {
         if (value) {
             var id = Ext.id();
             var symbolType = "Polygon";
             if (record) {
-                var symbolType = "Line";
-                var className = record.raw.geometry ? record.raw.geometry.CLASS_NAME : null;
+                var symbolType = "Line",
+                    featureKey = GeoExt.isExt4 ? 'raw' : 'data',
+                    featureGeom = record[featureKey].geometry,
+                    className = featureGeom ? featureGeom.CLASS_NAME : null;
+
                 if (className == "OpenLayers.Geometry.Point" ||
                         className == "OpenLayers.Geometry.MultiPoint") {
                     symbolType = "Point";

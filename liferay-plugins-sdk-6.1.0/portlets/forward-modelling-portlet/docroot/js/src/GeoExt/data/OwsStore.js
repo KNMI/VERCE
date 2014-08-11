@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -7,33 +7,49 @@
  */
 
 /**
- * <p>Small Base class to make creating stores for remote OWS information sources
- * easier.</p>
- * <p>NOTE: This is a BASE CLASS and is not designed for direct use in an
+ * @requires GeoExt/Version.js
+ */
+
+/**
+ * Small Base class to make creating stores for remote OWS information sources
+ * easier.
+ *
+ * NOTE: This is a BASE CLASS and is not designed for direct use in an
  * application. Instead, one should extend from this class in any situation in
- * which a you need a {@link Ext.data.proxy.Server} (ex: 'ajax', 'jsonp', etc) and a
- * reader which requires an {@link OpenLayers.Format} to parse the data.</p>
+ * which a you need a {@link Ext.data.proxy.Server} (ex: 'ajax', 'jsonp', etc)
+ * and a reader which requires an {@link OpenLayers.Format} to parse the data.
  *
  * @class GeoExt.data.OwsStore
  */
 Ext.define('GeoExt.data.OwsStore', {
     extend: 'Ext.data.Store',
+    requires: [
+        'GeoExt.Version'
+    ],
     alternateClassName: ['GeoExt.data.OWSStore'],
 
     config: {
         /**
+         * The URL from which to retrieve the OWS document.
+         *
          * @cfg {String}
-         * The URL from which to retrieve the WMS DescribeLayer document
          */
         url : null,
 
         /**
-         * @cfg {OpenLayers.Format}
          * A parser for transforming the XHR response into an array of objects
-         * representing attributes. Defaults to an {OpenLayers.Format.WMSDescribeLayer}
-         * parser.
+         * representing attributes.
+         *
+         * @cfg {OpenLayers.Format}
          */
-        format : null
+        format : null,
+
+        /**
+         * Any baseParams to use on this store.
+         *
+         * @cfg {Object}
+         */
+        baseParams: null
     },
 
     /**
@@ -41,13 +57,13 @@ Ext.define('GeoExt.data.OwsStore', {
      */
     constructor: function(config) {
         // At this point, we have to copy the complex objects from the config
-        // into the prototype. This is because Ext.data.Store's constructor 
+        // into the prototype. This is because Ext.data.Store's constructor
         // creates deep copies of these objects.
         if (config.format) {
             this.format = config.format;
             delete config.format;
         }
-        
+
         this.callParent([config]);
 
         if(config.url) {
@@ -56,8 +72,34 @@ Ext.define('GeoExt.data.OwsStore', {
         if(this.format) {
             this.setFormat(this.format);
         }
+        var proxy = this.getProxy();
+        if (proxy) {
+            proxy.startParam = false;
+            proxy.limitParam = false;
+            proxy.pageParam = false;
+        }
+        if (config.baseParams) {
+            this.setBaseParams(config.baseParams);
+        }
     },
-    
+
+    /**
+     * @private
+     */
+    applyBaseParams: function(newParams) {
+        if (newParams && Ext.isObject(newParams)) {
+            var proxy = this.getProxy();
+            if(proxy) {
+                if (proxy.setExtraParams) {
+                    // ExtJS 5 needs the setter
+                    proxy.setExtraParams(newParams);
+                } else {
+                    proxy.extraParams = newParams;
+                }
+            }
+        }
+    },
+
     /**
      * @private
      */
@@ -65,11 +107,16 @@ Ext.define('GeoExt.data.OwsStore', {
         if(newValue && Ext.isString(newValue)) {
             var proxy = this.getProxy();
             if(proxy) {
-                proxy.url = newValue;
+                if (proxy.setUrl){
+                    // ExtJS 5 needs the setter
+                    proxy.setUrl(newValue);
+                } else {
+                    proxy.url = newValue;
+                }
             }
         }
     },
-    
+
     /**
      * @private
      */
@@ -77,7 +124,12 @@ Ext.define('GeoExt.data.OwsStore', {
         var proxy = this.getProxy();
         var reader = (proxy) ? proxy.getReader() : null;
         if(reader) {
-            reader.format = newFormat;
+            if (reader.setFormat) {
+                // ExtJS 5 needs the setter
+                reader.setFormat(newFormat);
+            } else {
+                reader.format = newFormat;
+            }
         }
     }
 });

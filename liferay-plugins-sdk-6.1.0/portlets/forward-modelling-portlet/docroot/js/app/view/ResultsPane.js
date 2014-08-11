@@ -10,22 +10,22 @@ var workflowInputStore = Ext.create('CF.store.WorkflowInput');
 
 
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
-owner=userSN
+owner = userSN
 
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
-    extend: 'Ext.form.field.ComboBox',
-    fieldLabel: 'Terms',
+  extend: 'Ext.form.field.ComboBox',
+  fieldLabel: 'Terms',
   name: 'keys',
   displayField: 'term',
   width: 200,
   inputAttrTpl: " data-qtip='Insert here a sequence of Terms divided by commas.<br/> Eg. magnitude,station' ",
   labelWidth: 40,
-  labelAlign : 'right',
+  labelAlign: 'right',
   margin: '10 10 30 10',
   colspan: 4,
-  multiSelect:true,
+  multiSelect: true,
   store: Ext.create('CF.store.SeismoMeta'),
   queryMode: 'local',
   getInnerTpl: function() {
@@ -274,12 +274,12 @@ function addMeta(url) {
 }
 
 
-var workflowgrid=Ext.create('CF.view.WorkflowSelection')
+var workflowgrid = Ext.create('CF.view.WorkflowSelection')
 
 Ext.define('CF.view.WorkflowOpenByRunID', {
     extend: 'Ext.form.Panel',
     // The fields
-	title: 'Open',
+    title: 'Open',
     height: 150,
     defaultType: 'textfield',
     layout: {
@@ -287,63 +287,68 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
       pack: 'center',
       type: 'vbox'
     },
-    
-    initComponent: function(){
-    
-      
-        this.items = [
-        
-        {
-	                xtype: 'fieldset',
-	                title: 'Here you can open Runs that other users have shared with you!',
-	                collapsible: false,
-	                width: '95%',
-	                margins: '20,10,10,10',
-	                defaults: {
-	                    labelWidth: 10,
-	                    anchor: '100%',
-	                    layout: {
-	                        type: 'hbox'
-	                         
-	                    }
-	                     
-	                },items:[
-        { xtype: 'fieldcontainer',
-	                         
-	                        combineErrors: true,
-	                        msgTarget: 'under',
-	                        items:[
-        
-        { xtype: 'textfield',
-	        fieldLabel: 'Run ID',
-	         labelAlign : 'right',
-	        width: 300,
-	        name: 'runId',
-	        allowBlank: false,
-	        inputAttrTpl: " data-qtip='Insert here any Run ID' ",
-	        anchor: '80%',
-	        allowBlank: false,
-	        margin: '10 0 10 0'
-	         
-	      },
-	      {xtype: 'textfield',
-		        fieldLabel: 'Username',
-		         labelAlign : 'right',
-		        width: 300,
-		        name: 'usename',
-		        allowBlank: false,
-		        inputAttrTpl: " data-qtip='Insert here the username of who is sharing data with you!' ",
-		        anchor: '80%',
-	        allowBlank: false,
-	        margin: '10 0 10 0'
-		         
-		      }
-      
 
-    ]}]}],
-        this.callParent();
+    initComponent: function() {
+
+
+      this.items = [
+
+        {
+          xtype: 'fieldset',
+          title: 'Here you can open Runs that other users have shared with you!',
+          collapsible: false,
+          width: '95%',
+          margins: '20,10,10,10',
+          defaults: {
+            labelWidth: 10,
+            anchor: '100%',
+            layout: {
+              type: 'hbox'
+
+            }
+
+          },
+          items: [{
+            xtype: 'fieldcontainer',
+
+            combineErrors: true,
+            msgTarget: 'under',
+            items: [
+
+              {
+                xtype: 'textfield',
+                fieldLabel: 'Run ID',
+                labelAlign: 'right',
+                width: 300,
+                name: 'runId',
+                allowBlank: false,
+                inputAttrTpl: " data-qtip='Insert here any Run ID' ",
+                anchor: '80%',
+                allowBlank: false,
+                margin: '10 0 10 0'
+
+              }, {
+                xtype: 'textfield',
+                fieldLabel: 'Username',
+                labelAlign: 'right',
+                width: 300,
+                name: 'usename',
+                allowBlank: false,
+                inputAttrTpl: " data-qtip='Insert here the username of who is sharing data with you!' ",
+                anchor: '80%',
+                allowBlank: false,
+                margin: '10 0 10 0'
+
+              }
+
+
+            ]
+          }]
+        }
+      ],
+      this.callParent();
     },
-     
+
 
 
     buttons: [{
@@ -352,38 +357,38 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
 
       handler: function() {
         var form = this.up('form').getForm();
-		
+
         if (form.isValid()) {
-          
+
           activityStore.setProxy({
-          type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false)),
-          reader: {
-            root: 'activities',
-            totalProperty: 'totalCount'
-          },
-          simpleSortMode: true
+            type: 'ajax',
+            url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false)),
+            reader: {
+              rootProperty: 'activities',
+              totalProperty: 'totalCount'
+            },
+            simpleSortMode: true
 
-        });
-        
-        activityStore.data.clear();
-        activityStore.load({
-          callback: function() {
-            currentRun = form.findField("runId").getValue(false)
-            owner = form.findField("usename").getValue(false)
-            Ext.getCmp('filtercurrent').enable();
-            Ext.getCmp('searchartifacts').enable();
-            Ext.getCmp('downloadscript').enable();
-          }
+          });
 
-        })
+          activityStore.data.clear();
+          activityStore.load({
+            callback: function() {
+              currentRun = form.findField("runId").getValue(false)
+              owner = form.findField("usename").getValue(false)
+              Ext.getCmp('filtercurrent').enable();
+              Ext.getCmp('searchartifacts').enable();
+              Ext.getCmp('downloadscript').enable();
+            }
 
-        activityStore.on('load', onStoreLoad, this, {
-          single: true
-        });
-        currentRun = form.findField("runId").getValue(false)
-          
-          };
+          })
+
+          activityStore.on('load', onStoreLoad, this, {
+            single: true
+          });
+          currentRun = form.findField("runId").getValue(false)
+
+        };
 
 
 
@@ -397,67 +402,71 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
 Ext.define('CF.view.WorkflowValuesRangeSearch', {
     extend: 'Ext.form.Panel',
     // The fields
-	title: 'Search',
+    title: 'Search',
     height: 150,
-    
+
     defaultType: 'textfield',
     layout: {
       align: 'center',
       pack: 'center',
       type: 'hbox'
-       
-    },
-    
-    initComponent: function(){
-        this.items = [
-         
-            {
-                xtype: 'fieldset',
-                title: 'Search for runs across products metadata, data formats and parameters',
-                collapsible: false,
-                width: '95%',
-                margins: '20,10,10,10',
-                defaults: {
-                    labelWidth: 10,
-                    anchor: '100%',
-                    layout: {
-                        type: 'hbox'
-                         
-                    }
-                     
-                },items:[
-                {
-                        xtype: 'fieldcontainer',
-                         
-                        combineErrors: true,
-                        msgTarget: 'under',
-                         
-                        items: [
-        
-        Ext.create('CF.view.metaCombo', {}) ,{
-        xtype: 'textfield',
-        fieldLabel: 'Min values',
-        name: 'minvalues',
-        anchor: '80%',
-        allowBlank: false,
-         labelAlign : 'right',
-         inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
-        margin: '10 0 10 0'
-      }, {xtype: 'textfield',
-        fieldLabel: 'Max values',
-        labelAlign : 'right',
-        name: 'maxvalues',
-        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
-       
-        anchor: '80%',
-        allowBlank: false,
-        margin: '10 0 10 0'
-      }
 
-    ]}]}]
-        this.callParent();
     },
-     
+
+    initComponent: function() {
+      this.items = [
+
+        {
+          xtype: 'fieldset',
+          title: 'Search for runs across products metadata, data formats and parameters',
+          collapsible: false,
+          width: '95%',
+          margins: '20,10,10,10',
+          defaults: {
+            labelWidth: 10,
+            anchor: '100%',
+            layout: {
+              type: 'hbox'
+
+            }
+
+          },
+          items: [{
+            xtype: 'fieldcontainer',
+
+            combineErrors: true,
+            msgTarget: 'under',
+
+            items: [
+
+              Ext.create('CF.view.metaCombo', {}), {
+                xtype: 'textfield',
+                fieldLabel: 'Min values',
+                name: 'minvalues',
+                anchor: '80%',
+                allowBlank: false,
+                labelAlign: 'right',
+                inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+                margin: '10 0 10 0'
+              }, {
+                xtype: 'textfield',
+                fieldLabel: 'Max values',
+                labelAlign: 'right',
+                name: 'maxvalues',
+                inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+
+                anchor: '80%',
+                allowBlank: false,
+                margin: '10 0 10 0'
+              }
+
+            ]
+          }]
+        }
+      ]
+      this.callParent();
+    },
+
 
 
     buttons: [{
@@ -466,17 +475,17 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
 
       handler: function() {
         var form = this.up('form').getForm();
-		var keys = this.up('form').getForm().findField("keys").getValue(false)
-		var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
-		var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
-		owner = userSN
-		
+        var keys = this.up('form').getForm().findField("keys").getValue(false)
+        var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
+        var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+        owner = userSN
+
         if (form.isValid()) {
-          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys='+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues
+          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys=' + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues
         };
 
-         
-		//BUG: with a single load the grid doesn't synchronise when scrolled to the bottom
+
+        //BUG: with a single load the grid doesn't synchronise when scrolled to the bottom
         workflowStore.load()
         workflowStore.load()
         //workflowStore.sync()
@@ -496,33 +505,32 @@ var workflowOpenByRunID = Ext.create('CF.view.WorkflowOpenByRunID')
 
 
 var workflowSel = Ext.create('Ext.window.Window', {
-      title: 'Workflows Runs',
-      height: 530,
-      width: 850,
-      closeAction: 'hide',
-      layout: {
-        type: 'vbox',
-        align: 'stretch',
-        pack: 'start'
+  title: 'Workflows Runs',
+  height: 530,
+  width: 850,
+  closeAction: 'hide',
+  layout: {
+    type: 'vbox',
+    align: 'stretch',
+    pack: 'start'
+  },
+  items: [{
+      xtype: 'tabpanel',
+      border: 'false',
+      layout: 'border',
+
+      defaults: {
+        split: true
       },
-      items: [
-			{
-                xtype: 'tabpanel',
-                border: 'false',
-                layout: 'border',
-                
-                defaults: {
-                    split: true
-                },
 
-                items: [workflowValuesRangeSearch,
-                		workflowOpenByRunID
-                	]
-                },
-       		workflowgrid
+      items: [workflowValuesRangeSearch,
+        workflowOpenByRunID
       ]
+    },
+    workflowgrid
+  ]
 
-    })
+})
 
 var action = Ext.create('Ext.Action', {
   tooltip: 'Open Run',
@@ -531,7 +539,7 @@ var action = Ext.create('Ext.Action', {
   handler: function(url) {
 
 
-   /* if (typeof workflowSel != "undefined") {
+    /* if (typeof workflowSel != "undefined") {
       var workflowStore = Ext.create('CF.store.ProvWorkflow');
     } */
 
@@ -539,7 +547,7 @@ var action = Ext.create('Ext.Action', {
 
     workflowSel.show();
     workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN
-    
+
     workflowStore.load()
   }
 });
@@ -562,7 +570,7 @@ var downloadBulk = Ext.create('Ext.Action', {
         var locations = location.split(",")
 
         for (var i = 0; i < locations.length; i++) {
-          
+
           htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>"
         }
       } else
@@ -613,7 +621,7 @@ var refreshAction = Ext.create('Ext.Action', {
       type: 'ajax',
       url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
       reader: {
-        root: 'activities',
+        rootProperty: 'activities',
         totalProperty: 'totalCount'
       },
       simpleSortMode: true
@@ -637,7 +645,7 @@ var viewInputAction = Ext.create('Ext.Action', {
       type: 'ajax',
       url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
       reader: {
-        root: 'input',
+        rootProperty: 'input',
         totalProperty: 'totalCount'
       },
 
@@ -696,9 +704,11 @@ Ext.define('CF.view.ActivityMonitor', {
   trackOver: true,
   autoScroll: true,
   collapsible: true,
-  verticalScroller: {
-    xtype: 'paginggridscroller'
-  },
+
+  // TODO replace, unsupported as of ExtJS 5
+  // verticalScroller: {
+  //   xtype: 'paginggridscroller'
+  // },
 
   dockedItems: {
     itemId: 'toolbar',
@@ -777,14 +787,14 @@ Ext.define('CF.view.ActivityMonitor', {
           url: PROV_SERVICE_BASEURL + 'entities/generatedby?iterationId=' + record.get("ID"),
 
           reader: {
-            root: 'entities',
+            rootProperty: 'entities',
             totalProperty: 'totalCount'
           }
 
 
 
         });
-         
+
         artifactStore.data.clear()
         artifactStore.load()
 
@@ -879,26 +889,26 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
       pack: 'center',
       type: 'vbox'
     },
-    
+
     initComponent: function() {
-    this.items= [Ext.create('CF.view.metaCombo', {}), {
-        fieldLabel: 'Min values (csv)',
-        name: 'minvalues',
-        inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
-        
-        allowBlank: true
-      }, {
-        fieldLabel: 'Max values (csv)',
-        name: 'maxvalues',
-        inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
-      
-        allowBlank: true
-      },
-      Ext.create('CF.view.mimeCombo', {})
-    ];
-    this.callParent();
-  },
-    
+      this.items = [Ext.create('CF.view.metaCombo', {}), {
+          fieldLabel: 'Min values (csv)',
+          name: 'minvalues',
+          inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+
+          allowBlank: true
+        }, {
+          fieldLabel: 'Max values (csv)',
+          name: 'maxvalues',
+          inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+
+          allowBlank: true
+        },
+        Ext.create('CF.view.mimeCombo', {})
+      ];
+      this.callParent();
+    },
+
 
 
     buttons: [{
@@ -907,17 +917,17 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
 
       handler: function() {
         var form = this.up('form').getForm();
-		var keys = this.up('form').getForm().findField("keys").getValue(false)
-		var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
-		var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
-		var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
+        var keys = this.up('form').getForm().findField("keys").getValue(false)
+        var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
+        var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
+        var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
         if (form.isValid()) {
           artifactStore.setProxy({
             type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'entities/values-range?runId=' + currentRun + "&keys="+keys+"&maxvalues="+maxvalues+"&minvalues="+minvalues+"&mime-type="+mimetype,
+            url: PROV_SERVICE_BASEURL + 'entities/values-range?runId=' + currentRun + "&keys=" + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues + "&mime-type=" + mimetype,
 
             reader: {
-              root: 'entities',
+              rootProperty: 'entities',
               totalProperty: 'totalCount'
             },
 
@@ -968,8 +978,8 @@ Ext.define('CF.view.FilterOnAncestor', {
       pack: 'center',
       type: 'vbox'
     },
-    
-    
+
+
     items: [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
@@ -998,9 +1008,9 @@ Ext.define('CF.view.FilterOnAncestor', {
 
         var form = this.up('form').getForm();
         var keys = form.findField("keys").getValue(false)
-		var minvalues = form.findField("minvalues").getValue(false)
-		var maxvalues = form.findField("maxvalues").getValue(false)
-		
+        var minvalues = form.findField("minvalues").getValue(false)
+        var maxvalues = form.findField("maxvalues").getValue(false)
+
         if (form.isValid()) {
           FilterAjax.request({
 
@@ -1059,26 +1069,26 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
       pack: 'center',
       type: 'vbox'
     },
-    
-      initComponent: function() {
-    this.items=[Ext.create('CF.view.metaCombo', {}), {
+
+    initComponent: function() {
+      this.items = [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Min values (csv)',
         name: 'minvalues',
         inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
-        
+
         allowBlank: false
       }, {
         fieldLabel: 'Max values (csv)',
         name: 'maxvalues',
         inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
-      
+
         allowBlank: false
       }];
-       this.callParent();
-       },
+      this.callParent();
+    },
 
 
-    
+
 
 
     buttons: [{
@@ -1157,9 +1167,9 @@ Ext.define('CF.view.FilterOnMeta', {
       pack: 'center',
       type: 'vbox'
     },
-    
+
     initComponent: function() {
-    this.items= [Ext.create('CF.view.metaCombo', {}), {
+      this.items = [Ext.create('CF.view.metaCombo', {}), {
         fieldLabel: 'Attribute values (csv)',
         name: 'values',
         allowBlank: false
@@ -1269,7 +1279,7 @@ Ext.define('CF.view.AnnotationSearch', {
             url: PROV_SERVICE_BASEURL + 'entities/annotations?' + form.getValues(true),
 
             reader: {
-              root: 'entities',
+              rootProperty: 'entities',
               totalProperty: 'totalCount'
             }
           });
@@ -1338,31 +1348,28 @@ var filterOnAncestors = Ext.create('Ext.Action', {
 });
 
 function renderStream(value, p, record) {
-    var location = "</br>"
-    var contenthtm=""
-    
-    if (record.data.location != "")
-      location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
-	
-	contentvis=JSON.parse(record.data.content)
-	
-    for (var key in contentvis) 
-	    {
-	    if (typeof contentvis[key]=="object")
-	     {
-	     for (var key2 in contentvis[key]) 
-	 	    contenthtm+="<strong>"+key2+":</strong> "+contentvis[key][key2]+"<br/><br/>"
-	     }
-	    else
-			contenthtm="<strong> Output Content: </strong>"+contentvis+"<br/><br/>"
-	
-    }
-   
-	
-	   
-	
-  
-    return Ext.String.format(
+  var location = "</br>"
+  var contenthtm = ""
+
+  if (record.data.location != "")
+    location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
+
+  contentvis = JSON.parse(record.data.content)
+
+  for (var key in contentvis) {
+    if (typeof contentvis[key] == "object") {
+      for (var key2 in contentvis[key])
+        contenthtm += "<strong>" + key2 + ":</strong> " + contentvis[key][key2] + "<br/><br/>"
+    } else
+      contenthtm = "<strong> Output Content: </strong>" + contentvis + "<br/><br/>"
+
+  }
+
+
+
+
+
+  return Ext.String.format(
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
     '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
@@ -1450,9 +1457,10 @@ Ext.define('CF.view.SingleArtifactView', {
   trackOver: true,
   autoScroll: true,
 
-  verticalScroller: {
-    xtype: 'paginggridscroller'
-  },
+  // TODO replace, unsupported as of ExtJS 5
+  // verticalScroller: {
+  //   xtype: 'paginggridscroller'
+  // },
 
   viewConfig: {
     enableTextSelection: true
@@ -1522,10 +1530,10 @@ Ext.define('CF.view.ArtifactView', {
   trackOver: true,
   autoScroll: true,
   collapsible: true,
-  verticalScroller: {
-    xtype: 'paginggridscroller'
-  },
-
+  // TODO replace, unsupported as of ExtJS 5
+  // verticalScroller: {
+  //   xtype: 'paginggridscroller'
+  // },
   viewConfig: {
     enableTextSelection: true
   },
@@ -1618,7 +1626,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
             type: 'ajax',
             url: PROV_SERVICE_BASEURL + 'entities/run?runId=' + currentRun + '&dataId=' + selected.node.name,
             reader: {
-              root: 'entities',
+              rootProperty: 'entities',
               totalProperty: 'totalCount'
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -7,58 +7,72 @@
  */
 
 /**
- * @class GeoExt.slider.Tip
- *
- * Create a slider tip displaying ``Ext.slider.SingleSlider`` values over slider thumbs.
+ * @requires GeoExt/Version.js
+ */
+
+/**
+ * Create a slider tip displaying `Ext.slider.SingleSlider` values over slider
+ * thumbs.
  *
  * Example:
-<pre><code>
-var slider = Ext.create('GeoExt.ZoomSlider', {
-    map: panel.map,
-    aggressive: true,
-    width: 200,
-    plugins: new GeoExt.SliderTip({
-        getText: function(thumb) {
-            return Ext.String.format('<div>Scale: 1:{0}</div>', thumb.slider.getScale());
-        }
-    }),
-    renderTo: document.body
-});
-</code></pre>
+ *
+ *     var slider = Ext.create('GeoExt.slider.Zoom', {
+ *         map: panel.map,
+ *         aggressive: true,
+ *         width: 200,
+ *         plugins: Ext.create('GeoExt.slider.Tip', {
+ *             getText: function(thumb) {
+ *                 return Ext.String.format(
+ *                     '<div>Scale: 1:{0}</div>',
+ *                     thumb.slider.getScale()
+ *                 );
+ *             }
+ *         }),
+ *         renderTo: Ext.getBody()
+ *     });
+ *
+ * @class GeoExt.slider.Tip
  */
 Ext.define('GeoExt.slider.Tip', {
     extend : 'Ext.slider.Tip',
     alternateClassName : 'GeoExt.SliderTip',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
+     * Display the tip when hovering over the thumb.  If `false`, tip will
+     * only be displayed while dragging.  Default is `true`.
+     *
      * @cfg {Boolean} hover
-     * Display the tip when hovering over the thumb.  If ``false``, tip will
-     *  only be displayed while dragging.  Default is ``true``.
      */
     hover: true,
 
     /**
-     * @cfg {Number} minWidth
      * Minimum width of the tip.  Default is 10.
+     *
+     * @cfg {Number} minWidth
      */
     minWidth: 10,
 
     /**
-     * @cfg {Number[]} offsets
      * A two item list that provides x, y offsets for the tip.
+     *
+     * @cfg {Number[]} offsets
      */
     offsets : [0, -10],
 
     /**
-     * @cfg {Boolean} dragging
      * The thumb is currently being dragged.
+     *
+     * @property {Boolean} dragging
      */
     dragging: false,
 
     /**
      * Called when the plugin is initialized.
-     * @private
+     *
      * @param {Ext.slider.SingleSlider} slider
+     * @private
      */
     init: function(slider) {
         this.callParent(arguments);
@@ -71,6 +85,7 @@ Ext.define('GeoExt.slider.Tip', {
 
     /**
      * Set as a listener for 'render' if hover is true.
+     *
      * @private
      */
     registerThumbListeners: function() {
@@ -97,10 +112,11 @@ Ext.define('GeoExt.slider.Tip', {
 
     /**
      * Listener for dragstart and drag.
-     * @private
+     *
      * @param {Ext.slider.SingleSlider} slider
      * @param {Object} e
      * @param {Object} thumb
+     * @private
      */
     onSlide: function(slider, e, thumb) {
         this.dragging = true;

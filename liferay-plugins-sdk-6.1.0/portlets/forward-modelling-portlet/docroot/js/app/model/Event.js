@@ -4,7 +4,7 @@
    fields: [{
      name: 'symbolizer',
      convert: function(v, r) {
-       return r.raw.layer.styleMap.createSymbolizer(r.raw, 'default');
+       defaultValue: 'default'
      }
    }, {
      name: 'eventId',

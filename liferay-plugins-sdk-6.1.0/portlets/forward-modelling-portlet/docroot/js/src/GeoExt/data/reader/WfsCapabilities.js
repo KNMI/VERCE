@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -11,21 +11,29 @@
  * @include OpenLayers/Protocol/WFS.js
  * @include OpenLayers/Strategy/Fixed.js
  * @include OpenLayers/Layer/Vector.js
+ * @requires GeoExt/Version.js
  */
 
 /**
- * @class GeoExt.data.reader.WfsCapabilities
  * Data reader class to create {GeoExt.data.WfsCapabilitiesLayerModel[]}
  * from a WFS GetCapabilities response.
+ *
+ * @class GeoExt.data.reader.WfsCapabilities
  */
 Ext.define('GeoExt.data.reader.WfsCapabilities', {
-    alternateClassName: ['GeoExt.data.reader.WFSCapabilities', 'GeoExt.data.WFSCapabilitiesReader'],
+    alternateClassName: [
+        'GeoExt.data.reader.WFSCapabilities',
+        'GeoExt.data.WFSCapabilitiesReader'
+    ],
     extend: 'Ext.data.reader.Json',
     alias: 'reader.gx_wfscapabilities',
-
+    requires: [
+        'GeoExt.Version'
+    ],
     /**
      * Creates new Reader.
-     * @param {Object} config (optional) Config object.
+     *
+     * @param {Object} [config] Config object.
      */
     constructor: function(config) {
         if (!this.model) {
@@ -41,9 +49,9 @@ Ext.define('GeoExt.data.reader.WfsCapabilities', {
      * Gets the records.
      *
      * @param {Object} request The XHR object which contains the parsed XML
-     * document.
-     * @return {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     document.
+     * @return {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
      */
     getResponseData: function(request) {
         var data = request.responseXML;
@@ -55,14 +63,15 @@ Ext.define('GeoExt.data.reader.WfsCapabilities', {
 
     /**
      * Create a data block containing Ext.data.Records from an XML document.
-     * @private
+     *
      * @param {DOMElement/String/Object} data A document element or XHR
-     * response string.  As an alternative to fetching capabilities data
-     * from a remote source, an object representing the capabilities can
-     * be provided given that the structure mirrors that returned from the
-     * capabilities parser.
-     * @return  {Object} A data block which is used by an {Ext.data.Store}
-     * as a cache of {Ext.data.Model} objects.
+     *     response string.  As an alternative to fetching capabilities data
+     *     from a remote source, an object representing the capabilities can
+     *     be provided given that the structure mirrors that returned from the
+     *     capabilities parser.
+     * @return  {Object} A data block which is used by an Ext.data.Store
+     *     as a cache of Ext.data.Model objects.
+     * @private
      */
     readRecords: function(data) {
         if(typeof data === "string" || data.nodeType) {

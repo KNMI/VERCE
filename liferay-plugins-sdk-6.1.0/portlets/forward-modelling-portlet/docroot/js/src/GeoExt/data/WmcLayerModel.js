@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -11,8 +11,9 @@
  */
 
 /**
- * @class GeoExt.data.WmcLayerModel
  * The model for WMS layers coming from a Web Map Context document.
+ *
+ * @class GeoExt.data.WmcLayerModel
  */
 Ext.define('GeoExt.data.WmcLayerModel',{
     extend: 'GeoExt.data.LayerModel',

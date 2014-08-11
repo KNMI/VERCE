@@ -36,13 +36,15 @@ var eventsTabPanel = Ext.create('Ext.TabPanel', {
   }]
 });
 
-var stationsTabPanel = Ext.create('Ext.TabPanel', {
+Ext.define('CF.view.StationsTabPanel', {
+  extend: 'Ext.TabPanel',
+  alias: 'widget.StationsTabPanel',
+  requires: ['CF.view.StationSearchByFile', 'CF.view.StationSearch'],
   border: false,
   layout: {
     type: 'vbox',
     align: 'stretch'
   },
-  requires: ['CF.view.StationSearchByFile', 'CF.view.StationSearch'],
   items: [{
     xtype: 'panel',
     title: 'FDSN',
@@ -62,9 +64,9 @@ var stationsTabPanel = Ext.create('Ext.TabPanel', {
       type: 'vbox',
       align: 'stretch'
     },
-    items: [
-      Ext.create('CF.view.StationSearchByFile')
-    ]
+    items: [{
+      xtype: 'StationSearchByFile'
+    }]
   }]
 });
 
@@ -150,8 +152,9 @@ Ext.define('CF.view.Viewport', {
                   type: 'vbox',
                   align: 'stretch'
                 },
-                items: [
-                  stationsTabPanel,
+                items: [{
+                    xtype: 'StationsTabPanel'
+                  },
                   Ext.create('CF.view.dataviews.StationGrid')
                 ]
               }, {

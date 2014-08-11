@@ -1,40 +1,49 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
- * 
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
+ *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
  * text of the license.
  */
 
 /**
- *  Creates a combo box that handles results from a geocoding service. By
- *  default it uses OSM Nominatim, but it can be configured with a custom store
- *  to use other services. If the user enters a valid address in the search
- *  box, the combo's store will be populated with records that match the
- *  address.  By default, records have the following fields:
- *  
- *  * name - ``String`` The formatted address.
- *  * lonlat - ``Array`` Location matching address, for use with
- *      OpenLayers.LonLat.fromArray.
- *  * bounds - ``Array`` Recommended viewing bounds, for use with
- *      OpenLayers.Bounds.fromArray.
+ * Creates a combo box that handles results from a geocoding service. By
+ * default it uses OSM Nominatim, but it can be configured with a custom store
+ * to use other services. If the user enters a valid address in the search
+ * box, the combo's store will be populated with records that match the
+ * address.  By default, records have the following fields:
+ *
+ * * name - `String` The formatted address.
+ * * lonlat - `Array` Location matching address, for use with
+ *     OpenLayers.LonLat.fromArray.
+ * * bounds - `Array` Recommended viewing bounds, for use with
+ *     OpenLayers.Bounds.fromArray.
+ *
  * @class GeoExt.form.field.GeocoderComboBox
  */
 Ext.define('GeoExt.form.field.GeocoderComboBox', {
     extend : 'Ext.form.field.ComboBox',
-    requires: ["GeoExt.panel.Map", "Ext.data.JsonStore", "Ext.data.proxy.JsonP"],
+    requires: [
+        "GeoExt.panel.Map",
+        "Ext.data.JsonStore",
+        "Ext.data.proxy.JsonP"
+    ],
     alias : 'widget.gx_geocodercombo',
     alternateClassName : 'GeoExt.form.GeocoderComboBox',
 
-    /** 
-     * @cfg {String} Text to display for an empty field (i18n).
+    /**
+     * Text to display for an empty field (i18n).
+     *
+     * @cfg {String}
      */
     emptyText: "Search",
-    
+
     /**
-     * @cfg {GeoExt.panel.Map/OpenLayers.Map} map The map that will be controlled by
+     * The map that will be controlled by
      * this GeoCoderComboBox. Only used if this component is not added as item
-     * or toolbar item to a {GeoExt.panel.Map}.
+     * or toolbar item to a GeoExt.panel.Map.
+     *
+     * @cfg {GeoExt.panel.Map/OpenLayers.Map} map
      */
     /**
      * @property {OpenLayers.Map} map
@@ -42,102 +51,110 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
      */
 
     /**
+     * The srs used by the geocoder service.
+     *
      * @cfg {String/OpenLayers.Projection}
-     * The srs used by the geocoder service. Default is "EPSG:4326".
      */
     srs: "EPSG:4326",
-    
-    /** 
-     * @cfg {Integer}
+
+    /**
      * The minimum zoom level to use when zooming to a location.
-     * Not used when zooming to a bounding box. Default is 10.
+     * Not used when zooming to a bounding box.
+     *
+     * @cfg {Integer}
      */
     zoom: 10,
-    
-    /** 
-     * @cfg {OpenLayers.Layer.Vector} If provided, a marker will be drawn on this
-     * layer with the location returned by the geocoder. The location will be
-     * cleared when the map panned. 
-     */
-    
-    /** 
-     * @cfg {Number} Delay before the search occurs.  Default is 100ms.
+
+    /**
+     * Delay before the search occurs in ms.
+     *
+     * @cfg {Number}
      */
     queryDelay: 100,
-    
+
     /**
-     * @cfg {String} Field from selected record to use when the combo's
+     * Field from selected record to use when the combo's
      * getValue method is called.  Default is "bounds". This field is
      * supposed to contain an array of [left, bottom, right, top] coordinates
-     * for a bounding box or [x, y] for a location. 
+     * for a bounding box or [x, y] for a location.
+     *
+     * @cfg {String}
      */
     valueField: "bounds",
 
     /**
-     * @cfg {String}
-     * The field to display in the combo boy. Default is
+     * The field to display in the combo box. Default is
      * "name" for instant use with the default store for this component.
+     *
+     * @cfg {String}
      */
     displayField: "name",
-    
-    /** 
-     * @cfg {String}
+
+    /**
      * The field to get the location from. This field is supposed
      * to contain an array of [x, y] for a location. Default is "lonlat" for
      * instant use with the default store for this component.
+     *
+     * @cfg {String}
      */
     locationField: "lonlat",
-    
+
     /**
+     * URL template for querying the geocoding service. If a store is
+     * configured, this will be ignored. Note that the queryParam will be used
+     * to append the user's combo box input to the url.
+     *
+     * Default is "http://nominatim.openstreetmap.org/search?format=json", for
+     * instant use with the OSM Nominatim geolocator. However, if you intend to
+     * use that, note the [Nominatim Usage
+     * Policy](http://wiki.openstreetmap.org/wiki/Nominatim_usage_policy).
+     *
      * @cfg {String}
-     * URL template for querying the geocoding service. If a
-     * store is configured, this will be ignored. Note that the
-     * queryParam will be used to append the user's combo box
-     * input to the url. Default is
-     * "http://nominatim.openstreetmap.org/search?format=json", for instant
-     * use with the OSM Nominatim geolocator. However, if you intend to use
-     * that, note the
-     * `Nominatim Usage Policy <http://wiki.openstreetmap.org/wiki/Nominatim_usage_policy>`_.
      */
     url: "http://nominatim.openstreetmap.org/search?format=json",
-    
+
     /**
-     * @cfg {String}
      * The query parameter for the user entered search text.
      * Default is "q" for instant use with OSM Nominatim.
+     *
+     * @cfg {String}
      */
     queryParam: "q",
-    
+
     /**
-     * {Number}
      * Minimum number of entered characters to trigger a search.
-     * Default is 3.
+     *
+     * @cfg {Number}
      */
     minChars: 3,
-    
+
     /**
-     * @cfg {Ext.data.Store}
      * The store used for this combo box. Default is a
-     * store with a ScriptTagProxy and the url configured as :obj:`url` * property.
+     * store with a ScriptTagProxy and the url configured as :obj:`url`
+     * property.
+     *
+     * @cfg {Ext.data.Store}
      */
     store: null,
-    
+
     /**
+     * Last center that was zoomed to after selecting a location in the combo
+     * box.
+     *
      * @property {OpenLayers.LonLat}
-     * Last center that was zoomed to after selecting
-     * a location in the combo box.
      * @private
      */
     center: null,
-    
+
     /**
-     * @property {OpenLayers.Feature.Vector}
      * Last location provided by the geolocator.
      * Only set if layer is configured.
+     *
+     * @property {OpenLayers.Feature.Vector}
      * @private
      */
     locationFeature: null,
-    
+
     initComponent: function() {
         if (this.map) {
             this.setMap(this.map);
@@ -151,11 +168,14 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
                 fields: [
                     {name: "name", mapping: "display_name"},
                     {name: "bounds", convert: function(v, rec) {
-                        var bbox = rec.raw.boundingbox;
+                        var dataKey = GeoExt.isExt4 ? 'raw' : 'data',
+                            bbox = rec[dataKey].boundingbox;
                         return [bbox[2], bbox[0], bbox[3], bbox[1]];
                     }},
                     {name: "lonlat", convert: function(v, rec) {
-                        return [rec.raw.lon, rec.raw.lat];
+                        var dataKey = GeoExt.isExt4 ? 'raw' : 'data',
+                            data = rec[dataKey];
+                        return [data.lon, data.lat];
                     }}
                 ],
                 proxy: Ext.create("Ext.data.proxy.JsonP", {
@@ -164,7 +184,7 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
                 })
             });
         }
-        
+
         this.on({
             added: this.findMapPanel,
             select: this.handleSelect,
@@ -174,11 +194,12 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             },
             scope: this
         });
-        return this.callParent(arguments); 
+        return this.callParent(arguments);
     },
-    
-    /** 
-     * Find the MapPanel somewhere up in the hierarchy and set the map
+
+    /**
+     * Find the MapPanel somewhere up in the hierarchy and set the map.
+     *
      * @private
      */
     findMapPanel: function() {
@@ -187,13 +208,14 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             this.setMap(mapPanel);
         }
     },
-    
-    /** 
+
+    /**
      * Zoom to the selected location, and also set a location marker if this
      * component was configured with a layer.
+     *
      * @private
      */
-    handleSelect: function(combo, rec) {                
+    handleSelect: function(combo, rec) {
         if (!this.map) {
             this.findMapPanel();
         }
@@ -225,10 +247,11 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             }
         }
     },
-    
-    /** 
-     * Remove the location marker from the :obj:`layer` and destroy the
-     * :obj:`locationFeature`.
+
+    /**
+     * Remove the location marker from the `layer` and destroy the
+     * `#locationFeature`.
+     *
      * @private
      */
     removeLocationFeature: function() {
@@ -236,10 +259,11 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             this.layer.destroyFeatures([this.locationFeature]);
         }
     },
-    
+
     /**
      * Handler for the map's moveend event. Clears the selected location
      * when the map center has changed.
+     *
      * @private
      */
     clearResult: function() {
@@ -247,9 +271,10 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             this.clearValue();
         }
     },
-    
-    /** 
-     * Set the :obj:`map` for this instance.
+
+    /**
+     * Set the `#map` for this instance.
+     *
      * @param {GeoExt.panel.Map/OpenLayers.Map} map
      * @private
      */
@@ -264,14 +289,21 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             scope: this
         });
     },
-    
+
     /**
      * Called by a MapPanel if this component is one of the items in the panel.
      * @param {GeoExt.panel.Map} panel
+     *
      * @private
      */
     addToMapPanel: Ext.emptyFn,
-    
+
+    /**
+     * Unbind various event listeners and deletes #map, #layer and #center
+     * properties.
+     *
+     * @private
+     */
     beforeDestroy: function() {
         if (this.map && this.map.events) {
             this.map.events.un({

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -27,6 +27,7 @@
  *
  * A typical configuration that makes use of some of these extended sttings
  * could look like this:
+ *
  *     {
  *         plugins: [{ptype: 'gx_layer'}],
  *         layer: myLayerRecord.getLayer(),
@@ -42,17 +43,20 @@
  * it to a layer record that was previously assigned to the myLayerRecord
  * variable. The node will be rendered with a GeoExt.container.WmsLegend,
  * configured with the same layer.
+ *
+ * @class GeoExt.data.LayerTreeModel
  */
 Ext.define('GeoExt.data.LayerTreeModel',{
     alternateClassName: 'GeoExt.data.LayerTreeRecord',
     extend: 'Ext.data.Model',
     requires: [
-        'Ext.data.proxy.Memory', 
-        'Ext.data.reader.Json'
+        'Ext.data.proxy.Memory',
+        'Ext.data.reader.Json',
+        'GeoExt.Version'
     ],
     alias: 'model.gx_layertree',
-    fields: [  
-        {name: 'text', type: 'string'}, 
+    fields: [
+        {name: 'text', type: 'string'},
         {name: 'plugins'},
         {name: 'layer'},
         {name: 'container'},
@@ -63,25 +67,26 @@ Ext.define('GeoExt.data.LayerTreeModel',{
     proxy: {
         type: "memory"
     },
-    
+
     /**
-     * @event afteredit
      * Fires after the node's fields were modified.
+     *
+     * @event afteredit
      * @param {GeoExt.data.LayerTreeModel} this This model instance.
      * @param {String[]} modifiedFieldNames The names of the fields that were
      * edited.
      */
-    
+
     /**
      * @private
      */
     constructor: function(data, id, raw, convertedData) {
         var me = this;
-       
-        me.callParent(arguments);      
-        
+
+        me.callParent(arguments);
+
         window.setTimeout(function() {
-            var plugins = me.get('plugins');  
+            var plugins = me.get('plugins');
 
             if (plugins) {
                 var plugin, instance;
@@ -95,8 +100,10 @@ Ext.define('GeoExt.data.LayerTreeModel',{
             }
         });
     },
-    
+
     /**
+     * Fires the #afteredit event after the node's fields were modified.
+     *
      * @private
      */
     afterEdit: function(modifiedFieldNames) {

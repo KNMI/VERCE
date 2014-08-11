@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 The Open Source Geospatial Foundation
+ * Copyright (c) 2008-2014 The Open Source Geospatial Foundation
  *
  * Published under the BSD license.
  * See https://github.com/geoext/geoext2/blob/master/license.txt for the full
@@ -10,14 +10,14 @@
  * @include OpenLayers/Layer/WMS.js
  * @include OpenLayers/Util.js
  * @requires GeoExt/container/LayerLegend.js
- * @include GeoExt/LegendImage.js
+ * @requires GeoExt/LegendImage.js
  */
 
 /**
- *  Show a legend image for a WMS layer. The image can be read from the styles
- *  field of a layer record (if the record comes e.g. from a
- *  GeoExt.data.WMSCapabilitiesReader). If not provided, a
- *  GetLegendGraphic request will be issued to retrieve the image.
+ * Show a legend image for a WMS layer. The image can be read from the styles
+ * field of a layer record (if the record comes e.g. from a
+ * GeoExt.data.WMSCapabilitiesReader). If not provided, a
+ * GetLegendGraphic request will be issued to retrieve the image.
  *
  * @class GeoExt.container.WmsLegend
  */
@@ -28,47 +28,111 @@ Ext.define('GeoExt.container.WmsLegend', {
     alternateClassName: 'GeoExt.WMSLegend',
 
     statics: {
+        /**
+         * Checks whether the given layer record supports an URL legend.
+         *
+         * @param {GeoExt.data.LayerRecord} layerRecord Record containing a
+         *     WMS layer.
+         * @return {Number} Either `1` when WMS legends are supported or `0`.
+         */
         supports: function(layerRecord) {
             return layerRecord.getLayer() instanceof OpenLayers.Layer.WMS ? 1 : 0;
-        }
+        },
+
+        /**
+         * A regular expression to validate whether a given string is a valid id
+         * ready to be used either as `id` or `itemId` property. In Ext 5 we can
+         * use #Ext.validIdRe, in Ext 4 we define our own regular expression.
+         * See #layernameToItemId.
+         *
+         * @private
+         */
+        validIdRe: Ext.validIdRe || (/^[a-z_][a-z0-9\-_]*$/i),
+
+        /**
+         * A regular expression matching all non allowed characters in possible
+         * itemId. See #layernameToItemId.
+         *
+         * @private
+         */
+        illegalItemIdRe: (/[^\w\-]+/g),
+
+        /**
+         * A string we use as a prefix when we need to construct our own itemIds
+         * out of user supplied layer names. See #layernameToItemId
+         *
+         * @private
+         */
+        itemIdPrefix: "gx_itemId_",
+
+        /**
+         * Turns a given layername into a string suitable for usage as an
+         * itemId-property. See {Ext.Component#itemId}:
+         *
+         * "Valid identifiers start with a letter or underscore and are followed
+         * by (optional) additional letters, underscores, digits or hyphens."
+         *
+         * @param {String} name The layername to convert.
+         * @return {String} A string that is now ready to be used as itemId.
+         */
+        layernameToItemId: function(name){
+            var layername = name ? "" + name : "",
+                staticMe = GeoExt.container.WmsLegend,
+                prefix = staticMe.itemIdPrefix,
+                validIdRe = staticMe.validIdRe,
+                illegalItemIdRe = staticMe.illegalItemIdRe,
+                replace = "-",
+                itemId;
+            if (validIdRe.test(layername)) {
+                itemId = layername;
+            } else {
+                itemId = prefix + layername.replace(illegalItemIdRe, replace);
+            }
+            return itemId
+        },
     },
 
-    /** @cfg {Boolean}
+    /**
      * The WMS spec does not say if the first style advertised for a layer in
      * a Capabilities document is the default style that the layer is
      * rendered with. We make this assumption by default. To be strictly WMS
      * compliant, set this to false, but make sure to configure a STYLES
      * param with your WMS layers, otherwise LegendURLs advertised in the
      * GetCapabilities document cannot be used.
+     *
+     * @cfg {Boolean}
      */
     defaultStyleIsFirst: true,
 
-    /** @cfg {Boolean}
+    /**
      * Should we use the optional SCALE parameter in the SLD WMS
-     * GetLegendGraphic request? Defaults to true.
+     * GetLegendGraphic request?
+     *
+     * @cfg {Boolean}
      */
     useScaleParameter: true,
 
-    /** @cfg {Object}
+    /**
      * Optional parameters to add to the legend url, this can e.g. be used to
      * support vendor-specific parameters in a SLD WMS GetLegendGraphic
-     * request. To override the default MIME type of image/gif use the
-     * FORMAT parameter in baseParams.
+     * request. To override the default MIME type of `image/gif` use the
+     * `FORMAT` parameter in baseParams.
      *
      * Example:
-<pre><code>
-var legendPanel = new GeoExt.LegendPanel({
-    map: map,
-    title: 'Legend Panel',
-    defaults: {
-        style: 'padding:5px',
-        baseParams: {
-            FORMAT: 'image/png',
-            LEGEND_OPTIONS: 'forceLabels:on'
-        }
-    }
-});
-</code></pre>
+     *
+     *     var legendPanel = Ext.create('GeoExt.panel.Legend', {
+     *         map: map,
+     *         title: 'Legend Panel',
+     *         defaults: {
+     *             style: 'padding:5px',
+     *             baseParams: {
+     *                 FORMAT: 'image/png',
+     *                 LEGEND_OPTIONS: 'forceLabels:on'
+     *             }
+     *         }
+     *     });
+     *
+     * @cfg {Object}
      */
     baseParams: null,
 
@@ -82,6 +146,9 @@ var legendPanel = new GeoExt.LegendPanel({
     },
 
     /**
+     * Called when `moveend` fires on the associated layer. Might call #update
+     * to be in sync with layer style.
+     *
      * @private
      * @param {Object} e
      */
@@ -95,11 +162,12 @@ var legendPanel = new GeoExt.LegendPanel({
 
     /**
      * Get the legend URL of a sublayer.
-     * @private
+     *
      * @param {String} layerName A sublayer.
-     * @param {Array} layerNames The array of sublayers,
-     * read from this.layerRecord if not provided.
+     * @param {Array} layerNames The array of sublayers, read from #layerRecord
+     *     if not provided.
      * @return {String} The legend URL.
+     * @private
      */
     getLegendUrl: function(layerName, layerNames) {
         var rec = this.layerRecord;
@@ -163,6 +231,7 @@ var legendPanel = new GeoExt.LegendPanel({
     /**
      * Update the legend, adding, removing or updating
      * the per-sublayer box component.
+     *
      * @private
      */
     update: function() {
@@ -175,14 +244,23 @@ var legendPanel = new GeoExt.LegendPanel({
         }
         this.callParent();
 
-        var layerNames, layerName, i, len;
+        var layerNames,
+            layerName,
+            i,
+            len,
+            itemIdCandidate,
+            itemIdCandidates = [];
 
         layerNames = [layer.params.LAYERS].join(",").split(",");
+
+        Ext.each(layerNames, function(name){
+            itemIdCandidates.push(this.self.layernameToItemId(name));
+        }, this);
 
         var destroyList = [];
         var textCmp = this.items.get(0);
         this.items.each(function(cmp) {
-            i = Ext.Array.indexOf(layerNames, cmp.itemId);
+            i = Ext.Array.indexOf(itemIdCandidates, cmp.itemId);
             if(i < 0 && cmp != textCmp) {
                 destroyList.push(cmp);
             } else if(cmp !== textCmp){
@@ -203,17 +281,27 @@ var legendPanel = new GeoExt.LegendPanel({
 
         for(i = 0, len = layerNames.length; i<len; i++) {
             layerName = layerNames[i];
-            if(!this.items || !this.getComponent(layerName)) {
+            itemIdCandidate = this.self.layernameToItemId(layerName);
+            if(!this.items || !this.getComponent(itemIdCandidate)) {
                 this.add({
                     xtype: "gx_legendimage",
                     url: this.getLegendUrl(layerName, layerNames),
-                    itemId: layerName
+                    itemId: itemIdCandidate,
+                    listeners: {
+                        'legendimageloaded': function() {
+                            this.fireEvent('legendimageloaded', this);
+                        },
+                        scope: this
+                    }
                 });
             }
         }
         this.doLayout();
     },
 
+    /**
+     * Unregisters the moveend-listener prior to destroying.
+     */
     beforeDestroy: function() {
         if (this.useScaleParameter === true) {
             var layer = this.layerRecord.getLayer();
@@ -223,5 +311,6 @@ var legendPanel = new GeoExt.LegendPanel({
         this.callParent();
     }
 }, function() {
-    GeoExt.container.LayerLegend.types["gx_wmslegend"] = GeoExt.container.WmsLegend;
+    GeoExt.container.LayerLegend.types["gx_wmslegend"] =
+        GeoExt.container.WmsLegend;
 });
