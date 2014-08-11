@@ -116,9 +116,6 @@ Ext.define('CF.view.WfGrid', {
                       Ext.util.Observable.capture(eventGrid, function(evname) {
                         console.log("grid: ", evname, arguments);
                       });
-                      eventGrid.on('add', function() {
-                        console.log('add', arguments);
-                      }, this);
                       Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {
                         console.log("grid: ", evname, arguments);
                       });
@@ -128,26 +125,34 @@ Ext.define('CF.view.WfGrid', {
                       Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {
                         console.log("map: ", evname, arguments);
                       });
-                      // ctrl.eventstore.addListener('refresh', function() {
-                      //   object.events.forEach(function(eventId) {
-                      //     var record = eventGrid.store.findRecord('eventId', eventId);
-                      //     eventGrid.getSelectionModel().select(record);
-                      //   });
-                      // }, this, {
-                      //   single: true
-                      // });
 
                       // reuse events
                       getEvents(ctrl, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
 
                       var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
+                      var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
+                      Ext.getCmp('station-filetype').select(stationFileType);
 
-                      // var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
-                      // Ext.getCmp('station-filetype').select(stationFileType);
+                      var stationLayer = map.getLayersByName('Stations')[0];
+                      stationLayer.events.on({
+                        featureadded: function(event) {
+                          object.stations.every(function(stationId) {
+                            if (stationId === (event.feature.data.network + '.' + event.feature.data.station)) {
+                              map.getControl('dragselect').select(event.feature);
+                              return false;
+                            }
+                            map.getControl('dragselect').unselect(event.feature);
+                            return true;
+                          });
+                        },
+                        featuresadded: function(event) {
+                          stationLayer.events.un(this);
+                        },
+                        scope: this
+                      });
 
                       // reuse stations
                       getStations(ctrl, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
-                      var selectedStations = Ext.getCmp('gridStations').getSelectionModel().selected;
 
                       // Only set old workflow if it's still available
                       if (prov_object.workflowId != null) {

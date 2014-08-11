@@ -23,25 +23,12 @@ Ext.define('CF.view.dataviews.StationGrid', {
       selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true,
         listeners: {
-          select: function(t, r, i) {
-            //upate to selected image
-            var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'gridSelect');
-            r.data.symbolizer = newSymbolizer;
-            //ctrl.stationLayer.drawFeature(r.raw, 'gridSelect');
+          select: function(rowmodel, record, index) {
+            map.getControl('dragselect').select(record.raw);
           },
-          deselect: function(t, r, i) {
-            //update to unselected image
-            var newSymbolizer = stationstylemap.createSymbolizer(r.raw, 'default');
-            r.data.symbolizer = newSymbolizer;
+          deselect: function(rowmodel, record, index) {
+            map.getControl('dragselect').unselect(record.raw);
           },
-          selectionchange: function(t, s) {
-            //render grid and layer to update the selected/unselected symbols
-            //Ext.getCmp('gridStations').getView().refresh();
-            //t.refresh();
-            //this.getView().refresh();
-            ctrl.stationLayer.redraw();
-            Ext.getCmp('stationSelColumn').setText(s.length + "/" + stationStore.getTotalCount());
-          }
         }
       }),
       columns: [{
