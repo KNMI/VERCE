@@ -23,7 +23,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
         xtype: 'componentcolumn',
         renderer: function(value, meta, record) {
           var change = function(component, newValue, oldValue, options) {
-            record.set('value', element.value, {
+            record.set('value', newValue, {
               // prevent breaking focus on the field
               silent: true
             });
