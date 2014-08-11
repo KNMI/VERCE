@@ -50,6 +50,7 @@ Ext.define('CF.view.Viewport', {
             type: 'vbox',
             align: 'stretch'
           },
+          deferredRender: false,
           items: [{
             xtype: 'panel',
             title: 'Solver',
