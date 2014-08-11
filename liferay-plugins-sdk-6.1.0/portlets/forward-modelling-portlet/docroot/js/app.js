@@ -44,8 +44,3 @@ Ext.application({
   controllers: ['Map'],
   autoCreateViewport: true
 });
-
-/**
- * For dev purpose only
- */
-var map, mapPanel;

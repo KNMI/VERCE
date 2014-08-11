@@ -34,10 +34,10 @@ Ext.define('CF.view.dataviews.EventGrid', {
         checkOnly: true,
         listeners: {
           select: function(rowmodel, record, index) {
-            map.getControl('clickselect').select(record.data);
+            controller.mapPanel.map.getControl('clickselect').select(record.data);
           },
           deselect: function(rowmodel, record, index) {
-            map.getControl('clickselect').unselect(record.data);
+            controller.mapPanel.map.getControl('clickselect').unselect(record.data);
           },
           selectionchange: function(t, s) {
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);

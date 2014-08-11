@@ -25,10 +25,10 @@ Ext.define('CF.view.dataviews.StationGrid', {
         checkOnly: true,
         listeners: {
           select: function(rowmodel, record, index) {
-            map.getControl('dragselect').select(record.data);
+            controller.mapPanel.map.getControl('dragselect').select(record.data);
           },
           deselect: function(rowmodel, record, index) {
-            map.getControl('dragselect').unselect(record.data);
+            controller.mapPanel.map.getControl('dragselect').unselect(record.data);
           },
           selectionchange: function(t, s) {
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);

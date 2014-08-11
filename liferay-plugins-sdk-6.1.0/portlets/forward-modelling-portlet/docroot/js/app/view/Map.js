@@ -221,23 +221,13 @@ Ext.define('CF.view.Map', {
     layers.push(stationLayer);
     layers.push(eventLayer);
 
-    map = new OpenLayers.Map('map', {
+    this.map = new OpenLayers.Map('map', {
       numZoomLevels: 10
     });
-    map.addLayers(layers)
+    this.map.addLayers(layers)
 
-    OpenLayers.Control.CustomNavToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
-
-      /**
-       * Constructor: OpenLayers.Control.NavToolbar
-       * Add our two mousedefaults controls.
-       *
-       * Parameters:
-       * options - {Object} An optional object whose properties will be used
-       *     to extend the control.
-       */
-
-
+    var map = this.map;
+    var navToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
       initialize: function(options) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
         this.addControls([
@@ -276,9 +266,9 @@ Ext.define('CF.view.Map', {
       }
     });
 
-    var panel = new OpenLayers.Control.CustomNavToolbar();
+    var panel = new navToolbar();
 
-    map.addControls([
+    this.map.addControls([
       panel,
       new OpenLayers.Control.LayerSwitcher({
         'ascending': false

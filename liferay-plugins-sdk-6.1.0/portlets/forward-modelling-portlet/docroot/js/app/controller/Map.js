@@ -331,7 +331,7 @@ Ext.define('CF.controller.Map', {
     this.getStationsGrid().setLoading(true);
     this.hideStationInfo();
 
-    var stationLayer = map.getLayersByName('Stations')[0];
+    var stationLayer = this.mapPanel.map.getLayersByName('Stations')[0];
     this.stationstore.bind(stationLayer);
 
     stationLayer.refresh({
@@ -346,7 +346,7 @@ Ext.define('CF.controller.Map', {
     this.hideEventInfo();
     // The getForm() method returns the Ext.form.Basic instance:
 
-    var eventLayer = map.getLayersByName('Events')[0];
+    var eventLayer = this.mapPanel.map.getLayersByName('Events')[0];
     this.eventstore.bind(eventLayer);
 
     eventLayer.refresh({
@@ -362,7 +362,7 @@ Ext.define('CF.controller.Map', {
         var errorMsg;
         if (resp.requestType != "delete") {
           //if(elem.url.indexOf("/documents/")> -1)
-          //	Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the map.<br>You can manage your uploaded files in the File Manager');
+          //	Ext.Msg.alert('Success','The file has been uploaded and the information is now loading on the this.mapPanel.map.<br>You can manage your uploaded files in the File Manager');
 
           resp.features = elem.parseFeatures(request);
 
@@ -388,7 +388,7 @@ Ext.define('CF.controller.Map', {
     if (evtfeature) evisfeature = evtfeature;
     if (evisfeature) {
       if (evisfeature.popup) {
-        map.removePopup(evisfeature.popup);
+        this.mapPanel.map.removePopup(evisfeature.popup);
         evisfeature.popup.destroy();
         evisfeature.popup = null;
       }
@@ -409,13 +409,13 @@ Ext.define('CF.controller.Map', {
     var grid = Ext.ComponentQuery.query('eventsgrid')[0];
     grid.getView().focusRow(eventStore.getByFeature(evisfeature));
     evisfeature.popup = popup;
-    map.addPopup(popup);
+    this.mapPanel.map.addPopup(popup);
   },
   hideStationInfo: function(stfeature) {
     if (stfeature) svisfeature = stfeature;
     if (svisfeature) {
       if (svisfeature.popup) {
-        map.removePopup(svisfeature.popup);
+        this.mapPanel.map.removePopup(svisfeature.popup);
         svisfeature.popup.destroy();
         svisfeature.popup = null;
       }
@@ -435,6 +435,6 @@ Ext.define('CF.controller.Map', {
     var grid = Ext.ComponentQuery.query('stationsgrid')[0];
     grid.getView().focusRow(stationStore.getByFeature(svisfeature));
     svisfeature.popup = popup;
-    map.addPopup(popup);
+    this.mapPanel.map.addPopup(popup);
   }
 });

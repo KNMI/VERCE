@@ -108,7 +108,7 @@ Ext.define('CF.view.WfGrid', {
                       solverConfStore.loadData(object.fields);
 
                       // HACK ensure correct event binding order by binding here
-                      var eventLayer = map.getLayersByName('Events')[0];
+                      var eventLayer = controller.mapPanel.map.getLayersByName('Events')[0];
                       controller.eventstore.bind(eventLayer);
 
                       eventLayer.events.on({
@@ -117,10 +117,10 @@ Ext.define('CF.view.WfGrid', {
                           event.features.forEach(function(feature) {
                             object.events.every(function(eventId) {
                               if (eventId === feature.data.eventId) {
-                                map.getControl('clickselect').select(feature);
+                                controller.mapPanel.map.getControl('clickselect').select(feature);
                                 return false;
                               }
-                              map.getControl('clickselect').unselect(feature);
+                              controller.mapPanel.map.getControl('clickselect').unselect(feature);
                               return true;
                             });
                           });
@@ -137,7 +137,7 @@ Ext.define('CF.view.WfGrid', {
                       Ext.getCmp('station-filetype').select(stationFileType);
 
                       // HACK ensure correct event binding order by binding here
-                      var stationLayer = map.getLayersByName('Stations')[0];
+                      var stationLayer = controller.mapPanel.map.getLayersByName('Stations')[0];
                       controller.stationstore.bind(stationLayer);
 
                       stationLayer.events.on({
@@ -146,10 +146,10 @@ Ext.define('CF.view.WfGrid', {
                           event.features.forEach(function(feature) {
                             object.stations.every(function(stationId) {
                               if (stationId === (feature.data.network + '.' + feature.data.station)) {
-                                map.getControl('dragselect').select(feature);
+                                controller.mapPanel.map.getControl('dragselect').select(feature);
                                 return false;
                               }
-                              map.getControl('dragselect').unselect(feature);
+                              controller.mapPanel.map.getControl('dragselect').unselect(feature);
                               return true;
                             });
                           })
