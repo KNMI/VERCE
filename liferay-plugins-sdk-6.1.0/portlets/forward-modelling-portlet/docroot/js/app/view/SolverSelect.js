@@ -133,6 +133,7 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
 var formSolverSelect = Ext.create('Ext.form.Panel', {
   extend: 'Ext.form.Panel',
   alias: 'widget.solverselect',
+  requires: ['CF.view.LinkButton'],
   width: 500,
   frame: false,
   border: false,
@@ -143,7 +144,6 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     msgTarget: 'side',
     labelWidth: 70
   },
-  // defaultType: 'numberfield',
   items: [{
     xtype: 'container',
     width: '100%',

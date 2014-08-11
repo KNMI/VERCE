@@ -336,7 +336,6 @@ function getStations(elem, purl, formatType) {
   hideStationInfo();
 
   var stationLayer = map.getLayersByName('Stations')[0];
-  // elem.stationstore.unbind();
   elem.stationstore.bind(stationLayer);
 
   stationLayer.refresh({
@@ -353,7 +352,6 @@ function getEvents(elem, purl) {
   // The getForm() method returns the Ext.form.Basic instance:
 
   var eventLayer = map.getLayersByName('Events')[0];
-  // elem.eventstore.unbind();
   elem.eventstore.bind(eventLayer);
 
   eventLayer.refresh({

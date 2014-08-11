@@ -105,19 +105,23 @@ Ext.define('CF.view.WfGrid', {
 
                       solverConfStore.loadData(object.fields);
 
+                      // HACK ensure correct event binding order by binding here
                       var eventLayer = map.getLayersByName('Events')[0];
+                      ctrl.eventstore.bind(eventLayer);
+
                       eventLayer.events.on({
-                        featureadded: function(event) {
-                          object.events.every(function(eventId) {
-                            if (eventId === event.feature.data.eventId) {
-                              map.getControl('clickselect').select(event.feature);
-                              return false;
-                            }
-                            map.getControl('clickselect').unselect(event.feature);
-                            return true;
-                          });
-                        },
+                        featureadded: function(event) {},
                         featuresadded: function(event) {
+                          event.features.forEach(function(feature) {
+                            object.events.every(function(eventId) {
+                              if (eventId === feature.data.eventId) {
+                                map.getControl('clickselect').select(feature);
+                                return false;
+                              }
+                              map.getControl('clickselect').unselect(feature);
+                              return true;
+                            });
+                          });
                           eventLayer.events.un(this);
                         },
                         scope: this
@@ -130,19 +134,23 @@ Ext.define('CF.view.WfGrid', {
                       var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
                       Ext.getCmp('station-filetype').select(stationFileType);
 
+                      // HACK ensure correct event binding order by binding here
                       var stationLayer = map.getLayersByName('Stations')[0];
+                      ctrl.stationstore.bind(stationLayer);
+
                       stationLayer.events.on({
-                        featureadded: function(event) {
-                          object.stations.every(function(stationId) {
-                            if (stationId === (event.feature.data.network + '.' + event.feature.data.station)) {
-                              map.getControl('dragselect').select(event.feature);
-                              return false;
-                            }
-                            map.getControl('dragselect').unselect(event.feature);
-                            return true;
-                          });
-                        },
+                        featureadded: function(event) {},
                         featuresadded: function(event) {
+                          event.features.forEach(function(feature) {
+                            object.stations.every(function(stationId) {
+                              if (stationId === (feature.data.network + '.' + feature.data.station)) {
+                                map.getControl('dragselect').select(feature);
+                                return false;
+                              }
+                              map.getControl('dragselect').unselect(feature);
+                              return true;
+                            });
+                          })
                           stationLayer.events.un(this);
                         },
                         scope: this
