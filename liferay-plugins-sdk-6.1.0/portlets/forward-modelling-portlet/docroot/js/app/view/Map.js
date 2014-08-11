@@ -285,27 +285,27 @@ Ext.define('CF.view.Map', {
         onSelect: function(feature) {
           if (feature.layer.name === 'Stations') {
             var stationGrid = controller.getStationGrid();
-            var record = stationGrid.store.getByFeature(feature);
-            stationGrid.getSelectionModel().select(record, true /* keep existing selections */ );
-            stationGrid.getView().focusRow(record);
+            var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
+            stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            stationGrid.getView().focusRow(idx, 100);
           } else if (feature.layer.name === 'Events') {
             var eventGrid = controller.getEventGrid();
-            var record = eventGrid.store.getByFeature(feature);
-            eventGrid.getSelectionModel().select(record, true /* keep existing selections */ );
-            eventGrid.getView().focusRow(record);
+            var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
+            eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            eventGrid.getView().focusRow(idx, 100);
           }
         },
         onUnselect: function(feature) {
           if (feature.layer.name === 'Stations') {
             var stationGrid = controller.getStationGrid();
-            var record = stationGrid.store.getByFeature(feature);
-            stationGrid.getSelectionModel().deselect(record, true /* keep existing selections */ );
-            stationGrid.getView().focusRow(record);
+            var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
+            stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            stationGrid.getView().focusRow(idx, 100);
           } else if (feature.layer.name === 'Events') {
             var eventGrid = controller.getEventGrid();
-            var record = eventGrid.store.getByFeature(feature);
-            eventGrid.getSelectionModel().deselect(record, true /* keep existing selections */ );
-            eventGrid.getView().focusRow(record);
+            var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
+            eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            eventGrid.getView().focusRow(idx, 100);
           }
         },
       }),

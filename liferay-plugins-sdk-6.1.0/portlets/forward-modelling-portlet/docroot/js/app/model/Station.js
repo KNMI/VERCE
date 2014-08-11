@@ -15,6 +15,12 @@ Ext.define('CF.model.Station', {
       type: 'string',
       mapping: 'data.network'
     }, {
+      name: 'network.station',
+      type: 'string',
+      calculate: function(data) {
+        return data.network + '.' + data.station;
+      }
+    }, {
       name: 'latitude',
       type: 'string',
       mapping: 'data.latitude'
