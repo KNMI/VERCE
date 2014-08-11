@@ -97,7 +97,7 @@ Ext.define('CF.view.Component', {
 
     if (parentTd) {
       // Cache the frame width so that it can be used as a 'best guess' in cases where we don't have the elements
-      return this.lastFrameWidth = parentDiv.getFrameWidth('lr') + parentTd.getFrameWidth('lr');
+      return this.lastFrameWidth = parentDiv.getBorderWidth('lr') + parentDiv.getPadding('lr') + parentTd.getBorderWidth('lr') + parentTd.getPadding('lr');
     }
   },
 

@@ -21,26 +21,12 @@ Ext.define('CF.view.dataviews.SolverConf', {
         header: 'Value',
         dataIndex: 'value',
         xtype: 'componentcolumn',
-        listeners: {
-          // 'boxready': function(element) {
-          //   Ext.util.Observable.capture(element, function(evname) {
-          //     console.log(evname, arguments);
-          //   });
-          // },
-          // 'blur': function(element, event, options) {
-          //   console.log('blur', arguments);
-          // }
-        },
         renderer: function(value, meta, record) {
-          var timeout = null;
-          var blur = function(element, event, options) {
-            if (timeout != null) {
-              clearTimeout(timeout);
-              timeout = null;
-            }
-            timeout = setTimeout(function() {
-              record.set('value', element.value);
-            }, 1000);
+          var change = function(component, newValue, oldValue, options) {
+            record.set('value', element.value, {
+              // prevent breaking focus on the field
+              silent: true
+            });
           };
 
           if (record.get('type') === 'bool') {
@@ -53,7 +39,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
               checked: value,
               xtype: 'checkbox',
               listeners: {
-                'blur': blur,
+                change: change,
               },
               disabled: !record.get('editable')
             }
@@ -64,7 +50,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
               allowDecimals: false,
               step: record.get('step'),
               listeners: {
-                'blur': blur,
+                change: change,
               },
               minValue: record.get('minValue'),
               maxValue: record.get('maxValue'),
@@ -79,7 +65,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
               decimalPrecision: 3,
               step: record.get('step'),
               listeners: {
-                'blur': blur,
+                change: change,
               },
               minValue: record.get('minValue'),
               maxValue: record.get('maxValue'),
@@ -99,7 +85,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
               queryMode: 'local',
               xtype: 'combobox',
               listeners: {
-                'blur': blur,
+                change: change,
               },
               disabled: !record.get('editable')
             }
@@ -108,7 +94,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
               value: value,
               xtype: 'textfield',
               listeners: {
-                'blur': blur,
+                change: change,
               },
               disabled: !record.get('editable')
             }
