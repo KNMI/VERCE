@@ -113,10 +113,10 @@ Ext.define('CF.view.WfGrid', {
                       event.features.forEach(function(feature) {
                         object.events.every(function(eventId) {
                           if (eventId === feature.data.eventId) {
-                            CF.app.getController('Map').mapPanel.map.getControl('clickselect').select(feature);
+                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
                             return false;
                           }
-                          CF.app.getController('Map').mapPanel.map.getControl('clickselect').unselect(feature);
+                          CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
                           return true;
                         });
                       });

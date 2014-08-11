@@ -142,16 +142,6 @@ Ext.define('CF.view.Map', {
         }
       })
     });
-    stationLayer.events.on({
-      beforefeatureselected: function(evt) {
-        controller.showStationInfo(evt.feature);
-        // return false;
-      },
-      beforefeatureunselected: function(evt) {
-        controller.hideStationInfo(evt.feature);
-        // return false;
-      },
-    });
 
     var eventcontext = {
       getRadius: function(feature) {
@@ -202,16 +192,6 @@ Ext.define('CF.view.Map', {
       strategies: [new OpenLayers.Strategy.Fixed()],
       renderers: eventrenderer
     });
-    eventLayer.events.on({
-      'beforefeatureselected': function(evt) {
-        controller.showEventInfo(evt.feature);
-        // return false;
-      },
-      'beforefeatureunselected': function(evt) {
-        controller.hideEventInfo(evt.feature);
-        // return false;
-      }
-    });
 
     layers.push(wms);
     layers.push(hwms);
@@ -227,39 +207,62 @@ Ext.define('CF.view.Map', {
     this.map.addLayers(layers)
 
     var map = this.map;
+
+    var dragpan = new OpenLayers.Control.DragPan({
+      autoActivate: true,
+      title: "Pan the map by dragging."
+    });
+
     var navToolbar = OpenLayers.Class(OpenLayers.Control.Panel, {
+      defaultControl: dragpan,
       initialize: function(options) {
         OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
+
         this.addControls([
-          new OpenLayers.Control.DragPan({
-            autoActivate: true
-          }),
+          dragpan,
           new OpenLayers.Control.ZoomBox({
             alwaysZoom: false,
+            title: "Zoom to a selected area by dragging a box."
           }),
-          new OpenLayers.Control.SelectFeature(map.getLayersByName('Stations')[0], {
-            multiple: true,
-            box: true,
-            id: 'dragselect',
-            onSelect: function(feature) {
-              var stationGrid = controller.getStationGrid();
-              var records = stationGrid.store.each(function(record) {
-                if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-                  stationGrid.getSelectionModel().select(record, true /* keep existing selections */ );
-                  return false;
-                }
-              });
+          new OpenLayers.Control.Button({
+            type: OpenLayers.Control.TYPE_TOOL,
+            displayClass: 'olControlSelectFeature',
+            title: "Select events and stations by dragging a box around them.",
+            activate: function() {
+              var dragselect = this.map.getControl('dragselect');
+              if (dragselect == null) {
+                return;
+              }
+              dragselect.deactivate();
+              dragselect.box = true;
+              if (dragselect.handlers.box == null) {
+                dragselect.handlers.box = new OpenLayers.Handler.Box(
+                  dragselect, {
+                    done: dragselect.selectBox
+                  }, {
+                    boxDivClassName: "olHandlerBoxSelectFeature"
+                  }
+                );
+                dragselect.handlers.box.setMap(dragselect.map);
+              }
+              dragselect.activate();
+              return OpenLayers.Control.prototype.activate.apply(
+                this, arguments
+              );
             },
-            onUnselect: function(feature) {
-              var stationGrid = controller.getStationGrid();
-              var records = stationGrid.store.each(function(record) {
-                if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-                  stationGrid.getSelectionModel().deselect(record);
-                  return false;
-                }
-              });
-            },
-          }),
+            deactivate: function() {
+              var dragselect = this.map.getControl('dragselect');
+              if (dragselect == null) {
+                return;
+              }
+              dragselect.deactivate();
+              dragselect.box = false;
+              dragselect.activate();
+              return OpenLayers.Control.prototype.deactivate.apply(
+                this, arguments
+              );
+            }
+          })
         ]);
         // To make the custom navtoolbar use the regular navtoolbar style
         this.displayClass = 'olControlNavToolbar'
@@ -274,19 +277,38 @@ Ext.define('CF.view.Map', {
         'ascending': false
       }),
       new OpenLayers.Control.SelectFeature([stationLayer, eventLayer], {
-        id: 'clickselect',
-        click: true,
+        id: 'dragselect',
         autoActivate: true,
-        onUnselect: function(feature) {
-          var stationGrid = controller.getStationGrid();
-          var records = stationGrid.store.each(function(record) {
-            if (record.get('network') === feature.data.network && record.get('station') === feature.data.station) {
-              stationGrid.getSelectionModel().deselect(record);
-              return false;
-            }
-          });
+        multiple: true,
+        box: false,
+        toggle: true,
+        onSelect: function(feature) {
+          if (feature.layer.name === 'Stations') {
+            var stationGrid = controller.getStationGrid();
+            var record = stationGrid.store.getByFeature(feature);
+            stationGrid.getSelectionModel().select(record, true /* keep existing selections */ );
+            stationGrid.getView().focusRow(record);
+          } else if (feature.layer.name === 'Events') {
+            var eventGrid = controller.getEventGrid();
+            var record = eventGrid.store.getByFeature(feature);
+            eventGrid.getSelectionModel().select(record, true /* keep existing selections */ );
+            eventGrid.getView().focusRow(record);
+          }
         },
-      })
+        onUnselect: function(feature) {
+          if (feature.layer.name === 'Stations') {
+            var stationGrid = controller.getStationGrid();
+            var record = stationGrid.store.getByFeature(feature);
+            stationGrid.getSelectionModel().deselect(record, true /* keep existing selections */ );
+            stationGrid.getView().focusRow(record);
+          } else if (feature.layer.name === 'Events') {
+            var eventGrid = controller.getEventGrid();
+            var record = eventGrid.store.getByFeature(feature);
+            eventGrid.getSelectionModel().deselect(record, true /* keep existing selections */ );
+            eventGrid.getView().focusRow(record);
+          }
+        },
+      }),
     ]);
 
     hwms.setOpacity(0.5);

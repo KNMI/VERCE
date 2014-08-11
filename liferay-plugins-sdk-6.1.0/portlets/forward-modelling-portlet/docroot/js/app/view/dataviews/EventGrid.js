@@ -29,10 +29,10 @@ Ext.define('CF.view.dataviews.EventGrid', {
     injectCheckbox: 0,
     listeners: {
       select: function(rowmodel, record, index) {
-        CF.app.getController('Map').mapPanel.map.getControl('clickselect').select(record.data);
+        CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(record.data);
       },
       deselect: function(rowmodel, record, index) {
-        CF.app.getController('Map').mapPanel.map.getControl('clickselect').unselect(record.data);
+        CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(record.data);
       },
       selectionchange: function(t, s) {
         if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
