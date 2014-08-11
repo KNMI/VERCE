@@ -6,5 +6,8 @@ Ext.define("CF.model.Solver", {
   }, {
     type: 'string',
     name: 'name'
+  }, {
+    type: 'string',
+    name: 'doc'
   }]
 });

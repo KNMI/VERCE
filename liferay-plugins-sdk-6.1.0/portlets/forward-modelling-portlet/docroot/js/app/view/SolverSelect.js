@@ -1,9 +1,4 @@
-var solverstore = Ext.create('CF.store.Solver', {
-  data: [{
-    "abbr": "SPECFEM3D_CARTESIAN_21447",
-    "name": "SPECFEM3D_CARTESIAN_21447"
-  }]
-});
+var solverstore = Ext.create('CF.store.Solver', {});
 var meshesstore = Ext.create('CF.store.Mesh', {});
 var velocitystore = Ext.create('CF.store.Velocity', {});
 
@@ -43,10 +38,13 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
       meshescombo.store.removeAll();
 
       if (record == null) {
+        Ext.getCmp('solver_doc_button').setDisabled(true);
         return;
       }
       //Load meshescombo, load conf form
       selectSolver(record.get('abbr'));
+
+      Ext.getCmp('solver_doc_button').setDisabled(false);
     }
   }
 });
@@ -146,11 +144,13 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     items: [
       solvercombo, {
         xtype: 'button',
+        id: 'solver_doc_button',
         icon: localResourcesPath + '/img/download-icon.png',
         margin: '0 0 0 5',
         tabIndex: 99,
+        disabled: true,
         handler: function() {
-          window.open('https://github.com/geodynamics/specfem3d/raw/devel/doc/USER_MANUAL/manual_SPECFEM3D_Cartesian.pdf', '_self');
+          window.open(solvercombo.store.findRecord('abbr', solvercombo.getValue()).get('doc'), '_self');
         }
       }
     ],
