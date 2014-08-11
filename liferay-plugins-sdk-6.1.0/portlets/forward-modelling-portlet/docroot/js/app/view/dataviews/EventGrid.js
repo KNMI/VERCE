@@ -29,7 +29,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
     Ext.apply(this, {
       id: 'gridEvents',
       border: false,
-      store: eventStore,
+      store: controller.getStore('Event'),
       selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true,
         listeners: {
@@ -42,7 +42,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
           selectionchange: function(t, s) {
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
             else Ext.getCmp('checkboxNSubmit').setDisabled(true);
-            Ext.getCmp('eventSelColumn').setText(s.length + "/" + eventStore.getTotalCount());
+            Ext.getCmp('eventSelColumn').setText(s.length + "/" + controller.getStore('Event').getTotalCount());
           }
         }
       }),

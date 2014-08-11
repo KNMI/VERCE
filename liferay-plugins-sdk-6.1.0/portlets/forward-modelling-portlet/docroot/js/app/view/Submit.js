@@ -90,6 +90,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
         return;
       }
 
+      var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
       solverConfStore.commitChanges();
       solverConfStore.save();
 
@@ -102,8 +103,7 @@ var formSubmit = Ext.create('Ext.form.Panel', {
         var ownerId = wfModel.get('ownerId');
         var workflowName = wfModel.get('workflowName');
 
-        var scs = Ext.data.StoreManager.lookup('solverConfStore');
-        var r = scs.findRecord("name", "NPROC");
+        var r = solverConfStore.findRecord("name", "NPROC");
         var nProc = r.get("value");
 
         Ext.Ajax.request({
@@ -213,7 +213,7 @@ function createJsonString(submitName, multipleSubmits) {
 
   for (i = 0; i < limit; i++) {
     //Add the solver information
-    var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + ",";
+    var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data')) + ",";
 
     //Add the stations Ids
     jsonString += '"stations" :[';

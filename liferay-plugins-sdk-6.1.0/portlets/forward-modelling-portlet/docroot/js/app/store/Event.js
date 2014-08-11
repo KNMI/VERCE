@@ -3,5 +3,6 @@ Ext.define('CF.store.Event', {
   requires: ['CF.model.Event'],
   model: 'CF.model.Event',
   alias: 'store.event',
-  storeId: 'eventStore'
+  storeId: 'eventStore',
+  pageSize: 10
 });

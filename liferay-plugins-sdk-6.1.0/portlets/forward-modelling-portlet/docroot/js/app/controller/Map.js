@@ -19,17 +19,6 @@ var GL_EVENTSLIMIT = 30;
 evisfeature = null;
 svisfeature = null;
 
-
-var solverConfStore = Ext.create('CF.store.SolverConf');
-
-var eventStore = Ext.create('CF.store.Event');
-eventStore.load({
-  params: {
-    start: 0,
-    limit: 10
-  }
-});
-
 var PointsListFormat = OpenLayers.Class(OpenLayers.Format.Text, {
   read: function(response) {
     var lines = response.replace(/\r\n/g, "\n").split("\n");
@@ -177,7 +166,6 @@ var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
     return features;
   }
 });
-var stationStore = Ext.create('CF.store.Station');
 
 var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
   read: function(response) {
@@ -233,18 +221,15 @@ Ext.define('CF.controller.Map', {
     selector: 'commons'
   }],
   views: ['LinkButton'],
+  stores: ['CF.store.SolverConf', 'CF.store.Event', 'CF.store.Station'],
   init: function() {
-    var me = this;
-    this.solverConfStore = solverConfStore;
-    this.stationstore = stationStore;
-    this.stationstore.on({
-      scope: me,
-      'datachanged': me.onStationStoreLoad
+    this.getStore('Station').on({
+      scope: this,
+      'datachanged': this.onStationStoreLoad
     });
-    this.eventstore = eventStore
-    this.eventstore.on({
-      scope: me,
-      'datachanged': me.onEventStoreLoad
+    this.getStore('Event').on({
+      scope: this,
+      'datachanged': this.onEventStoreLoad
     });
     this.control({
       'cf_mappanel': {
@@ -253,14 +238,14 @@ Ext.define('CF.controller.Map', {
       },
       'button[itemId=station_cl_but]': {
         click: function(button) {
-          this.stationstore.removeAll();
+          this.getStore('Station').removeAll();
           this.hideStationInfo();
           Ext.getCmp('stationSelColumn').setText("0/0");
         }
       },
       'button[itemId=event_cl_but]': {
         click: function(button) {
-          this.eventstore.removeAll();
+          this.getStore('Event').removeAll();
           this.hideEventInfo();
           Ext.getCmp('eventSelColumn').setText("0/0");
         }
@@ -287,7 +272,7 @@ Ext.define('CF.controller.Map', {
 
   onStationStoreLoad: function(store, records) {
     //if the solver, the stations and the events are selected, enable the submit button
-    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0) {
+    if (this.getStore('Event').count() > 0 && this.getStore('Station').count() > 0 && this.getStore('SolverConf').count() > 0) {
       Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(false);
     }
     //Set the number of stations in the grid (shown as header of selected colum)
@@ -296,7 +281,7 @@ Ext.define('CF.controller.Map', {
 
   onEventStoreLoad: function(store, records) {
     //if the solver, the stations and the events are selected, enable the submit button
-    if (this.eventstore.count() > 0 && this.stationstore.count() > 0 && this.solverConfStore.count() > 0) {
+    if (this.getStore('Event').count() > 0 && this.getStore('Station').count() > 0 && this.getStore('SolverConf').count() > 0) {
       Ext.getCmp('tabpanel_principal').down('#submit').enable();
     }
     //Set the number of events in the grid (shown as header of selected colum)
@@ -327,12 +312,12 @@ Ext.define('CF.controller.Map', {
     gl_stationFormat = formatType;
 
     gl_stationUrl = purl;
-    this.stationstore.removeAll();
+    this.getStore('Station').removeAll();
     this.getStationsGrid().setLoading(true);
     this.hideStationInfo();
 
     var stationLayer = this.mapPanel.map.getLayersByName('Stations')[0];
-    this.stationstore.bind(stationLayer);
+    this.getStore('Station').bind(stationLayer);
 
     stationLayer.refresh({
       url: purl,
@@ -341,13 +326,13 @@ Ext.define('CF.controller.Map', {
   },
   getEvents: function(elem, purl) {
     gl_eventUrl = purl;
-    this.eventstore.removeAll();
+    this.getStore('Event').removeAll();
     this.getEventsGrid().setLoading(true);
     this.hideEventInfo();
     // The getForm() method returns the Ext.form.Basic instance:
 
     var eventLayer = this.mapPanel.map.getLayersByName('Events')[0];
-    this.eventstore.bind(eventLayer);
+    this.getStore('Event').bind(eventLayer);
 
     eventLayer.refresh({
       url: purl,
@@ -407,7 +392,7 @@ Ext.define('CF.controller.Map', {
       true
     );
     var grid = Ext.ComponentQuery.query('eventsgrid')[0];
-    grid.getView().focusRow(eventStore.getByFeature(evisfeature));
+    grid.getView().focusRow(CF.app.getController('Map').getStore('Event').getByFeature(evisfeature));
     evisfeature.popup = popup;
     this.mapPanel.map.addPopup(popup);
   },
@@ -433,7 +418,7 @@ Ext.define('CF.controller.Map', {
       true
     );
     var grid = Ext.ComponentQuery.query('stationsgrid')[0];
-    grid.getView().focusRow(stationStore.getByFeature(svisfeature));
+    grid.getView().focusRow(CF.app.getController('Map').getStore('Station').getByFeature(svisfeature));
     svisfeature.popup = popup;
     this.mapPanel.map.addPopup(popup);
   }

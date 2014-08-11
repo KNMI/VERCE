@@ -226,7 +226,7 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     disabled: true,
     tooltip: 'Download solver input file',
     handler: function() {
-      var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+      var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
       solverConfStore.commitChanges();
       solverConfStore.save();
       var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
@@ -376,7 +376,7 @@ Ext.define('CF.view.SolverSelect', {
 });
 
 function updateSolverValues(newValues) {
-  var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+  var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
   for (var i = 0; i < newValues.length; i++) {
     //alert(JSON.stringify(newValues[i]));
     for (var propertyName in newValues[i]) {
@@ -389,7 +389,7 @@ function updateSolverValues(newValues) {
 
 function selectSolver(selectedSolver) {
   gl_solver = selectedSolver;
-  var solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+  var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
 
   // Start with only the first group expanded
   solverConfStore.addListener('load', function() {
@@ -448,8 +448,8 @@ function postRequest(path, paramName, paramValue) {
 //Clear map, clear velocityCombo and disable tabs for stations and events
 function clearMap() {
   var controller = CF.app.getController('Map');
-  controller.eventstore.removeAll();
-  controller.stationstore.removeAll();
+  controller.getStore('Event').removeAll();
+  controller.getStore('Station').removeAll();
   controller.hideEventInfo();
   controller.hideStationInfo();
   velocitycombo.clearValue();

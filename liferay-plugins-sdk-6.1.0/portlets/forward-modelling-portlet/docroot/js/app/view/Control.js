@@ -105,11 +105,11 @@ Ext.define('CF.view.WfGrid', {
                     velocityCombo.store.addListener('refresh', function() {
                       velocityCombo.setValue(object.velocity_model);
 
-                      solverConfStore.loadData(object.fields);
+                      controller.getStore('SolverConf').loadData(object.fields);
 
                       // HACK ensure correct event binding order by binding here
                       var eventLayer = controller.mapPanel.map.getLayersByName('Events')[0];
-                      controller.eventstore.bind(eventLayer);
+                      controller.getStore('Event').bind(eventLayer);
 
                       eventLayer.events.on({
                         featureadded: function(event) {},
@@ -138,7 +138,7 @@ Ext.define('CF.view.WfGrid', {
 
                       // HACK ensure correct event binding order by binding here
                       var stationLayer = controller.mapPanel.map.getLayersByName('Stations')[0];
-                      controller.stationstore.bind(stationLayer);
+                      controller.getStore('Station').bind(stationLayer);
 
                       stationLayer.events.on({
                         featureadded: function(event) {},
@@ -179,7 +179,7 @@ Ext.define('CF.view.WfGrid', {
                     });
 
                     // set mesh when solverconfstore finishes loading
-                    solverConfStore.addListener('refresh', function() {
+                    controller.getStore('SolverConf').addListener('refresh', function() {
                       // reuse mesh and trigger velocity store reload
                       Ext.getCmp('meshes').setValue(object.mesh);
                     }, this, {

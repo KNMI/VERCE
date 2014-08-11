@@ -9,10 +9,11 @@ Ext.define('CF.view.dataviews.SolverConf', {
     'Ext.form.field.Number',
     'CF.view.Component'
   ],
-  store: solverConfStore,
   initComponent: function() {
     var me = this;
+    var controller = CF.app.getController('Map');
     Ext.apply(this, {
+      store: controller.getStore('SolverConf'),
       border: false,
       columns: [{
         header: 'Name',
@@ -116,21 +117,3 @@ Ext.define('CF.view.dataviews.SolverConf', {
     this.callParent(arguments);
   }
 });
-
-/*//Useful to add a rightclick menu 
-var doCellCtxMenu = function(editorGrid, rowIndex, cellIndex, evtObj) {
-    evtObj.stopEvent();
-    if (!editorGrid.rowCtxMenu) {
-      editorGrid.rowCtxMenu = new Ext.menu.Menu( {
-        items: [ {
-          text: 'Insert Record',
-          handler: onInsertRecord
-        }, {
-          text: 'Delete Record',
-          handler: onDelete
-        } ]
-      });
-    }
-    editorGrid.getSelectionModel().select(rowIndex, cellIndex);
-    editorGrid.rowCtxMenu.showAt(evtObj.getXY());
-  };*/

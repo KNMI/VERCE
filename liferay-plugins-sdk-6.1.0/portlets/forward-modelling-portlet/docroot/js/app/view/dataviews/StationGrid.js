@@ -20,7 +20,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
     Ext.apply(this, {
       id: 'gridStations',
       border: false,
-      store: stationStore,
+      store: controller.getStore('Station'),
       selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true,
         listeners: {
@@ -33,7 +33,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
           selectionchange: function(t, s) {
             if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
             else Ext.getCmp('checkboxNSubmit').setDisabled(true);
-            Ext.getCmp('stationSelColumn').setText(s.length + "/" + stationStore.getTotalCount());
+            Ext.getCmp('stationSelColumn').setText(s.length + "/" + controller.getStore('Station').getTotalCount());
           }
         }
       }),
