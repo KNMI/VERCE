@@ -3,29 +3,31 @@ Ext.define('CF.model.Station', {
 
   fields: [{
       name: 'symbolizer',
-      defaultValue: 'default'
+      convert: function(v, r) {
+        return r.data.layer.styleMap.createSymbolizer(r.data, r.data.layer.styleMap.styles[r.data.renderIntent]);
+      },
     }, {
       name: 'station',
       type: 'string',
-      mapping: 'station'
+      mapping: 'data.station'
     }, {
       name: 'network',
       type: 'string',
-      mapping: 'network'
+      mapping: 'data.network'
     }, {
       name: 'latitude',
       type: 'string',
-      mapping: 'latitude'
+      mapping: 'data.latitude'
     }, // custom mapping
     {
       name: 'longitude',
       type: 'string',
-      mapping: 'longitude'
+      mapping: 'data.longitude'
     }, // custom mapping
     {
       name: 'elevation',
       type: 'string',
-      mapping: 'elevation'
+      mapping: 'data.elevation'
     } // custom mapping
   ]
 

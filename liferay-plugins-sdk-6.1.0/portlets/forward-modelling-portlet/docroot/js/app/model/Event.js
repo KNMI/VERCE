@@ -4,59 +4,59 @@
    fields: [{
      name: 'symbolizer',
      convert: function(v, r) {
-       defaultValue: 'default'
-     }
+       return r.data.layer.styleMap.createSymbolizer(r.data, r.data.layer.styleMap.styles[r.data.renderIntent]);
+     },
    }, {
      name: 'eventId',
      type: 'string',
-     mapping: 'eventId'
+     mapping: 'data.eventId'
    }, {
      name: 'description',
      type: 'string',
-     mapping: 'description'
+     mapping: 'data.description'
    }, {
      name: 'date',
      type: 'string',
-     mapping: 'datetime'
+     mapping: 'data.datetime'
    }, {
      name: 'depth',
      type: 'string',
-     mapping: 'depth'
+     mapping: 'data.depth'
    }, {
      name: 'magnitude',
      type: 'string',
-     mapping: 'magnitude'
+     mapping: 'data.magnitude'
    }, {
      name: 'latitude',
      type: 'string',
-     mapping: 'latitude'
+     mapping: 'data.latitude'
    }, {
      name: 'longitude',
      type: 'string',
-     mapping: 'longitude'
+     mapping: 'data.longitude'
    }, {
      name: 'tensor_mrr',
      type: 'string',
-     mapping: 'tensor_mrr'
+     mapping: 'data.tensor_mrr'
    }, {
      name: 'tensor_mtt',
      type: 'string',
-     mapping: 'tensor_mtt'
+     mapping: 'data.tensor_mtt'
    }, {
      name: 'tensor_mpp',
      type: 'string',
-     mapping: 'tensor_mpp'
+     mapping: 'data.tensor_mpp'
    }, {
      name: 'tensor_mrt',
      type: 'string',
-     mapping: 'tensor_mrt'
+     mapping: 'data.tensor_mrt'
    }, {
      name: 'tensor_mrp',
      type: 'string',
-     mapping: 'tensor_mrp'
+     mapping: 'data.tensor_mrp'
    }, {
      name: 'tensor_mtp',
      type: 'string',
-     mapping: 'tensor_mtp'
+     mapping: 'data.tensor_mtp'
    }]
  });

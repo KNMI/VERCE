@@ -49,7 +49,7 @@ Ext.define('CF.view.Map', {
         }, {
           isBaseLayer: false
         }
-    );
+      );
 
 
     var vecwms =
@@ -61,7 +61,7 @@ Ext.define('CF.view.Map', {
         }, {
           isBaseLayer: false
         }
-    );
+      );
 
     var geowms =
       new OpenLayers.Layer.WMS(
@@ -72,7 +72,7 @@ Ext.define('CF.view.Map', {
         }, {
           isBaseLayer: false
         }
-    );
+      );
 
     var faultswms =
       new OpenLayers.Layer.WMS(
@@ -83,7 +83,7 @@ Ext.define('CF.view.Map', {
         }, {
           isBaseLayer: false
         }
-    );
+      );
 
     var stationcontext = {
       getColor: function(feature) {
@@ -123,7 +123,7 @@ Ext.define('CF.view.Map', {
     });
     var stationstylemap = new OpenLayers.StyleMap({
       'default': stationstyle,
-      'gridSelect': stationstyleselected
+      'select': stationstyleselected
     });
 
     var stationLayer = new OpenLayers.Layer.Vector("Stations", {
@@ -184,7 +184,7 @@ Ext.define('CF.view.Map', {
     });
     var eventstylemap = new OpenLayers.StyleMap({
       'default': eventstyle,
-      'gridSelect': eventstyleselected
+      'select': eventstyleselected
     });
 
     eventLayer = new OpenLayers.Layer.Vector("Events", {
@@ -204,11 +204,11 @@ Ext.define('CF.view.Map', {
     eventLayer.events.on({
       'beforefeatureselected': function(evt) {
         showEventInfo(evt.feature);
-        return false;
+        // return false;
       },
       'beforefeatureunselected': function(evt) {
         hideEventInfo(evt.feature);
-        return false;
+        // return false;
       }
     });
 

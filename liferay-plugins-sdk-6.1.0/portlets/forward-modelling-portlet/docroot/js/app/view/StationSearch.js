@@ -48,9 +48,9 @@ var multiCombo = Ext.create('Ext.form.field.ComboBox', {
   }
 });
 
-Ext.define('StationPanel', {
+Ext.define('CF.view.StationSearchPanel', {
   extend: 'Ext.form.Panel',
-  alias: 'widget.StationPanel',
+  alias: 'widget.StationSearchPanel',
   requires: ['CF.model.Station'],
   width: 450,
   frame: false,
@@ -74,6 +74,6 @@ Ext.define('CF.view.StationSearch', {
   extend: 'Ext.form.Panel',
   bodyPadding: '0 0 10 0',
   items: [{
-    xtype: 'StationPanel'
+    xtype: 'StationSearchPanel'
   }]
 });

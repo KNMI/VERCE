@@ -26,9 +26,9 @@ var fileTypes = Ext.create('Ext.form.ComboBox', {
   width: '75px'
 });
 
-Ext.define('CF.view.StationPanel', {
+Ext.define('CF.view.StationSearchByFilePanel', {
   extend: 'Ext.form.Panel',
-  alias: 'widget.StationPanel',
+  alias: 'widget.StationSearchByFilePanel',
   width: 450,
   frame: false,
   border: false,
@@ -121,6 +121,6 @@ Ext.define('CF.view.StationSearchByFile', {
     }
   }],
   items: [{
-    xtype: 'StationPanel'
+    xtype: 'StationSearchByFilePanel'
   }]
 });

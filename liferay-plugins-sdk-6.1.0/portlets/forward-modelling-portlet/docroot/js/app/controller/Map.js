@@ -336,15 +336,13 @@ function getStations(elem, purl, formatType) {
   hideStationInfo();
 
   var stationLayer = map.getLayersByName('Stations')[0];
+  // elem.stationstore.unbind();
+  elem.stationstore.bind(stationLayer);
 
   stationLayer.refresh({
     url: purl,
     format: f,
   });
-
-  // manually bind stationstore to layer
-  elem.stationstore.unbind();
-  elem.stationstore.bind(stationLayer);
 }
 
 function getEvents(elem, purl) {
@@ -355,13 +353,12 @@ function getEvents(elem, purl) {
   // The getForm() method returns the Ext.form.Basic instance:
 
   var eventLayer = map.getLayersByName('Events')[0];
+  // elem.eventstore.unbind();
+  elem.eventstore.bind(eventLayer);
 
   eventLayer.refresh({
     url: purl,
   });
-
-  elem.eventstore.unbind();
-  elem.eventstore.bind(eventLayer);
 }
 
 //type is a string "event" or "station"
