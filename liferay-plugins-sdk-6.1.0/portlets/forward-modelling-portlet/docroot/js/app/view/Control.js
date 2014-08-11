@@ -105,25 +105,22 @@ Ext.define('CF.view.WfGrid', {
 
                       solverConfStore.loadData(object.fields);
 
-                      // // TODO fix selecting events and stations
-                      Ext.util.Observable.capture(ctrl, function(evname) {
-                        console.log("ctrl: ", evname, arguments);
-                      });
-                      Ext.util.Observable.capture(ctrl.eventstore, function(evname) {
-                        console.log("store: ", evname, arguments);
-                      });
-                      var eventGrid = Ext.getCmp('gridEvents');
-                      Ext.util.Observable.capture(eventGrid, function(evname) {
-                        console.log("grid: ", evname, arguments);
-                      });
-                      Ext.util.Observable.capture(eventGrid.getSelectionModel(), function(evname) {
-                        console.log("grid: ", evname, arguments);
-                      });
-                      Ext.util.Observable.capture(ctrl.mapPanel, function(evname) {
-                        console.log("mapPanel: ", evname, arguments);
-                      });
-                      Ext.util.Observable.capture(ctrl.mapPanel.map.events, function(evname) {
-                        console.log("map: ", evname, arguments);
+                      var eventLayer = map.getLayersByName('Events')[0];
+                      eventLayer.events.on({
+                        featureadded: function(event) {
+                          object.events.every(function(eventId) {
+                            if (eventId === event.feature.data.eventId) {
+                              map.getControl('clickselect').select(event.feature);
+                              return false;
+                            }
+                            map.getControl('clickselect').unselect(event.feature);
+                            return true;
+                          });
+                        },
+                        featuresadded: function(event) {
+                          eventLayer.events.un(this);
+                        },
+                        scope: this
                       });
 
                       // reuse events
