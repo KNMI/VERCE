@@ -22,3 +22,7 @@
 .olControlNavToolbar .olControlSelectFeatureItemActive {
 	background-position: -1px -24px;
 }
+
+.x-btn-icon-left>.x-btn-icon-el-default-small, .x-btn-icon-right>.x-btn-icon-el-default-small {
+	background-size: 16px;
+}

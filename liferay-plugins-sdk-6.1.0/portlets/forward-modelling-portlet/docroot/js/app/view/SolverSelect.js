@@ -15,6 +15,7 @@ var solvercombo = Ext.create('Ext.form.field.ComboBox', {
   displayField: 'abbr',
   store: solverstore,
   queryMode: 'local',
+  flex: 1,
   getInnerTpl: function() {
     return '<div data-qtip="{abbr}">{abbr} {name}</div>';
   },
@@ -55,6 +56,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
   name: 'meshes',
   id: 'meshes',
   displayField: 'name',
+  flex: 1,
   store: meshesstore,
   queryMode: 'local',
   listeners: {
@@ -108,6 +110,7 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
   name: 'velocity',
   id: 'velocity',
   displayField: 'name',
+  flex: 1,
   valueField: 'name',
   store: velocitystore,
   queryMode: 'local',
@@ -135,24 +138,68 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     msgTarget: 'side',
     labelWidth: 70
   },
-  defaultType: 'numberfield',
-  items: [
-    solvercombo,
-    meshescombo,
-    velocitycombo, {
-      xtype: 'LinkButton',
-      text: 'Click here to submit a new mesh and velocity model',
-      handler: function(e) {
-        e.stopEvent();
-        meshSolverPopup();
+  // defaultType: 'numberfield',
+  items: [{
+    xtype: 'container',
+    width: '100%',
+    margin: '5 0',
+    items: [
+      solvercombo, {
+        xtype: 'button',
+        icon: localResourcesPath + '/img/download-icon.png',
+        margin: '0 0 0 5',
+        tabIndex: 99,
+        handler: function() {
+          window.open('https://github.com/geodynamics/specfem3d/raw/devel/doc/USER_MANUAL/manual_SPECFEM3D_Cartesian.pdf', '_self');
+        }
       }
-    }, {
-      xtype: 'hidden',
-      id: 'solver-filetype',
-      name: 'filetype',
-      value: SOLVER_TYPE
+    ],
+    layout: {
+      type: 'hbox'
+    },
+  }, {
+    xtype: 'container',
+    width: '100%',
+    margin: '5 0',
+    items: [
+      meshescombo, {
+        xtype: 'button',
+        icon: localResourcesPath + '/img/download-icon.png',
+        margin: '0 0 0 5',
+        tabIndex: 99,
+      }
+    ],
+    layout: {
+      type: 'hbox'
+    },
+  }, {
+    xtype: 'container',
+    width: '100%',
+    margin: '5 0',
+    items: [
+      velocitycombo, {
+        xtype: 'button',
+        icon: localResourcesPath + '/img/download-icon.png',
+        margin: '0 0 0 5',
+        tabIndex: 99,
+      }
+    ],
+    layout: {
+      type: 'hbox'
+    },
+  }, {
+    xtype: 'LinkButton',
+    text: 'Click here to submit a new mesh and velocity model',
+    handler: function(e) {
+      e.stopEvent();
+      meshSolverPopup();
     }
-  ],
+  }, {
+    xtype: 'hidden',
+    id: 'solver-filetype',
+    name: 'filetype',
+    value: SOLVER_TYPE
+  }],
   buttons: [{
     itemId: 'solver_but',
     id: 'solver_but',
