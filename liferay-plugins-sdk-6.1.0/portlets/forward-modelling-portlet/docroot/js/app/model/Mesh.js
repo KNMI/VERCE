@@ -4,16 +4,16 @@ Ext.define("CF.model.Mesh", {
     type: 'string',
     name: 'name'
   }, {
-    type: 'int',
+    type: 'number',
     name: 'geo_minLat'
   }, {
-    type: 'int',
+    type: 'number',
     name: 'geo_maxLat'
   }, {
-    type: 'int',
+    type: 'number',
     name: 'geo_minLon'
   }, {
-    type: 'int',
+    type: 'number',
     name: 'geo_maxLon'
   }, {
     type: 'string',
