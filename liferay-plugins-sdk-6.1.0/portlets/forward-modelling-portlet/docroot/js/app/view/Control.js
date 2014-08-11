@@ -13,6 +13,8 @@ Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.WfGrid',
   initComponent: function() {
+    var controller = this.getController();
+
     Ext.apply(this, {
       store: wfStore,
       id: 'wfGrid',
@@ -107,7 +109,7 @@ Ext.define('CF.view.WfGrid', {
 
                       // HACK ensure correct event binding order by binding here
                       var eventLayer = map.getLayersByName('Events')[0];
-                      ctrl.eventstore.bind(eventLayer);
+                      controller.eventstore.bind(eventLayer);
 
                       eventLayer.events.on({
                         featureadded: function(event) {},
@@ -128,7 +130,7 @@ Ext.define('CF.view.WfGrid', {
                       });
 
                       // reuse events
-                      getEvents(ctrl, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
+                      getEvents(controller, prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
 
                       var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
                       var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
@@ -136,7 +138,7 @@ Ext.define('CF.view.WfGrid', {
 
                       // HACK ensure correct event binding order by binding here
                       var stationLayer = map.getLayersByName('Stations')[0];
-                      ctrl.stationstore.bind(stationLayer);
+                      controller.stationstore.bind(stationLayer);
 
                       stationLayer.events.on({
                         featureadded: function(event) {},
@@ -157,7 +159,7 @@ Ext.define('CF.view.WfGrid', {
                       });
 
                       // reuse stations
-                      getStations(ctrl, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
+                      getStations(controller, prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
 
                       // Only set old workflow if it's still available
                       if (prov_object.workflowId != null) {

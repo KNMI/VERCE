@@ -385,8 +385,8 @@ function checkStatus(elem, resp, options, type) {
       else errorMsg = "The request failed. Error code " + request.status;
       Ext.Msg.alert("Alert!", errorMsg);
     }
-    if (type === "event") ctrl.getEventsGrid().setLoading(false);
-    if (type === "station") ctrl.getStationsGrid().setLoading(false);
+    if (type === "event") this.getEventsGrid().setLoading(false);
+    if (type === "station") this.getStationsGrid().setLoading(false);
     options.callback.call(options.scope, resp);
   }
 }

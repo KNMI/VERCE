@@ -28,7 +28,7 @@ Ext.Loader.setConfig({
   paths: {
     GeoExt: "../../../forward-modelling-portlet/js/src/GeoExt",
     // for dev use
-    Ext: "http://cdn.sencha.io/ext-4.1.0-gpl/src"
+    // Ext: "http://cdn.sencha.io/ext-4.1.0-gpl/src"
     // for build purpose
     // Ext: "extjs-4.1.0/src"
   }
