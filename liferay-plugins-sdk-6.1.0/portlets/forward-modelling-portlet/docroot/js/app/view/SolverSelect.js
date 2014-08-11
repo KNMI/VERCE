@@ -63,6 +63,7 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
     'change': function(combo) {
       gl_mesh = combo.getValue();
       if (gl_mesh == null) {
+        Ext.getCmp('mesh_doc_button').setDisabled(true);
         return;
       }
 
@@ -99,6 +100,8 @@ var meshescombo = Ext.create('Ext.form.field.ComboBox', {
       var centLat = gl_minLat + (gl_maxLat - gl_minLat) / 2;
       ctrl.mapPanel.map.setCenter([centLon, centLat]);
       ctrl.mapPanel.map.zoomToExtent(bounds);
+
+      Ext.getCmp('mesh_doc_button').setDisabled(false);
     }
   }
 });
@@ -116,9 +119,13 @@ var velocitycombo = Ext.create('Ext.form.field.ComboBox', {
     scope: this,
     'change': function(combo) {
       gl_velmod = combo.getValue();
+      if (gl_velmod == null) {
+        Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
+      }
       Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
       Ext.getCmp('tabpanel_principal').down('#earthquakes').enable();
       Ext.getCmp('solver_but').enable();
+      Ext.getCmp('velocitymodel_doc_button').setDisabled(false);
     }
   }
 });
@@ -164,9 +171,14 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     items: [
       meshescombo, {
         xtype: 'button',
+        id: 'mesh_doc_button',
         icon: localResourcesPath + '/img/download-icon.png',
         margin: '0 0 0 5',
         tabIndex: 99,
+        disabled: true,
+        handler: function() {
+          window.open(downloadMeshDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue(), '_self');
+        }
       }
     ],
     layout: {
@@ -179,9 +191,14 @@ var formSolverSelect = Ext.create('Ext.form.Panel', {
     items: [
       velocitycombo, {
         xtype: 'button',
+        id: 'velocitymodel_doc_button',
         icon: localResourcesPath + '/img/download-icon.png',
         margin: '0 0 0 5',
         tabIndex: 99,
+        disabled: true,
+        handler: function() {
+          window.open(downloadVelocityModelDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue() + '&velocityModelName=' + velocitycombo.getValue(), '_self');
+        }
       }
     ],
     layout: {

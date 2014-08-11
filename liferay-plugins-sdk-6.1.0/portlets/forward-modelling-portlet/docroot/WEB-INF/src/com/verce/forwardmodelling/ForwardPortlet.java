@@ -91,6 +91,7 @@ import hu.sztaki.lpds.pgportal.services.asm.constants.StatusConstants;
 
 import com.verce.forwardmodelling.Constants;
 
+import org.json.*;
 
 public class ForwardPortlet extends MVCPortlet{
 	
@@ -109,6 +110,10 @@ public class ForwardPortlet extends MVCPortlet{
 		   deleteWorkflow(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("meshVelocityModelUpload"))
 		   meshVelocityModelUpload(resourceRequest, resourceResponse);
+	   else if (resourceRequest.getResourceID().equals("downloadMeshDetails"))
+		   downloadMeshDetails(resourceRequest, resourceResponse);
+	   else if (resourceRequest.getResourceID().equals("downloadVelocityModelDetails"))
+		   downloadVelocityModelDetails(resourceRequest, resourceResponse);
 	}
 	
 	public void getWorkflowList(ActionRequest req, ActionResponse res)
@@ -544,6 +549,107 @@ public class ForwardPortlet extends MVCPortlet{
 	   //    throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN, e);
 	   //} 
    }
+
+   	private void downloadMeshDetails(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+   		try {
+	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
+	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
+
+			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/solver/" + solverName);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+
+			if(con.getResponseCode()!=200) {
+				System.out.println("[ForwardModellingPortlet.downloadMeshDetails] Error: " + con.getResponseCode());
+				return;
+			}
+			
+			InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
+			StringBuilder stringBuilder = new StringBuilder();
+			char[] buffer = new char[1024];
+			int charsRead = 0;
+			while ((charsRead = inputStreamReader.read(buffer)) > 0) {
+				stringBuilder.append(buffer, 0, charsRead);
+			};
+
+			JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+			JSONArray meshes = jsonObject.getJSONArray("meshes");
+			JSONObject mesh = null;
+			for (int ii = 0; ii < meshes.length(); ii++) {
+				mesh = meshes.getJSONObject(ii);
+				if (mesh.getString("name").equals(meshName)) {
+					break;
+				}
+			}
+			if (mesh == null) {
+				System.out.println("[ForwardModellingPortlet.downloadMeshDetails] Error: Mesh " + meshName + " not found for solver " + solverName);
+				return;
+			}
+			String details = mesh.getString("details");
+
+			resourceResponse.setContentType("application/text");
+		    resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"mesh-details.txt\"");
+			resourceResponse.getWriter().write(details);
+		} catch (Exception e) {
+			System.out.println("[ForwardModellingPortlet.downloadMeshDetails] Error: " + e.getStackTrace());
+		}
+   	}
+
+	private void downloadVelocityModelDetails(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+		try {
+	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
+	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
+	   		String velocityModelName = ParamUtil.getString(resourceRequest, "velocityModelName");
+
+			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/solver/" + solverName);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("GET");
+
+			if(con.getResponseCode()!=200)
+				System.out.println("[ForwardModellingPortlet.downloadVelocityModelDetails] Error: " + con.getResponseCode());
+			
+			InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
+			StringBuilder stringBuilder = new StringBuilder();
+			char[] buffer = new char[1024];
+			int charsRead = 0;
+			while ((charsRead = inputStreamReader.read(buffer)) > 0) {
+				stringBuilder.append(buffer, 0, charsRead);
+			};
+
+			JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+			JSONArray meshes = jsonObject.getJSONArray("meshes");
+			JSONObject mesh = null;
+			for (int ii = 0; ii < meshes.length(); ii++) {
+				mesh = meshes.getJSONObject(ii);
+				if (mesh.getString("name").equals(meshName)) {
+					break;
+				}
+			}
+			if (mesh == null) {
+				System.out.println("[ForwardModellingPortlet.downloadVelocityModelDetails] Error: Mesh " + meshName + " not found for solver " + solverName);
+				return;
+			}
+			JSONArray velocityModels = mesh.getJSONArray("velmod");
+			JSONObject velocityModel = null;
+			for (int ii = 0; ii < velocityModels.length(); ii++) {
+				velocityModel = velocityModels.getJSONObject(ii);
+				if (velocityModel.getString("name").equals(velocityModelName)) {
+					break;
+				}
+			}
+			if (velocityModel == null) {
+				System.out.println("[ForwardModellingPortlet.downloadVelocityModelDetails] Error: Velocity Model " + velocityModelName + " not found for Mesh " + meshName + " and solver " + solverName);
+				return;
+			}
+			String details = velocityModel.getString("details");
+
+			resourceResponse.setContentType("application/text");
+		    resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"velocitymodel-details.txt\"");
+			resourceResponse.getWriter().write(details);
+		} catch (Exception e) {
+			System.out.println("[ForwardModellingPortlet.downloadVelocityModelDetails] Error: " + e.getStackTrace());
+		}
+	}
    
    private String addFileToDL(File file, String name, long groupId, String userSN, String filetype, Integer iteration)
 		   	throws SystemException, PortalException, Exception
@@ -750,7 +856,7 @@ public class ForwardPortlet extends MVCPortlet{
 			throw e;
 		}
 	}
-	
+
    /*
     * Sends the error through the response. Writes logMessage through the logs
     * if e is not null prints the stackTrace through the logs
