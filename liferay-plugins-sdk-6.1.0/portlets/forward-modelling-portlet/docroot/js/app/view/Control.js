@@ -69,6 +69,10 @@ Ext.define('CF.view.WfGrid', {
       handler: function(grid, rowIndex, colIndex) {
         var rec = wfStore.getAt(rowIndex);
 
+        Ext.getCmp('viewport').setLoading(true);
+        // number of asynchronous calls remaining
+        var numRemaining = 3;
+
         Ext.Ajax.request({
           url: "/j2ep-1.0/prov/workflow/" + encodeURIComponent(rec.get('name')),
           params: {},
@@ -121,6 +125,9 @@ Ext.define('CF.view.WfGrid', {
                         });
                       });
                       eventLayer.events.un(this);
+                      if (--numRemaining === 0) {
+                        Ext.getCmp('viewport').setLoading(false);
+                      }
                     },
                     scope: this
                   });
@@ -150,6 +157,9 @@ Ext.define('CF.view.WfGrid', {
                         });
                       })
                       stationLayer.events.un(this);
+                      if (--numRemaining === 0) {
+                        Ext.getCmp('viewport').setLoading(false);
+                      }
                     },
                     scope: this
                   });
@@ -178,17 +188,22 @@ Ext.define('CF.view.WfGrid', {
                 CF.app.getController('Map').getStore('SolverConf').addListener('refresh', function() {
                   // reuse mesh and trigger velocity store reload
                   Ext.getCmp('meshes').setValue(object.mesh);
+                  if (--numRemaining === 0) {
+                    Ext.getCmp('viewport').setLoading(false);
+                  }
                 }, this, {
                   single: true
                 });
               },
               failure: function(response) {
                 Ext.Msg.alert("Error", "Failed to get workflow settings!");
+                Ext.getCmp('viewport').setLoading(false);
               }
             })
           },
           failure: function(response) {
             Ext.Msg.alert("Error", "Failed to get workflow from provenance api!");
+            Ext.getCmp('viewport').setLoading(false);
           }
         })
       }
