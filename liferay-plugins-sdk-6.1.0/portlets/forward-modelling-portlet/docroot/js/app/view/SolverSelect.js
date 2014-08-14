@@ -162,7 +162,7 @@ Ext.define('CF.view.SolverSelectForm', {
       tabIndex: 99,
       disabled: true,
       handler: function() {
-        window.open(solvercombo.store.findRecord('abbr', solvercombo.getValue()).get('doc'), '_self');
+        window.open(Ext.getCmp('solvertype').store.findRecord('abbr', Ext.getCmp('solvertype').getValue()).get('doc'), '_self');
       }
     }],
     layout: {
@@ -182,7 +182,7 @@ Ext.define('CF.view.SolverSelectForm', {
       tabIndex: 99,
       disabled: true,
       handler: function() {
-        window.open(downloadMeshDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue(), '_self');
+        window.open(downloadMeshDetailsURL + '&solver=' + Ext.getCmp('solvertype').getValue() + '&meshName=' + Ext.getCmp('meshes').getValue(), '_self');
       }
     }],
     layout: {
@@ -202,7 +202,7 @@ Ext.define('CF.view.SolverSelectForm', {
       tabIndex: 99,
       disabled: true,
       handler: function() {
-        window.open(downloadVelocityModelDetailsURL + '&solver=' + solvercombo.getValue() + '&meshName=' + meshescombo.getValue() + '&velocityModelName=' + velocitycombo.getValue(), '_self');
+        window.open(downloadVelocityModelDetailsURL + '&solver=' + Ext.getCmp('solvertype').getValue() + '&meshName=' + Ext.getCmp('meshes').getValue() + '&velocityModelName=' + Ext.getCmp('velocity').getValue(), '_self');
       }
     }],
     layout: {
