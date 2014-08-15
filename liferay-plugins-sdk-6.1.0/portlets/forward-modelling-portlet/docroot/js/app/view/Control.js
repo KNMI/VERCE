@@ -121,14 +121,11 @@ Ext.define('CF.view.WfGrid', {
                     featureadded: function(event) {},
                     featuresadded: function(event) {
                       event.features.forEach(function(feature) {
-                        object.events.every(function(eventId) {
-                          if (eventId === feature.data.eventId) {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                            return false;
-                          }
+                        if (object.events.indexOf(feature.data.eventId) >= 0) {
+                          CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
+                        } else {
                           CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                          return true;
-                        });
+                        }
                       });
                       eventLayer.events.un(this);
                       if (--numRemaining === 0) {
@@ -153,15 +150,12 @@ Ext.define('CF.view.WfGrid', {
                     featureadded: function(event) {},
                     featuresadded: function(event) {
                       event.features.forEach(function(feature) {
-                        object.stations.every(function(stationId) {
-                          if (stationId === (feature.data.network + '.' + feature.data.station)) {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                            return false;
-                          }
+                        if (object.stations.indexOf(feature.data.network + '.' + feature.data.station) >= 0) {
+                          CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
+                        } else {
                           CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                          return true;
-                        });
-                      })
+                        }
+                      });
                       stationLayer.events.un(this);
                       if (--numRemaining === 0) {
                         Ext.getCmp('viewport').setLoading(false);

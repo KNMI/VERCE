@@ -299,12 +299,12 @@ Ext.define('CF.view.Map', {
           if (feature.layer.name === 'Stations') {
             var stationGrid = controller.getStationGrid();
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
-            stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            stationGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             stationGrid.getView().focusRow(idx, 100);
           } else if (feature.layer.name === 'Events') {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
-            eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            eventGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             eventGrid.getView().focusRow(idx, 100);
           }
         },
