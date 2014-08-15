@@ -80,6 +80,12 @@ Ext.define('CF.view.WfGrid', {
           success: function(response) {
             var prov_object = JSON.parse(response.responseText);
 
+            if (prov_object == null) {
+              Ext.getCmp('viewport').setLoading(true);
+              Ext.Msg.alert("Error", "Workflow missing from provenance repository. Please contact support and list the workflow name and username.");
+              return;
+            }
+
             prov_object.input.forEach(function(item) {
               prov_object[item.name] = item;
             });
