@@ -727,6 +727,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
       var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
       var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
       var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
+      if (keys==null) keys="";
       if (form.isValid()) {
         artifactStore.setProxy({
           type: 'ajax',
