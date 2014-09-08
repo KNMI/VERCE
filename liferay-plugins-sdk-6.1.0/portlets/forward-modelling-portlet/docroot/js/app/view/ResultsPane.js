@@ -477,11 +477,6 @@ Ext.define('CF.view.ActivityMonitor', {
   autoScroll: true,
   collapsible: true,
 
-  // TODO replace, unsupported as of ExtJS 5
-  // verticalScroller: {
-  //   xtype: 'paginggridscroller'
-  // },
-
   dockedItems: {
     itemId: 'toolbar',
     xtype: 'toolbar',
@@ -1362,7 +1357,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
         }
         selected = nearest = dragged = sys.nearest(p);
 
-        if (selected.node !== null) {
+        if (selected != null && selected.node != null) {
 
           // dragged.node.tempMass = 10000
           dragged.node.fixed = true;
