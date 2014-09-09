@@ -461,7 +461,7 @@ var onStoreLoad = function(store) {
 }
 
 Ext.define('CF.view.ActivityMonitor', {
-  title: 'Run activity monitor ',
+  title: 'Run activity monitor',
   width: '25%',
   region: 'west',
   extend: 'Ext.grid.Panel',
