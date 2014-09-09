@@ -457,11 +457,11 @@ Ext.define('CF.view.WorkFlowSelectionWindow', {
 
 var onStoreLoad = function(store) {
   Ext.getCmp('viewworkflowinput').enable();
-  Ext.getCmp("activitymonitor").setTitle('Run\'s activities monitor - ' + currentRun)
+  Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
 }
 
 Ext.define('CF.view.ActivityMonitor', {
-  title: 'Run activity monitor ',
+  title: 'Ru activity monitor ',
   width: '25%',
   region: 'west',
   extend: 'Ext.grid.Panel',
