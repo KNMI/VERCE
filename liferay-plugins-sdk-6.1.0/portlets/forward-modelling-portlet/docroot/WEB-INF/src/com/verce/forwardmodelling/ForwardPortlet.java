@@ -672,8 +672,12 @@ public class ForwardPortlet extends MVCPortlet{
 	   }
 	   catch (DuplicateFileException dupException) {
 		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN Duplicated file "+finalName);
-		   if (iteration==null)	iteration = 1;
-		   if(iteration>49)	throw new Exception("[ForwardModellingPortlet.addFileToDL] ERROR: The same file name cannot be used more than 50 times");
+		   if (iteration==null)	{
+		      iteration = 1;
+		   }
+		   else if(iteration>49) {
+		      throw new Exception("[ForwardModellingPortlet.addFileToDL] ERROR: The same file name cannot be used more than 50 times");
+		   }
 		   iteration++;
 		   return addFileToDL(file, name, groupId, userSN, filetype, iteration);
 	   }
