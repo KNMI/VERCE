@@ -37,6 +37,12 @@ Ext.define('CF.view.metaCombo', {
   },
   initComponent: function() {
     this.callParent();
+  },
+  onCollapse: function() {
+    this.callParent();
+    if (this.picker.getSelectionModel().selection == null || this.picker.getSelectionModel().selection.length === 0) {
+      this.value = this.getRawValue();
+    }
   }
 });
 
@@ -307,7 +313,6 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
             totalProperty: 'totalCount'
           },
           simpleSortMode: true
-
         });
 
         activityStore.data.clear();
@@ -319,107 +324,103 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
           }
-
-        })
+        });
 
         activityStore.on('load', onStoreLoad, this, {
           single: true
         });
-        currentRun = form.findField("runId").getValue(false)
 
+        currentRun = form.findField("runId").getValue(false);
       };
 
-      activityStore.load()
+      activityStore.load();
     }
   }]
 });
 
 Ext.define('CF.view.WorkflowValuesRangeSearch', {
-    extend: 'Ext.form.Panel',
-    alias: 'widget.workflowvaluesrangesearch',
-    // The fields
-    title: 'Search',
-    height: 150,
+  extend: 'Ext.form.Panel',
+  alias: 'widget.workflowvaluesrangesearch',
+  // The fields
+  title: 'Search',
+  height: 150,
 
-    defaultType: 'textfield',
-    layout: {
-      align: 'center',
-      pack: 'center',
-      type: 'hbox'
+  defaultType: 'textfield',
+  layout: {
+    align: 'center',
+    pack: 'center',
+    type: 'hbox'
+  },
+  items: [{
+    xtype: 'fieldset',
+    title: 'Search for runs across products metadata, data formats and parameters',
+    collapsible: false,
+    width: '95%',
+    margins: '20,10,10,10',
+    defaults: {
+      labelWidth: 10,
+      anchor: '100%',
+      layout: {
+        type: 'hbox'
+
+      }
+
     },
     items: [{
-      xtype: 'fieldset',
-      title: 'Search for runs across products metadata, data formats and parameters',
-      collapsible: false,
-      width: '95%',
-      margins: '20,10,10,10',
-      defaults: {
-        labelWidth: 10,
-        anchor: '100%',
-        layout: {
-          type: 'hbox'
+      xtype: 'fieldcontainer',
 
+      combineErrors: true,
+      msgTarget: 'under',
+
+      items: [{
+          xtype: 'metacombo'
+        }, {
+          xtype: 'textfield',
+          fieldLabel: 'Min values',
+          name: 'minvalues',
+          anchor: '80%',
+          allowBlank: false,
+          labelAlign: 'right',
+          inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
+          margin: '10 0 10 0'
+        }, {
+          xtype: 'textfield',
+          fieldLabel: 'Max values',
+          labelAlign: 'right',
+          name: 'maxvalues',
+          inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
+
+          anchor: '80%',
+          allowBlank: false,
+          margin: '10 0 10 0'
         }
 
-      },
-      items: [{
-        xtype: 'fieldcontainer',
-
-        combineErrors: true,
-        msgTarget: 'under',
-
-        items: [{
-            xtype: 'metacombo'
-          }, {
-            xtype: 'textfield',
-            fieldLabel: 'Min values',
-            name: 'minvalues',
-            anchor: '80%',
-            allowBlank: false,
-            labelAlign: 'right',
-            inputAttrTpl: " data-qtip='Insert here a sequence of min values related to the indicated Terms, divided by commas.<br/> Eg. 3.5,AQU' ",
-            margin: '10 0 10 0'
-          }, {
-            xtype: 'textfield',
-            fieldLabel: 'Max values',
-            labelAlign: 'right',
-            name: 'maxvalues',
-            inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
-
-            anchor: '80%',
-            allowBlank: false,
-            margin: '10 0 10 0'
-          }
-
-        ]
-      }]
-    }],
-
-    buttons: [{
-      text: 'Search',
-      formBind: true, //only enabled once the form is valid
-
-      handler: function() {
-        var form = this.up('form').getForm();
-        var keys = this.up('form').getForm().findField("keys").getValue(false)
-        var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
-        var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
-        owner = userSN
-
-        if (form.isValid()) {
-          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys=' + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues
-        };
-
-
-        //BUG: with a single load the grid doesn't synchronise when scrolled to the bottom
-        workflowStore.load()
-        workflowStore.load()
-        //workflowStore.sync()
-      }
+      ]
     }]
-  }
+  }],
 
-);
+  buttons: [{
+    text: 'Search',
+    formBind: true, //only enabled once the form is valid
+
+    handler: function() {
+      var form = this.up('form').getForm();
+      var keys = form.findField("keys").getValue(false)
+      var minvalues = form.findField("minvalues").getValue(false)
+      var maxvalues = form.findField("maxvalues").getValue(false)
+      owner = userSN
+
+      if (form.isValid()) {
+        workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys=' + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues
+      };
+
+      //BUG: with a single load the grid doesn't synchronise when scrolled to the bottom
+      workflowStore.load();
+      workflowStore.load();
+      //workflowStore.sync()
+    }
+  }]
+});
 
 
 Ext.define('CF.view.WorkFlowSelectionWindow', {
@@ -722,7 +723,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
       var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
       var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
       var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
-      if (keys==null) keys="";
+      if (keys == null) keys = "";
       if (form.isValid()) {
         artifactStore.setProxy({
           type: 'ajax',
@@ -886,7 +887,6 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
       var form = this.up('form').getForm();
       if (form.isValid()) {
         FilterAjax.request({
-
           method: 'POST',
           url: PROV_SERVICE_BASEURL + 'entities/filterOnAncestorsValuesRange',
           headers: {
