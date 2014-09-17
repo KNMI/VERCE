@@ -89,6 +89,12 @@ import hu.sztaki.lpds.pgportal.service.workflow.RealWorkflowUtils;
 import hu.sztaki.lpds.wfs.com.WorkflowConfigErrorBean;
 import hu.sztaki.lpds.pgportal.services.asm.constants.StatusConstants;
 
+import hu.sztaki.lpds.information.com.ServiceType;
+import hu.sztaki.lpds.wfs.com.RepositoryWorkflowBean;
+import hu.sztaki.lpds.repository.service.veronica.commons.RepositoryFileUtils;
+import hu.sztaki.lpds.wfs.inf.PortalWfsClient;
+import hu.sztaki.lpds.storage.inf.PortalStorageClient;
+
 import com.verce.forwardmodelling.Constants;
 
 import org.json.*;
@@ -277,7 +283,47 @@ public class ForwardPortlet extends MVCPortlet{
 		   //System.out.println("[ForwardModellingPortlet.submitSolver] Abans: "+portalUrl2);
 		   if(portalUrl2.equals("http://localhost:8081"))	portalUrl2 = "http://localhost:8080";	//TODO: careful
 		   //System.out.println("[ForwardModellingPortlet.submitSolver] Despres (sencer): "+portalUrl2+stationUrl);
-		   
+
+		   System.out.println("Try to fetch workflow zip from repository for workflow with ID: " + workflowId);
+		   String job0bin = "";
+		   Date job0binModified = new Date(0L);
+
+           Hashtable hsh = new Hashtable();
+		   ServiceType st = InformationBase.getI().getService("wfs", "portal", hsh, new Vector());
+           PortalWfsClient wfsClient = (PortalWfsClient) Class.forName(st.getClientObject()).newInstance();
+           wfsClient.setServiceURL(st.getServiceUrl());
+           wfsClient.setServiceID(st.getServiceID());
+
+           RepositoryWorkflowBean bean = new RepositoryWorkflowBean();
+           bean.setId(Long.parseLong(workflowId));
+           bean.setWorkflowType(RepositoryItemTypeConstants.Application);
+
+           Vector wfList = wfsClient.getRepositoryItems(bean);
+           if (wfList == null) {
+               throw new Exception("Not valid wf list !");
+           }
+
+           for (Object wfBeanObject : wfList) {
+              RepositoryWorkflowBean wfBean = (RepositoryWorkflowBean) wfBeanObject;
+
+              String relativePath = wfBean.getZipRepositoryPath();
+              String fullPath = new String(RepositoryFileUtils.getInstance().getRepositoryDir() + relativePath);
+              ZipFile zipFile = new ZipFile(fullPath);
+
+              Enumeration<? extends ZipEntry> entries = zipFile.entries();
+              while (entries.hasMoreElements()) {
+                 ZipEntry entry = (ZipEntry) entries.nextElement();
+                 System.out.println(entry.getName());
+                 if (entry.getName().indexOf("Job0/execute.bin") >= 0) {
+             		job0bin = inputStreamToString(zipFile.getInputStream(entry));
+             		job0binModified = new Date(entry.getTime());
+             		// System.out.println(job0bin);
+                 	break;
+                 }
+              }
+	          zipFile.close();
+           }
+
 		   if(!stationDLFile)	//1a. create StationFile and store it
 		   {
 			   stationFile = FileUtil.createTempFile();
@@ -384,7 +430,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
 			   
 			   //10. Add run info in the Provenance Repository
-			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType);
+			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified);
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
@@ -550,6 +596,17 @@ public class ForwardPortlet extends MVCPortlet{
 	   //} 
    }
 
+   private String inputStreamToString(InputStream inputStream) throws IOException {
+		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+		StringBuilder stringBuilder = new StringBuilder();
+		char[] buffer = new char[1024];
+		int charsRead = 0;
+		while ((charsRead = inputStreamReader.read(buffer)) > 0) {
+			stringBuilder.append(buffer, 0, charsRead);
+		};
+		return stringBuilder.toString();
+   }
+
    	private void downloadMeshDetails(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
    		try {
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
@@ -564,15 +621,9 @@ public class ForwardPortlet extends MVCPortlet{
 				return;
 			}
 			
-			InputStreamReader inputStreamReader = new InputStreamReader(con.getInputStream());
-			StringBuilder stringBuilder = new StringBuilder();
-			char[] buffer = new char[1024];
-			int charsRead = 0;
-			while ((charsRead = inputStreamReader.read(buffer)) > 0) {
-				stringBuilder.append(buffer, 0, charsRead);
-			};
+			String input = inputStreamToString(con.getInputStream());
 
-			JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+			JSONObject jsonObject = new JSONObject(input);
 			JSONArray meshes = jsonObject.getJSONArray("meshes");
 			JSONObject mesh = null;
 			for (int ii = 0; ii < meshes.length(); ii++) {
@@ -790,7 +841,7 @@ public class ForwardPortlet extends MVCPortlet{
     }
 		
 	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
-			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType)
+			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified)
     {	
 		String runType = "workflow_run";
 		try{
@@ -807,16 +858,28 @@ public class ForwardPortlet extends MVCPortlet{
 			String nowAsISO = df.format(new Date());
 			if(stationFileType.equals(Constants.STPOINTS_TYPE))	stationFileType = Constants.MIMETYPE_PLAIN;
 			if(stationFileType.equals(Constants.STXML_TYPE))	stationFileType = Constants.MIMETYPE_XML;
-			
-			String params = "{\"username\":\""+userSN+"\", \"_id\":\""+runId+"\", \"type\":\""+runType+"\", \"description\":\""+submitMessage
-					+"\", \"workflowName\":\""+wfName+"\", \"workflowId\":\""+wfId+"\", \"system_id\":\""+asmRunId+"\", \"startTime\":\""+nowAsISO+"\", \"input\":[";
-			params += "{\"mime-type\":\""+stationFileType+"\", \"name\":\""+Constants.ST_INPUT_NAME+"\", \"url\":\""+stationUrl+"\"},";
-			params += "{\"mime-type\":\""+Constants.MIMETYPE_XML+"\", \"name\":\""+Constants.EVENT_INPUT_NAME+"\", \"url\":\""+eventUrl+"\"},";
-			params += "{\"mime-type\":\""+Constants.MIMETYPE_JSON+"\", \"name\":\""+Constants.SOLVER_INPUT_NAME+"\", \"url\":\""+solverUrl+"\"},";
-			params += "{\"mime-type\":\""+Constants.MIMETYPE_ZIP+"\", \"name\":\""+Constants.ZIP_INPUT_NAME+"\", \"url\":\""+zipUrl+"\"}";
-			params += "]}";
-			//System.out.println("[updateProvenanceRepository] Params: "+params);
-			String urlParameters = "prov="+URLEncoder.encode(params, "ISO-8859-1");
+
+			JSONObject params = new JSONObject();
+			params.put("username", userSN)
+				  .put("_id", runId)
+				  .put("type", runType)
+				  .put("description", submitMessage)
+				  .put("workflowName", wfName)
+				  .put("workflowId", wfId)
+				  .put("system_id", asmRunId)
+				  .put("startTime", nowAsISO)
+				  .put("job0bin", job0bin)
+				  .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified));
+
+			JSONArray input = new JSONArray();
+			input.put(new JSONObject().put("mime-type", stationFileType).put("name",Constants.ST_INPUT_NAME).put("url", stationUrl))
+				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_XML).put("name",Constants.EVENT_INPUT_NAME).put("url", eventUrl))
+				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_JSON).put("name",Constants.SOLVER_INPUT_NAME).put("url", solverUrl))
+				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_ZIP).put("name",Constants.ZIP_INPUT_NAME).put("url", zipUrl));
+			params.put("input", input);
+
+			// System.out.println("[updateProvenanceRepository] Params: "+params.toString());
+			String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
 			
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
