@@ -330,7 +330,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   URL wsUrl = new URL(portalUrl2+stationUrl);
 			   FileUtil.write(stationFile, wsUrl.openStream());
 			   String stFileName = "stations_"+runIds[0];
-			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE, null);
+			   stPublicPath = addFileToDL(stationFile, stFileName, groupId, userSN, Constants.WS_TYPE);
 			   stPublicPath = portalUrl + stPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Stations file created in the document library by "+userSN+", accessible in: "+stPublicPath);
 			   stFileType = Constants.STXML_TYPE;
@@ -351,7 +351,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   URL wsUrl = new URL(portalUrl2+eventUrl);
 			   FileUtil.write(eventFile, wsUrl.openStream());
 			   String evFileName = "events_"+runIds[0];
-			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE, null);
+			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
 			   evPublicPath = portalUrl + evPublicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
 		   }
@@ -369,7 +369,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   String zipName = runIds[0]+".zip";
 		   createZipFile("temp/"+zipName);
 		   File tempZipFile = new File("temp/"+zipName);
-		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE, null);
+		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
 	       zipPublicPath = portalUrl + zipPublicPath;
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
 
@@ -389,7 +389,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   File solverFile = FileUtil.createTempFile();
 			   FileUtil.write(solverFile, jsonContent);
 			   String fileName = solverType+"_"+runIds[i]+".json";
-			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE, null);
+			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
 	
@@ -578,7 +578,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 	   //try
 	   //{
-		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype, null);
+		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
 		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
 		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
 		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
@@ -702,7 +702,7 @@ public class ForwardPortlet extends MVCPortlet{
 		}
 	}
    
-   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype, Integer iteration)
+   private String addFileToDL(File file, String name, long groupId, String userSN, String filetype)
 		   	throws SystemException, PortalException, Exception
    {
 	   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -713,26 +713,68 @@ public class ForwardPortlet extends MVCPortlet{
 	   ServiceContext serviceContext = new ServiceContext();
 	   serviceContext.setScopeGroupId(groupId);
 	   long folderId = getFolderId(repositoryId, userSN, filetype, serviceContext);
-	   String finalName = name;
-	   if (iteration!=null)	finalName = name + "_" + iteration;
-	   //System.out.println("[ForwardModellingPortlet.addFileToDL] "+repositoryId+", "+ folderId+", "+ sourceFileName+", "+ mimeType+", "+description+", "+changeLog+", "+serviceContext.toString()+", "+userSN);
 	   
-	   try {
-		   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, finalName, description, changeLog, file, serviceContext);
-		   //System.out.println("[ForwardModellingPortlet.addFileToDL] The file "+finalName+" has been created.");
-	   }
-	   catch (DuplicateFileException dupException) {
-		   System.out.println("[ForwardModellingPortlet.addFileToDL] WARN Duplicated file "+finalName);
-		   if (iteration==null)	{
-		      iteration = 1;
-		   }
-		   else if(iteration>49) {
-		      throw new Exception("[ForwardModellingPortlet.addFileToDL] ERROR: The same file name cannot be used more than 50 times");
-		   }
-		   iteration++;
-		   return addFileToDL(file, name, groupId, userSN, filetype, iteration);
-	   }
-	   return "/documents/" + groupId + "/" + folderId + "/" + HttpUtil.encodeURL(HtmlUtil.unescape(finalName));
+	   // Search for unused file number
+	   // Don't use recursion because of stack limit (although the algorithm shouldn't run that deep)
+
+	   // Two step algorithm
+	   // 1. Find the first n (2^m) that is not in use be an existing file
+	   // 2. Do a binary search between 2^(m-1) and 2^m for the first non-existing filename
+
+	   // Define lower and upper bounds for searching
+   	   int lowerBound = 0;
+   	   int upperBound = 0;
+   	   
+   	   // define midpoint for binary search part
+   	   int mid = 0;
+
+   	   // keep track of if we're search upwards or in binary search
+   	   boolean up = true;
+   	   String filename = name;
+   	   do {
+		   try {
+		      if (up) {
+		      	filename = name + (upperBound > 0 ? "_"+upperBound : "");
+		      } else {
+		         filename = name + (mid > 0 ? "_"+mid : "");
+		      }
+		      // try if file exists
+ 	          DLAppServiceUtil.getFileEntry(repositoryId, folderId, filename);
+   		   } catch (PortalException e) {
+   		      // File doesnt Exist
+   		      if (up) {
+   		         // lowest n = 2^m found that's not in use
+   		         // start binary search
+	   		     up = false;
+	   		     continue;
+   		      } else {
+   		         // continue binary search in [lowerbound-mid]
+   		         upperBound = mid;
+   		         mid = lowerBound + (upperBound - lowerBound) / 2;
+                 continue;
+   		      }
+   		   }
+
+   		   // File exists
+   		   if (up) {
+   		      // look at next n = 2^m if it's in use
+   		      lowerBound = Math.max(upperBound, 1);
+   		      upperBound = lowerBound * 2;
+   		   } else {
+   		      // continue binary search in [mid+1-lowerbound]
+              lowerBound = mid + 1;
+              mid = lowerBound + (upperBound - lowerBound) / 2;
+   		   }
+
+   	   } while (lowerBound != upperBound);
+
+   	   // set final filename
+       filename = name + (lowerBound > 0 ? "_"+lowerBound : "");
+
+	   DLAppServiceUtil.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, filename, description, changeLog, file, serviceContext);
+	   System.out.println("[ForwardModellingPortlet.addFileToDL] The file "+filename+" has been created.");
+
+	   return "/documents/" + groupId + "/" + folderId + "/" + HttpUtil.encodeURL(HtmlUtil.unescape(filename));
    }
    
    /*
