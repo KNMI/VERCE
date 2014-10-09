@@ -283,25 +283,25 @@ Ext.define('CF.view.Map', {
         box: false,
         toggle: true,
         onSelect: function(feature) {
-          if (feature.layer.name === 'Stations') {
+          if (feature.data.network != null && feature.data.station != null) {
             var stationGrid = controller.getStationGrid();
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
-            stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             stationGrid.getView().focusRow(idx, 100);
-          } else if (feature.layer.name === 'Events') {
+          } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
-            eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ );
+            eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             eventGrid.getView().focusRow(idx, 100);
           }
         },
         onUnselect: function(feature) {
-          if (feature.layer.name === 'Stations') {
+          if (feature.data.network != null && feature.data.station != null) {
             var stationGrid = controller.getStationGrid();
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
             stationGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             stationGrid.getView().focusRow(idx, 100);
-          } else if (feature.layer.name === 'Events') {
+          } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
             eventGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
