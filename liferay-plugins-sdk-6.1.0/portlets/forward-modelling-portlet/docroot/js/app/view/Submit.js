@@ -181,18 +181,18 @@ Ext.define('CF.view.Submit', {
   extend: 'Ext.form.Panel',
   alias: 'widget.submit',
   border: false,
-  items: [
-    Ext.create('CF.view.SubmitForm'), {
-      id: "wflist",
-      xtype: 'panel',
-      html: submitInformation,
-      bodyPadding: '10 10 0 10',
-      border: false,
-      frame: false,
-      autoScroll: true
-      //TODO: length of the div
-    }
-  ]
+  items: [{
+    xtype: 'submitform'
+  }, {
+    id: "wflist",
+    xtype: 'panel',
+    html: submitInformation,
+    bodyPadding: '10 10 0 10',
+    border: false,
+    frame: false,
+    autoScroll: true
+    //TODO: length of the div
+  }]
 });
 
 /*
