@@ -238,136 +238,136 @@ Ext.define('CF.view.SolverSelectForm', {
   }]
 });
 
-var meshSolverPopup = function() {
-  var win = Ext.widget('window', {
-    title: 'Submit a new mesh and velocity model',
-    closeAction: 'destroy',
-    width: 600,
-    height: 550,
-    layout: 'fit',
-    modal: true,
-    autoScroll: true,
-    resizable: false,
+var win = Ext.widget('window', {
+  title: 'Submit a new mesh and velocity model',
+  closeAction: 'hide',
+  width: 600,
+  height: 550,
+  layout: 'fit',
+  modal: true,
+  autoScroll: true,
+  resizable: false,
+  items: [{
+    xtype: 'form',
+    frame: false,
+    border: false,
+    bodyPadding: '10 10 0 10',
     items: [{
-      xtype: 'form',
-      frame: false,
-      border: false,
-      bodyPadding: '10 10 0 10',
+      xtype: 'displayfield',
+      value: 'You can submit a new mesh and velocity model here. Currently we will check your submission by hand before adding them to the list of available meshes and models.'
+    }, {
+      xtype: 'fieldset',
+      title: 'Mesh',
       items: [{
-        xtype: 'displayfield',
-        value: 'You can submit a new mesh and velocity model here. Currently we will check your submission by hand before adding them to the list of available meshes and models.'
+        xtype: 'filefield',
+        fieldLabel: 'Upload a file...',
+        name: 'mesh-file',
+        id: 'mesh-file',
+        msgTarget: 'side'
       }, {
-        xtype: 'fieldset',
-        title: 'Mesh',
-        items: [{
-          xtype: 'filefield',
-          fieldLabel: 'Upload a file...',
-          name: 'mesh-file',
-          id: 'mesh-file',
-          msgTarget: 'side'
-        }, {
-          xtype: 'textfield',
-          fieldLabel: '...or paste a link',
-          name: 'mesh-link',
-          id: 'mesh-link',
-          msgTarget: 'side'
-        }]
-      }, {
-        xtype: 'fieldset',
-        title: 'Mesh Bounds',
-        items: [{
-          xtype: 'fieldcontainer',
-          layout: 'hbox',
-          items: [{
-            xtype: 'textfield',
-            fieldLabel: 'Minimum latitude',
-            name: 'min_lat',
-            id: 'min_lat',
-            msgTarget: 'side',
-            width: 200
-          }, {
-            xtype: 'textfield',
-            fieldLabel: 'Maximum latitude',
-            name: 'max_lat',
-            id: 'max_lat',
-            msgTarget: 'side',
-            width: 200
-          }]
-        }, {
-          xtype: 'fieldcontainer',
-          layout: 'hbox',
-          items: [{
-            xtype: 'textfield',
-            fieldLabel: 'Minimum longitude',
-            name: 'min_lon',
-            id: 'min_lon',
-            msgTarget: 'side',
-            width: 200
-          }, {
-            xtype: 'textfield',
-            fieldLabel: 'Maximum longitude',
-            name: 'max_lon',
-            id: 'max_lon',
-            msgTarget: 'side',
-            width: 200
-          }]
-        }]
-      }, {
-        xtype: 'fieldset',
-        title: 'Velocity Model',
-        items: [{
-          xtype: 'filefield',
-          fieldLabel: 'Upload a file...',
-          name: 'velocity-model-file',
-          id: 'velocity-model-file',
-          msgTarget: 'side'
-        }, {
-          xtype: 'textfield',
-          fieldLabel: '...or paste a link',
-          name: 'velocity-model-link',
-          id: 'velocity-model-link',
-          msgTarget: 'side'
-        }]
-      }, {
-        xtype: 'fieldset',
-        // title: 'Velocity Model',
-        items: [{
-          xtype: 'textareafield',
-          fieldLabel: 'note',
-          height: 120,
-          width: 'auto',
-          name: 'note',
-          msgTarget: 'side'
-        }]
-      }],
-      buttons: [{
-        text: 'Submit',
-        handler: function(button, event) {
-          button.up('form').getForm().submit({
-            url: meshVelocityModelUploadURL,
-            waitMsg: 'Please wait while your submission is saved.',
-            success: function(form, action) {
-              Ext.Msg.alert('Success', 'Your mesh and velocity model have been submitted. We will keep you informed via email.', function() {
-                form.owner.up('window').close();
-              });
-            },
-            failure: function(form, action) {
-              if (action.failureType === Ext.form.action.Action.CLIENT_INVALID) {} else if (action.failureType === Ext.form.action.Action.CONNECT_FAILURE) {
-                Ext.Msg.alert('Connection Error', 'There was an error connecting to the server. Please try again.');
-              } else if (action.failureType === Ext.form.action.Action.SERVER_INVALID) {
-                // Ext.Msg.alert('Error', 'There was an error submitting your mesh and velocity model:\n' + action.result.message);
-              }
-            }
-          });
-        }
-      }, {
-        text: 'Cancel',
-        handler: function(e) {
-          this.up('window').close();
-        }
+        xtype: 'textfield',
+        fieldLabel: '...or paste a link',
+        name: 'mesh-link',
+        id: 'mesh-link',
+        msgTarget: 'side'
       }]
+    }, {
+      xtype: 'fieldset',
+      title: 'Mesh Bounds',
+      items: [{
+        xtype: 'fieldcontainer',
+        layout: 'hbox',
+        items: [{
+          xtype: 'textfield',
+          fieldLabel: 'Minimum latitude',
+          name: 'min_lat',
+          id: 'min_lat',
+          msgTarget: 'side',
+          width: 200
+        }, {
+          xtype: 'textfield',
+          fieldLabel: 'Maximum latitude',
+          name: 'max_lat',
+          id: 'max_lat',
+          msgTarget: 'side',
+          width: 200
+        }]
+      }, {
+        xtype: 'fieldcontainer',
+        layout: 'hbox',
+        items: [{
+          xtype: 'textfield',
+          fieldLabel: 'Minimum longitude',
+          name: 'min_lon',
+          id: 'min_lon',
+          msgTarget: 'side',
+          width: 200
+        }, {
+          xtype: 'textfield',
+          fieldLabel: 'Maximum longitude',
+          name: 'max_lon',
+          id: 'max_lon',
+          msgTarget: 'side',
+          width: 200
+        }]
+      }]
+    }, {
+      xtype: 'fieldset',
+      title: 'Velocity Model',
+      items: [{
+        xtype: 'filefield',
+        fieldLabel: 'Upload a file...',
+        name: 'velocity-model-file',
+        id: 'velocity-model-file',
+        msgTarget: 'side'
+      }, {
+        xtype: 'textfield',
+        fieldLabel: '...or paste a link',
+        name: 'velocity-model-link',
+        id: 'velocity-model-link',
+        msgTarget: 'side'
+      }]
+    }, {
+      xtype: 'fieldset',
+      // title: 'Velocity Model',
+      items: [{
+        xtype: 'textareafield',
+        fieldLabel: 'note',
+        height: 120,
+        width: 'auto',
+        name: 'note',
+        msgTarget: 'side'
+      }]
+    }],
+    buttons: [{
+      text: 'Submit',
+      handler: function(button, event) {
+        button.up('form').getForm().submit({
+          url: meshVelocityModelUploadURL,
+          waitMsg: 'Please wait while your submission is saved.',
+          success: function(form, action) {
+            Ext.Msg.alert('Success', 'Your mesh and velocity model have been submitted. We will keep you informed via email.', function() {
+              form.owner.up('window').close();
+            });
+          },
+          failure: function(form, action) {
+            if (action.failureType === Ext.form.action.Action.CLIENT_INVALID) {} else if (action.failureType === Ext.form.action.Action.CONNECT_FAILURE) {
+              Ext.Msg.alert('Connection Error', 'There was an error connecting to the server. Please try again.');
+            } else if (action.failureType === Ext.form.action.Action.SERVER_INVALID) {
+              // Ext.Msg.alert('Error', 'There was an error submitting your mesh and velocity model:\n' + action.result.message);
+            }
+          }
+        });
+      }
+    }, {
+      text: 'Cancel',
+      handler: function(e) {
+        this.up('window').close();
+      }
     }]
-  });
+  }]
+});
+var meshSolverPopup = function() {
   win.show();
 }
 
