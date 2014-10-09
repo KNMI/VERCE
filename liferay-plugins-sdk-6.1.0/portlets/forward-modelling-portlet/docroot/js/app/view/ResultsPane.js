@@ -362,9 +362,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
       anchor: '100%',
       layout: {
         type: 'hbox'
-
       }
-
     },
     items: [{
       xtype: 'fieldcontainer',
@@ -389,7 +387,6 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
           labelAlign: 'right',
           name: 'maxvalues',
           inputAttrTpl: " data-qtip='Insert here a sequence of max values related to the indicated Terms, divided by commas.<br/> Eg. 5,AQU' ",
-
           anchor: '80%',
           allowBlank: false,
           margin: '10 0 10 0'
@@ -400,18 +397,25 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
   }],
 
   buttons: [{
+    text: 'Clear',
+    handler: function() {
+      this.up('form').getForm().reset();
+      workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
+      workflowStore.load();
+    }
+  }, {
     text: 'Search',
     formBind: true, //only enabled once the form is valid
 
     handler: function() {
       var form = this.up('form').getForm();
-      var keys = form.findField("keys").getValue(false)
-      var minvalues = form.findField("minvalues").getValue(false)
-      var maxvalues = form.findField("maxvalues").getValue(false)
-      owner = userSN
+      var keys = form.findField("keys").getValue(false);
+      var minvalues = form.findField("minvalues").getValue(false);
+      var maxvalues = form.findField("maxvalues").getValue(false);
+      owner = userSN;
 
       if (form.isValid()) {
-        workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys=' + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues
+        workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN + '?keys=' + keys + "&maxvalues=" + maxvalues + "&minvalues=" + minvalues;
       };
 
       //BUG: with a single load the grid doesn't synchronise when scrolled to the bottom
@@ -491,9 +495,12 @@ Ext.define('CF.view.ActivityMonitor', {
         }
 
         this.workflowselectionwindow.show();
-        workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN
 
-        workflowStore.load()
+        if (!workflowStore.isLoaded()) {
+          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
+
+          workflowStore.load();
+        }
       }
     }, {
       tooltip: 'Refresh View',
@@ -719,10 +726,10 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
 
     handler: function() {
       var form = this.up('form').getForm();
-      var keys = this.up('form').getForm().findField("keys").getValue(false)
-      var minvalues = this.up('form').getForm().findField("minvalues").getValue(false)
-      var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false)
-      var mimetype = this.up('form').getForm().findField("mime-type").getValue(false)
+      var keys = this.up('form').getForm().findField("keys").getValue(false);
+      var minvalues = this.up('form').getForm().findField("minvalues").getValue(false);
+      var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false);
+      var mimetype = this.up('form').getForm().findField("mime-type").getValue(false);
       if (keys == null) keys = "";
       if (form.isValid()) {
         artifactStore.setProxy({
@@ -735,11 +742,11 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
           },
 
           failure: function(response) {
-            Ext.Msg.alert("Error", "Search Request Failed")
+            Ext.Msg.alert("Error", "Search Request Failed");
           }
         });
-        artifactStore.data.clear()
-        artifactStore.load()
+        artifactStore.data.clear();
+        artifactStore.load();
       }
     }
   }]
