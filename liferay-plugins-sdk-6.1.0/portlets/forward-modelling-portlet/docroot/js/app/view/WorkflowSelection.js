@@ -19,11 +19,8 @@ Ext.define('CF.view.WorkflowSelection', {
 
   columns: [{
       xtype: 'rownumberer',
-
       sortable: false
-    },
-
-    {
+    }, {
       header: 'Run ID',
       dataIndex: 'runId',
       flex: 5,
@@ -69,17 +66,11 @@ Ext.define('CF.view.WorkflowSelection', {
           var xx = tempStore.getAt(0)
           messagebox = Ext.Msg.confirm('Remove Run', 'Are you sure?', function(button) {
             if (button == 'yes') {
-
-
-              var tempx = tempStore.getProxy()
+              var tempx = tempStore.getProxy();
               tempx.api.destroy = PROV_SERVICE_BASEURL + "workflow/delete/" + xx.get("runId");
-
               tempStore.remove(xx);
-
               tempStore.sync({
                 success: function(args) {
-
-
                   Ext.Ajax.request({
                     url: deleteWorkflowURL,
                     params: {
@@ -88,37 +79,19 @@ Ext.define('CF.view.WorkflowSelection', {
                     success: function(response) {
                       wfStore.load();
                     },
-                    failure: function(response) {
-
-                    }
-                  })
-
-                  // workflowStore.data.clear()
-                  workflowStore.load()
-
-
+                    failure: function(response) {}
+                  });
+                  // workflowStore.data.clear();
+                  workflowStore.load();
                 },
-
                 faliure: function(args) {
-
                   Ext.Msg.alert("Error", "Delete failed!");
-
                 }
-
-              })
-
-
-
+              });
             }
-          })
+          });
           messagebox.zIndexManager.bringToFront(messagebox);
-
-
-
         }
-
-
-
       }]
     }
   ],
@@ -139,35 +112,25 @@ Ext.define('CF.view.WorkflowSelection', {
       }
     })
   ],
-
-  /*   verticalScroller: {
+  /* verticalScroller: {
         xtype: 'paginggridscroller'
     },*/
-
-
-
   /* plugins: [{
         ptype: 'bufferedrenderer'
     }],*/
-
-
   /* selModel: {
         pruneRemoved: false
-    },
-*/
+    },*/
   initComponent: function() {
     this.callParent(arguments);
   },
-
   viewConfig: {
     enableTextSelection: true,
     listeners: {
-
       itemclick: function(dv, record, item, index, e) {
         workflowStore.sync()
       },
       itemdblclick: function(dataview, record, item, index, e) {
-
         activityStore.setProxy({
           type: 'ajax',
           url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("runId")),
@@ -176,7 +139,6 @@ Ext.define('CF.view.WorkflowSelection', {
             totalProperty: 'totalCount'
           },
           simpleSortMode: true
-
         });
         sys.prune();
         artifactStore.data.clear();
@@ -187,27 +149,15 @@ Ext.define('CF.view.WorkflowSelection', {
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
-
-
-
-
           }
-
-        })
+        });
 
         activityStore.on('load', onStoreLoad, this, {
           single: true
         });
-        currentRun = record.get("runId")
-        owner = userSN
-
+        currentRun = record.get("runId");
+        owner = userSN;
       }
-
-
-
-
     }
   }
-
-
 });
