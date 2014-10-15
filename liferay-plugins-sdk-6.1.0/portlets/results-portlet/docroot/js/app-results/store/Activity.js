@@ -2,7 +2,7 @@
  * The store used for summits
  */
 Ext.define('RS.store.Activity', {
-  extend: 'Ext.data.Store',
+	extend: 'Ext.data.BufferedStore',
   requires: [
     'Ext.grid.*',
     'Ext.data.*',
@@ -16,7 +16,7 @@ Ext.define('RS.store.Activity', {
   storeId: 'activityStore',
 
   // allow the grid to interact with the paging scroller by buffering
-  buffered: true,
+  
   leadingBufferZone: 30,
   pageSize: 300
 });
