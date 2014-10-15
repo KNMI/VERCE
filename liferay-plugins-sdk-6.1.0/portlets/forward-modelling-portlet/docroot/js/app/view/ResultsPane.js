@@ -499,9 +499,9 @@ Ext.define('CF.view.ActivityMonitor', {
 
         if (!workflowStore.isLoaded()) {
           workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
-
-          workflowStore.load();
         }
+
+        workflowStore.load();
       }
     }, {
       tooltip: 'Refresh View',
