@@ -623,8 +623,8 @@ Ext.define('CF.view.ActivityMonitor', {
           }
         });
 
-        artifactStore.data.clear()
-        artifactStore.load()
+        artifactStore.removeAll();
+        artifactStore.load();
       }
     }
   },

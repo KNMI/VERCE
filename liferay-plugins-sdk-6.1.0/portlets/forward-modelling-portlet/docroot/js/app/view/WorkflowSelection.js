@@ -141,7 +141,7 @@ Ext.define('CF.view.WorkflowSelection', {
           simpleSortMode: true
         });
         sys.prune();
-        artifactStore.data.clear();
+        artifactStore.removeAll();
         activityStore.data.clear();
         activityStore.load({
           callback: function() {
