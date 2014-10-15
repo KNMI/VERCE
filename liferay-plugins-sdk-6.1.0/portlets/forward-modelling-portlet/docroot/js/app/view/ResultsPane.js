@@ -307,7 +307,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
 
         activityStore.setProxy({
           type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false)),
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false).trim()),
           reader: {
             rootProperty: 'activities',
             totalProperty: 'totalCount'
@@ -318,8 +318,8 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
         activityStore.data.clear();
         activityStore.load({
           callback: function() {
-            currentRun = form.findField("runId").getValue(false)
-            owner = form.findField("usename").getValue(false)
+            currentRun = form.findField("runId").getValue(false).trim()
+            owner = form.findField("usename").getValue(false).trim()
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
@@ -330,7 +330,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
           single: true
         });
 
-        currentRun = form.findField("runId").getValue(false);
+        currentRun = form.findField("runId").getValue(false).trim();
       };
 
       activityStore.load();
@@ -409,9 +409,9 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
 
     handler: function() {
       var form = this.up('form').getForm();
-      var keys = form.findField("keys").getValue(false);
-      var minvalues = form.findField("minvalues").getValue(false);
-      var maxvalues = form.findField("maxvalues").getValue(false);
+      var keys = form.findField("keys").getValue(false).trim();
+      var minvalues = form.findField("minvalues").getValue(false).trim();
+      var maxvalues = form.findField("maxvalues").getValue(false).trim();
       owner = userSN;
 
       if (form.isValid()) {
@@ -461,7 +461,8 @@ Ext.define('CF.view.WorkFlowSelectionWindow', {
 });
 
 var onStoreLoad = function(store) {
-  Ext.getCmp('viewworkflowinput').enable();
+  Ext.getCmp('viewworkflowinput').enable()
+  Ext.getCmp('exportrun').enable();;
   Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
 }
 
@@ -562,7 +563,20 @@ Ext.define('CF.view.ActivityMonitor', {
         workflowInputStore.load()
 
       }
-    }]
+    },
+    {
+        tooltip: "Export the trace in a W3C-PROV JSON file",
+        text: 'Export',
+  	  disabled: 'true',
+  	  id: 'exportrun',
+
+        handler: function() {
+         window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun)+'?'+'all=True', 'Download')
+          
+        }
+      }
+    
+    ]
   },
 
   plugins: [{
@@ -623,8 +637,8 @@ Ext.define('CF.view.ActivityMonitor', {
           }
         });
 
-        artifactStore.removeAll();
-        artifactStore.load();
+        artifactStore.data.clear()
+        artifactStore.load()
       }
     }
   },
@@ -804,9 +818,9 @@ Ext.define('CF.view.FilterOnAncestor', {
 
 
       var form = this.up('form').getForm();
-      var keys = form.findField("keys").getValue(false)
-      var minvalues = form.findField("minvalues").getValue(false)
-      var maxvalues = form.findField("maxvalues").getValue(false)
+      var keys = form.findField("keys").getValue(false).trim()
+      var minvalues = form.findField("minvalues").getValue(false).trim()
+      var maxvalues = form.findField("maxvalues").getValue(false).trim()
 
       if (form.isValid()) {
         FilterAjax.request({
@@ -842,7 +856,7 @@ Ext.define('CF.view.FilterOnAncestor', {
           params: {
             ids: dataids,
             keys: keys,
-            values: form.findField("values").getValue()
+            values: form.findField("values").getValue().trim()
 
           }
         });
@@ -919,9 +933,9 @@ Ext.define('CF.view.FilterOnAncestorValuesRange', {
           },
           params: {
             ids: dataids,
-            keys: form.findField("keys").getValue(),
-            minvalues: form.findField("minvalues").getValue(),
-            maxvalues: form.findField("maxvalues").getValue()
+            keys: form.findField("keys").getValue().trim(),
+            minvalues: form.findField("minvalues").getValue().trim(),
+            maxvalues: form.findField("maxvalues").getValue().trim()
           }
         });
       }
@@ -990,8 +1004,8 @@ Ext.define('CF.view.FilterOnMeta', {
           },
           params: {
             ids: dataids,
-            keys: form.findField("keys").getValue(false),
-            values: form.findField("values").getValue()
+            keys: form.findField("keys").getValue(false).trim(),
+            values: form.findField("values").getValue().trim()
           }
         });
       }
