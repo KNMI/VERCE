@@ -142,7 +142,7 @@ Ext.define('CF.view.WorkflowSelection', {
         });
         sys.prune();
         artifactStore.removeAll();
-        activityStore.data.clear();
+        activityStore.removeAll();
         activityStore.load({
           callback: function() {
             currentRun = record.get("runId")

@@ -54,7 +54,7 @@ Ext.define('CF.view.WfGrid', {
     dataIndex: 'date'
   }, {
     xtype: 'actioncolumn',
-    width: 55,
+    width: 70,
     items: [{
       icon: localResourcesPath + '/img/Farm-Fresh_page_white_text.png',
       tooltip: 'Download logfiles',
@@ -62,6 +62,44 @@ Ext.define('CF.view.WfGrid', {
         var rec = wfStore.getAt(rowIndex);
 
         window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
+      }
+    }, {
+      icon: localResourcesPath + '/img/eye-3-256.png',
+      tooltip: 'View results',
+      handler: function(grid, rowIndex, colIndex) {
+        var record = wfStore.getAt(rowIndex);
+
+        var activityStore = Ext.data.StoreManager.lookup('activityStore');
+        var artifactStore = Ext.data.StoreManager.lookup('artifactStore');
+
+        activityStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("name")),
+          reader: {
+            rootProperty: 'activities',
+            totalProperty: 'totalCount'
+          },
+          simpleSortMode: true
+        });
+        sys.prune();
+        artifactStore.removeAll();
+        activityStore.removeAll();
+        activityStore.load({
+          callback: function() {
+            currentRun = record.get("name")
+            Ext.getCmp('filtercurrent').enable();
+            Ext.getCmp('searchartifacts').enable();
+            Ext.getCmp('downloadscript').enable();
+          }
+        });
+
+        activityStore.on('load', onStoreLoad, this, {
+          single: true
+        });
+        currentRun = record.get("name");
+        owner = userSN;
+
+        this.up('viewport').getComponent('viewport_tabpanel').setActiveTab('resultstab');
       }
     }, {
       icon: localResourcesPath + '/img/Farm-Fresh_arrow_rotate_clockwise.png',

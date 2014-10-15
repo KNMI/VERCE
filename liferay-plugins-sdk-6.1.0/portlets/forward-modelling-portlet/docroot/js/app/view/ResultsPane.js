@@ -13,7 +13,7 @@ var seismoMetaStore = Ext.create('CF.store.SeismoMeta');
 var mimetypesStore = Ext.create('CF.store.Mimetype');
 
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
-owner = userSN
+owner = userSN;
 
 
 // ComboBox with multiple selection enabled
@@ -76,9 +76,9 @@ Ext.define('CF.view.mimeCombo', {
   }
 });
 
-var graphMode = ""
+var graphMode = "";
 
-var currentRun
+var currentRun;
 
 var level = 1;
 
@@ -95,7 +95,7 @@ var colour = {
 var wasDerivedFromDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
   if (parent) {
-    col = colour.orange
+    col = colour.orange;
 
   }
 
@@ -160,7 +160,7 @@ var derivedDataDephtree = function(data, graph, parent) {
     for (var i = 0; i < data["derivedData"].length; i++) {
       if (data["derivedData"][i]) {
         if (i < 20)
-          derivedDataDephtree(data["derivedData"][i], graph, nodea)
+          derivedDataDephtree(data["derivedData"][i], graph, nodea);
         else {
           var nodeb = graph.addNode(data["derivedData"][i], {
             label: "...too many",
@@ -169,15 +169,15 @@ var derivedDataDephtree = function(data, graph, parent) {
             'radius': 19,
             'alpha': 1,
             mass: 2
-          })
+          });
 
 
           graph.addEdge(nodea, nodeb, {
             length: 0.75,
             directed: true,
             weight: 2
-          })
-          break
+          });
+          break;
         }
       }
     }
@@ -189,51 +189,51 @@ var getMetadata = function(data, graph) {
   /*var node = graph.addNode(data["streams"][0]["id"]+"meata",{label:data["streams"][0]["id"] })
 graph.addEdge(node.name,data["streams"][0]["id"],{label:"wasDerivedBy"})*/
   if (data["entities"][0]["location"] != "") {
-    var loc = data["entities"][0]["location"].replace(/file:\/\/[\w-]+[\w.\/]+[\w\/]+pub/, "/intermediate/")
-      //	loc=loc.replace(//,"")
+    var loc = data["entities"][0]["location"].replace(/file:\/\/[\w-]+[\w.\/]+[\w\/]+pub/, "/intermediate/");
+    //	loc=loc.replace(//,"")
 
     var params = graph.addNode(data["entities"][0]["id"] + "loc", {
       label: JSON.stringify(data["entities"][0]["location"]),
       'color': colour.darkgreen,
       'link': loc
-    })
+    });
 
     graph.addEdge(params.name, data["entities"][0]["id"], {
       label: "location",
       "weight": 10
-    })
+    });
   }
 };
 
 var wasDerivedFromAddBranch = function(url) {
   $.getJSON(url, function(data) {
-    wasDerivedFromDephtree(data, sys, null)
+    wasDerivedFromDephtree(data, sys, null);
   });
 }
 
 var derivedDataAddBranch = function(url) {
-  graphMode = "DERIVEDDATA"
+  graphMode = "DERIVEDDATA";
 
   $.getJSON(url, function(data) {
-    derivedDataDephtree(data, sys, null)
+    derivedDataDephtree(data, sys, null);
   });
 };
 
 var wasDerivedFromNewGraph = function(url) {
-  graphMode = "WASDERIVEDFROM"
+  graphMode = "WASDERIVEDFROM";
 
   sys.prune();
-  wasDerivedFromAddBranch(url)
+  wasDerivedFromAddBranch(url);
 };
 
 var derivedDataNewGraph = function(url) {
   sys.prune();
-  derivedDataAddBranch(url)
+  derivedDataAddBranch(url);
 };
 
 var addMeta = function(url) {
   $.getJSON(url, function(data) {
-    getMetadata(data, sys)
+    getMetadata(data, sys);
   });
 };
 
@@ -318,8 +318,8 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
         activityStore.data.clear();
         activityStore.load({
           callback: function() {
-            currentRun = form.findField("runId").getValue(false).trim()
-            owner = form.findField("usename").getValue(false).trim()
+            currentRun = form.findField("runId").getValue(false).trim();
+            owner = form.findField("usename").getValue(false).trim();
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
@@ -461,9 +461,9 @@ Ext.define('CF.view.WorkFlowSelectionWindow', {
 });
 
 var onStoreLoad = function(store) {
-  Ext.getCmp('viewworkflowinput').enable()
-  Ext.getCmp('exportrun').enable();;
-  Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
+  Ext.getCmp('viewworkflowinput').enable();
+  Ext.getCmp('exportrun').enable();
+  Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun);
 }
 
 Ext.define('CF.view.ActivityMonitor', {
@@ -487,95 +487,94 @@ Ext.define('CF.view.ActivityMonitor', {
     itemId: 'toolbar',
     xtype: 'toolbar',
     items: [{
-      tooltip: 'Open Run',
-      text: 'Open Run',
+        tooltip: 'Open Run',
+        text: 'Open Run',
 
-      handler: function(url) {
-        if (this.workflowselectionwindow == null) {
-          this.workflowselectionwindow = Ext.create('CF.view.WorkFlowSelectionWindow');
+        handler: function(url) {
+          if (this.workflowselectionwindow == null) {
+            this.workflowselectionwindow = Ext.create('CF.view.WorkFlowSelectionWindow');
+          }
+
+          this.workflowselectionwindow.show();
+
+          if (!workflowStore.isLoaded()) {
+            workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
+          }
+
+          workflowStore.load();
         }
+      }, {
+        tooltip: 'Refresh View',
+        text: 'Refresh View',
 
-        this.workflowselectionwindow.show();
-
-        if (!workflowStore.isLoaded()) {
-          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
-        }
-
-        workflowStore.load();
-      }
-    }, {
-      tooltip: 'Refresh View',
-      text: 'Refresh View',
-
-
-      handler: function() {
-        activityStore.setProxy({
-          type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
-          reader: {
-            rootProperty: 'activities',
-            totalProperty: 'totalCount'
-          },
-          simpleSortMode: true
-
-        });
-        activityStore.data.clear()
-        activityStore.load()
-
-      }
-    }, {
-      tooltip: 'View Run Inputs',
-      text: 'View Run Inputs',
-      id: 'viewworkflowinput',
-      disabled: 'true',
-
-      handler: function() {
-        workflowInputStore.setProxy({
-          type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
-          reader: {
-            rootProperty: 'input',
-            totalProperty: 'totalCount'
-          },
-
-          failure: function() {
-
-            Ext.Msg.alert("Error", "Error loading Workflow Inputs");
-
-          },
-          simpleSortMode: true
-
-        });
-
-        if (typeof workflowIn != "undefined") {
-          workflowIn.close();
-        }
-
-        workflowIn = Ext.create('Ext.window.Window', {
-          title: 'Workflow input - ' + currentRun,
-          height: 300,
-          width: 400,
-          layout: 'fit',
-          items: [Ext.create('CF.view.WorkflowInputView')]
-
-        }).show();
-        workflowInputStore.data.clear()
-        workflowInputStore.load()
-
-      }
-    },
-    {
-        tooltip: "Export the trace in a W3C-PROV JSON file",
-        text: 'Export',
-  	  disabled: 'true',
-  	  id: 'exportrun',
 
         handler: function() {
-         window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun)+'?'+'all=True', 'Download')
-          
+          activityStore.setProxy({
+            type: 'ajax',
+            url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
+            reader: {
+              rootProperty: 'activities',
+              totalProperty: 'totalCount'
+            },
+            simpleSortMode: true
+
+          });
+          activityStore.data.clear()
+          activityStore.load()
+
+        }
+      }, {
+        tooltip: 'View Run Inputs',
+        text: 'View Run Inputs',
+        id: 'viewworkflowinput',
+        disabled: 'true',
+
+        handler: function() {
+          workflowInputStore.setProxy({
+            type: 'ajax',
+            url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
+            reader: {
+              rootProperty: 'input',
+              totalProperty: 'totalCount'
+            },
+
+            failure: function() {
+
+              Ext.Msg.alert("Error", "Error loading Workflow Inputs");
+
+            },
+            simpleSortMode: true
+
+          });
+
+          if (typeof workflowIn != "undefined") {
+            workflowIn.close();
+          }
+
+          workflowIn = Ext.create('Ext.window.Window', {
+            title: 'Workflow input - ' + currentRun,
+            height: 300,
+            width: 400,
+            layout: 'fit',
+            items: [Ext.create('CF.view.WorkflowInputView')]
+
+          }).show();
+          workflowInputStore.data.clear()
+          workflowInputStore.load()
+
+        }
+      }, {
+        tooltip: "Export the trace in a W3C-PROV JSON file",
+        text: 'Export',
+        disabled: 'true',
+        id: 'exportrun',
+
+        handler: function() {
+          window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun) + '?' + 'all=True', 'Download')
+
         }
       }
-    
+
     ]
   },
 
@@ -637,8 +636,8 @@ Ext.define('CF.view.ActivityMonitor', {
           }
         });
 
-        artifactStore.data.clear()
-        artifactStore.load()
+        artifactStore.removeAll();
+        artifactStore.load();
       }
     }
   },
@@ -759,7 +758,7 @@ Ext.define('CF.view.StreamValuesRangeSearch', {
             Ext.Msg.alert("Error", "Search Request Failed");
           }
         });
-        artifactStore.data.clear();
+        artifactStore.removeAll();
         artifactStore.load();
       }
     }
@@ -989,7 +988,7 @@ Ext.define('CF.view.FilterOnMeta', {
             filtered = Ext.decode(response.responseText)
             artifactStore.clearFilter(true);
             if (filtered.length == 0)
-              artifactStore.removeAll()
+              artifactStore.removeAll();
             else {
               artifactStore.filterBy(function(record, id) {
                 if (Ext.Array.indexOf(filtered, record.data.ID) == -1) {
@@ -1052,8 +1051,8 @@ Ext.define('CF.view.AnnotationSearch', {
             totalProperty: 'totalCount'
           }
         });
-        artifactStore.data.clear()
-        artifactStore.load()
+        artifactStore.removeAll();
+        artifactStore.load();
       }
     }
   }]
@@ -1410,7 +1409,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
             ]
           }).show();
 
-          singleArtifactStore.data.clear();
+          singleartifactStore.removeAll();
           singleArtifactStore.load();
           window.event.returnValue = false;
         }
