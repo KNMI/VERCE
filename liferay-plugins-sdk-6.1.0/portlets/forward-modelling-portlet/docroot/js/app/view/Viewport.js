@@ -25,6 +25,7 @@ Ext.define('CF.view.Viewport', {
   id: 'viewport',
   items: [{
     xtype: 'tabpanel',
+    id: 'viewport_tabpanel',
     border: 'false',
     layout: 'border',
     defaults: {
@@ -128,6 +129,7 @@ Ext.define('CF.view.Viewport', {
       ]
     }, {
       xtype: 'panel', // Earthquake & Station & Common
+      id: 'resultstab',
       title: 'Results',
       region: 'center',
       border: false,
