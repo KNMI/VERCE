@@ -7,9 +7,6 @@
 var gl_stationUrl;
 var gl_eventUrl;
 var gl_stationFormat;
-var gl_solver;
-var gl_mesh;
-var gl_velmod;
 var GL_EVENTSLIMIT = 30;
 
 evisfeature = null;

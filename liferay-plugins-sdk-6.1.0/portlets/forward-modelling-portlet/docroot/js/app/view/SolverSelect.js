@@ -13,13 +13,14 @@ Ext.define('CF.view.SolverCombo', {
   store: solverstore,
   queryMode: 'local',
   flex: 1,
+  forceSelection: true,
   getInnerTpl: function() {
     return '<div data-qtip="{abbr}">{abbr} {name}</div>';
   },
   listeners: {
     scope: this,
     'beforeselect': function(combo, record, index) {
-      if (gl_mesh != null) {
+      if (Ext.getCmp('meshes').getSelectedRecord() != null) {
         Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
           function(btn) {
             if (btn === 'no') {
@@ -52,6 +53,15 @@ Ext.define('CF.view.SolverCombo', {
   }
 });
 
+var customMesh = Ext.create(meshesstore.getModel(), {
+  values: [],
+  geo_minLat: 14.24658203125,
+  geo_minLon: -12.974609375,
+  geo_maxLat: 66.71728515625,
+  geo_maxLon: 39.583984375,
+  custom: true
+});
+
 Ext.define('CF.view.MeshesCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.meshescombo',
@@ -66,46 +76,77 @@ Ext.define('CF.view.MeshesCombo', {
     scope: this,
     'load': function(combo) {},
     'change': function(combo) {
-      gl_mesh = combo.getValue();
-      if (gl_mesh == null) {
+      // No mesh selected and no text entered
+      if (combo.getValue() == null || combo.getValue() === '') {
         Ext.getCmp('mesh_doc_button').setDisabled(true);
+        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
         return;
       }
 
       clearMap();
-      var mesh = combo.store.findRecord('name', gl_mesh);
+
+      var mesh = combo.getSelectedRecord();
+
+      var velocitycombo = Ext.getCmp('velocity');
+      velocitycombo.clearValue();
+
+      if (mesh == null || mesh === customMesh) {
+        Ext.getCmp('mesh_doc_button').setDisabled(true);
+        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(true);
+
+        if (mesh == null) {
+          combo.getStore().add(customMesh);
+          mesh = customMesh;
+        }
+
+        mesh.set('name', combo.getValue());
+        mesh.set('velmod', [{
+          name: combo.getValue(),
+        }]);
+      } else {
+        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
+
+        if (mesh !== customMesh) {
+          combo.getStore().remove(customMesh);
+
+          Ext.getCmp('mesh_doc_button').setDisabled(false);
+        }
+      }
+
+      createBoundariesLayer(mesh);
 
       //Update the solver values
       updateSolverValues(mesh.get('values'));
 
-      //Populate the VelocityModel Combo
-      var velocitycombo = Ext.getCmp('velocity');
-      velocitycombo.clearValue();
       velocitycombo.store.loadData(mesh.get('velmod'));
-
-      var controller = CF.app.getController('Map');
-      if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
-        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
-      }
-      var layers = [];
-      var boxes = new OpenLayers.Layer.Boxes("Boxes");
-      var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
-      bounds = OpenLayers.Bounds.fromArray(coord);
-      box = new OpenLayers.Marker.Box(bounds);
-      box.setBorder("black");
-      //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
-      boxes.addMarker(box);
-      layers.push(boxes);
-      controller.mapPanel.map.addLayers(layers);
-
-      var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
-      var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
-      controller.mapPanel.map.setCenter([centLon, centLat]);
-      controller.mapPanel.map.zoomToExtent(bounds);
-
-      Ext.getCmp('mesh_doc_button').setDisabled(false);
     }
   }
+});
+
+var createBoundariesLayer = function(mesh) {
+  var controller = CF.app.getController('Map');
+  if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
+    controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
+  }
+  var layers = [];
+  var boxes = new OpenLayers.Layer.Boxes("Boxes");
+  var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
+  bounds = OpenLayers.Bounds.fromArray(coord);
+  box = new OpenLayers.Marker.Box(bounds);
+  box.setBorder("black");
+  //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
+  boxes.addMarker(box);
+  layers.push(boxes);
+  controller.mapPanel.map.addLayers(layers);
+
+  var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
+  var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
+  controller.mapPanel.map.setCenter([centLon, centLat]);
+  controller.mapPanel.map.zoomToExtent(bounds);
+};
+
+var customVelocityModel = Ext.create(velocitystore.getModel(), {
+  custom: true
 });
 
 Ext.define('CF.view.VelocityCombo', {
@@ -122,14 +163,35 @@ Ext.define('CF.view.VelocityCombo', {
   listeners: {
     scope: this,
     'change': function(combo) {
-      gl_velmod = combo.getValue();
-      if (gl_velmod == null) {
+      if (combo.getValue() == null || combo.getValue() === '') {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
+        Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
+        Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
+        Ext.getCmp('solver_but').setDisabled(true);
+
+        return;
       }
-      Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
-      Ext.getCmp('tabpanel_principal').down('#earthquakes').enable();
-      Ext.getCmp('solver_but').enable();
-      Ext.getCmp('velocitymodel_doc_button').setDisabled(false);
+
+      var velocityModel = combo.getSelectedRecord();
+
+      if (velocityModel == null || velocityModel === customVelocityModel) {
+        if (velocityModel == null) {
+          combo.getStore().add(customVelocityModel)[0];
+          velocityModel = customVelocityModel;
+        }
+
+        customVelocityModel.set('name', combo.getValue());
+      } else {
+        if (velocityModel !== customVelocityModel) {
+          combo.getStore().remove(customVelocityModel);
+
+          Ext.getCmp('velocitymodel_doc_button').setDisabled(false);
+        }
+
+        Ext.getCmp('tabpanel_principal').down('#earthquakes').enable();
+        Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
+        Ext.getCmp('solver_but').enable();
+      }
     }
   }
 });
@@ -138,6 +200,7 @@ Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',
   alias: 'widget.solverselectform',
   requires: ['CF.view.LinkButton'],
+  id: 'solverselectform',
   width: 500,
   frame: false,
   border: false,
@@ -189,6 +252,106 @@ Ext.define('CF.view.SolverSelectForm', {
       type: 'hbox'
     },
   }, {
+    xtype: 'fieldset',
+    title: 'Mesh Bounds',
+    hidden: true,
+    id: 'mesh-boundaries',
+    items: [{
+      xtype: 'displayfield',
+      value: 'Please enter the mesh boundaries.',
+      cls: 'form-description'
+    }, {
+      xtype: 'fieldcontainer',
+      layout: 'hbox',
+      defaults: {
+        listeners: {
+          change: function(field, newValue, oldValue) {
+            var form = field.up('form').getForm();
+
+            var mesh = Ext.getCmp('meshes').getSelectedRecord();
+            mesh.set('geo_minLon', form.findField('minlon').getValue());
+            mesh.set('geo_minLat', form.findField('minlat').getValue());
+            mesh.set('geo_maxLon', form.findField('maxlon').getValue());
+            mesh.set('geo_maxLat', form.findField('maxlat').getValue());
+
+            if (form.findField('minlon').isValid() &&
+              form.findField('minlat').isValid() &&
+              form.findField('maxlon').isValid() &&
+              form.findField('maxlat').isValid()
+            ) {
+              createBoundariesLayer(mesh);
+            }
+          }
+        }
+      },
+      items: [{
+        xtype: 'numberfield',
+        fieldLabel: 'Minimum latitude',
+        name: 'minlat',
+        msgTarget: 'side',
+        width: 200,
+        minValue: -90,
+        maxValue: 90,
+        allowBlank: false,
+        value: 14.24658203125
+      }, {
+        xtype: 'numberfield',
+        fieldLabel: 'Maximum latitude',
+        name: 'maxlat',
+        msgTarget: 'side',
+        width: 200,
+        minValue: -90,
+        maxValue: 90,
+        allowBlank: false,
+        value: 66.71728515625
+      }]
+    }, {
+      xtype: 'fieldcontainer',
+      layout: 'hbox',
+      defaults: {
+        listeners: {
+          change: function(field, newValue, oldValue) {
+            var form = field.up('form').getForm();
+
+            var mesh = Ext.getCmp('meshes').getSelectedRecord();
+            mesh.set('geo_minLon', form.findField('minlon').getValue());
+            mesh.set('geo_minLat', form.findField('minlat').getValue());
+            mesh.set('geo_maxLon', form.findField('maxlon').getValue());
+            mesh.set('geo_maxLat', form.findField('maxlat').getValue());
+
+            if (form.findField('minlon').isValid() &&
+              form.findField('minlat').isValid() &&
+              form.findField('maxlon').isValid() &&
+              form.findField('maxlat').isValid()
+            ) {
+              createBoundariesLayer(mesh);
+            }
+          }
+        }
+      },
+      items: [{
+        xtype: 'numberfield',
+        fieldLabel: 'Minimum longitude',
+        name: 'minlon',
+        msgTarget: 'side',
+        width: 200,
+        minValue: -180,
+        maxValue: 180,
+        allowBlank: false,
+        value: -12.974609375
+      }, {
+        xtype: 'numberfield',
+        fieldLabel: 'Maximum longitude',
+        name: 'maxlon',
+        msgTarget: 'side',
+        width: 200,
+        minValue: -180,
+        maxValue: 180,
+        allowBlank: false,
+        value: 39.583984375
+      }]
+    }]
+  }, {
     xtype: 'container',
     width: '100%',
     margin: '5 0',
@@ -232,7 +395,7 @@ Ext.define('CF.view.SolverSelectForm', {
       solverConfStore.commitChanges();
       solverConfStore.save();
       var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
-      var wsSolverUrl = '/j2ep-1.0/odc/verce-scig-api/solver/par-file/' + encodeURIComponent(gl_solver.toLowerCase());
+      var wsSolverUrl = '/j2ep-1.0/odc/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
       postRequest(wsSolverUrl, "jsondata", jsonString); // makes a call to the WS that, the user receives a file back  
     }
   }]
@@ -254,7 +417,8 @@ var win = Ext.widget('window', {
     bodyPadding: '10 10 0 10',
     items: [{
       xtype: 'displayfield',
-      value: 'You can submit a new mesh and velocity model here. Currently we will check your submission by hand before adding them to the list of available meshes and models.'
+      value: 'You can submit a new mesh and velocity model here. Currently we will check your submission by hand before adding them to the list of available meshes and models.',
+      cls: 'form-description'
     }, {
       xtype: 'fieldset',
       title: 'Mesh',
@@ -280,15 +444,13 @@ var win = Ext.widget('window', {
         items: [{
           xtype: 'textfield',
           fieldLabel: 'Minimum latitude',
-          name: 'min_lat',
-          id: 'min_lat',
+          name: 'minlat',
           msgTarget: 'side',
           width: 200
         }, {
           xtype: 'textfield',
           fieldLabel: 'Maximum latitude',
-          name: 'max_lat',
-          id: 'max_lat',
+          name: 'maxlat',
           msgTarget: 'side',
           width: 200
         }]
@@ -298,15 +460,13 @@ var win = Ext.widget('window', {
         items: [{
           xtype: 'textfield',
           fieldLabel: 'Minimum longitude',
-          name: 'min_lon',
-          id: 'min_lon',
+          name: 'minlon',
           msgTarget: 'side',
           width: 200
         }, {
           xtype: 'textfield',
           fieldLabel: 'Maximum longitude',
-          name: 'max_lon',
-          id: 'max_lon',
+          name: 'maxlon',
           msgTarget: 'side',
           width: 200
         }]
@@ -393,7 +553,6 @@ function updateSolverValues(newValues) {
 }
 
 function selectSolver(selectedSolver) {
-  gl_solver = selectedSolver;
   var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
 
   // Start with only the first group expanded

@@ -26,3 +26,7 @@
 .x-btn-icon-left>.x-btn-icon-el-default-small, .x-btn-icon-right>.x-btn-icon-el-default-small {
 	background-size: 16px;
 }
+
+.form-description .x-form-display-field-default {
+	height: auto;
+}

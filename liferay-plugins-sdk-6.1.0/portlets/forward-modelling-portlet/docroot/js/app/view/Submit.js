@@ -99,9 +99,16 @@ Ext.define('CF.view.SubmitFormPanel', {
       solverConfStore.commitChanges();
       solverConfStore.save();
 
-      var jsonString = createJsonString(submitName, checkboxNSubmit);
+      var submitObjectArray = createSubmitObject(submitName, checkboxNSubmit);
 
-      if (jsonString != null) {
+      var jsonStrings = [];
+      var runIds = [];
+      submitObjectArray.forEach(function(submitObject) {
+        jsonStrings.push(Ext.encode(submitObject));
+        runIds.push(submitObject.runId);
+      });
+
+      if (jsonStrings.length > 0) {
         Ext.getCmp('submitbutton').disable();
         Ext.getCmp('viewport').setLoading(true);
         var workflowId = wfModel.get('workflowId');
@@ -114,8 +121,8 @@ Ext.define('CF.view.SubmitFormPanel', {
         Ext.Ajax.request({
           url: submitSolverURL,
           params: {
-            "solver": gl_solver,
-            "jsonObject": jsonString,
+            "solver": Ext.getCmp('solvertype').getValue(),
+            "jsonObject": jsonStrings,
             "submitMessage": submitMessage,
             "workflowId": workflowId,
             "workflowName": workflowName,
@@ -124,7 +131,7 @@ Ext.define('CF.view.SubmitFormPanel', {
             "eventUrl": gl_eventUrl,
             "stationType": gl_stationFormat,
             "nProc": nProc,
-            "runId": runId
+            "runId": runIds
           },
           success: function(response) {
             var successMsg = "The information has been submitted";
@@ -199,7 +206,7 @@ Ext.define('CF.view.Submit', {
  * Creates a jsonString containing the information of the solverGrid
  * and two lists of the selected stations and events
  */
-function createJsonString(submitName, multipleSubmits) {
+function createSubmitObject(submitName, multipleSubmits) {
   var selectedStations = Ext.getCmp('stationgrid').getSelectionModel().selected;
   var selectedEvents = Ext.getCmp('eventgrid').getSelectionModel().selected;
 
@@ -216,51 +223,44 @@ function createJsonString(submitName, multipleSubmits) {
     return null;
   }
 
-  var aJsonString = new Array();
-  var limit = 1;
-  if (multipleSubmits) limit = selectedEvents.length;
+  var results = [];
+  var numberOfSubmits = multipleSubmits ? selectedEvents.length : 1;
 
-  for (i = 0; i < limit; i++) {
-    //Add the solver information
-    var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data')) + ",";
+  var stations = [];
+  selectedStations.each(function(item, ind, l) {
+    stations.push(item.get('network') + '.' + item.get('station'));
+  });
 
-    //Add the stations Ids
-    jsonString += '"stations" :[';
-    selectedStations.each(function(item, ind, l) {
-      if (ind > 0) jsonString += ', ';
-      jsonString += '"' + item.get('network') + '.' + item.get('station') + '"';
-    });
-    jsonString += '],';
+  var events = [];
+  selectedEvents.each(function(item, ind, l) {
+    events.push(item.get('eventId'));
+  });
 
-    //Add the events Ids
-    jsonString += '"events" :[';
-    if (multipleSubmits) //we put only one event in each jsonString
-    {
-      jsonString += '"' + selectedEvents.items[i].get('eventId') + '"';
-    } else //we put all the events in the jsonString
-    {
-      selectedEvents.each(function(item, ind, l) {
-        if (ind > 0) jsonString += ', ';
-        jsonString += '"' + item.get('eventId') + '"';
-      });
-    }
-    jsonString += '],';
+  var mesh = Ext.getCmp('meshes').getSelectedRecord();
 
-    runId[i] = submitName + i + (new Date()).getTime();
-    //Add the runId, user, stationUrl, eventUrl, solver and mesh
-    jsonString += '"runId" :"' + runId[i] + '",';
-    jsonString += '"user_name" :"' + userSN + '",';
-    jsonString += '"user_id" :"' + userId + '",';
-    jsonString += '"station_url" :"' + gl_stationUrl + '",';
-    jsonString += '"event_url" :"' + gl_eventUrl + '",';
-    if (gl_stationFormat === STXML_TYPE) var auxFormat = "stationXML";
-    else if (gl_stationFormat === STPOINTS_TYPE) var auxFormat = "points";
-    jsonString += '"station_format" :"' + auxFormat + '",';
-    jsonString += '"solver" :"' + gl_solver + '",';
-    jsonString += '"mesh" :"' + gl_mesh + '",';
-    jsonString += '"velocity_model" :"' + gl_velmod + '"}';
-
-    aJsonString[i] = jsonString;
+  for (i = 0; i < numberOfSubmits; i++) {
+    results[i] = {
+      fields: Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data'),
+      stations: stations,
+      events: multipleSubmits ? [events[i]] : events,
+      runId: submitName + i + (new Date()).getTime(),
+      user_name: userSN,
+      user_id: userId,
+      station_url: gl_stationUrl,
+      station_format: gl_stationFormat === STPOINTS_TYPE ? 'points' : 'stationXML',
+      event_url: gl_eventUrl,
+      solver: Ext.getCmp('solvertype').getValue(),
+      mesh: mesh.get('name'),
+      velocity_model: Ext.getCmp('velocity').getValue(),
+      custom_mesh: mesh.get('custom'),
+      custom_mesh_boundaries: mesh.get('custom') ? {
+        minlon: mesh.get('geo_minLon'),
+        minlat: mesh.get('geo_minLat'),
+        maxlon: mesh.get('geo_maxLon'),
+        maxlat: mesh.get('geo_maxLat')
+      } : null,
+      custom_velocity_model: Ext.getCmp('velocity').getSelectedRecord().get('custom')
+    };
   }
-  return aJsonString;
+  return results;
 }

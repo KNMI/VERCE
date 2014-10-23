@@ -149,6 +149,13 @@ Ext.define('CF.view.WfGrid', {
                 velocityCombo.store.addListener('refresh', function() {
                   velocityCombo.setValue(object.velocity_model);
 
+                  if (object.custom_mesh) {
+                    velocityCombo.up('form').getForm().findField('minlat').setValue(object.custom_mesh_boundaries.minlat);
+                    velocityCombo.up('form').getForm().findField('maxlat').setValue(object.custom_mesh_boundaries.maxlat);
+                    velocityCombo.up('form').getForm().findField('minlon').setValue(object.custom_mesh_boundaries.minlon);
+                    velocityCombo.up('form').getForm().findField('maxlon').setValue(object.custom_mesh_boundaries.maxlon);
+                  }
+
                   CF.app.getController('Map').getStore('SolverConf').loadData(object.fields);
 
                   // HACK ensure correct event binding order by binding here

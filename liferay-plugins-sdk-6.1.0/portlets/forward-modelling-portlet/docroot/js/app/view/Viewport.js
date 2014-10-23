@@ -184,9 +184,9 @@ Ext.define('CF.view.Viewport', {
 selectedFile = "";
 
 function updateSubmitOverview() {
-  $("div#submit_overview div#solver").html(gl_solver);
-  $("div#submit_overview div#mesh").html(gl_mesh);
-  $("div#submit_overview div#velmodel").html(gl_velmod);
+  $("div#submit_overview div#solver").html(Ext.getCmp('solvertype').getValue());
+  $("div#submit_overview div#mesh").html(Ext.getCmp('meshes').getValue());
+  $("div#submit_overview div#velmodel").html(Ext.getCmp('velocity').getValue());
 
   var sEventUrl = gl_eventUrl;
   if (sEventUrl.indexOf('documents') < 0) sEventUrl = portalUrl + sEventUrl;
