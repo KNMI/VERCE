@@ -1,7 +1,7 @@
 	<html>
 	    <head>
-	        <link rel="stylesheet" type="text/css" href="http://cdn.sencha.com/ext/gpl/5.0.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css" />
-           	<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	        <link rel="stylesheet" type="text/css" href="https://extjs.cachefly.net/ext/gpl/5.0.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css" />
+           	<script language="javascript" type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
             <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.debug.js"></script>
 			<script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/lib/arbor.js" ></script>
             <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/_/graphics.js" ></script>
@@ -9,7 +9,7 @@
             
             <!-- comment these lines when using compiled scripts -->
 
-             <script type="text/javascript" charset="utf-8" src="http://cdn.sencha.com/ext/gpl/5.0.0/build/ext-all-debug.js"></script>
+             <script type="text/javascript" charset="utf-8" src="https://extjs.cachefly.net/ext/gpl/5.0.0/build/ext-all-debug.js"></script>
              <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/js/app-results.js"></script>
          <style>
 				#search-results a {
