@@ -95,6 +95,8 @@ import hu.sztaki.lpds.repository.service.veronica.commons.RepositoryFileUtils;
 import hu.sztaki.lpds.wfs.inf.PortalWfsClient;
 import hu.sztaki.lpds.storage.inf.PortalStorageClient;
 
+import hu.sztaki.lpds.pgportal.services.asm.exceptions.upload.*;
+
 import com.verce.forwardmodelling.Constants;
 
 import org.json.*;
@@ -398,7 +400,12 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
 			   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
 			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
-               // asm_service.placeUploadedFile(userId, meshModelZipFile, importedWfId, jobName, "4");
+
+               try {
+                   asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Sync", "0");
+               } catch (Upload_GeneralException exception) {
+                   System.out.println("*** Port 0 on job Sync doesn't exist.");
+               }
 			   
 			   //7. Check for credential errors
 			   //TODO: we should check just once
