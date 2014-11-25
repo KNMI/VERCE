@@ -286,45 +286,45 @@ public class ForwardPortlet extends MVCPortlet{
 		   if(portalUrl2.equals("http://localhost:8081"))	portalUrl2 = "http://localhost:8080";	//TODO: careful
 		   //System.out.println("[ForwardModellingPortlet.submitSolver] Despres (sencer): "+portalUrl2+stationUrl);
 
-		   System.out.println("Try to fetch workflow zip from repository for workflow with ID: " + workflowId);
+		   // System.out.println("Try to fetch workflow zip from repository for workflow with ID: " + workflowId);
 		   String job0bin = "";
 		   Date job0binModified = new Date(0L);
 
-           Hashtable hsh = new Hashtable();
-		   ServiceType st = InformationBase.getI().getService("wfs", "portal", hsh, new Vector());
-           PortalWfsClient wfsClient = (PortalWfsClient) Class.forName(st.getClientObject()).newInstance();
-           wfsClient.setServiceURL(st.getServiceUrl());
-           wfsClient.setServiceID(st.getServiceID());
+     //       Hashtable hsh = new Hashtable();
+		   // ServiceType st = InformationBase.getI().getService("wfs", "portal", hsh, new Vector());
+     //       PortalWfsClient wfsClient = (PortalWfsClient) Class.forName(st.getClientObject()).newInstance();
+     //       wfsClient.setServiceURL(st.getServiceUrl());
+     //       wfsClient.setServiceID(st.getServiceID());
 
-           RepositoryWorkflowBean bean = new RepositoryWorkflowBean();
-           bean.setId(Long.parseLong(workflowId));
-           bean.setWorkflowType(RepositoryItemTypeConstants.Application);
+     //       RepositoryWorkflowBean bean = new RepositoryWorkflowBean();
+     //       bean.setId(Long.parseLong(workflowId));
+     //       bean.setWorkflowType(RepositoryItemTypeConstants.Application);
 
-           Vector wfList = wfsClient.getRepositoryItems(bean);
-           if (wfList == null) {
-               throw new Exception("Not valid wf list !");
-           }
+     //       Vector wfList = wfsClient.getRepositoryItems(bean);
+     //       if (wfList == null) {
+     //           throw new Exception("Not valid wf list !");
+     //       }
 
-           for (Object wfBeanObject : wfList) {
-              RepositoryWorkflowBean wfBean = (RepositoryWorkflowBean) wfBeanObject;
+     //       for (Object wfBeanObject : wfList) {
+     //          RepositoryWorkflowBean wfBean = (RepositoryWorkflowBean) wfBeanObject;
 
-              String relativePath = wfBean.getZipRepositoryPath();
-              String fullPath = new String(RepositoryFileUtils.getInstance().getRepositoryDir() + relativePath);
-              ZipFile zipFile = new ZipFile(fullPath);
+     //          String relativePath = wfBean.getZipRepositoryPath();
+     //          String fullPath = new String(RepositoryFileUtils.getInstance().getRepositoryDir() + relativePath);
+     //          ZipFile zipFile = new ZipFile(fullPath);
 
-              Enumeration<? extends ZipEntry> entries = zipFile.entries();
-              while (entries.hasMoreElements()) {
-                 ZipEntry entry = (ZipEntry) entries.nextElement();
-                 System.out.println(entry.getName());
-                 if (entry.getName().indexOf("Job0/execute.bin") >= 0) {
-             		job0bin = inputStreamToString(zipFile.getInputStream(entry));
-             		job0binModified = new Date(entry.getTime());
-             		// System.out.println(job0bin);
-                 	break;
-                 }
-              }
-	          zipFile.close();
-           }
+     //          Enumeration<? extends ZipEntry> entries = zipFile.entries();
+     //          while (entries.hasMoreElements()) {
+     //             ZipEntry entry = (ZipEntry) entries.nextElement();
+     //             System.out.println(entry.getName());
+     //             if (entry.getName().indexOf("Job0/execute.bin") >= 0) {
+     //         		job0bin = inputStreamToString(zipFile.getInputStream(entry));
+     //         		job0binModified = new Date(entry.getTime());
+     //         		// System.out.println(job0bin);
+     //             	break;
+     //             }
+     //          }
+	    //       zipFile.close();
+     //       }
 
 		   if(!stationDLFile)	//1a. create StationFile and store it
 		   {
