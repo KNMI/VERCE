@@ -19,6 +19,7 @@ Ext.define('CF.view.WorkflowSelection', {
 
   columns: [{
       xtype: 'rownumberer',
+
       sortable: false
     }, {
       header: 'Run ID',
@@ -68,7 +69,9 @@ Ext.define('CF.view.WorkflowSelection', {
             if (button == 'yes') {
               var tempx = tempStore.getProxy();
               tempx.api.destroy = PROV_SERVICE_BASEURL + "workflow/delete/" + xx.get("runId");
+
               tempStore.remove(xx);
+
               tempStore.sync({
                 success: function(args) {
                   Ext.Ajax.request({
@@ -77,21 +80,64 @@ Ext.define('CF.view.WorkflowSelection', {
                       "workflowId": xx.get('systemId')
                     },
                     success: function(response) {
+                      Ext.Msg.alert("Completed", "Data for Run ID "+xx.get("runId")+" has been successfully removed")
+                    },
+                    failure: function(response) {
+					  Ext.Msg.alert("Error", "Error deleting workflow information from gUSE")
+                    }
+                  })
+                  //PHPSESSID=vsb9rpreoten67g945pghhtde6
+                 
+                  Ext.util.Cookies.set('PHPSESSID',"1t1vt2c50oilnm21q9072gdbp6")
+                   
+                  
+                  Ext.Ajax.request({
+                    url: deleteWorkflowDataURL,
+                    method: "POST",
+                    withCredentials : true,
+    				useDefaultXhrHeader : false,
+                    params: {
+                      "ruri": IRODS_URI,
+                      "dirs[]":	xx.get("runId")
+
+                    },
+                    success: function(response) {
                       wfStore.load();
                     },
-                    failure: function(response) {}
-                  });
-                  // workflowStore.data.clear();
-                  workflowStore.load();
+                    failure: function(response) {
+                    
+                    	
+                    	Ext.Msg.alert("Error", "Error deleting data for Run ID "+xx.get("runId"))
+
+                    }
+                  })
+
+                  // workflowStore.data.clear()
+                  workflowStore.load()
+
+
                 },
+
                 faliure: function(args) {
+
                   Ext.Msg.alert("Error", "Delete failed!");
+
                 }
-              });
+
+              })
+
+
+
             }
-          });
+          })
           messagebox.zIndexManager.bringToFront(messagebox);
+
+
+
         }
+
+
+
       }]
     }
   ],
@@ -112,25 +158,35 @@ Ext.define('CF.view.WorkflowSelection', {
       }
     })
   ],
-  /* verticalScroller: {
+
+  /*   verticalScroller: {
         xtype: 'paginggridscroller'
     },*/
+
+
+
   /* plugins: [{
         ptype: 'bufferedrenderer'
     }],*/
+
+
   /* selModel: {
         pruneRemoved: false
-    },*/
+    },
+*/
   initComponent: function() {
     this.callParent(arguments);
   },
+
   viewConfig: {
     enableTextSelection: true,
     listeners: {
+
       itemclick: function(dv, record, item, index, e) {
         workflowStore.sync()
       },
       itemdblclick: function(dataview, record, item, index, e) {
+
         activityStore.setProxy({
           type: 'ajax',
           url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("runId")),
@@ -139,25 +195,38 @@ Ext.define('CF.view.WorkflowSelection', {
             totalProperty: 'totalCount'
           },
           simpleSortMode: true
+
         });
         sys.prune();
-        artifactStore.removeAll();
-        activityStore.removeAll();
+        artifactStore.data.clear();
+        activityStore.data.clear();
         activityStore.load({
           callback: function() {
             currentRun = record.get("runId")
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
             Ext.getCmp('downloadscript').enable();
+
+
+
+
           }
-        });
+
+        })
 
         activityStore.on('load', onStoreLoad, this, {
           single: true
         });
-        currentRun = record.get("runId");
-        owner = userSN;
+        currentRun = record.get("runId")
+        owner = userSN
+
       }
+
+
+
+
     }
   }
+
+
 });
