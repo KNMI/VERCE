@@ -402,7 +402,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
 
                try {
-                   asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Sync", "0");
+                   asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
                } catch (Upload_GeneralException exception) {
                    System.out.println("*** Port 0 on job Sync doesn't exist.");
                }
