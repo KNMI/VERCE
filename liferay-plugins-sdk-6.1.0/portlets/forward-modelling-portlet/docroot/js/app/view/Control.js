@@ -135,14 +135,22 @@ Ext.define('CF.view.WfGrid', {
                 var object = JSON.parse(response.responseText);
                 if (object === null) {
                   Ext.Msg.alert("Failed to get workflow settings");
+                  Ext.getCmp('viewport').setLoading(false);
                   return;
                 }
 
                 // reuse solver
                 var solverType = Ext.getCmp('solvertype');
                 var solver = solverType.store.findRecord('name', object.solver);
-                solverType.clearValue();
-                solverType.setValue(solver.get('abbr'));
+                if (solver != null) {
+                  solverType.clearValue();
+                  solverType.setValue(solver.get('abbr'));
+                } else {
+                  // TODO fix partial reuse when solver unavailable
+                  Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
+                  Ext.getCmp('viewport').setLoading(false);
+                  return;
+                }
 
                 // reuse velocity when velocity model store finishes loading
                 var velocityCombo = Ext.getCmp('velocity');
