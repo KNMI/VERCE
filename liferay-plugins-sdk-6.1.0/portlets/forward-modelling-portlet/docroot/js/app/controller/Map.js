@@ -253,6 +253,11 @@ Ext.define('CF.controller.Map', {
         click: this.onEventSearch
       }
     }, this);
+
+    var self = this;
+    window.addEventListener('message', function(message) {
+      self.encryptedIrodsSession = message.data;
+    }, false);
   },
 
   onMapPanelBeforeRender: function(mapPanel, options) {

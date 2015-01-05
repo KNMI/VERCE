@@ -48,6 +48,17 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import javax.xml.bind.DatatypeConverter;
+
+import java.security.PrivateKey;
+import java.security.KeyFactory;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -234,16 +245,80 @@ public class ForwardPortlet extends MVCPortlet{
 		try{
 			asm_service = ASMService.getInstance();
 			String wfId = ParamUtil.getString(resourceRequest, "workflowId");
+			String encryptedIrodsSession = ParamUtil.getString(resourceRequest, "encryptedIrodsSession");
+			String irodsSession = decryptIrodsSession(encryptedIrodsSession);
+
 			//String status = asm_service.getStatus(userId, wfId);
 			//if(status.equals("RUNNING")||status.equals("INIT")||status.equals("INIT"))
 			asm_service.abort(userId, wfId);	//TODO: fixme!
 			asm_service.DeleteWorkflow(userId, wfId);
 			System.out.println("[ForwardModellingPortlet.delete] workflow "+wfId+" has been deleted by user "+userId);
+
+            deleteFromIrods(irodsSession);
 		}
 		catch(Exception e)
 		{
 			catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.delete] Exception catched!! User :"+userId);
 		}
+    }
+
+    private void deleteFromIrods(String irodsSession) {
+        String url = "https://dir-irods.epcc.ed.ac.uk/irodsweb/services/delete.php";
+        String charset = "UTF-8";  // Or in Java 7 and later, use the constant: java.nio.charset.StandardCharsets.UTF_8.name()
+        String ruri = "jonas.UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone/home/jonas";
+        String files = "Newfile.txt";
+        // String dirs[] = "";
+
+        try {
+            String query = String.format("ruri=%s&files[]=%s", 
+                 URLEncoder.encode(ruri, charset), 
+                 URLEncoder.encode(files, charset));
+
+            URLConnection connection = new URL(url).openConnection();
+            connection.setDoOutput(true); // Triggers POST.
+            connection.setRequestProperty("Accept-Charset", charset);
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+            connection.setRequestProperty("Cookie", "PHPSESSID="+irodsSession);
+
+            OutputStream output = connection.getOutputStream();
+            output.write(query.getBytes(charset));
+
+            InputStream response = connection.getInputStream();
+            System.out.println(inputStreamToString(response));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private String decryptIrodsSession(String encryptedIrodsSession) {
+        byte[] irodsSession = null;
+        try {
+            byte[] keyBytes = DatatypeConverter.parseBase64Binary("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\nb4O58E4g/r0nGSYFpU1lqdDFUBSSqg==");
+
+            // decrypt the text using the private key
+            PrivateKey privateKey =
+                KeyFactory.getInstance("RSA").generatePrivate(new java.security.spec.PKCS8EncodedKeySpec(keyBytes));
+
+            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+            byte[] input = DatatypeConverter.parseBase64Binary(encryptedIrodsSession);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		    ByteArrayInputStream inStream = new ByteArrayInputStream(input);
+		    CipherInputStream cipherInputStream = new CipherInputStream(inStream, cipher);
+		    byte[] buf = new byte[1024];
+		    int bytesRead;
+		    while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
+		        outputStream.write(buf, 0, bytesRead);
+		    }
+
+            irodsSession = outputStream.toByteArray();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new String(irodsSession);
     }
    
    private void submit(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 

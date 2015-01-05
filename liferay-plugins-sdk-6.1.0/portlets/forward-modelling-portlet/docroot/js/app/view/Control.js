@@ -256,6 +256,12 @@ Ext.define('CF.view.WfGrid', {
       icon: localResourcesPath + '/img/delete-icon.png',
       tooltip: 'Delete instance',
       handler: function(grid, rowIndex, colIndex) {
+        var encryptedIrodsSession = CF.app.getController('Map').encryptedIrodsSession;
+        if (encryptedIrodsSession == null) {
+          Ext.Msg.alert('Error', 'Cannot remove run. Please log into iRods and try again.');
+          return;
+        }
+
         var rec = wfStore.getAt(rowIndex);
         Ext.Msg.confirm('Warning', 'Are you sure that you want to delete ' + rec.get('name') + "?",
           function(btn) {
@@ -263,7 +269,8 @@ Ext.define('CF.view.WfGrid', {
               Ext.Ajax.request({
                 url: deleteWorkflowURL,
                 params: {
-                  "workflowId": rec.get('workflowId')
+                  "workflowId": rec.get('workflowId'),
+                  "encryptedIrodsSession": encryptedIrodsSession,
                 },
                 waitTitle: 'Deleting from data base',
                 success: function(response) {
