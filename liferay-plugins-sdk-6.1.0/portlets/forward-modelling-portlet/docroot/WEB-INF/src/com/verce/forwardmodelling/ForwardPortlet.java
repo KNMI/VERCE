@@ -90,6 +90,7 @@ import hu.sztaki.lpds.pgportal.services.asm.ASMWorkflow;
 import hu.sztaki.lpds.pgportal.services.asm.beans.ASMRepositoryItemBean;
 import hu.sztaki.lpds.pgportal.services.asm.beans.WorkflowInstanceBean;
 import hu.sztaki.lpds.pgportal.services.asm.beans.RunningJobDetailsBean;
+import hu.sztaki.lpds.pgportal.services.asm.beans.ASMResourceBean;
 import hu.sztaki.lpds.pgportal.services.asm.constants.RepositoryItemTypeConstants;
 import hu.sztaki.lpds.pgportal.services.asm.constants.DownloadTypeConstants;
 import hu.sztaki.lpds.pgportal.service.base.data.WorkflowData;
@@ -511,6 +512,10 @@ public class ForwardPortlet extends MVCPortlet{
 			   //9. Submit
 			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
 			   
+               // Log resource information
+               ASMResourceBean bean = asm_service.getResource(userId, importedWfId, jobName);
+               System.out.println("RESOURCE type: " + bean.getType() + ", grid: " + bean.getGrid() + ", resource: " + bean.getResource() + ", queue: " + bean.getQueue());
+
 			   //10. Add run info in the Provenance Repository
 			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified);
 				   
