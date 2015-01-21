@@ -20,7 +20,7 @@ var PointsListFormat = OpenLayers.Class(OpenLayers.Format.Text, {
     for (var l = 1; l < lines.length; l++) {
       var tokens = lines[l].split(" ");
       if (tokens.length > 3) {
-        var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+        var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
         if (tokens[2] >= mesh.get('geo_minLon') && tokens[2] <= mesh.get('geo_maxLon') && tokens[3] >= mesh.get('geo_minLat') && tokens[3] <= mesh.get('geo_maxLat')) //Check if it is inside the bounding box
         {
           //alert("station: "+tokens[0]+", network: "+tokens[1]+", elevation: '', longitude: "+tokens[2]+", latitude: "+tokens[3]);
@@ -133,7 +133,7 @@ var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
       //alert("id: "+eventId+", description: "+desc+", datetime: "+time+", magnitude: "+mag+", depth: "+depth+
       //	", longitude: "+lon+", latitude: "+lat+", tensor: "+mrr+", "+mtt+", "+mpp+", "+mrt+", "+mtp+". Valid event: "+valid);
 
-      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       if (valid && lon >= mesh.get('geo_minLon') && lon <= mesh.get('geo_maxLon') && lat >= mesh.get('geo_minLat') && lat <= mesh.get('geo_maxLat')) {
         var attributes = {
           eventId: eventId,
@@ -177,7 +177,7 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
     for (var i = 0; i < latitudes.length; i++) {
       var latitude = latitudes[i].childNodes[0].nodeValue;
       var longitude = longitudes[i].childNodes[0].nodeValue;
-      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       if (longitude >= mesh.get('geo_minLon') && longitude <= mesh.get('geo_maxLon') && latitude >= mesh.get('geo_minLat') && latitude <= mesh.get('geo_maxLat')) {
         var station = stations[i].getAttribute("code");
         stations[i].setAttribute("network", stations[i].parentNode.getAttribute("code"));
@@ -293,7 +293,7 @@ Ext.define('CF.controller.Map', {
     var form = button.up('form').getForm();
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';
-      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       this.getEvents(this, baseUrl + form.getValues(true) + bbox);
     }
@@ -302,7 +302,7 @@ Ext.define('CF.controller.Map', {
     var form = button.up('form').getForm();
     if (form.isValid()) {
       var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&';
-      var mesh = Ext.getCmp('meshes').store.findRecord('name', Ext.getCmp('meshes').getValue());
+      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       var formValues = form.getValues(true);
       formValues = (formValues === 'net=Any%20network') ? 'net=*' : formValues;

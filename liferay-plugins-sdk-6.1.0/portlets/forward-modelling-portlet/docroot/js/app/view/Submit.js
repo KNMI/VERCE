@@ -236,7 +236,7 @@ function createSubmitObject(submitName, multipleSubmits) {
     events.push(item.get('eventId'));
   });
 
-  var mesh = Ext.getCmp('meshes').getSelectedRecord();
+  var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
 
   for (i = 0; i < numberOfSubmits; i++) {
     results[i] = {
@@ -259,7 +259,7 @@ function createSubmitObject(submitName, multipleSubmits) {
         maxlon: mesh.get('geo_maxLon'),
         maxlat: mesh.get('geo_maxLat')
       } : null,
-      custom_velocity_model: Ext.getCmp('velocity').getSelectedRecord().get('custom')
+      custom_velocity_model: Ext.getCmp('velocity').findRecordByValue(Ext.getCmp('velocity').getValue()).get('custom')
     };
   }
   return results;

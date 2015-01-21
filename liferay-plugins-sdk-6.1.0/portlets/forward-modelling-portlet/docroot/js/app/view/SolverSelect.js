@@ -20,7 +20,8 @@ Ext.define('CF.view.SolverCombo', {
   listeners: {
     scope: this,
     'beforeselect': function(combo, record, index) {
-      if (Ext.getCmp('meshes').getSelectedRecord() != null) {
+      // Note: findRecordByValue returns object or false
+      if (Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue())) {
         Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
           function(btn) {
             if (btn === 'no') {
@@ -76,32 +77,37 @@ Ext.define('CF.view.MeshesCombo', {
     scope: this,
     'load': function(combo) {},
     'change': function(combo) {
-      // No mesh selected and no text entered
-      if (combo.getValue() == null || combo.getValue() === '') {
-        Ext.getCmp('mesh_doc_button').setDisabled(true);
+      clearMap();
+
+      if (combo.getValue() === '') {
+        Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
+        Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
+        Ext.getCmp('solver_but').setDisabled(true);
         Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
+
         return;
       }
 
-      clearMap();
-
-      var mesh = combo.getSelectedRecord();
+      // WARNING strange ExtJS function returns object or *false*
+      var mesh = combo.findRecordByValue(combo.getValue()) || undefined;
 
       var velocitycombo = Ext.getCmp('velocity');
       velocitycombo.clearValue();
 
-      if (mesh == null || mesh === customMesh) {
+      if (mesh == null) {
+        combo.getStore().remove(customMesh);
+        combo.getStore().add(customMesh);
+        mesh = customMesh;
+      }
+
+      if (mesh === customMesh) {
         Ext.getCmp('mesh_doc_button').setDisabled(true);
         Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(true);
-
-        if (mesh == null) {
-          combo.getStore().add(customMesh);
-          mesh = customMesh;
-        }
 
         mesh.set('name', combo.getValue());
         mesh.set('velmod', [{
           name: combo.getValue(),
+          custom: true,
         }]);
       } else {
         Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
@@ -119,7 +125,7 @@ Ext.define('CF.view.MeshesCombo', {
       updateSolverValues(mesh.get('values'));
 
       velocitycombo.store.loadData(mesh.get('velmod'));
-    }
+    },
   }
 });
 
@@ -163,7 +169,7 @@ Ext.define('CF.view.VelocityCombo', {
   listeners: {
     scope: this,
     'change': function(combo) {
-      if (combo.getValue() == null || combo.getValue() === '') {
+      if (combo.getValue() === '') {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
@@ -172,27 +178,29 @@ Ext.define('CF.view.VelocityCombo', {
         return;
       }
 
-      var velocityModel = combo.getSelectedRecord();
+      // WARNING strange ExtJS function returns object or *false*
+      var velocityModel = combo.findRecordByValue(combo.getValue()) || undefined;
 
-      if (velocityModel == null || velocityModel === customVelocityModel) {
-        if (velocityModel == null) {
-          combo.getStore().add(customVelocityModel)[0];
-          velocityModel = customVelocityModel;
-        }
+      if (velocityModel == null) {
+        combo.getStore().remove(customVelocityModel);
+        combo.getStore().add(customVelocityModel);
+        velocityModel = customVelocityModel;
+      }
+
+      if (velocityModel === customVelocityModel) {
+        Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
 
         customVelocityModel.set('name', combo.getValue());
       } else {
-        if (velocityModel !== customVelocityModel) {
-          combo.getStore().remove(customVelocityModel);
+        combo.getStore().remove(customVelocityModel);
 
-          Ext.getCmp('velocitymodel_doc_button').setDisabled(false);
-        }
-
-        Ext.getCmp('tabpanel_principal').down('#earthquakes').enable();
-        Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
-        Ext.getCmp('solver_but').enable();
+        Ext.getCmp('velocitymodel_doc_button').setDisabled(false);
       }
-    }
+
+      Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
+      Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
+      Ext.getCmp('solver_but').setDisabled(false);
+    },
   }
 });
 
@@ -268,7 +276,7 @@ Ext.define('CF.view.SolverSelectForm', {
           change: function(field, newValue, oldValue) {
             var form = field.up('form').getForm();
 
-            var mesh = Ext.getCmp('meshes').getSelectedRecord();
+            var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
             mesh.set('geo_minLon', form.findField('minlon').getValue());
             mesh.set('geo_minLat', form.findField('minlat').getValue());
             mesh.set('geo_maxLon', form.findField('maxlon').getValue());
@@ -313,7 +321,7 @@ Ext.define('CF.view.SolverSelectForm', {
           change: function(field, newValue, oldValue) {
             var form = field.up('form').getForm();
 
-            var mesh = Ext.getCmp('meshes').getSelectedRecord();
+            var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
             mesh.set('geo_minLon', form.findField('minlon').getValue());
             mesh.set('geo_minLat', form.findField('minlat').getValue());
             mesh.set('geo_maxLon', form.findField('maxlon').getValue());
