@@ -83,7 +83,7 @@ Ext.define('CF.view.MeshesCombo', {
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
-        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
+        Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
 
         return;
       }
@@ -102,7 +102,7 @@ Ext.define('CF.view.MeshesCombo', {
 
       if (mesh === customMesh) {
         Ext.getCmp('mesh_doc_button').setDisabled(true);
-        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(true);
+        Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(true);
 
         mesh.set('name', combo.getValue());
         mesh.set('velmod', [{
@@ -110,7 +110,7 @@ Ext.define('CF.view.MeshesCombo', {
           custom: true,
         }]);
       } else {
-        Ext.getCmp('solverselectform').down('#mesh-boundaries').setVisible(false);
+        Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
 
         if (mesh !== customMesh) {
           combo.getStore().remove(customMesh);
@@ -260,104 +260,113 @@ Ext.define('CF.view.SolverSelectForm', {
       type: 'hbox'
     },
   }, {
-    xtype: 'fieldset',
-    title: 'Mesh Bounds',
+    id: 'custom-mesh-velocity',
+    xtype: 'container',
     hidden: true,
-    id: 'mesh-boundaries',
+    width: '100%',
+    margin: '5 0',
     items: [{
+      xtype: 'fieldset',
+      title: 'Mesh Bounds',
+      items: [{
+        xtype: 'displayfield',
+        value: 'Please enter the mesh boundaries.',
+        cls: 'form-description'
+      }, {
+        xtype: 'fieldcontainer',
+        layout: 'hbox',
+        defaults: {
+          listeners: {
+            change: function(field, newValue, oldValue) {
+              var form = field.up('form').getForm();
+
+              var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+              mesh.set('geo_minLon', form.findField('minlon').getValue());
+              mesh.set('geo_minLat', form.findField('minlat').getValue());
+              mesh.set('geo_maxLon', form.findField('maxlon').getValue());
+              mesh.set('geo_maxLat', form.findField('maxlat').getValue());
+
+              if (form.findField('minlon').isValid() &&
+                form.findField('minlat').isValid() &&
+                form.findField('maxlon').isValid() &&
+                form.findField('maxlat').isValid()
+              ) {
+                createBoundariesLayer(mesh);
+              }
+            }
+          }
+        },
+        items: [{
+          xtype: 'numberfield',
+          fieldLabel: 'Minimum latitude',
+          name: 'minlat',
+          msgTarget: 'side',
+          width: 200,
+          minValue: -90,
+          maxValue: 90,
+          allowBlank: false,
+          value: 14.24658203125
+        }, {
+          xtype: 'numberfield',
+          fieldLabel: 'Maximum latitude',
+          name: 'maxlat',
+          msgTarget: 'side',
+          width: 200,
+          minValue: -90,
+          maxValue: 90,
+          allowBlank: false,
+          value: 66.71728515625
+        }]
+      }, {
+        xtype: 'fieldcontainer',
+        layout: 'hbox',
+        defaults: {
+          listeners: {
+            change: function(field, newValue, oldValue) {
+              var form = field.up('form').getForm();
+
+              var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+              mesh.set('geo_minLon', form.findField('minlon').getValue());
+              mesh.set('geo_minLat', form.findField('minlat').getValue());
+              mesh.set('geo_maxLon', form.findField('maxlon').getValue());
+              mesh.set('geo_maxLat', form.findField('maxlat').getValue());
+
+              if (form.findField('minlon').isValid() &&
+                form.findField('minlat').isValid() &&
+                form.findField('maxlon').isValid() &&
+                form.findField('maxlat').isValid()
+              ) {
+                createBoundariesLayer(mesh);
+              }
+            }
+          }
+        },
+        items: [{
+          xtype: 'numberfield',
+          fieldLabel: 'Minimum longitude',
+          name: 'minlon',
+          msgTarget: 'side',
+          width: 200,
+          minValue: -180,
+          maxValue: 180,
+          allowBlank: false,
+          value: -12.974609375
+        }, {
+          xtype: 'numberfield',
+          fieldLabel: 'Maximum longitude',
+          name: 'maxlon',
+          msgTarget: 'side',
+          width: 200,
+          minValue: -180,
+          maxValue: 180,
+          allowBlank: false,
+          value: 39.583984375
+        }]
+      }]
+    }, {
       xtype: 'displayfield',
-      value: 'Please enter the mesh boundaries.',
-      cls: 'form-description'
-    }, {
-      xtype: 'fieldcontainer',
-      layout: 'hbox',
-      defaults: {
-        listeners: {
-          change: function(field, newValue, oldValue) {
-            var form = field.up('form').getForm();
-
-            var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-            mesh.set('geo_minLon', form.findField('minlon').getValue());
-            mesh.set('geo_minLat', form.findField('minlat').getValue());
-            mesh.set('geo_maxLon', form.findField('maxlon').getValue());
-            mesh.set('geo_maxLat', form.findField('maxlat').getValue());
-
-            if (form.findField('minlon').isValid() &&
-              form.findField('minlat').isValid() &&
-              form.findField('maxlon').isValid() &&
-              form.findField('maxlat').isValid()
-            ) {
-              createBoundariesLayer(mesh);
-            }
-          }
-        }
-      },
-      items: [{
-        xtype: 'numberfield',
-        fieldLabel: 'Minimum latitude',
-        name: 'minlat',
-        msgTarget: 'side',
-        width: 200,
-        minValue: -90,
-        maxValue: 90,
-        allowBlank: false,
-        value: 14.24658203125
-      }, {
-        xtype: 'numberfield',
-        fieldLabel: 'Maximum latitude',
-        name: 'maxlat',
-        msgTarget: 'side',
-        width: 200,
-        minValue: -90,
-        maxValue: 90,
-        allowBlank: false,
-        value: 66.71728515625
-      }]
-    }, {
-      xtype: 'fieldcontainer',
-      layout: 'hbox',
-      defaults: {
-        listeners: {
-          change: function(field, newValue, oldValue) {
-            var form = field.up('form').getForm();
-
-            var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-            mesh.set('geo_minLon', form.findField('minlon').getValue());
-            mesh.set('geo_minLat', form.findField('minlat').getValue());
-            mesh.set('geo_maxLon', form.findField('maxlon').getValue());
-            mesh.set('geo_maxLat', form.findField('maxlat').getValue());
-
-            if (form.findField('minlon').isValid() &&
-              form.findField('minlat').isValid() &&
-              form.findField('maxlon').isValid() &&
-              form.findField('maxlat').isValid()
-            ) {
-              createBoundariesLayer(mesh);
-            }
-          }
-        }
-      },
-      items: [{
-        xtype: 'numberfield',
-        fieldLabel: 'Minimum longitude',
-        name: 'minlon',
-        msgTarget: 'side',
-        width: 200,
-        minValue: -180,
-        maxValue: 180,
-        allowBlank: false,
-        value: -12.974609375
-      }, {
-        xtype: 'numberfield',
-        fieldLabel: 'Maximum longitude',
-        name: 'maxlon',
-        msgTarget: 'side',
-        width: 200,
-        minValue: -180,
-        maxValue: 180,
-        allowBlank: false,
-        value: 39.583984375
-      }]
+      value: 'To use a custom mesh and velocity model, these need to be stored in your iRods account in the folder "specfem" as mesh_&lt;name&gt;.zip and velocity_&lt;name&gt;.zip.',
+      cls: 'form-description alert',
     }]
   }, {
     xtype: 'container',
