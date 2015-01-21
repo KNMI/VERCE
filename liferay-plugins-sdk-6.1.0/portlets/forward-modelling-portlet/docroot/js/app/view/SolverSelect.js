@@ -511,10 +511,17 @@ var win = Ext.widget('window', {
             });
           },
           failure: function(form, action) {
-            if (action.failureType === Ext.form.action.Action.CLIENT_INVALID) {} else if (action.failureType === Ext.form.action.Action.CONNECT_FAILURE) {
+            if (action.failureType === Ext.form.action.Action.CLIENT_INVALID) {
+
+            } else if (action.failureType === Ext.form.action.Action.CONNECT_FAILURE) {
               Ext.Msg.alert('Connection Error', 'There was an error connecting to the server. Please try again.');
             } else if (action.failureType === Ext.form.action.Action.SERVER_INVALID) {
-              // Ext.Msg.alert('Error', 'There was an error submitting your mesh and velocity model:\n' + action.result.message);
+              var errors = "";
+              for (error in action.result.errors) {
+                errors += error + ': "' + action.result.errors[error] + '", '
+              }
+              errors.slice(0, -2);
+              Ext.Msg.alert('Error', 'There was an error submitting your mesh and velocity model.\n' + errors);
             }
           }
         });
