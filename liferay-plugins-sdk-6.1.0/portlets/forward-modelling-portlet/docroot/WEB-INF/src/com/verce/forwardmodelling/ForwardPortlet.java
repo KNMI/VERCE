@@ -144,15 +144,9 @@ public class ForwardPortlet extends MVCPortlet{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
 
-			// ConcurrentHashMap<String, WorkflowData> workflows = PortalCacheService.getInstance().getUser(req.getRemoteUser()).getWorkflows();
-
 			String jsWfArray = "{\"list\":[";
 			for(ASMWorkflow wf : importedWfs)
 			{ 
-				// WorkflowData workflowData = workflows.get(wf.getWorkflowName());
-				// System.out.println(workflowData.getWorkflowID());
-				// System.out.println(workflowData.getGraf());
-
 				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
 				//wfDate is YYYY-MM-DD
 				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
@@ -213,7 +207,6 @@ public class ForwardPortlet extends MVCPortlet{
 			out.print(jsWfArray);
 			out.flush();
 			out.close();
-			//System.out.println("[ForwardModellingPortlet.getWorkflowList] "+jsWfArray);
 		}
 		catch(Exception e)
 		{
@@ -251,8 +244,6 @@ public class ForwardPortlet extends MVCPortlet{
 			String encryptedIrodsSession = ParamUtil.getString(resourceRequest, "encryptedIrodsSession");
 			String irodsSession = decryptIrodsSession(encryptedIrodsSession);
 
-			//String status = asm_service.getStatus(userId, wfId);
-			//if(status.equals("RUNNING")||status.equals("INIT")||status.equals("INIT"))
 			asm_service.abort(userId, wfId);	//TODO: fixme!
 			asm_service.DeleteWorkflow(userId, wfId);
 			System.out.println("[ForwardModellingPortlet.delete] workflow "+wfId+" has been deleted by user "+userId);
@@ -273,7 +264,7 @@ public class ForwardPortlet extends MVCPortlet{
         // String dirs[] = "";
 
         try {
-            String query = String.format("ruri=%s&files[]=%s", 
+            String query = String.format("ruri=%s&files[]=%s", // or &dirs[]=%s
                  URLEncoder.encode(ruri, charset), 
                  URLEncoder.encode(files, charset));
 
@@ -360,9 +351,10 @@ public class ForwardPortlet extends MVCPortlet{
 		   portalUrl += portal;
 		   
 		   String portalUrl2 = PortalUtil.getPortalURL(resourceRequest);
-		   //System.out.println("[ForwardModellingPortlet.submitSolver] Abans: "+portalUrl2);
-		   if(portalUrl2.equals("http://localhost:8081"))	portalUrl2 = "http://localhost:8080";	//TODO: careful
-		   //System.out.println("[ForwardModellingPortlet.submitSolver] Despres (sencer): "+portalUrl2+stationUrl);
+
+		   if(portalUrl2.equals("http://localhost:8081")) {
+                portalUrl2 = "http://localhost:8080";	//TODO: careful
+            }
 
 		   // System.out.println("Try to fetch workflow zip from repository for workflow with ID: " + workflowId);
 		   String job0bin = "";
@@ -452,11 +444,6 @@ public class ForwardPortlet extends MVCPortlet{
 		   String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
 	       zipPublicPath = portalUrl + zipPublicPath;
 		   System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
-
-           // //4. Generate Mesh/Model zip file
-           // String meshModelZipFileName = runIds[0]+"_meshmodel.zip";
-           // createMeshModelZipFile("temp/"+meshModelZipFileName, "data/mesh", "data/model");
-           // File meshModelZipFile = new File("temp/"+meshModelZipFileName);
 
 		   for(int i=0;i<jsonContentArray.length;i++)
 		   {
@@ -665,24 +652,16 @@ public class ForwardPortlet extends MVCPortlet{
 		   throw new Exception("[ForwardModellingPortlet.uploadFile] Failed!! The file is empty. User: "+userSN);
 	   }
 
-	   //try
-	   //{
-		   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
-		   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
-		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
-		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
-		   portalUrl += portal;
-		   publicPath = portalUrl+publicPath;
+	   String publicPath = addFileToDL(file, name, groupId, userSN, filetype);
+	   String portalUrl = PortalUtil.getPortalURL(resourceRequest);
+	   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
+	   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
+	   portalUrl += portal;
+	   publicPath = portalUrl+publicPath;
 
-		   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
+	   System.out.println("[ForwardModellingPortlet.uploadFile] File created in the document library by user "+userSN+", accessible in: "+publicPath);
 
-		   return publicPath;
-	   //}
-	   //catch (Exception e) 
-	   //{
-	   //		System.out.println(e.getStackTrace());
-	   //    throw new Exception("[ForwardModellingPortlet.uploadFile] ERROR: The file could not be saved in the DL. User: "+userSN, e);
-	   //} 
+	   return publicPath;
    }
 
    private String inputStreamToString(InputStream inputStream) throws IOException {
@@ -1070,12 +1049,9 @@ public class ForwardPortlet extends MVCPortlet{
 		   System.out.println("[ForwardModellingPortlet.catchError] Could not write in response...");
 	   }
 	   res.setProperty(res.HTTP_STATUS_CODE, errorCode); 						//Ajax call expects status code
-	   //res.setProperty("success", "false"); 
-	   //res.setProperty("msg", logMessage);
-	   //PrintWriter out = res.getWriter();
-	   //out.println(failedString);
-	   //out.close();
+
 	   System.out.println(logMessage);
+       
 	   if(e!=null)		e.printStackTrace();
    }
 }
