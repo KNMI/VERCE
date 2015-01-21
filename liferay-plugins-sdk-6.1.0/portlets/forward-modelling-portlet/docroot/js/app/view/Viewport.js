@@ -103,9 +103,10 @@ Ext.define('CF.view.Viewport', {
             id: 'submit',
             disabled: true,
             border: false,
+            height: '100%',
             layout: {
-              type: 'vbox',
-              align: 'stretch'
+              type: 'fit',
+              // align: 'stretch',
             },
             items: [{
               xtype: 'submit'

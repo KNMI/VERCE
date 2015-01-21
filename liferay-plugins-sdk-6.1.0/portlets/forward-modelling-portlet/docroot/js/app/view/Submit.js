@@ -25,7 +25,6 @@ Ext.define('CF.view.WorkflowCombo', {
 Ext.define('CF.view.SubmitFormPanel', {
   extend: 'Ext.form.Panel',
   alias: 'widget.submitformpanel',
-  height: '100%',
   frame: false,
   border: false,
   bodyPadding: '10 10 0 10',
@@ -164,7 +163,6 @@ Ext.define('CF.view.SubmitForm', {
   extend: 'Ext.form.Panel',
   alias: 'widget.submitform',
   bodyPadding: '0 0 10 0',
-  height: '100%',
   items: [{
     xtype: 'submitformpanel'
   }]
@@ -188,8 +186,13 @@ Ext.define('CF.view.Submit', {
   extend: 'Ext.form.Panel',
   alias: 'widget.submit',
   border: false,
+  layout: {
+    type: 'vbox', // Arrange child items vertically
+    align: 'stretch', // Each takes up full width
+  },
   items: [{
-    xtype: 'submitform'
+    xtype: 'submitform',
+    flex: 0,
   }, {
     id: "wflist",
     xtype: 'panel',
@@ -197,7 +200,8 @@ Ext.define('CF.view.Submit', {
     bodyPadding: '10 10 0 10',
     border: false,
     frame: false,
-    autoScroll: true
+    autoScroll: true,
+    flex: 1,
     //TODO: length of the div
   }]
 });
