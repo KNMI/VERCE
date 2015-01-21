@@ -2,7 +2,7 @@
 	    <head>
             <link rel="stylesheet" type="text/css" href="https://extjs.cachefly.net/ext/gpl/5.0.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css" />
             <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/theme/default/style.css" />
-            <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/main.css" ></script>
+            <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/custom.css" ></script>
 			<style>
 			#search-results a {
             color: #385F95;
