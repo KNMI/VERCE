@@ -134,9 +134,11 @@ public class ForwardPortlet extends MVCPortlet{
 		   downloadMeshDetails(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("downloadVelocityModelDetails"))
 		   downloadVelocityModelDetails(resourceRequest, resourceResponse);
+       else if (resourceRequest.getResourceID().equals("getWorkflowList"))
+           getWorkflowList(resourceRequest, resourceResponse);
 	}
 	
-	public void getWorkflowList(ActionRequest req, ActionResponse res)
+	public void getWorkflowList(ResourceRequest req, ResourceResponse res)
     {
 		try{
 			asm_service = ASMService.getInstance();

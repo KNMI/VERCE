@@ -24,9 +24,7 @@
 
 <%ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute("THEME_DISPLAY");%>
 
-<liferay-portlet:actionURL name="provant" var="provantURL"/>
-
-<liferay-portlet:actionURL name="getWorkflowList" var="getWorkflowListURL"/>
+<liferay-portlet:resourceURL id="getWorkflowList" var="getWorkflowListURL"/>
 
 <liferay-portlet:resourceURL id="deleteWorkflow" var="deleteWorkflowURL"/>
 
@@ -93,7 +91,6 @@ catch(Exception e){
 	var STPOINTS_TYPE = '<%=Constants.STPOINTS_TYPE %>';
 	var SOLVER_TYPE = '<%=Constants.SOLVER_TYPE %>';
 	
-	//var provantURL='<%=provantURL.toString()%>';
 	var updateWorkflowDescriptionURL='<%=updateWorkflowDescriptionURL.toString()%>';
 	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
 	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
