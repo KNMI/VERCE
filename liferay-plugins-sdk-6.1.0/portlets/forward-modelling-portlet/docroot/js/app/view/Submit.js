@@ -202,7 +202,6 @@ Ext.define('CF.view.Submit', {
     frame: false,
     autoScroll: true,
     flex: 1,
-    //TODO: length of the div
   }]
 });
 
