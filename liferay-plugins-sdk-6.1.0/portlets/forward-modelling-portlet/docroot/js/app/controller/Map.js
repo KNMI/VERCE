@@ -292,7 +292,7 @@ Ext.define('CF.controller.Map', {
   onEventSearch: function(button) {
     var form = button.up('form').getForm();
     if (form.isValid()) {
-      var baseUrl = '/j2ep-1.0/ingv/fdsnws/event/1/query?';
+      var baseUrl = Ext.getCmp('event_catalog').findRecordByValue(Ext.getCmp('event_catalog').getValue()).get('url') + '/fdsnws/event/1/query?';
       var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       this.getEvents(this, baseUrl + form.getValues(true) + bbox);
@@ -358,17 +358,29 @@ Ext.define('CF.controller.Map', {
 
           resp.features = elem.parseFeatures(request);
 
-          if (resp.features.length < 1)
-            Ext.Msg.alert("Alert!", "No data returned");
+          if (resp.features.length < 1) {
+            if (type === "event") {
+              Ext.Msg.alert("Alert!", "No events found for your search parameters.");
+            } else {
+              Ext.Msg.alert("Alert!", "No data returned");
+            }
+          }
         }
         resp.code = OpenLayers.Protocol.Response.SUCCESS;
       } else // failure
       {
         resp.code = OpenLayers.Protocol.Response.FAILURE;
-        if (request.status == 204) errorMsg = "No data returned";
-        else if (request.status == 413) errorMsg = "The number of requested results is bigger than the maximum, 3000";
-
-        else errorMsg = "The request failed. Error code " + request.status;
+        if (request.status == 204) {
+          if (type === "event") {
+            errorMsg = "No events found for your search parameters.";
+          } else {
+            errorMsg = "No data returned";
+          }
+        } else if (request.status == 413) {
+          errorMsg = "The number of requested results is bigger than the maximum, 3000";
+        } else {
+          errorMsg = "The request failed. Error code " + request.status;
+        }
         Ext.Msg.alert("Alert!", errorMsg);
       }
       if (type === "event") this.getEventGrid().setLoading(false);

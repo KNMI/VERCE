@@ -5,6 +5,7 @@ Ext.define('CF.view.ProvidersCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.ProvidersCombo',
   fieldLabel: 'Providers',
+  id: 'event_catalog',
   name: 'catalog',
   displayField: 'abbr',
   width: 300,
