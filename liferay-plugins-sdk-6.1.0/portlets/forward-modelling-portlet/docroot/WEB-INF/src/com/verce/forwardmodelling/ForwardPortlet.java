@@ -144,9 +144,11 @@ public class ForwardPortlet extends MVCPortlet{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
 
-			String jsWfArray = "{\"list\":[";
-			for(ASMWorkflow wf : importedWfs)
-			{ 
+            JSONObject result = new JSONObject();
+            JSONArray array = new JSONArray();
+            result.put("list", array);
+
+			for(ASMWorkflow wf : importedWfs) { 
 				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
 				//wfDate is YYYY-MM-DD
 				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
@@ -196,15 +198,22 @@ public class ForwardPortlet extends MVCPortlet{
 					}
                 }
 
-	      		jsWfArray +=  "{\"name\":\""+wfName+"\", \"desc\":\""+wf.getSubmissionText()+"\", \"status\":\""+status+
-	      				"\", \"date\":\""+wfDate+"\", \"date2\":\""+wfDate2+"\", \"workflowId\":\""+wf.getWorkflowName()+"\"},";
+                JSONObject object = new JSONObject();
+                object
+                .put("name", wfName)
+                .put("desc", wf.getSubmissionText())
+                .put("status", status)
+                .put("date", wfDate)
+                .put("date2", wfDate2)
+                .put("workflowId", wf.getWorkflowName());
+
+                array.put(object);
+
 			}
-			jsWfArray.substring(0, jsWfArray.length()-1);
-			jsWfArray +="]}";
 
 			HttpServletResponse response = PortalUtil.getHttpServletResponse(res);
 			PrintWriter out = response.getWriter();
-			out.print(jsWfArray);
+			out.print(result.toString());
 			out.flush();
 			out.close();
 		}
