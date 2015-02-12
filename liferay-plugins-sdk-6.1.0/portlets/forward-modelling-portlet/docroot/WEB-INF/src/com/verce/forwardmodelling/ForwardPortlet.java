@@ -137,12 +137,31 @@ public class ForwardPortlet extends MVCPortlet{
        else if (resourceRequest.getResourceID().equals("getWorkflowList"))
            getWorkflowList(resourceRequest, resourceResponse);
 	}
+
+    public JSONObject getProvenanceWorkflows(ResourceRequest req, ResourceResponse res) throws Exception {
+        String username = PortalUtil.getUser(req).getScreenName();
+
+        HttpServletRequest servletRequest = PortalUtil.getHttpServletRequest(req);
+        String host = PortalUtil.getHost(servletRequest);
+
+        // TODO replace with production URL
+        URLConnection connection = new URL("http://"+host+":8080/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000").openConnection();
+        InputStream response = connection.getInputStream();
+
+        String jsonString = inputStreamToString(response);
+
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        return jsonObject;
+    }
 	
 	public void getWorkflowList(ResourceRequest req, ResourceResponse res)
     {
 		try{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+
+            JSONObject provWorkflows = getProvenanceWorkflows(req, res);
 
             JSONObject result = new JSONObject();
             JSONArray array = new JSONArray();
@@ -207,8 +226,20 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("date2", wfDate2)
                 .put("workflowId", wf.getWorkflowName());
 
-                array.put(object);
+                JSONArray list = provWorkflows.getJSONArray("runIds");
+                for (int ii = 0; ii < list.length(); ++ii) {
+                    JSONObject provWorkflow = list.getJSONObject(ii);
 
+                    if (!provWorkflow.getString("_id").equals(wfName)) {
+                        continue;
+                    }
+
+                    object.put("workflowName", provWorkflow.optString("workflowName"));
+
+                    list.remove(ii);
+                }
+
+                array.put(object);
 			}
 
 			HttpServletResponse response = PortalUtil.getHttpServletResponse(res);

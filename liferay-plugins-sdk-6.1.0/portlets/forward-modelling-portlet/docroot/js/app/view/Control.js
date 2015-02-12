@@ -273,11 +273,18 @@ Ext.define('CF.view.WfGrid', {
 
       return value;
     }
-    // }, {
-    //   text: 'Workflow',
-    //   width: 120,
-    //   sortable: true,
-    //   dataIndex: 'workflowId'
+  }, {
+    text: 'Workflow',
+    flex: 1,
+    sortable: true,
+    dataIndex: 'workflowName',
+    renderer: function(value, metaData, record, row, col, store, gridView) {
+      if (value == null || value === '' || value === 'null') {
+        return 'n/a';
+      }
+
+      return value;
+    }
   }, {
     text: 'Status',
     width: 75,
