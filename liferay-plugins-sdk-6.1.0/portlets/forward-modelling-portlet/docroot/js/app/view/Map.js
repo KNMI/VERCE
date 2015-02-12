@@ -3,8 +3,6 @@
  * and stuff.
  * @extends GeoExt.panel.Map
  */
-var layerStore = Ext.create("GeoExt.data.LayerStore");
-
 Ext.define('CF.view.Map', {
   // Ext.panel.Panel-specific options:
   extend: 'GeoExt.panel.Map',
@@ -24,10 +22,12 @@ Ext.define('CF.view.Map', {
   // GeoExt.panel.Map-specific options :
   center: '13.3046875,40.48193359375',
   zoom: 4,
-  layers: layerStore,
 
   initComponent: function() {
     var me = this;
+
+    this.layers = Ext.create("GeoExt.data.LayerStore");
+
     var controller = CF.app.getController('Map');
     var items = [];
 
@@ -315,7 +315,7 @@ Ext.define('CF.view.Map', {
     geowms.setOpacity(0.5);
     faultswms.setOpacity(0.3);
 
-    layerStore.bind(map)
+    this.layers.bind(map)
 
     // ZoomToMaxExtent control, a "button" control
     items.push(Ext.create('Ext.button.Button', Ext.create('GeoExt.Action', {
