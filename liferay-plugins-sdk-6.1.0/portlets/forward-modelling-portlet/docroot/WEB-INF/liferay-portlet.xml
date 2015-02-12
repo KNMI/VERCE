@@ -7,8 +7,6 @@
 		<configuration-action-class>com.verce.action.ConfigurationActionImpl</configuration-action-class>
 		<instanceable>false</instanceable>
 		<header-portlet-css>/css/main.css</header-portlet-css>
-<!-- 		<header-portlet-javascript>/js/app.js</header-portlet-javascript>
-		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript> -->
 		<css-class-wrapper>forward-modelling-portlet</css-class-wrapper>
 	</portlet>
 	<role-mapper>
