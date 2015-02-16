@@ -145,7 +145,8 @@ public class ForwardPortlet extends MVCPortlet{
         String host = PortalUtil.getHost(servletRequest);
 
         // TODO replace with production URL
-        URLConnection connection = new URL("http://"+host+":8080/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://"+host+":8080/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000").openConnection();
+
         InputStream response = connection.getInputStream();
 
         String jsonString = inputStreamToString(response);
