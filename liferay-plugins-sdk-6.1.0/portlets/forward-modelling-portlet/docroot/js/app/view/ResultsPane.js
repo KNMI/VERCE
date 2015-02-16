@@ -1409,7 +1409,7 @@ Ext.define('CF.view.provenanceGraphsViewer', {
             ]
           }).show();
 
-          singleartifactStore.removeAll();
+          singleArtifactStore.removeAll();
           singleArtifactStore.load();
           window.event.returnValue = false;
         }
