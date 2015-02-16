@@ -234,7 +234,12 @@ public class ForwardPortlet extends MVCPortlet{
                         continue;
                     }
 
-                    object.put("workflowName", provWorkflow.optString("workflowName"));
+                    object
+                    .put("workflowName", provWorkflow.optString("workflowName"))
+                    .put("grid", provWorkflow.optString("grid"))
+                    .put("resourceType", provWorkflow.optString("resourceType"))
+                    .put("resource", provWorkflow.optString("resource"))
+                    .put("queue", provWorkflow.optString("queue"));
 
                     list.remove(ii);
                 }
@@ -542,11 +547,11 @@ public class ForwardPortlet extends MVCPortlet{
 			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
 			   
                // Log resource information
-               ASMResourceBean bean = asm_service.getResource(userId, importedWfId, jobName);
-               System.out.println("RESOURCE type: " + bean.getType() + ", grid: " + bean.getGrid() + ", resource: " + bean.getResource() + ", queue: " + bean.getQueue());
+               ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, jobName);
+               System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
 
 			   //10. Add run info in the Provenance Repository
-			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified);
+			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
@@ -991,7 +996,7 @@ public class ForwardPortlet extends MVCPortlet{
     }
 		
 	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
-			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified)
+			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue)
     {	
 		String runType = "workflow_run";
 		try{
@@ -1019,7 +1024,11 @@ public class ForwardPortlet extends MVCPortlet{
 				  .put("system_id", asmRunId)
 				  .put("startTime", nowAsISO)
 				  .put("job0bin", job0bin)
-				  .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified));
+				  .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified))
+                  .put("resourceType", resourceType)
+                  .put("grid", grid)
+                  .put("resource", resource)
+                  .put("queue", queue);
 
 			JSONArray input = new JSONArray();
 			input.put(new JSONObject().put("mime-type", stationFileType).put("name",Constants.ST_INPUT_NAME).put("url", stationUrl))

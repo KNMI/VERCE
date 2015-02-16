@@ -286,6 +286,18 @@ Ext.define('CF.view.WfGrid', {
       return value;
     }
   }, {
+    text: 'Grid',
+    flex: 1,
+    sortable: true,
+    dataIndex: 'grid',
+    renderer: function(value, metaData, record, row, col, store, gridView) {
+      if (value == null || value === '' || value === 'null') {
+        return 'n/a';
+      }
+
+      return value;
+    }
+  }, {
     text: 'Status',
     width: 75,
     sortable: true,
