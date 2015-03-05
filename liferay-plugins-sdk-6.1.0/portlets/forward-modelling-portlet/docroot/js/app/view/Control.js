@@ -253,12 +253,12 @@ Ext.define('CF.view.WfGrid', {
   columns: [{
     text: 'Name',
     flex: 1,
-    sortable: true,
+    sortable: false,
     dataIndex: 'name'
   }, {
     text: 'Desc',
     flex: 1,
-    sortable: true,
+    sortable: false,
     dataIndex: 'desc',
     renderer: function(value, metaData, record, row, col, store, gridView) {
       if (value == null || value === '' || value === 'null') {
@@ -270,7 +270,7 @@ Ext.define('CF.view.WfGrid', {
   }, {
     text: 'Workflow',
     flex: 1,
-    sortable: true,
+    sortable: false,
     dataIndex: 'workflowName',
     renderer: function(value, metaData, record, row, col, store, gridView) {
       if (value == null || value === '' || value === 'null') {
@@ -282,7 +282,7 @@ Ext.define('CF.view.WfGrid', {
   }, {
     text: 'Grid',
     flex: 1,
-    sortable: true,
+    sortable: false,
     dataIndex: 'grid',
     renderer: function(value, metaData, record, row, col, store, gridView) {
       if (value == null || value === '' || value === 'null') {
@@ -294,13 +294,13 @@ Ext.define('CF.view.WfGrid', {
   }, {
     text: 'Status',
     width: 75,
-    sortable: true,
+    sortable: false,
     renderer: statusRenderer,
     dataIndex: 'status'
   }, {
     text: 'Date',
     width: 90,
-    sortable: true,
+    sortable: false,
     renderer: Ext.util.Format.dateRenderer('d - m - Y'),
     dataIndex: 'date'
   }, {
