@@ -138,26 +138,38 @@ public class ForwardPortlet extends MVCPortlet{
            getWorkflowList(resourceRequest, resourceResponse);
 	}
 
-    public JSONObject getProvenanceWorkflows(ResourceRequest req, ResourceResponse res) throws Exception {
-        String username = PortalUtil.getUser(req).getScreenName();
+    public JSONObject getProvenanceWorkflows(ResourceRequest req, ResourceResponse res) {
+        JSONObject jsonObject = new JSONObject();
 
-        HttpServletRequest servletRequest = PortalUtil.getHttpServletRequest(req);
-        String host = PortalUtil.getHost(servletRequest);
+        try {
+            String username = PortalUtil.getUser(req).getScreenName();
 
-        // TODO replace with production URL
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://"+host+":8080/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000").openConnection();
+            HttpServletRequest servletRequest = PortalUtil.getHttpServletRequest(req);
 
-        InputStream response = connection.getInputStream();
+            String url = PortalUtil.getPortalURL(servletRequest) + "/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000";
+            System.out.println("Fetching provenance workflows from " + url);
 
-        String jsonString = inputStreamToString(response);
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
-        JSONObject jsonObject = new JSONObject(jsonString);
+            InputStream response = connection.getInputStream();
+
+            String jsonString = inputStreamToString(response);
+
+            jsonObject = new JSONObject(jsonString);
+        } catch (Exception e) {
+            System.out.println("ERROR: Failed to get provenance workflows - " + e.getMessage());
+        }
 
         return jsonObject;
     }
 	
 	public void getWorkflowList(ResourceRequest req, ResourceResponse res)
     {
+        // int offset = Integer.parseInt(ParamUtil.getString(req, "start"));
+        int offset = 0;
+        // int limit = Integer.parseInt(ParamUtil.getString(req, "limit"));
+        int limit = 60;
+        System.out.println("!!!!!!!!! " + offset + " / " + limit);
 		try{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
@@ -168,7 +180,12 @@ public class ForwardPortlet extends MVCPortlet{
             JSONArray array = new JSONArray();
             result.put("list", array);
 
-			for(ASMWorkflow wf : importedWfs) { 
+            JSONArray list = provWorkflows.optJSONArray("runIds");
+
+			for(int ii = offset; ii < Math.min(offset + limit, importedWfs.size()); ii++) {
+                // System.out.println("!!!!!!!!! " + ii);
+                ASMWorkflow wf = importedWfs.get(ii);
+
 				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
 				//wfDate is YYYY-MM-DD
 				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
@@ -256,8 +273,8 @@ public class ForwardPortlet extends MVCPortlet{
 		}
 		catch(Exception e)
 		{
-            e.printStackTrace();
 			System.out.println("[ForwardModellingPortlet.getWorkflowList] Could not update the workflow list");
+            System.out.println(e);
 		}
     }
 	
@@ -718,6 +735,7 @@ public class ForwardPortlet extends MVCPortlet{
 		while ((charsRead = inputStreamReader.read(buffer)) > 0) {
 			stringBuilder.append(buffer, 0, charsRead);
 		};
+        inputStream.close();
 		return stringBuilder.toString();
    }
 
