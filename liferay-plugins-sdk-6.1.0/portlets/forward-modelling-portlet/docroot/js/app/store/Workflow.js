@@ -2,12 +2,6 @@ Ext.define('CF.store.Workflow', {
   extend: 'Ext.data.BufferedStore',
   model: 'CF.model.Workflow',
 
-  sortOnLoad: true,
-  sorters: [{
-    property: 'date2',
-    direction: 'DESC'
-  }],
-
   proxy: {
     type: 'ajax',
     url: getWorkflowListURL,
