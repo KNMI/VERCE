@@ -180,9 +180,20 @@ public class ForwardPortlet extends MVCPortlet{
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
 
             Collections.sort(importedWfs, new Comparator<ASMWorkflow>() {
-                // reverse order
+                // sort by date from the workflow name in reverse order
                 public int compare(ASMWorkflow wf1, ASMWorkflow wf2) {
-                    return wf2.compareTo(wf1);
+                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hhmmss");
+
+                    try {
+                        Date wf2date = ft.parse(wf2.getWorkflowName().split("_")[1]);
+                        Date wf1date = ft.parse(wf1.getWorkflowName().split("_")[1]);
+                        if (wf2date.getTime() - wf1date.getTime()  > 0) return 1;
+                        else if (wf2date.getTime() - wf1date.getTime() < 0) return -1;
+                        else return 0;
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        return 0;
+                    }
                 }
             });
 
