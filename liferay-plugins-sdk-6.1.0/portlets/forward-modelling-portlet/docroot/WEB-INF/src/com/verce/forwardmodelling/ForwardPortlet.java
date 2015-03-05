@@ -139,6 +139,11 @@ public class ForwardPortlet extends MVCPortlet{
 	}
 
     public JSONObject getProvenanceWorkflows(ResourceRequest req, ResourceResponse res) {
+        // int offset = Integer.parseInt(ParamUtil.getString(req, "start"));
+        // int limit = Integer.parseInt(ParamUtil.getString(req, "limit"));
+        int offset = 0;
+        int limit = 1000;
+
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -146,7 +151,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             HttpServletRequest servletRequest = PortalUtil.getHttpServletRequest(req);
 
-            String url = PortalUtil.getPortalURL(servletRequest) + "/j2ep-1.0/prov/workflow/user/"+username+"?start=0&limit=1000";
+            String url = PortalUtil.getPortalURL(servletRequest) + "/j2ep-1.0/prov/workflow/user/"+username+"?start="+offset+"&limit="+limit;
             System.out.println("Fetching provenance workflows from " + url);
 
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
