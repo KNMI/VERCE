@@ -244,9 +244,8 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("date2", wfDate2)
                 .put("workflowId", wf.getWorkflowName());
 
-                JSONArray list = provWorkflows.getJSONArray("runIds");
-                for (int ii = 0; ii < list.length(); ++ii) {
-                    JSONObject provWorkflow = list.getJSONObject(ii);
+                for (int jj = 0; jj < list.length(); ++jj) {
+                    JSONObject provWorkflow = list.getJSONObject(jj);
 
                     if (!provWorkflow.getString("_id").equals(wfName)) {
                         continue;
@@ -259,7 +258,7 @@ public class ForwardPortlet extends MVCPortlet{
                     .put("resource", provWorkflow.optString("resource"))
                     .put("queue", provWorkflow.optString("queue"));
 
-                    list.remove(ii);
+                    list.remove(jj);
                 }
 
                 array.put(object);
