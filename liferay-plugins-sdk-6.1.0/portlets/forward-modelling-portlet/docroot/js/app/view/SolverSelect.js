@@ -282,6 +282,21 @@ Ext.define('CF.view.SolverSelectForm', {
     items: [{
       xtype: 'meshescombo'
     }, {
+      xtype: 'image',
+      id: 'mesh_help_icon',
+      src: localResourcesPath + '/img/help.png',
+      margin: '3 3 0 3',
+      height: '16px',
+      width: '16px',
+      listeners: {
+        'render': function(component) {
+          Ext.create('Ext.tip.ToolTip', {
+            target: component.getEl(),
+            html: '<div style="width: 250px"><p>Here you find a selection of meshes and models which are ready for you to use. To use your custom mesh and model, just type in their name in the form below.</p><p>Remember that your mesh and velocity model need to be stored in your iRods account in the folder "specfem" as mesh_<name>.zip and velocity_<name>.zip files. These zip files have to contain respectively the folders mesh_<name> and velocity_<name>.</p></div>',
+          });
+        },
+      },
+    }, {
       xtype: 'button',
       id: 'mesh_doc_button',
       icon: localResourcesPath + '/img/download-icon.png',
@@ -410,6 +425,21 @@ Ext.define('CF.view.SolverSelectForm', {
     margin: '5 0',
     items: [{
       xtype: 'velocitycombo'
+    }, {
+      xtype: 'image',
+      id: 'velocitymodel_help_icon',
+      src: localResourcesPath + '/img/help.png',
+      margin: '3 3 0 3',
+      height: '16px',
+      width: '16px',
+      listeners: {
+        'render': function(component) {
+          Ext.create('Ext.tip.ToolTip', {
+            target: component.getEl(),
+            html: '<div style="width: 250px"><p>Here you find a selection of meshes and models which are ready for you to use. To use your custom mesh and model, just type in their name in the form below.</p><p>Remember that your mesh and velocity model need to be stored in your iRods account in the folder "specfem" as mesh_<name>.zip and velocity_<name>.zip files. These zip files have to contain respectively the folders mesh_<name> and velocity_<name>.</p></div>',
+          });
+        },
+      },
     }, {
       xtype: 'button',
       id: 'velocitymodel_doc_button',
