@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Properties;
+import java.util.Collections;
+import java.util.Comparator;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.Format;
@@ -176,6 +178,13 @@ public class ForwardPortlet extends MVCPortlet{
 		try{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+
+            Collections.sort(importedWfs, new Comparator<ASMWorkflow>() {
+                // reverse order
+                public int compare(ASMWorkflow wf1, ASMWorkflow wf2) {
+                    return wf2.compareTo(wf1);
+                }
+            });
 
             JSONObject provWorkflows = getProvenanceWorkflows(req, res);
             JSONArray list = provWorkflows.optJSONArray("runIds");
