@@ -170,8 +170,7 @@ public class ForwardPortlet extends MVCPortlet{
         return jsonObject;
     }
 	
-	public void getWorkflowList(ResourceRequest req, ResourceResponse res)
-    {
+	public void getWorkflowList(ResourceRequest req, ResourceResponse res) {
         int offset = Integer.parseInt(ParamUtil.getString(req, "start"));
         int limit = Integer.parseInt(ParamUtil.getString(req, "limit"));
         System.out.println("Fetching runs " + offset + " - " + (offset + limit));
@@ -185,11 +184,9 @@ public class ForwardPortlet extends MVCPortlet{
                     SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hhmmss");
 
                     try {
-                        Date wf2date = ft.parse(wf2.getWorkflowName().split("_")[1]);
-                        Date wf1date = ft.parse(wf1.getWorkflowName().split("_")[1]);
-                        if (wf2date.getTime() - wf1date.getTime()  > 0) return 1;
-                        else if (wf2date.getTime() - wf1date.getTime() < 0) return -1;
-                        else return 0;
+                        Date wf2date = ft.parse(wf2.getWorkflowName().substring(wf2.getWorkflowName().lastIndexOf("_")+1));
+                        Date wf1date = ft.parse(wf1.getWorkflowName().substring(wf1.getWorkflowName().lastIndexOf("_")+1));
+                        return wf2date.compareTo(wf1date);
                     } catch (Exception e) {
                         System.out.println(e);
                         return 0;
