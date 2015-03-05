@@ -174,13 +174,12 @@ public class ForwardPortlet extends MVCPortlet{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
 
-            JSONObject provWorkflows = getProvenanceWorkflows(req, res);
+            // JSONObject provWorkflows = getProvenanceWorkflows(req, res);
+            // JSONArray list = provWorkflows.optJSONArray("runIds");
 
             JSONObject result = new JSONObject();
             JSONArray array = new JSONArray();
             result.put("list", array);
-
-            JSONArray list = provWorkflows.optJSONArray("runIds");
 
 			for(int ii = offset; ii < Math.min(offset + limit, importedWfs.size()); ii++) {
                 // System.out.println("!!!!!!!!! " + ii);
@@ -196,7 +195,8 @@ public class ForwardPortlet extends MVCPortlet{
 
                 String status = wf.getStatusbean().getStatus();
 
-                if (!status.equals("ERROR") && !status.equals("FINISHED")) {
+                // only fetch status for runs that are not already stopped
+                if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING")) {
 	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
 	                if (wfIB == null) {
 	                	continue;
@@ -244,22 +244,22 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("date2", wfDate2)
                 .put("workflowId", wf.getWorkflowName());
 
-                for (int jj = 0; jj < list.length(); ++jj) {
-                    JSONObject provWorkflow = list.getJSONObject(jj);
+                // for (int jj = 0; jj < list.length(); ++jj) {
+                //     JSONObject provWorkflow = list.getJSONObject(jj);
 
-                    if (!provWorkflow.getString("_id").equals(wfName)) {
-                        continue;
-                    }
+                //     if (!provWorkflow.getString("_id").equals(wfName)) {
+                //         continue;
+                //     }
 
-                    object
-                    .put("workflowName", provWorkflow.optString("workflowName"))
-                    .put("grid", provWorkflow.optString("grid"))
-                    .put("resourceType", provWorkflow.optString("resourceType"))
-                    .put("resource", provWorkflow.optString("resource"))
-                    .put("queue", provWorkflow.optString("queue"));
+                //     object
+                //     .put("workflowName", provWorkflow.optString("workflowName"))
+                //     .put("grid", provWorkflow.optString("grid"))
+                //     .put("resourceType", provWorkflow.optString("resourceType"))
+                //     .put("resource", provWorkflow.optString("resource"))
+                //     .put("queue", provWorkflow.optString("queue"));
 
-                    list.remove(jj);
-                }
+                //     list.remove(jj);
+                // }
 
                 array.put(object);
 			}
