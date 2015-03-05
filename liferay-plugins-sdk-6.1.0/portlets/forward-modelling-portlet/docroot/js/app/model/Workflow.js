@@ -15,5 +15,7 @@ Ext.define('CF.model.Workflow', {
     name: 'date2'
   }, {
     name: 'workflowId'
-  }]
+  }],
+
+  // idProperty: 'workflowId',
 });

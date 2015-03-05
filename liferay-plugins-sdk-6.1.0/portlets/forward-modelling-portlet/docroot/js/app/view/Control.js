@@ -1,13 +1,4 @@
-var wfStore = Ext.create('CF.store.Workflow', {
-  proxy: {
-    type: 'ajax',
-    url: getWorkflowListURL,
-    reader: {
-      rootProperty: 'list'
-    }
-  },
-  autoLoad: true
-});
+var wfStore = Ext.create('CF.store.Workflow', {});
 
 var handleDownloadLogfiles = function(grid, rowIndex, colIndex) {
   var rec = wfStore.getAt(rowIndex);
@@ -211,7 +202,7 @@ var handleReuse = function(grid, rowIndex, colIndex) {
 var handleDeleteInstance = function(grid, rowIndex, colIndex) {
   var encryptedIrodsSession = CF.app.getController('Map').encryptedIrodsSession;
   if (encryptedIrodsSession == null) {
-    Ext.Msg.alert('Error', 'Cannot remove run. Please log into iRods and try again.');
+    Ext.Msg.alert('Error', 'Cannot remove run. Please log out from and back into iRods and try again.');
     return;
   }
 
@@ -252,10 +243,13 @@ Ext.define('CF.view.WfGrid', {
   alias: 'widget.WfGrid',
   store: wfStore,
   id: 'wfGrid',
-  // selType: 'cellmodel',
+
   viewConfig: {
     enableTextSelection: true,
   },
+
+  loadMask: true,
+
   columns: [{
     text: 'Name',
     flex: 1,
