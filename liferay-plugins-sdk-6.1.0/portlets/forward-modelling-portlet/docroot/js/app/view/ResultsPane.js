@@ -12,6 +12,8 @@ var seismoMetaStore = Ext.create('CF.store.SeismoMeta');
 
 var mimetypesStore = Ext.create('CF.store.Mimetype');
 
+// regex to match worker-node protocol and domain name to be replaced with iRODS_URL
+var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
 owner = userSN;
 
@@ -670,7 +672,7 @@ var is_image = function(url, callback, errorcallback) {
 var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
   htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
   for (var i = 0; i < url.length; i++) {
-    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + owner + "/verce/")
+    url[i] = url[i].replace(dn_regex, IRODS_URL + "/home/" + owner + "/verce/")
 
 
     htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
@@ -1302,10 +1304,10 @@ Ext.define('CF.view.ArtifactView', {
             var locations = location.split(",");
 
             for (var i = 0; i < locations.length; i++) {
-              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
+              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(dn_regex, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
             }
           } else {
-            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
+            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(dn_regex, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
           }
         });
 
