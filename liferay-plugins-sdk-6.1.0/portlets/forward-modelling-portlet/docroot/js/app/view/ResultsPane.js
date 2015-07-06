@@ -647,7 +647,7 @@ Ext.define('CF.view.ActivityMonitor', {
       groupable: false
     }, // custom mapping
     {
-      header: 'Errors',
+      header: 'Messages',
       dataIndex: 'errors',
       flex: 3,
       sortable: false
