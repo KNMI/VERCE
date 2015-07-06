@@ -460,7 +460,7 @@ Ext.define('CF.view.SolverSelectForm', {
     },
   }, {
     xtype: 'LinkButton',
-    text: 'Click here to submit a new mesh and velocity model',
+    text: 'Submit a mesh and velocity model for review',
     handler: function(e) {
       e.stopEvent();
       meshSolverPopup();
