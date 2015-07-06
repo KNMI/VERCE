@@ -468,6 +468,35 @@ var onStoreLoad = function(store) {
   Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun);
 }
 
+
+var renderActivityID = function(value, p, record) {
+	if (record.data.streams)
+	   for (i=0;i<=record.data.streams.length;i++)
+	   {
+	   		
+		if(record.data.streams[i]['con:immediateAccess'] && record.data.streams[i]['con:immediateAccess']!="")
+		   	return Ext.String.format(
+	    		"<strong><i>{0}</i></strong>",
+	    		record.data.ID
+	  	   	);
+	  	if(record.data.streams[i].location && record.data.streams[i].location!='')
+	    	return Ext.String.format(
+	    		"<i>{0}</i>",
+	    		record.data.ID
+	  	   	);
+	  	return Ext.String.format(
+	    	"{0}",
+	    	record.data.ID
+	  	   );
+	  	
+	  	}
+	else  	
+	  	return Ext.String.format(
+	    	"{0}",
+	    	record.data.ID
+	  	   );
+	}
+
 Ext.define('CF.view.ActivityMonitor', {
   title: 'Run activity monitor',
   width: '25%',
@@ -606,7 +635,8 @@ Ext.define('CF.view.ActivityMonitor', {
       header: 'ID',
       dataIndex: 'ID',
       flex: 3,
-      sortable: false
+      sortable: true,
+      renderer: renderActivityID
     },
 
     {
