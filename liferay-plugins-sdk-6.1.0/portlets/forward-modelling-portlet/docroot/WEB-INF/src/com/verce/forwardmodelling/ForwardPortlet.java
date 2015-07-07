@@ -205,6 +205,11 @@ public class ForwardPortlet extends MVCPortlet{
 			for(int ii = offset; ii < Math.min(offset + limit, importedWfs.size()); ii++) {
                 ASMWorkflow wf = importedWfs.get(ii);
 
+                if (wf == null) {
+                    System.out.println("**** Workflow null");
+                    break;
+                }
+
 				//wf.getWorkflowName() is formated: (submitedName+RandomID)_YYYY-MM-DD-TTTTTT
 				//wfDate is YYYY-MM-DD
 				//wfDate2 is YYYY-MM-DD-TTTTTT (used to sort the results)
@@ -218,21 +223,20 @@ public class ForwardPortlet extends MVCPortlet{
                 // only fetch status for runs that are not already stopped
                 if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING")) {
 	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
-	                if (wfIB == null) {
-	                	continue;
-	                }
 
-	                HashMap<String,String> statuses = new HashMap();
+                    HashMap<String,String> statuses = new HashMap();
 
-	                StatusConstants statusConstants = new StatusConstants();
-	                for (RunningJobDetailsBean job : wfIB.getJobs()) {
-	                 if (job.getInstances().size() <= 0) {
-	                 	statuses.put(job.getName(), "UNKNOWN");
-	                 	continue;
-	                 }
-	                 statuses.put(job.getName(), statusConstants.getStatus(job.getInstances().get(0).getStatus()));
-	                }
-					System.out.println(statuses);
+	                if (wfIB != null) {
+    	                StatusConstants statusConstants = new StatusConstants();
+    	                for (RunningJobDetailsBean job : wfIB.getJobs()) {
+    	                 if (job.getInstances().size() <= 0) {
+    	                 	statuses.put(job.getName(), "UNKNOWN");
+    	                 	continue;
+    	                 }
+    	                 statuses.put(job.getName(), statusConstants.getStatus(job.getInstances().get(0).getStatus()));
+    	                }
+    					System.out.println(statuses);
+                    }
 
 					String computeStatus = statuses.containsKey("COMPUTE") ? statuses.get("COMPUTE") : statuses.containsKey("Job0") ? statuses.get("Job0") : null;
 					String stageOutStatus = statuses.containsKey("STAGEOUT") ? statuses.get("STAGEOUT") : statuses.containsKey("Job1") ? statuses.get("Job1") : null;
@@ -291,7 +295,7 @@ public class ForwardPortlet extends MVCPortlet{
 		catch(Exception e)
 		{
 			System.out.println("[ForwardModellingPortlet.getWorkflowList] Could not update the workflow list");
-            System.out.println(e);
+            e.printStackTrace();
 		}
     }
 	
