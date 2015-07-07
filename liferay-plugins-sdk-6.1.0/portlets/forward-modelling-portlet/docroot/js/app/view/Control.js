@@ -77,13 +77,23 @@ var handleReuse = function(grid, rowIndex, colIndex) {
             return;
           }
 
+          // reuse solver
+          var solverType = Ext.getCmp('solvertype');
+          var solver = solverType.store.findRecord('name', object.solver);
+          if (solver != null) {
+            solverType.clearValue();
+            solverType.setValue(solver.get('abbr'));
+          } else {
+            // TODO fix partial reuse when solver unavailable
+            Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
+            Ext.getCmp('viewport').setLoading(false);
+            return;
+          }
+
           // reuse velocity when velocity model store finishes loading
           var velocityCombo = Ext.getCmp('velocity');
           velocityCombo.store.addListener('refresh', function() {
             velocityCombo.setValue(object.velocity_model);
-            // manually trigger keyup, because change didn't work across browsers
-            // but keyup isn't triggered by setvalue
-            velocityCombo.fireEvent('keyup', velocityCombo);
 
             if (object.custom_mesh) {
               velocityCombo.up('form').getForm().findField('minlat').setValue(object.custom_mesh_boundaries.minlat);
@@ -169,29 +179,12 @@ var handleReuse = function(grid, rowIndex, colIndex) {
           CF.app.getController('Map').getStore('SolverConf').addListener('refresh', function() {
             // reuse mesh and trigger velocity store reload
             Ext.getCmp('meshes').setValue(object.mesh);
-            // manually trigger keyup, because change didn't work across browsers
-            // but keyup isn't triggered by setvalue
-            Ext.getCmp('meshes').fireEvent('keyup', Ext.getCmp('meshes'));
-
             if (--numRemaining === 0) {
               Ext.getCmp('viewport').setLoading(false);
             }
           }, this, {
             single: true
           });
-
-          // reuse solver
-          var solverType = Ext.getCmp('solvertype');
-          var solver = solverType.store.findRecord('name', object.solver);
-          if (solver != null) {
-            solverType.clearValue();
-            solverType.setValue(solver.get('abbr'));
-          } else {
-            // TODO fix partial reuse when solver unavailable
-            Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
-            Ext.getCmp('viewport').setLoading(false);
-            return;
-          }
         },
         failure: function(response) {
           Ext.Msg.alert("Error", "Failed to get workflow settings!");

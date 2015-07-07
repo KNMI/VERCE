@@ -114,9 +114,7 @@ Ext.define('CF.view.MeshesCombo', {
     'keyup': function(combo) {
       clearMap();
 
-      // use inputEl.getValue() because the last backspace doesn't update combo.getValue()
-      // Still need to check combo.getValue() because combo.setValue() doesn't set inputEl value
-      if (combo.inputEl.getValue() === '' && combo.getValue().length <= 1) {
+      if (combo.inputEl.getValue() === '') {
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
@@ -194,9 +192,7 @@ Ext.define('CF.view.VelocityCombo', {
     // work around 'change' not firing on deleting last character
     // work around combo.getValue() not showing the last character deleted
     'keyup': function(combo) {
-      // use inputEl.getValue() because the last backspace doesn't update combo.getValue()
-      // Still need to check combo.getValue() because combo.setValue() doesn't set inputEl value
-      if (combo.inputEl.getValue() === '' && combo.getValue().length <= 1) {
+      if (combo.inputEl.getValue() === '') {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
