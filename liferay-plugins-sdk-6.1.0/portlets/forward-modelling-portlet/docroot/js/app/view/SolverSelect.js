@@ -63,6 +63,8 @@ var customMesh = Ext.create(meshesstore.getModel(), {
   custom: true
 });
 
+var meshes_combo_has_changed = false;
+
 Ext.define('CF.view.MeshesCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.meshescombo',
@@ -73,17 +75,26 @@ Ext.define('CF.view.MeshesCombo', {
   flex: 1,
   store: meshesstore,
   queryMode: 'local',
+  enableKeyEvents: true,
   listeners: {
     scope: this,
-    'load': function(combo) {},
+    'keyup': function(combo) {
+      if (!meshes_combo_has_changed) {
+        combo.fireEvent('change', combo);
+      }
+      meshes_combo_has_changed = false;
+    },
     'change': function(combo) {
+      meshes_combo_has_changed = true;
       clearMap();
 
-      if (combo.getValue() === '') {
+      if (combo.inputEl.getValue() === '' && (combo.getValue() == null || combo.getValue().length <= 1)) {
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
         Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
+
+        combo.getStore().remove(customMesh);
 
         return;
       }
@@ -155,6 +166,8 @@ var customVelocityModel = Ext.create(velocitystore.getModel(), {
   custom: true
 });
 
+var velocitymodel_combo_has_changed = false;
+
 Ext.define('CF.view.VelocityCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.velocitycombo',
@@ -166,14 +179,24 @@ Ext.define('CF.view.VelocityCombo', {
   valueField: 'name',
   store: velocitystore,
   queryMode: 'local',
+  enableKeyEvents: true,
   listeners: {
     scope: this,
+    'keyup': function(combo) {
+      if (!velocitymodel_combo_has_changed) {
+        combo.fireEvent('change', combo);
+      }
+      velocitymodel_combo_has_changed = false;
+    },
     'change': function(combo) {
-      if (combo.getValue() === '') {
+      velocitymodel_combo_has_changed = true;
+      if (combo.inputEl.getValue() === '' && (combo.getValue() == null || combo.getValue().length <= 1)) {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
+
+        combo.getStore().remove(customVelocityModel);
 
         return;
       }
