@@ -43,24 +43,26 @@ Ext.define('CF.view.Map', {
 
     var hwms =
       new OpenLayers.Layer.WMS(
-        "Hazard Map WMS (EFEHR) ",
+        "Hazard Map WMS (EFEHR)",
         "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&", {
           layers: 'hmap469',
-          transparent: 'true'
+          transparent: 'true',
         }, {
-          isBaseLayer: false
+          isBaseLayer: false,
+          visibility: false,
         }
       );
 
 
     var vecwms =
       new OpenLayers.Layer.WMS(
-        "Borders",
+        "Borders (EFEHR)",
         "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?map=/var/www/mapfile/worldvector.map&", {
           layers: 'wv_country_ol',
-          transparent: 'true'
+          transparent: 'true',
         }, {
-          isBaseLayer: false
+          isBaseLayer: false,
+          visibility: false,
         }
       );
 
