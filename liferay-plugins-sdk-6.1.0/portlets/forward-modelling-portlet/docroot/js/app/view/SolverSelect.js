@@ -63,41 +63,6 @@ var customMesh = Ext.create(meshesstore.getModel(), {
   custom: true
 });
 
-var meshSelected = function(combo, mesh) {
-  var velocitycombo = Ext.getCmp('velocity');
-  velocitycombo.clearValue();
-
-  Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
-  Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
-  Ext.getCmp('solver_but').setDisabled(true);
-
-  if (mesh === customMesh) {
-    Ext.getCmp('mesh_doc_button').setDisabled(true);
-    Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(true);
-
-    mesh.set('name', combo.getValue());
-    mesh.set('velmod', [{
-      name: combo.getValue(),
-      custom: true,
-    }]);
-  } else {
-    Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
-
-    if (mesh !== customMesh) {
-      combo.getStore().remove(customMesh);
-
-      Ext.getCmp('mesh_doc_button').setDisabled(false);
-    }
-  }
-
-  createBoundariesLayer(mesh);
-
-  //Update the solver values
-  updateSolverValues(mesh.get('values'));
-
-  velocitycombo.store.loadData(mesh.get('velmod'));
-}
-
 Ext.define('CF.view.MeshesCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.meshescombo',
@@ -108,19 +73,17 @@ Ext.define('CF.view.MeshesCombo', {
   flex: 1,
   store: meshesstore,
   queryMode: 'local',
-  enableKeyEvents: true,
   listeners: {
     scope: this,
-    'keyup': function(combo) {
+    'load': function(combo) {},
+    'change': function(combo) {
       clearMap();
 
-      if (combo.inputEl.getValue() === '') {
+      if (combo.getValue() === '') {
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
         Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
-
-        combo.getStore().remove(customMesh);
 
         return;
       }
@@ -128,23 +91,40 @@ Ext.define('CF.view.MeshesCombo', {
       // WARNING strange ExtJS function returns object or *false*
       var mesh = combo.findRecordByValue(combo.getValue()) || undefined;
 
+      var velocitycombo = Ext.getCmp('velocity');
+      velocitycombo.clearValue();
+
       if (mesh == null) {
         combo.getStore().remove(customMesh);
         combo.getStore().add(customMesh);
         mesh = customMesh;
       }
 
-      meshSelected(combo, mesh);
-    },
-    'select': function(combo) {
-      var mesh = combo.findRecordByValue(combo.getValue()) || undefined;
-      meshSelected(combo, mesh);
-    },
-    'deselect': function(combo) {
-      Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
-      Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
-      Ext.getCmp('solver_but').setDisabled(true);
-      Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
+      if (mesh === customMesh) {
+        Ext.getCmp('mesh_doc_button').setDisabled(true);
+        Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(true);
+
+        mesh.set('name', combo.getValue());
+        mesh.set('velmod', [{
+          name: combo.getValue(),
+          custom: true,
+        }]);
+      } else {
+        Ext.getCmp('solverselectform').down('#custom-mesh-velocity').setVisible(false);
+
+        if (mesh !== customMesh) {
+          combo.getStore().remove(customMesh);
+
+          Ext.getCmp('mesh_doc_button').setDisabled(false);
+        }
+      }
+
+      createBoundariesLayer(mesh);
+
+      //Update the solver values
+      updateSolverValues(mesh.get('values'));
+
+      velocitycombo.store.loadData(mesh.get('velmod'));
     },
   }
 });
@@ -186,19 +166,14 @@ Ext.define('CF.view.VelocityCombo', {
   valueField: 'name',
   store: velocitystore,
   queryMode: 'local',
-  enableKeyEvents: true,
   listeners: {
     scope: this,
-    // work around 'change' not firing on deleting last character
-    // work around combo.getValue() not showing the last character deleted
-    'keyup': function(combo) {
-      if (combo.inputEl.getValue() === '') {
+    'change': function(combo) {
+      if (combo.getValue() === '') {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
-
-        combo.getStore().remove(customVelocityModel);
 
         return;
       }
@@ -225,17 +200,6 @@ Ext.define('CF.view.VelocityCombo', {
       Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
       Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
       Ext.getCmp('solver_but').setDisabled(false);
-    },
-    'select': function(combo) {
-      Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
-      Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
-      Ext.getCmp('solver_but').setDisabled(false);
-    },
-    'deselect': function(combo) {
-      Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
-      Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
-      Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
-      Ext.getCmp('solver_but').setDisabled(true);
     },
   }
 });
