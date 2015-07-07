@@ -277,8 +277,6 @@ public class ForwardPortlet extends MVCPortlet{
                     .put("resourceType", provWorkflow.optString("resourceType"))
                     .put("resource", provWorkflow.optString("resource"))
                     .put("queue", provWorkflow.optString("queue"));
-
-                    list.remove(jj);
                 }
 
                 array.put(object);
