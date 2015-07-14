@@ -684,7 +684,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 			   
 			   //10. Add run info in the Provenance Repository
-			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
+			   saveSimulationProvenance(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
@@ -1128,11 +1128,44 @@ public class ForwardPortlet extends MVCPortlet{
 
          zos.close();
     }
+
+    private void saveSimulationProvenance(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
+            String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue) {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+        df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+
+        if(stationFileType.equals(Constants.STPOINTS_TYPE)) stationFileType = Constants.MIMETYPE_PLAIN;
+        if(stationFileType.equals(Constants.STXML_TYPE))    stationFileType = Constants.MIMETYPE_XML;
+
+        JSONObject params = new JSONObject();
+        params.put("username", userSN)
+              .put("_id", runId)
+              .put("type", "download")
+              .put("description", submitMessage)
+              .put("workflowName", wfName)
+              .put("workflowId", wfId)
+              .put("system_id", asmRunId)
+              .put("startTime", nowAsISO)
+              .put("job0bin", job0bin)
+              .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified))
+              .put("resourceType", resourceType)
+              .put("grid", grid)
+              .put("resource", resource)
+              .put("queue", queue);
+
+        JSONArray input = new JSONArray();
+        input.put(new JSONObject().put("mime-type", stationFileType).put("name",Constants.ST_INPUT_NAME).put("url", stationUrl))
+             .put(new JSONObject().put("mime-type", Constants.MIMETYPE_XML).put("name",Constants.EVENT_INPUT_NAME).put("url", eventUrl))
+             .put(new JSONObject().put("mime-type", Constants.MIMETYPE_JSON).put("name",Constants.SOLVER_INPUT_NAME).put("url", solverUrl))
+             .put(new JSONObject().put("mime-type", Constants.MIMETYPE_ZIP).put("name",Constants.ZIP_INPUT_NAME).put("url", zipUrl));
+        params.put("input", input);
+
+        updateProvenanceRepository(params);
+    }
 		
-	private void updateProvenanceRepository(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
-			String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue)
-    {	
-		String runType = "workflow_run";
+	private void updateProvenanceRepository(JSONObject params) {
 		try{
 			//TODO: put the url in a properties file
 			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/workflow/insert");
@@ -1141,35 +1174,6 @@ public class ForwardPortlet extends MVCPortlet{
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
 			con.setRequestProperty("Accept", "application/json");
-			TimeZone tz = TimeZone.getTimeZone("UTC");
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
-			df.setTimeZone(tz);
-			String nowAsISO = df.format(new Date());
-			if(stationFileType.equals(Constants.STPOINTS_TYPE))	stationFileType = Constants.MIMETYPE_PLAIN;
-			if(stationFileType.equals(Constants.STXML_TYPE))	stationFileType = Constants.MIMETYPE_XML;
-
-			JSONObject params = new JSONObject();
-			params.put("username", userSN)
-				  .put("_id", runId)
-				  .put("type", runType)
-				  .put("description", submitMessage)
-				  .put("workflowName", wfName)
-				  .put("workflowId", wfId)
-				  .put("system_id", asmRunId)
-				  .put("startTime", nowAsISO)
-				  .put("job0bin", job0bin)
-				  .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified))
-                  .put("resourceType", resourceType)
-                  .put("grid", grid)
-                  .put("resource", resource)
-                  .put("queue", queue);
-
-			JSONArray input = new JSONArray();
-			input.put(new JSONObject().put("mime-type", stationFileType).put("name",Constants.ST_INPUT_NAME).put("url", stationUrl))
-				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_XML).put("name",Constants.EVENT_INPUT_NAME).put("url", eventUrl))
-				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_JSON).put("name",Constants.SOLVER_INPUT_NAME).put("url", solverUrl))
-				 .put(new JSONObject().put("mime-type", Constants.MIMETYPE_ZIP).put("name",Constants.ZIP_INPUT_NAME).put("url", zipUrl));
-			params.put("input", input);
 
 			// System.out.println("[updateProvenanceRepository] Params: "+params.toString());
 			String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
@@ -1192,7 +1196,7 @@ public class ForwardPortlet extends MVCPortlet{
 			}
 			in.close();
 			
-			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] User: "+userSN+", Response: "+response.toString());
+			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Response: "+response.toString());
 		}
 		catch(Exception e)
 		{
