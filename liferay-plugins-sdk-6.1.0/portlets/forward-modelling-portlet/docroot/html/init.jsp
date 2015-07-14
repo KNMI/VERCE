@@ -72,23 +72,23 @@ try {
 	ASMService asm_service = null;
 	asm_service = ASMService.getInstance();
 	
-	Vector<String> aut = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
-	for(String a : aut) {
-		Vector<ASMRepositoryItemBean> wfs = asm_service.getWorkflowsFromRepository(a, RepositoryItemTypeConstants.Application);
+	Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
+	for(String developer : developers) {
+		Vector<ASMRepositoryItemBean> wfs = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
 		for(ASMRepositoryItemBean i : wfs) {
 			String wfId = i.getId()+"";
 			if(visibleWorkflowIds.contains(wfId)) {
 				wfNames.add(i.getItemID());
 				wfIds.add(wfId);
-				ownerIds.add(a);
+				ownerIds.add(developer);
 			}
             if (downloadWorkflowId.equals(wfId)) {
                 downloadWorkflowName = i.getItemID();
-                downloadWorkflowOwner = a;
+                downloadWorkflowOwner = developer;
             }
             if (processingWorkflowId.equals(wfId)) {
                 processingWorkflowName = i.getItemID();
-                processingWorkflowOwner = a;
+                processingWorkflowOwner = developer;
             }
 		}
 	}
@@ -127,8 +127,8 @@ catch(Exception e) {
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
            <% } %>
        ];
-    var downloadWorkflow = <%=(downloadWorkflowId != null && !downloadWorkflowId.trim().equals("") ? "{\"workflowName\": " + downloadWorkflowName + ", \"workflowId\": " + downloadWorkflowId + ", \"ownerId\": " + downloadWorkflowOwner + "}" : "null")%>;
-    var processingWorkflow = <%=(processingWorkflowId != null && !processingWorkflowId.trim().equals("") ? "{\"workflowName\": " + processingWorkflowName + ", \"workflowId\": " + processingWorkflowId + ", \"ownerId\": " + processingWorkflowOwner + "}" : "null")%>;
+    var downloadWorkflow = <%=((downloadWorkflowName != null && !downloadWorkflowName.trim().equals("") && downloadWorkflowId != null && !downloadWorkflowId.trim().equals("")) ? "{\"workflowName\": " + downloadWorkflowName + ", \"workflowId\": " + downloadWorkflowId + ", \"ownerId\": " + downloadWorkflowOwner + "}" : "null")%>;
+    var processingWorkflow = <%=((processingWorkflowName != null && !processingWorkflowName.trim().equals("") && processingWorkflowId != null && !processingWorkflowId.trim().equals("")) ? "{\"workflowName\": " + processingWorkflowName + ", \"workflowId\": " + processingWorkflowId + ", \"ownerId\": " + processingWorkflowOwner + "}" : "null")%>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";
