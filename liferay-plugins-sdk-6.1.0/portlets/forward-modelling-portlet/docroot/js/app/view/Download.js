@@ -2,7 +2,7 @@ var config = null;
 var params = null;
 
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  var runId = workflow.get('name');
+  var runId = workflow.get('_id');
 
   config = {
     'simulationRunId': runId,
@@ -116,12 +116,12 @@ Ext.define('CF.view.SimulationSelection', {
     text: 'Name',
     flex: 1,
     sortable: true,
-    dataIndex: 'name'
+    dataIndex: '_id'
   }, {
     text: 'Desc',
     flex: 1,
     sortable: true,
-    dataIndex: 'desc',
+    dataIndex: 'description',
     renderer: function(value, metaData, record, row, col, store, gridView) {
       if (value == null || value === '' || value === 'null') {
         return '-';
@@ -146,23 +146,26 @@ Ext.define('CF.view.SimulationSelection', {
     width: 90,
     sortable: true,
     renderer: Ext.util.Format.dateRenderer('d - m - Y'),
-    dataIndex: 'date'
+    dataIndex: 'startTime'
   }],
   flex: 1,
   initComponent: function() {
-    this.store = Ext.create('CF.store.Workflow', {
+    this.store = Ext.create('CF.store.ProvWorkflow', {
       proxy: {
         type: 'ajax',
-        url: getWorkflowListURL,
+        url: "/j2ep-1.0/prov/workflow",
         reader: {
           rootProperty: 'list'
-        }
+        },
+        api: {
+          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN // + '&activities=specfemRunSolverMov',
+        },
+        reader: {
+          rootProperty: 'runIds',
+          totalProperty: 'totalCount'
+        },
       },
       autoLoad: true,
-      filters: [{
-        property: 'type',
-        value: 'simulation',
-      }]
     });
 
     this.callParent(arguments);
