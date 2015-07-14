@@ -390,24 +390,8 @@ Ext.define('CF.view.WfGrid', {
     dataIndex: 'date'
   }, {
     xtype: 'actioncolumn',
-    width: 70,
-    items: [{
-      icon: localResourcesPath + '/img/Farm-Fresh_page_white_text.png',
-      tooltip: 'Download logfiles',
-      handler: handleDownloadLogfiles,
-    }, {
-      icon: localResourcesPath + '/img/eye-3-256.png',
-      tooltip: 'View results',
-      handler: handleViewResults,
-    }, {
-      icon: localResourcesPath + '/img/Farm-Fresh_arrow_rotate_clockwise.png',
-      tooltip: 'Reuse',
-      handler: handleReuse,
-    }, {
-      icon: localResourcesPath + '/img/delete-icon.png',
-      tooltip: 'Delete instance',
-      handler: handleDeleteInstance,
-    }]
+    width: 55,
+    items: []
   }],
   flex: 1,
   initComponent: function() {
@@ -423,6 +407,37 @@ Ext.define('CF.view.WfGrid', {
       filters: this.config.filters,
       remoteFilter: true,
     });
+
+    var actioncolumn;
+    this.columns.forEach(function(column) {
+      if (column.xtype === 'actioncolumn') {
+        actioncolumn = column;
+      }
+    });
+
+    actioncolumn.items = [{
+      icon: localResourcesPath + '/img/Farm-Fresh_page_white_text.png',
+      tooltip: 'Download logfiles',
+      handler: handleDownloadLogfiles,
+    }, {
+      icon: localResourcesPath + '/img/eye-3-256.png',
+      tooltip: 'View results',
+      handler: handleViewResults,
+    }, {
+      icon: localResourcesPath + '/img/delete-icon.png',
+      tooltip: 'Delete instance',
+      handler: handleDeleteInstance,
+    }];
+    actioncolumn.width = 55;
+
+    if (this.config.reuse != null) {
+      actioncolumn.items.splice(2, 0, {
+        icon: localResourcesPath + '/img/Farm-Fresh_arrow_rotate_clockwise.png',
+        tooltip: 'Reuse',
+        handler: handleReuse,
+      });
+      actioncolumn.width = 70;
+    }
 
     this.callParent(arguments);
   }
@@ -468,6 +483,7 @@ Ext.define('CF.view.Control', {
     this.items = [{
       xtype: 'wfgrid',
       filters: this.filters,
+      reuse: this.reuse,
     }];
 
     var self = this;
