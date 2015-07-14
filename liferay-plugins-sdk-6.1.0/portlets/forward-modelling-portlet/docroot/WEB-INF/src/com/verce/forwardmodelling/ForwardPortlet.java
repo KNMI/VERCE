@@ -466,16 +466,17 @@ public class ForwardPortlet extends MVCPortlet{
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
 
-            File solverFile = FileUtil.createTempFile();
-            FileUtil.write(solverFile, config.toString());
+            File download_conf = FileUtil.createTempFile();
+            FileUtil.write(download_conf, config.toString());
+            String download_conf_path = addFileToDL(download_conf, runId+"_download_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            input.put(new JSONObject().put("name", "download_conf").put("url", download_conf_path).put("mime-type", "text/json"));
 
-            // TODO check port numbers
-            asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Job0", "2");
+            asm_service.placeUploadedFile(userId, download_conf, importedWfId, "Job0", "2");
             // stagein => Sync for final workflow
 
             // temporary for fake workflow
             try {
-                asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "1");
+                asm_service.placeUploadedFile(userId, download_conf, importedWfId, "sync", "1");
             } catch (Exception e) {
                 System.out.println("Failed uploading config file");
                 e.printStackTrace();
@@ -525,8 +526,7 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("resourceType", resourceBean.getType())
                 .put("grid", resourceBean.getGrid())
                 .put("resource", resourceBean.getResource())
-                .put("queue", resourceBean.getQueue())
-                .put("config", config);
+                .put("queue", resourceBean.getQueue());
 
             System.out.println(provenanceData.toString());
             updateProvenanceRepository(provenanceData);
