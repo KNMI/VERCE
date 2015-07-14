@@ -442,9 +442,15 @@ public class ForwardPortlet extends MVCPortlet{
             User u = PortalUtil.getUser(resourceRequest);
             String userSN = u.getScreenName();
             String userId = u.getUserId()+"";
+            long groupId = PortalUtil.getScopeGroupId(resourceRequest);
             
             String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
             String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
+
+            String portalUrl = PortalUtil.getPortalURL(resourceRequest);
+            String currentURL = PortalUtil.getCurrentURL(resourceRequest);
+            String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
+            portalUrl += portal;
 
             System.out.println(workflowId + " / " + ownerId);
 
@@ -471,8 +477,19 @@ public class ForwardPortlet extends MVCPortlet{
             try {
                 asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
             } catch (Exception e) {
-
+                System.out.println("Failed uploading config file");
+                e.printStackTrace();
             }
+
+            // add vercepes.zip
+            String zipName = runId+".zip";
+            createZipFile("temp/"+zipName);
+            File tempZipFile = new File("temp/"+zipName);
+            String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
+            zipPublicPath = portalUrl + zipPublicPath;
+            System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+
+            asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "2");
 
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
