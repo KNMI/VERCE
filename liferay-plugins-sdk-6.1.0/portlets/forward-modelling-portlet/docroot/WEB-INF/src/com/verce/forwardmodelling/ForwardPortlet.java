@@ -610,7 +610,7 @@ public class ForwardPortlet extends MVCPortlet{
                     System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+err.getErrorID()+"'! JobName: " + err.getJobName() + " userSN: "+userSN+", runId: "+runId);
                     if(err.getErrorID().contains("noproxy") || err.getErrorID().contains("proxyexpired"))
                     {
-                        catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
+                        catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission aborted");
                         return;
                     }
                 }
