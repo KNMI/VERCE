@@ -43,6 +43,8 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
 };
 
 var handleReuse = function(grid, rowIndex, colIndex) {
+  var self = this;
+
   var rec = wfStore.getAt(rowIndex);
 
   Ext.getCmp('viewport').setLoading(true);
@@ -89,6 +91,8 @@ var handleReuse = function(grid, rowIndex, colIndex) {
             Ext.getCmp('viewport').setLoading(false);
             return;
           }
+
+          self.up('viewport').getComponent('viewport_tabpanel').setActiveTab('simulationtab');
 
           // reuse velocity when velocity model store finishes loading
           var velocityCombo = Ext.getCmp('velocity');
@@ -196,7 +200,7 @@ var handleReuse = function(grid, rowIndex, colIndex) {
       Ext.Msg.alert("Error", "Failed to get workflow from provenance api!");
       Ext.getCmp('viewport').setLoading(false);
     }
-  })
+  });
 };
 
 var handleDeleteInstance = function(grid, rowIndex, colIndex) {
