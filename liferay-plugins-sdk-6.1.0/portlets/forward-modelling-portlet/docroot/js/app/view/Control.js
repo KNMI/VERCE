@@ -49,7 +49,7 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
   currentRun = record.get("name");
   owner = userSN;
 
-  this.up('viewport > #viewport_tabpanel').getComponent('viewport_tabpanel');
+  this.up('viewport > #viewport_tabpanel').setActiveTab('resultstab');
 };
 
 var getWorkflowAndSolverConf = function(runId, callback) {
