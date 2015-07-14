@@ -475,7 +475,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             // temporary for fake workflow
             try {
-                asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
+                asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "1");
             } catch (Exception e) {
                 System.out.println("Failed uploading config file");
                 e.printStackTrace();
@@ -489,7 +489,7 @@ public class ForwardPortlet extends MVCPortlet{
             zipPublicPath = portalUrl + zipPublicPath;
             System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
 
-            asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "2");
+            asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
 
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
