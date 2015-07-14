@@ -13,8 +13,8 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
         'minimum_interstation_distance_in_m': 100,
         'channel_priorities': ['BH[E,N,Z]', 'EH[E,N,Z]'],
         'location_priorities': ['', '00', '10'],
-        'mseed_path': 'irods/' + runId + '/mseed',
-        'stationxml_path': 'irods/' + runId + '/stationxml',
+        'mseed_path': './mseed',
+        'stationxml_path': './stationxml',
         'DT': null,
         'NSTEP': null,
       }
