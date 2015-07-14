@@ -169,7 +169,7 @@ Ext.define('CF.view.SimulationSelection', {
           rootProperty: 'list'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN // + '&activities=specfemRunSolverMov',
+          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=specfemRunSolverMov',
         },
         reader: {
           rootProperty: 'runIds',
