@@ -326,104 +326,6 @@ var getMeshData = function(solver_url, mesh_name, callback) {
 
 };
 
-var doSubmitDownloadWorkflow = function(url, config, params, callback) {
-  params.config = Ext.encode(config);
-
-  Ext.Ajax.request({
-    url: url,
-    params: params,
-    success: function(response, config) {
-      callback(null, response);
-    },
-    failure: function(response, config) {
-      callback(response);
-    }
-  });
-};
-
-var handleSubmitDownloadWorkflow = function(grid, rowIndex, colIndex) {
-  var rec = wfStore.getAt(rowIndex);
-  var runId = rec.get('name');
-  var url = submitDownloadWorkflowURL;
-
-  var config = {
-    'simulationRunId': runId,
-    'runId': 'download_' + runId,
-    'downloadPE': [{
-      'input': {
-        // TODO handle multiple events
-        'endtime': '?',
-        'minimum_interstation_distance_in_m': 100,
-        'channel_priorities': ['BH[E,N,Z]', 'EH[E,N,Z]'],
-        'location_priorities': ['', '00', '10'],
-        'mseed_path': 'mseed',
-        'stationxml_path': 'stationxml'
-      }
-    }]
-  };
-
-  var params = {
-    // TODO
-    'workflowId': downloadWorkflow.workflowId,
-    'ownerId': downloadWorkflow.ownerId,
-    'workflowName': downloadWorkflow.workflowName,
-  };
-
-  // get workflow from prov
-  // && get solver configuration from liferay document store
-  getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf) {
-    if (err != null) {
-      Ext.Msg.alert("Error", err);
-
-      return;
-    }
-
-    // get the events
-    var event_url = prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/');
-
-    getEventData(event_url, function(err, events) {
-      if (err != null) {
-        Ext.Msg.alert("Error", err);
-
-        return;
-      }
-
-      config.downloadPE[0].input.starttime = events[0].startTime;
-
-      if (solver_conf.custom_mesh) {
-        config.downloadPE[0].input.minlatitude = solver_conf.custom_mesh_boundaries.minlat;
-        config.downloadPE[0].input.maxlatitude = solver_conf.custom_mesh_boundaries.maxlat;
-        config.downloadPE[0].input.minlongitude = solver_conf.custom_mesh_boundaries.minlon;
-        config.downloadPE[0].input.maxlongitude = solver_conf.custom_mesh_boundaries.maxlon;
-
-        doSubmitDownloadWorkflow(url, config, params, function(err, res) {
-          console.log(err, res);
-        });
-      } else {
-        // get the meshes for the solver
-        var solver_url = '/j2ep-1.0/prov/solver/' + solver_conf.solver;
-
-        getMeshData(solver_url, solver_conf.mesh, function(err, mesh) {
-          if (err != null) {
-            Ext.Msg.alert("Error", err);
-
-            return;
-          }
-
-          config.downloadPE[0].input.minlatitude = mesh.geo_minLat;
-          config.downloadPE[0].input.maxlatitude = mesh.geo_maxLat;
-          config.downloadPE[0].input.minlongitude = mesh.geo_minLon;
-          config.downloadPE[0].input.maxlongitude = mesh.geo_maxLon;
-
-          doSubmitDownloadWorkflow(url, config, params, function(err, res) {
-            console.log(err, res);
-          });
-        });
-      }
-    });
-  });
-};
-
 Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.WfGrid',
@@ -489,15 +391,11 @@ Ext.define('CF.view.WfGrid', {
     dataIndex: 'date'
   }, {
     xtype: 'actioncolumn',
-    width: 85,
+    width: 70,
     items: [{
       icon: localResourcesPath + '/img/Farm-Fresh_page_white_text.png',
       tooltip: 'Download logfiles',
       handler: handleDownloadLogfiles,
-    }, {
-      icon: localResourcesPath + '/img/download_cloud.png',
-      tooltip: 'Prepare obersvational data',
-      handler: handleSubmitDownloadWorkflow,
     }, {
       icon: localResourcesPath + '/img/eye-3-256.png',
       tooltip: 'View results',
