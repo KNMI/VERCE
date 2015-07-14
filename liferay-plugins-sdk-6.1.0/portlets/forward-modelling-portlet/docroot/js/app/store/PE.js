@@ -5,7 +5,7 @@ Ext.define('CF.store.PE', {
   folderSort: true,
   proxy: {
     type: 'ajax',
-    url: '/j2ep-1.0/node/pe.json',
+    url: '/forward-modelling-portlet/pe.json',
     reader: {
       type: 'json',
       rootProperty: 'children',
