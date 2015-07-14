@@ -1133,9 +1133,9 @@ Ext.define('CF.view.Processing', {
             var url = submitProcessingWorkflowURL;
 
             var params = {
-              'workflowId': downloadWorkflow.workflowId,
-              'ownerId': downloadWorkflow.ownerId,
-              'workflowName': downloadWorkflow.workflowName,
+              'workflowId': processingWorkflow.workflowId,
+              'ownerId': processingWorkflow.ownerId,
+              'workflowName': processingWorkflow.workflowName,
             };
 
             tabPanel = button.up('tabpanel');
