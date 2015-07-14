@@ -86,7 +86,7 @@ Ext.define('CF.view.Simulation', {
         xtype: 'control',
         filters: [{
           property: 'type',
-          value: 'download',
+          value: 'simulation',
         }]
       }]
     }],

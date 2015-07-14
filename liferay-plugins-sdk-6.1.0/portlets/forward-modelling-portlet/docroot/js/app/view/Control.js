@@ -409,8 +409,6 @@ Ext.define('CF.view.WfGrid', {
   }],
   flex: 1,
   initComponent: function() {
-    console.log(this.config.filters);
-
     this.store = Ext.create('CF.store.Workflow', {
       proxy: {
         type: 'ajax',
@@ -419,7 +417,7 @@ Ext.define('CF.view.WfGrid', {
           rootProperty: 'list'
         },
       },
-      autoLoad: true,
+      autoLoad: false,
       filters: this.config.filters,
       remoteFilter: true,
     });
@@ -495,22 +493,17 @@ Ext.define('CF.view.Control', {
       filters: this.filters,
     }];
 
-    // var store = this.down('grid').getStore();
-    // store.addFilter(this.controlfilter);
+    var self = this;
 
-    // var self = this;
+    var tab = this.up('#viewport_tabpanel > panel') || this.id === 'controltab' && this;
 
-    // var tab = this.up('#viewport_tabpanel > panel') || this.id === 'controltab' && this;
+    if (tab != null) {
+      tab.on('activate', function() {
+        var store = self.down('grid').getStore();
 
-    // if (tab != null) {
-    //   tab.on('activate', function() {
-    //     var store = self.down('grid').getStore();
-    //     store.clearFilter();
-    //     if (self.controlfilter != null) {
-    //       store.addFilter(self.controlfilter);
-    //     }
-    //   });
-    // }
+        store.load();
+      });
+    }
 
     this.callParent(arguments);
   },
