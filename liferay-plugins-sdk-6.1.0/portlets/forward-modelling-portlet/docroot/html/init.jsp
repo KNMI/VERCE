@@ -36,6 +36,8 @@
 
 <liferay-portlet:resourceURL id="submitDownloadWorkflow" var="submitDownloadWorkflowURL" />
 
+<liferay-portlet:resourceURL id="submitProcessingWorkflow" var="submitProcessingWorkflowURL" />
+
 <portlet:resourceURL id="meshVelocityModelUpload" var="meshVelocityModelUploadURL" />
 
 <portlet:resourceURL id="uploadFile" var="uploadFileURL" />
@@ -59,6 +61,10 @@ String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
 String downloadWorkflowName = "";
 String downloadWorkflowOwner = "";
 
+String processingWorkflowId = preferences.getValue("processingWorkflowId", "");
+String processingWorkflowName = "";
+String processingWorkflowOwner = "";
+
 List<String> wfNames = new ArrayList();
 List<String> wfIds = new ArrayList();
 List<String> ownerIds = new ArrayList();
@@ -79,6 +85,10 @@ try {
             if (downloadWorkflowId.equals(wfId)) {
                 downloadWorkflowName = i.getItemID();
                 downloadWorkflowOwner = a;
+            }
+            if (processingWorkflowId.equals(wfId)) {
+                processingWorkflowName = i.getItemID();
+                processingWorkflowOwner = a;
             }
 		}
 	}
@@ -107,6 +117,7 @@ catch(Exception e) {
 	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
     var submitDownloadWorkflowURL='<%=submitDownloadWorkflowURL.toString()%>';
+    var submitProcessingWorkflowURL='<%=submitProcessingWorkflowURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
@@ -117,6 +128,7 @@ catch(Exception e) {
            <% } %>
        ];
     var downloadWorkflow = {"workflowName": "<%=downloadWorkflowName%>", "workflowId": "<%=downloadWorkflowId%>", "ownerId": "<%=downloadWorkflowOwner%>"};
+    var processingWorkflow = {"workflowName": "<%=processingWorkflowName%>", "workflowId": "<%=processingWorkflowId%>", "ownerId": "<%=processingWorkflowOwner%>"};
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";

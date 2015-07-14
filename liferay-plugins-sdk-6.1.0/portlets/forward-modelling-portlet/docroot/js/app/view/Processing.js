@@ -1055,14 +1055,6 @@ Ext.define('CF.view.DataSetup', {
   }]
 });
 
-var updateSubmitOverview = function(tabPanel) {
-  var stations = tabPanel.down('station_grid').getJson();
-  var PEs = tabPanel.down('processing_grid').getJson();
-
-  tabPanel.down('#processing_submit_stations').setValue(JSON.stringify(stations));
-  tabPanel.down('#processing_submit_pes').setValue(JSON.stringify(PEs));
-};
-
 Ext.define('CF.view.Processing', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.processing_panel',
@@ -1137,30 +1129,66 @@ Ext.define('CF.view.Processing', {
           handler: function(button, event) {
             var url = submitProcessingWorkflowURL;
 
-            var params = {};
+            var params = {
+              'workflowId': downloadWorkflow.workflowId,
+              'ownerId': downloadWorkflow.ownerId,
+              'workflowName': downloadWorkflow.workflowName,
+            };
 
             tabPanel = button.up('tabpanel');
+
+            var runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+
             var stations = tabPanel.down('station_grid').getJson();
+
+            if (stations.data[0].input.station.length <= 0) {
+              Ext.Msg.alert('No stations', 'Please select one or more stations on the Data Setup tab.');
+              return;
+            }
+
             var PEs = tabPanel.down('processing_grid').getJson();
 
-            params.stations = Ext.encode(stations);
-            params.PEs = Ext.encode(PEs);
-
-            Ext.getCmp('viewport').setLoading(true);
+            if (PEs.data_processing.length <= 0 && PEs.synthetics_processing.length <= 0) {
+              Ext.Msg.alert('No PEs', 'Please select one or more PEs on the Processing Setup tab.');
+              return;
+            }
 
             Ext.Ajax.request({
-              url: url,
-              params: params,
+              url: '/j2ep-1.0/prov/workflow/' + runId,
               success: function(response, config) {
-                Ext.Msg.alert("Submission succeeded", "The processing workflow can now be monitored on the control panel.");
-                Ext.getCmp('viewport').setLoading(false);
+                var workflowProv = JSON.parse(response.responseText);
+                var quakemlURL;
+                workflowProv.input.forEach(function(input) {
+                  if (input.name === 'quakeml') {
+                    quakemlURL = input.url;
+                  }
+                });
+
+                params.quakemlURL = quakemlURL;
+                params.stations = Ext.encode(stations);
+                params.PEs = Ext.encode(PEs);
+                params.runId = runId;
+
+                Ext.getCmp('viewport').setLoading(true);
+
+                Ext.Ajax.request({
+                  url: url,
+                  params: params,
+                  success: function(response, config) {
+                    Ext.Msg.alert("Submission succeeded", "The processing workflow can now be monitored on the control panel.");
+                    Ext.getCmp('viewport').setLoading(false);
+                  },
+                  failure: function(response, config) {
+                    Ext.Msg.alert("Submission failed", response);
+                    Ext.getCmp('viewport').setLoading(false);
+                  },
+                });
+
               },
               failure: function(response, config) {
-                Ext.Msg.alert("Submission failed", response);
-                Ext.getCmp('viewport').setLoading(false);
-              },
-            });
 
+              }
+            });
           }
         }]
       }],
@@ -1181,7 +1209,11 @@ Ext.define('CF.view.Processing', {
     listeners: {
       'tabchange': function(tabPanel, tab) {
         if (tab.id === 'processing_submit') {
-          updateSubmitOverview(tabPanel);
+          var stations = tabPanel.down('station_grid').getJson();
+          var PEs = tabPanel.down('processing_grid').getJson();
+
+          tabPanel.down('#processing_submit_stations').setValue(JSON.stringify(stations));
+          tabPanel.down('#processing_submit_pes').setValue(JSON.stringify(PEs));
         }
       }
     }

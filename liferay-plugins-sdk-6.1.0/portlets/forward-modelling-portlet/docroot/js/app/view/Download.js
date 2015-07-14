@@ -192,9 +192,6 @@ Ext.define('CF.view.Download', {
   },
 
   items: [{
-    xtype: 'cf_mappanel',
-    region: 'west',
-  }, {
     xtype: 'tabpanel',
     region: 'center',
     layout: 'fit',
