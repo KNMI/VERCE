@@ -1,0 +1,229 @@
+{
+  "text": ".",
+  "leaf": false,
+  "children": [{
+      "name": "detrend",
+      "description": "Method to remove a linear trend from all traces",
+      "include_visu": false,
+      "include_store": false,
+      "leaf": true,
+      "iconCls": "task",
+      "params": [{
+        "name": "type",
+        "description": "Method to use for detrending",
+        "value": "linear",
+        "editor": {
+          "xtype": "combo",
+          "store": ["linear", "simple", "constant"]
+        }
+      }]
+    }, {
+      "name": "taper",
+      "description": "Method to taper all Traces in Stream",
+      "leaf": true,
+      "iconCls": "task",
+      "params": [{
+        "name": "max_percentage",
+        "value": 0.05,
+        "description": "Decimal percentage of taper at one end (ranging from 0. to 0.5). Default is 0.05 (5%).",
+        "editor": {
+          "xtype": "numberfield",
+          "step": 0.01,
+          "maxValue": 0.5,
+          "minValue": 0
+        }
+      }, {
+        "name": "type",
+        "value": "hann",
+        "description": "Type of taper to use for detrending",
+        "editor": {
+          "xtype": "combo",
+          "store": ["cosine", "barthann", "bartlett", "blackman", "blackmanharris", "bohman", "boxcar", "chebwin", "flattop", "gaussian", "general_gaussian", "hamming", "hann", "kaiser", "nuttall", "parzen", "slepian", "triang"]
+        }
+      }]
+    }, {
+      "name": "removeResponse",
+      "description": "Method to deconvolve instrument response for all Traces in Stream",
+      "leaf": true,
+      "iconCls": "task",
+      "params": [{
+          "name": "pre_filt_1",
+          "value": 0.01,
+          "description": "Apply a bandpass filter in frequency domain to the data before deconvolution. ",
+          "editor": {
+            "xtype": "numberfield",
+            "step": 0.01
+          }
+        }, {
+          "name": "pre_filt_2",
+          "value": 0.02,
+          "description": "The list or tuple defines the four corner frequencies (f1, f2, f3, f4) of a ",
+          "editor": {
+            "xtype": "numberfield",
+            "step": 0.01
+          }
+        }, {
+          "name": "pre_filt_3",
+          "value": 8,
+          "description": "cosine taper which is one between f2 and f3 and tapers to zero for ",
+          "editor": {
+            "xtype": "numberfield",
+            "step": 0.01
+          }
+        }, {
+          "name": "pre_filt_4",
+          "value": 10,
+          "description": "f1 < f < f2 and f3 < f < f4.",
+          "editor": {
+            "xtype": "numberfield",
+            "step": 0.01
+          }
+        }, {
+          "name": "water_level",
+          "value": "",
+          "description": "Water level for deconvolution",
+          "editor": {
+            "xtype": "numberfield",
+            "step": 0.01
+          }
+        }, {
+          "name": "output",
+          "value": "VEL",
+          "description": "Output units. One of 'DISP' (displacement, output unit is meters), 'VEL' (velocity, output unit is meters/second) or 'ACC' (acceleration, output unit is meters/second**2).",
+          "editor": {
+            "xtype": "combo",
+            "store": ["DISP", "VEL", "ACC"]
+          }
+        }
+
+      ]
+    },
+
+    {
+      "iconCls": "task-folder",
+      "name": "filters",
+      "description": "Filters the data of all traces in the Stream",
+      "leaf": false,
+      "expanded": true,
+      "expandable": false,
+      "children": [{
+          "name": "bandpass",
+          "description": "Butterworth-Bandpass",
+          "leaf": true,
+          "iconCls": "task",
+          "params": [{
+            "name": "freqmin",
+            "value": 1.0 / 150.0,
+            "description": "Pass band low corner frequency"
+          }, {
+            "name": "freqmax",
+            "value": 1.0 / 50.0,
+            "description": "Pass band high corner frequency"
+          }, {
+            "name": "df",
+            "value": "",
+            "description": "Sampling rate in Hz"
+          }, {
+            "name": "corners",
+            "value": 4,
+            "description": "Filter corners / orders"
+          }, {
+            "name": "zerophase",
+            "value": true,
+            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
+            "editor": {
+              "xtype": "checkboxfield"
+            },
+            "render": {
+              "xtype": "checkboxfield"
+            }
+          }, ]
+        }, {
+          "name": "bandstop",
+          "description": "Butterworth-Bandstop",
+          "leaf": true,
+          "iconCls": "task",
+          "params": [{
+            "name": "freqmin",
+            "value": 1.0 / 150.0,
+            "description": "Stop band low corner frequency"
+          }, {
+            "name": "freqmax",
+            "value": 1.0 / 50.0,
+            "description": "Stop band high corner frequency"
+          }, {
+            "name": "df",
+            "value": "",
+            "description": "Sampling rate in Hz"
+          }, {
+            "name": "corners",
+            "value": 4,
+            "description": "Filter corners / orders"
+          }, {
+            "name": "zerophase",
+            "value": true,
+            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
+            "editor": {
+              "xtype": "checkboxfield"
+            },
+            "render": {
+              "xtype": "checkboxfield"
+            }
+          }, ]
+        }, {
+          "name": "envelope",
+          "description": "Computes the envelope of the given function. The envelope is determined by adding the squared amplitudes of the function and it’s Hilbert-Transform and then taking the square-root",
+          "leaf": true,
+          "iconCls": "task"
+        }, {
+          "name": "highpass",
+          "description": "Butterworth-Highpass Filter : Filter data removing data below certain frequency freq using corners corners.",
+          "leaf": true,
+          "iconCls": "task",
+          "params": [{
+            "name": "freq",
+            "value": "",
+            "description": "Filter corner frequency."
+          }, {
+            "name": "df",
+            "value": "",
+            "description": "Sampling rate in Hz"
+          }, {
+            "name": "corners",
+            "value": 4,
+            "description": "Filter corners / orders"
+          }, {
+            "name": "zerophase",
+            "value": true,
+            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
+            "editor": {
+              "xtype": "checkboxfield"
+            },
+            "render": {
+              "xtype": "checkboxfield"
+            }
+          }, ]
+        }
+
+
+
+      ]
+    }, {
+      "name": "resample",
+      "description": "Resample data in all traces of stream using Fourier method",
+      "leaf": true,
+      "iconCls": "task",
+      "params": [{
+        "name": "sampling_rate",
+        "value": 0.0,
+        "description": "The sampling rate of the resampled signal",
+        "editor": {
+          "xtype": "numberfield",
+          "step": 0.01,
+          "maxValue": 0.5,
+          "minValue": 0
+        }
+      }]
+    }
+  ]
+}

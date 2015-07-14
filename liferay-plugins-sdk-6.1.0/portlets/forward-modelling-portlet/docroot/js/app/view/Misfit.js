@@ -1,241 +1,10 @@
-var pei = {
-  "text": ".",
-  "leaf": false,
-  "children": [{
-      "name": "detrend",
-      "description": "Method to remove a linear trend from all traces",
-      "include_visu": false,
-      "include_store": false,
-      "leaf": true,
-      "iconCls": "task",
-      "params": [{
-        "name": "type",
-        "description": "Method to use for detrending",
-        "value": "linear",
-        "editor": {
-          "xtype": "combo",
-          "store": ["linear", "simple", "constant"]
-        }
-      }]
-    }, {
-      "name": "taper",
-      "description": "Method to taper all Traces in Stream",
-      "leaf": true,
-      "iconCls": "task",
-      "params": [{
-        "name": "max_percentage",
-        "value": 0.05,
-        "description": "Decimal percentage of taper at one end (ranging from 0. to 0.5). Default is 0.05 (5%).",
-        "editor": {
-          "xtype": "numberfield",
-          "step": 0.01,
-          "maxValue": 0.5,
-          "minValue": 0
-        }
-      }, {
-        "name": "type",
-        "value": "hann",
-        "description": "Type of taper to use for detrending",
-        "editor": {
-          "xtype": "combo",
-          "store": ["cosine", "barthann", "bartlett", "blackman", "blackmanharris", "bohman", "boxcar", "chebwin", "flattop", "gaussian", "general_gaussian", "hamming", "hann", "kaiser", "nuttall", "parzen", "slepian", "triang"]
-        }
-      }]
-    }, {
-      "name": "removeResponse",
-      "description": "Method to deconvolve instrument response for all Traces in Stream",
-      "leaf": true,
-      "iconCls": "task",
-      "params": [{
-          "name": "pre_filt_1",
-          "value": 0.01,
-          "description": "Apply a bandpass filter in frequency domain to the data before deconvolution. ",
-          "editor": {
-            "xtype": "numberfield",
-            "step": 0.01
-          }
-        }, {
-          "name": "pre_filt_2",
-          "value": 0.02,
-          "description": "The list or tuple defines the four corner frequencies (f1, f2, f3, f4) of a ",
-          "editor": {
-            "xtype": "numberfield",
-            "step": 0.01
-          }
-        }, {
-          "name": "pre_filt_3",
-          "value": 8,
-          "description": "cosine taper which is one between f2 and f3 and tapers to zero for ",
-          "editor": {
-            "xtype": "numberfield",
-            "step": 0.01
-          }
-        }, {
-          "name": "pre_filt_4",
-          "value": 10,
-          "description": "f1 < f < f2 and f3 < f < f4.",
-          "editor": {
-            "xtype": "numberfield",
-            "step": 0.01
-          }
-        }, {
-          "name": "water_level",
-          "value": "",
-          "description": "Water level for deconvolution",
-          "editor": {
-            "xtype": "numberfield",
-            "step": 0.01
-          }
-        }, {
-          "name": "output",
-          "value": "VEL",
-          "description": "Output units. One of 'DISP' (displacement, output unit is meters), 'VEL' (velocity, output unit is meters/second) or 'ACC' (acceleration, output unit is meters/second**2).",
-          "editor": {
-            "xtype": "combo",
-            "store": ["DISP", "VEL", "ACC"]
-          }
-        }
-
-      ]
-    },
-
-    {
-      "iconCls": "task-folder",
-      "name": "filters",
-      "description": "Filters the data of all traces in the Stream",
-      "leaf": false,
-      "expanded": true,
-      "children": [{
-          "name": "bandpass",
-          "description": "Butterworth-Bandpass",
-          "leaf": true,
-          "iconCls": "task",
-          params: [{
-            "name": "freqmin",
-            "value": 1.0 / 150.0,
-            "description": "Pass band low corner frequency"
-          }, {
-            "name": "freqmax",
-            "value": 1.0 / 50.0,
-            "description": "Pass band high corner frequency"
-          }, {
-            "name": "df",
-            "value": "",
-            "description": "Sampling rate in Hz"
-          }, {
-            "name": "corners",
-            "value": 4,
-            "description": "Filter corners / orders"
-          }, {
-            "name": "zerophase",
-            "value": true,
-            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
-            "editor": {
-              "xtype": "checkboxfield"
-            },
-            "render": {
-              "xtype": "checkboxfield"
-            }
-          }, ]
-        }, {
-          "name": "bandstop",
-          "description": "Butterworth-Bandstop",
-          "leaf": true,
-          "iconCls": "task",
-          params: [{
-            "name": "freqmin",
-            "value": 1.0 / 150.0,
-            "description": "Stop band low corner frequency"
-          }, {
-            "name": "freqmax",
-            "value": 1.0 / 50.0,
-            "description": "Stop band high corner frequency"
-          }, {
-            "name": "df",
-            "value": "",
-            "description": "Sampling rate in Hz"
-          }, {
-            "name": "corners",
-            "value": 4,
-            "description": "Filter corners / orders"
-          }, {
-            "name": "zerophase",
-            "value": true,
-            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
-            "editor": {
-              "xtype": "checkboxfield"
-            },
-            "render": {
-              "xtype": "checkboxfield"
-            }
-          }, ]
-        }, {
-          "name": "envelope",
-          "description": "Computes the envelope of the given function. The envelope is determined by adding the squared amplitudes of the function and it’s Hilbert-Transform and then taking the square-root",
-          "leaf": true,
-          "iconCls": "task"
-        }, {
-          "name": "highpass",
-          "description": "Butterworth-Highpass Filter : Filter data removing data below certain frequency freq using corners corners.",
-          "leaf": true,
-          "iconCls": "task",
-          params: [{
-            "name": "freq",
-            "value": "",
-            "description": "Filter corner frequency."
-          }, {
-            "name": "df",
-            "value": "",
-            "description": "Sampling rate in Hz"
-          }, {
-            "name": "corners",
-            "value": 4,
-            "description": "Filter corners / orders"
-          }, {
-            "name": "zerophase",
-            "value": true,
-            "description": "If True, apply filter once forwards and once backwards. This results in twice the number of corners but zero phase shift in the resulting filtered trace",
-            "editor": {
-              "xtype": "checkboxfield"
-            },
-            "render": {
-              "xtype": "checkboxfield"
-            }
-          }, ]
-        }
-
-
-
-      ]
-    }, {
-      "name": "resample",
-      "description": "Resample data in all traces of stream using Fourier method",
-      "leaf": true,
-      "iconCls": "task",
-      "params": [{
-        "name": "sampling_rate",
-        "value": 0.0,
-        "description": "The sampling rate of the resampled signal",
-        "editor": {
-          "xtype": "numberfield",
-          "step": 0.01,
-          "maxValue": 0.5,
-          "minValue": 0
-        }
-      }]
-
-
-    }
-  ]
-};
-
 //Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
 Ext.define('CF.view.MisfitTree', {
   extend: 'Ext.tree.Panel',
   alias: 'widget.misfit_tree',
   requires: ['CF.store.PE'],
 
-  title: 'Available PEIs',
+  title: 'Available PEs',
   //width: 500,
   height: 300,
 
@@ -243,16 +12,14 @@ Ext.define('CF.view.MisfitTree', {
   collapsible: false,
   useArrows: true,
   rootVisible: false,
+
   initComponent: function(options) {
-    this.store = Ext.create('CF.store.PE', {
-      root: pei,
-    });
+    this.store = Ext.create('CF.store.PE', {});
 
     this.callParent();
   },
   multiSelect: false,
   singleExpand: true,
-  copy: true,
   viewConfig: {
     copy: true,
     plugins: {
@@ -275,7 +42,6 @@ Ext.define('CF.view.MisfitTree', {
     }
   },
 
-
   columns: [{
     xtype: 'treecolumn', //this is so we know which column will show the tree
     text: 'name',
@@ -290,7 +56,7 @@ Ext.define('CF.view.MisfitTree', {
   }]
 });
 
-Ext.define('pei_params', {
+Ext.define('pe_params', {
   extend: 'Ext.data.Model',
   fields: ['param', 'value', 'description']
 });
@@ -301,7 +67,7 @@ Ext.define('CF.view.MisfitGrid', {
   alias: 'widget.misfit_grid',
   requires: ['CF.store.PEWorkflow'],
 
-  title: 'PEI Workflow',
+  title: 'PE Workflow',
   //width: 500,
   //height: 200,
   layout: 'fit',
@@ -336,7 +102,7 @@ Ext.define('CF.view.MisfitGrid', {
       var index = d.store.indexOf(d.data) + 1;
 
       var store = Ext.create('Ext.data.Store', {
-        model: 'pei_params',
+        model: 'pe_params',
         data: d.data.params
       });
       var property_grid = Ext.getCmp('misfit_property_grid');
@@ -367,7 +133,7 @@ Ext.define('CF.view.MisfitGrid', {
           return;
         }
 
-        // drag from the pei list : insert ourself (add a new copy of the pei model)
+        // drag from the pe list : insert ourself (add a new copy of the pe model)
         dropHandlers.wait = true;
         dropHandlers.cancelDrop();
 
@@ -597,22 +363,70 @@ Ext.define('CF.view.Misfit', {
   },
 
   items: [{
+    xtype: 'cf_mappanel',
     region: 'west',
-    width: 300,
-    height: "100%",
-    layout: 'fit',
-    margins: '0 0 0 0',
-    items: [{
-      xtype: 'misfit_tree',
-    }]
   }, {
+    xtype: 'tabpanel',
     region: 'center',
-    //height:"100%",
     layout: 'fit',
-    margins: '0 0 0 0',
-    //items : {layout:"vbox",items:[grid,property_grid]}
+    bodyBorder: false,
+
     items: [{
-      xtype: 'misfit_center_panel',
+      xtype: 'panel',
+      layout: 'border', // border
+      height: "100%",
+      title: 'Processing Setup',
+      bodyBorder: false,
+
+      defaults: {
+        collapsible: false,
+        split: true,
+        bodyPadding: 0
+      },
+
+      items: [{
+        region: 'west',
+        width: 300,
+        height: "100%",
+        layout: 'fit',
+        margins: '0 0 0 0',
+        items: [{
+          xtype: 'misfit_tree',
+        }]
+      }, {
+        region: 'center',
+        //height:"100%",
+        layout: 'fit',
+        margins: '0 0 0 0',
+        //items : {layout:"vbox",items:[grid,property_grid]}
+        items: [{
+          xtype: 'misfit_center_panel',
+        }],
+      }],
+    }, {
+      xtype: 'panel',
+      layout: 'border', // border
+      height: "100%",
+      title: 'Data Setup',
+      bodyBorder: false,
+
+      defaults: {
+        collapsible: false,
+        split: true,
+        bodyPadding: 0
+      },
+    }, {
+      xtype: 'panel',
+      layout: 'border', // border
+      height: "100%",
+      title: 'Submit',
+      bodyBorder: false,
+
+      defaults: {
+        collapsible: false,
+        split: true,
+        bodyPadding: 0
+      },
     }],
-  }]
+  }],
 });

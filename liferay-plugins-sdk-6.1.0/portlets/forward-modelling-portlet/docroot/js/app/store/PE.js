@@ -4,10 +4,11 @@ Ext.define('CF.store.PE', {
   model: 'CF.model.PE',
   folderSort: true,
   proxy: {
-    type: 'memory',
+    type: 'ajax',
+    url: '/j2ep-1.0/node/pe.json',
     reader: {
       type: 'json',
       rootProperty: 'children',
     }
-  }
+  },
 });
