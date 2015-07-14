@@ -25,10 +25,10 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
         'minimum_interstation_distance_in_m': 100,
         'channel_priorities': ['BH[E,N,Z]', 'EH[E,N,Z]'],
         'location_priorities': ['', '00', '10'],
-        'mseed_path': 'mseed',
+        'mseed_path': 'irods/' + runId + '/mseed',
+        'stationxml_path': 'irods/' + runId + '/stationxml',
         'DT': null,
         'NSTEP': null,
-        'stationxml_path': null,
       }
     }]
   };
@@ -66,7 +66,6 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
       config.downloadPE[0].input.NSTEP = Ext.Array.findBy(solver_conf.fields, function(field) {
         return field.name == 'NSTEP';
       }).value;
-      config.downloadPE[0].input.stationxml_path = solver_conf.station_url;
 
       if (solver_conf.custom_mesh) {
         config.downloadPE[0].input.minlatitude = solver_conf.custom_mesh_boundaries.minlat;
