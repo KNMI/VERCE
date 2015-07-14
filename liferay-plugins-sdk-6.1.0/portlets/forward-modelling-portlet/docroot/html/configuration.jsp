@@ -74,7 +74,7 @@ try{
         Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
         for(ASMRepositoryItemBean workflow : workflows) {
         %>
-            <aui:option selected='<%= downloadWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= developer + " - " + workflow.getItemID() %></aui:option>
+            <aui:option selected='<%= downloadWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
         <%
         }
     }
@@ -99,7 +99,7 @@ try{
         Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
         for(ASMRepositoryItemBean workflow : workflows) {
         %>
-            <aui:option selected='<%= processingWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= developer + " - " + workflow.getItemID() %></aui:option>
+            <aui:option selected='<%= processingWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
         <%
         }
     }
