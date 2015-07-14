@@ -15,9 +15,6 @@ Ext.define('CF.view.Misfit', {
   },
 
   items: [{
-    xtype: 'cf_mappanel',
-    region: 'west',
-  }, {
     xtype: 'tabpanel',
     region: 'center',
     layout: 'fit',
