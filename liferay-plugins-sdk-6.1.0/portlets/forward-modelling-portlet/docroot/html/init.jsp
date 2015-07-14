@@ -127,8 +127,8 @@ catch(Exception e) {
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
            <% } %>
        ];
-    var downloadWorkflow = <%=((downloadWorkflowName != null && !downloadWorkflowName.trim().equals("") && downloadWorkflowId != null && !downloadWorkflowId.trim().equals("")) ? "{\"workflowName\": " + downloadWorkflowName + ", \"workflowId\": " + downloadWorkflowId + ", \"ownerId\": " + downloadWorkflowOwner + "}" : "null")%>;
-    var processingWorkflow = <%=((processingWorkflowName != null && !processingWorkflowName.trim().equals("") && processingWorkflowId != null && !processingWorkflowId.trim().equals("")) ? "{\"workflowName\": " + processingWorkflowName + ", \"workflowId\": " + processingWorkflowId + ", \"ownerId\": " + processingWorkflowOwner + "}" : "null")%>;
+    var downloadWorkflow = <%=((downloadWorkflowName != null && !downloadWorkflowName.trim().equals("") && downloadWorkflowId != null && !downloadWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + downloadWorkflowName + "\", \"workflowId\": \"" + downloadWorkflowId + "\", \"ownerId\": \"" + downloadWorkflowOwner + "\"}" : "null")%>;
+    var processingWorkflow = <%=((processingWorkflowName != null && !processingWorkflowName.trim().equals("") && processingWorkflowId != null && !processingWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + processingWorkflowName + "\", \"workflowId\": \"" + processingWorkflowId + "\", \"ownerId\": \"" + processingWorkflowOwner + "\"}" : "null")%>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";
