@@ -432,9 +432,7 @@ var refreshMenuControl = [{
   "->", {
     tooltip: 'Refresh list',
     handler: function() {
-      console.log(this.up('panel').down('grid').getStore().getFilters());
       this.up('panel').down('grid').getStore().load();
-      console.log(this.up('panel').down('grid').getStore().getFilters());
     },
     style: {
       background: 'none',
