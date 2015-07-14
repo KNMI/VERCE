@@ -684,8 +684,12 @@ Ext.define('CF.model.RunId', {
 Ext.define('CF.store.RunId', {
   extend: 'Ext.data.Store',
   model: 'CF.model.RunId',
-  pageSize: 1000,
   totalProperty: 'totalCount',
+
+  leadingBufferZone: 30,
+  purgePageCount: 0,
+  autoLoad: true,
+
   proxy: {
     type: 'ajax',
     url: '/j2ep-1.0/prov/workflow',
@@ -725,27 +729,11 @@ Ext.define('CF.view.RunId', {
     text: "Date",
     dataIndex: 'startTime'
   }],
-  dockedItems: [{
-    xtype: 'pagingtoolbar',
-    //store: store,
-    dock: 'bottom',
-    displayInfo: true,
-    emptyMsg: "no data"
-  }],
-  /*
-    // paging bar on the bottom
-        bbar: Ext.create('Ext.PagingToolbar', {            
-            //itemId:'paging',
-            displayInfo: true,
-            displayMsg: '{0} - {1} of {2}',
-            emptyMsg: "No topics to display"
-        }),
-        */
   listeners: {
-    afterRender: function() {
-      this.down("pagingtoolbar").store = this.getStore();
-      this.getStore().loadPage(1);
-    },
+    // afterRender: function() {
+    //   this.down("pagingtoolbar").store = this.getStore();
+    //   this.getStore().loadPage(1);
+    // },
     rowclick: function(searchgrid, record, e) {
       var me = this;
 
