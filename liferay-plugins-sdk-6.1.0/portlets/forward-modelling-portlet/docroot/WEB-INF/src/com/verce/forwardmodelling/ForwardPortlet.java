@@ -128,6 +128,8 @@ public class ForwardPortlet extends MVCPortlet{
 		   submitSimulationWorkflow(resourceRequest, resourceResponse);
        else if(resourceRequest.getResourceID().equals("submitDownloadWorkflow"))
            submitDownloadWorkflow(resourceRequest, resourceResponse);
+       else if(resourceRequest.getResourceID().equals("submitProcessingWorkflow"))
+           submitProcessingWorkflow(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("downloadOutput"))
 		   downloadOutput(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
@@ -480,6 +482,55 @@ public class ForwardPortlet extends MVCPortlet{
             }
 
             asm_service.submit(userId, importedWfId, submitMessage, "Never");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void submitProcessingWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+        try {
+            User u = PortalUtil.getUser(resourceRequest);
+            String userSN = u.getScreenName();
+            String userId = u.getUserId()+"";
+            
+            String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
+            String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
+
+            System.out.println(workflowId + " / " + ownerId);
+
+            JSONObject stations = new JSONObject(resourceRequest.getParameterValues("stations")[0]);
+            JSONObject pes = new JSONObject(resourceRequest.getParameterValues("PEs")[0]);
+
+            System.out.println(stations);
+            System.out.println(pes);
+
+            // String runId = config.getString("runId");
+            // String submitMessage = "Download workflow for " + config.getString("simulationRunId");
+
+            // String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
+
+            // File solverFile = FileUtil.createTempFile();
+            // FileUtil.write(solverFile, config.toString());
+
+            // // TODO check port numbers
+            // asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Job0", "2");
+            // // stagein => Sync for final workflow
+            // asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
+
+            // Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
+            // if(errorVector!=null && !errorVector.isEmpty())
+            // {
+            //     for (WorkflowConfigErrorBean err : errorVector) {
+            //         System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+err.getErrorID()+"'! JobName: " + err.getJobName() + " userSN: "+userSN+", runId: "+runId);
+            //         if(err.getErrorID().contains("noproxy") || err.getErrorID().contains("proxyexpired"))
+            //         {
+            //             catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
+            //             return;
+            //         }
+            //     }
+            // }
+
+            // asm_service.submit(userId, importedWfId, submitMessage, "Never");
         } catch (Exception e) {
             e.printStackTrace();
         }
