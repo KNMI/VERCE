@@ -460,8 +460,6 @@ public class ForwardPortlet extends MVCPortlet{
             config.put("user_name", userSN);
             config.put("user_id", userId);
 
-            System.out.println(config);
-
             String runId = config.getString("runId");
             String description = "Download workflow for " + config.getString("simulationRunId");
 
@@ -513,22 +511,24 @@ public class ForwardPortlet extends MVCPortlet{
 
             JSONObject provenanceData = new JSONObject();
             JSONArray input = new JSONArray();
-            provenanceData.put("username", userSN);
-            provenanceData.put("workflowId", workflowId);
-            provenanceData.put("description", description);
-            provenanceData.put("system_id", importedWfId);
-            provenanceData.put("runId", runId);
-            provenanceData.put("startTime", getNowAsISO());
-            provenanceData.put("input", input);
-            provenanceData.put("_id", runId);
-            provenanceData.put("prov:type", "download");
-            provenanceData.put("workflowName", workflowName);
+            provenanceData.put("username", userSN)
+                .put("workflowId", workflowId)
+                .put("description", description)
+                .put("system_id", importedWfId)
+                .put("runId", runId)
+                .put("startTime", getNowAsISO())
+                .put("input", config.get("input"))
+                .put("_id", runId)
+                .put("prov:type", "download")
+                .put("workflowName", workflowName)
+                .put("resourceType", resourceBean.getType())
+                .put("grid", resourceBean.getGrid())
+                .put("resource", resourceBean.getResource())
+                .put("queue", resourceBean.getQueue())
+                .put("config", config);
 
-            JSONObject simulationWorkflow = new JSONObject();
-            simulationWorkflow.put("url", "");
-            simulationWorkflow.put("mime-type", "text/json");
-            simulationWorkflow.put("name", "simulation-workflow");
-            input.put(simulationWorkflow);
+            System.out.println(provenanceData.toString());
+            updateProvenanceRepository(provenanceData);
         } catch (Exception e) {
             e.printStackTrace();
         }
