@@ -21,12 +21,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
     }]
   };
 
-  params = {
-    // TODO
-    'workflowId': downloadWorkflow.workflowId,
-    'ownerId': downloadWorkflow.ownerId,
-    'workflowName': downloadWorkflow.workflowName,
-  };
+  params = {};
 
   // get workflow from prov
   // && get solver configuration from liferay document store
@@ -101,6 +96,15 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 var doSubmitDownloadWorkflow = function(config, params, callback) {
   var url = submitDownloadWorkflowURL;
   params.config = Ext.encode(config);
+
+  if (downloadWorkflow == null) {
+    Ext.Msg.alert("No Workflow", "No workflow configured, cannot submit. Please contact an administrator.");
+    return;
+  }
+
+  params['workflowId'] = downloadWorkflow.workflowId;
+  params['ownerId'] = downloadWorkflow.ownerId;
+  params['workflowName'] = downloadWorkflow.workflowName;
 
   Ext.getCmp('viewport').setLoading(true);
 

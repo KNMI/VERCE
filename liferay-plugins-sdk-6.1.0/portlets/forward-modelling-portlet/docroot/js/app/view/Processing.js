@@ -1132,6 +1132,11 @@ Ext.define('CF.view.Processing', {
           handler: function(button, event) {
             var url = submitProcessingWorkflowURL;
 
+            if (processingWorkflow == null) {
+              Ext.Msg.alert("No Workflow", "No workflow configured, cannot submit. Please contact an administrator.");
+              return;
+            }
+
             var params = {
               'workflowId': processingWorkflow.workflowId,
               'ownerId': processingWorkflow.ownerId,
