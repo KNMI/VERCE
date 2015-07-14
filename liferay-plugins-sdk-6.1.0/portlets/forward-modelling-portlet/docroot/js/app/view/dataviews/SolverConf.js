@@ -54,7 +54,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
         }
       } else if (record.get('type') === 'float') {
         return {
-          value: value,
+          value: Number(value),
           xtype: 'numberfield',
           allowDecimals: true,
           allowExponential: false,
