@@ -1,5 +1,6 @@
 var pei = {
   "text": ".",
+  "leaf": false,
   "children": [{
       "name": "detrend",
       "description": "Method to remove a linear trend from all traces",
@@ -102,6 +103,8 @@ var pei = {
       "iconCls": "task-folder",
       "name": "filters",
       "description": "Filters the data of all traces in the Stream",
+      "leaf": false,
+      "expanded": true,
       "children": [{
           "name": "bandpass",
           "description": "Butterworth-Bandpass",
@@ -226,55 +229,12 @@ var pei = {
   ]
 };
 
-// doc : http://docs.sencha.com/extjs/5.0/5.0.1-apidocs/#!/api/Ext.grid.column.Check
-Ext.require([
-  'Ext.data.*',
-  'Ext.grid.*',
-  'Ext.tree.*'
-]);
-
-Ext.define('PEI', {
-  extend: 'Ext.data.Model',
-  fields: [{
-    name: 'name',
-    type: 'string'
-  }, {
-    name: 'description',
-    type: 'string'
-  }]
-});
-
-Ext.define('workflow_model', {
-  extend: 'Ext.data.Model',
-  fields: [{
-      name: 'name',
-      type: 'string'
-    }, {
-      name: 'include_visu',
-      type: 'boolean'
-    }, {
-      name: 'include_store',
-      type: 'boolean'
-    },
-
-  ]
-});
-
-var store = Ext.create('Ext.data.TreeStore', {
-  model: 'PEI',
-  data: pei,
-  folderSort: true
-});
-
-var workflow_store = Ext.create('Ext.data.Store', {
-  model: 'workflow_model',
-  data: []
-});
-
 //Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
 Ext.define('CF.view.MisfitTree', {
   extend: 'Ext.tree.Panel',
   alias: 'widget.misfit_tree',
+  requires: ['CF.store.PE'],
+
   title: 'Available PEIs',
   //width: 500,
   height: 300,
@@ -283,7 +243,13 @@ Ext.define('CF.view.MisfitTree', {
   collapsible: false,
   useArrows: true,
   rootVisible: false,
-  store: store,
+  initComponent: function(options) {
+    this.store = Ext.create('CF.store.PE', {
+      root: pei,
+    });
+
+    this.callParent();
+  },
   multiSelect: false,
   singleExpand: true,
   copy: true,
@@ -333,6 +299,7 @@ Ext.define('pei_params', {
 Ext.define('CF.view.MisfitGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.misfit_grid',
+  requires: ['CF.store.PEWorkflow'],
 
   title: 'PEI Workflow',
   //width: 500,
@@ -343,7 +310,13 @@ Ext.define('CF.view.MisfitGrid', {
   collapsible: false,
   useArrows: true,
   rootVisible: false,
-  store: workflow_store,
+  initComponent: function(options) {
+    this.store = Ext.create('CF.store.PEWorkflow', {
+      data: []
+    });
+
+    this.callParent();
+  },
   multiSelect: false,
   singleExpand: true,
   selType: 'rowmodel',
@@ -355,17 +328,18 @@ Ext.define('CF.view.MisfitGrid', {
               },
               */
     select: function(selected, eOpts) {
-      if (!grid.getSelectionModel().hasSelection()) {
+      if (!this.getSelectionModel().hasSelection()) {
         return;
       }
 
-      var d = grid.getSelectionModel().getSelection()[0];
+      var d = this.getSelectionModel().getSelection()[0];
       var index = d.store.indexOf(d.data) + 1;
 
       var store = Ext.create('Ext.data.Store', {
         model: 'pei_params',
         data: d.data.params
       });
+      var property_grid = Ext.getCmp('misfit_property_grid');
       property_grid.setStore(store);
       property_grid.setTitle("parameters of step " + (index) + ": " + d.data.name);
 
@@ -382,13 +356,13 @@ Ext.define('CF.view.MisfitGrid', {
 
       rowclick: function(searchgrid, record, e) {
         var index = record.store.indexOf(record);
-        grid.getSelectionModel().selectRange(index, index);
+        this.getSelectionModel().selectRange(index, index);
       },
 
       beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
 
 
-        // reorder inside the workflow_store : let extjs manage that                    
+        // reorder inside the this.store : let extjs manage that
         if (overModel != null && data.records[0].store == overModel.store) {
           return;
         }
@@ -409,18 +383,18 @@ Ext.define('CF.view.MisfitGrid', {
         }
         var index = 0;
         if (overModel != null) {
-          index = workflow_store.indexOf(overModel.data);
+          index = this.store.indexOf(overModel.data);
           if (dropPosition == 'after') {
             index = index + 1;
           }
-          workflow_store.insert(index, {
+          this.store.insert(index, {
             "name": d.name,
             "include_visu": true,
             "include_store": true,
             params: p
           });
         } else {
-          workflow_store.add({
+          this.store.add({
             "name": d.name,
             "include_visu": true,
             "include_store": true,
@@ -428,7 +402,7 @@ Ext.define('CF.view.MisfitGrid', {
           });
         }
 
-        grid.getSelectionModel().selectRange(index, index);
+        this.getSelectionModel().selectRange(index, index);
         return 0;
       }
     }
@@ -442,12 +416,12 @@ Ext.define('CF.view.MisfitGrid', {
         xtype: 'button',
         text: 'remove selected step',
         handler: function() {
-          var selection = grid.getView().getSelectionModel().getSelection()[0];
+          var selection = this.getView().getSelectionModel().getSelection()[0];
           if (selection) {
             var index = selection.store.indexOf(selection);
-            workflow_store.remove(selection);
+            this.store.remove(selection);
             // TODO if index out of range : get last record, + remove all selection if no records in store
-            grid.getView().getSelectionModel().selectRange(index, index);
+            this.getView().getSelectionModel().selectRange(index, index);
           }
         }
       }, {
@@ -457,7 +431,7 @@ Ext.define('CF.view.MisfitGrid', {
         text: 'get values',
         handler: function() {
           var msg = "";
-          $.each(workflow_store.getRange(), function(i, r) {
+          $.each(this.store.getRange(), function(i, r) {
             var step = i + 1;
             var name = r.data.name;
             msg += "step=" + step + " - " + name + "<br/>";
@@ -508,6 +482,8 @@ Ext.define('CF.view.MisfitGrid', {
 Ext.define('CF.view.MisfitPropertyGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.misfit_property_grid',
+
+  id: 'misfit_property_grid',
   //renderTo: Ext.getBody(),
 
   //height: 300,
