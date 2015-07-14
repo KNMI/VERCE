@@ -49,7 +49,9 @@ var workflow_store = Ext.create('Ext.data.Store', {
 });
 
 //Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
-var tree = Ext.create('Ext.tree.Panel', {
+Ext.define('CF.view.MisfitTree', {
+  extend: 'Ext.tree.Panel',
+  alias: 'widget.misfit_tree',
   title: 'Available PEIs',
   //width: 500,
   height: 300,
@@ -105,7 +107,9 @@ Ext.define('pei_params', {
 });
 
 //drop: function (
-var grid = Ext.create('Ext.grid.Panel', {
+Ext.define('CF.view.MisfitGrid', {
+  extend: 'Ext.grid.Panel',
+  alias: 'widget.misfit_grid',
 
   title: 'PEI Workflow',
   //width: 500,
@@ -123,10 +127,10 @@ var grid = Ext.create('Ext.grid.Panel', {
 
   listeners: {
     /*
-                selectionchange :function ( selected, eOpts ) {
-                    console.log("selectionchange",selected);
-                },
-                */
+              selectionchange :function ( selected, eOpts ) {
+                  console.log("selectionchange",selected);
+              },
+              */
     select: function(selected, eOpts) {
       if (!grid.getSelectionModel().hasSelection()) {
         return;
@@ -278,7 +282,9 @@ var grid = Ext.create('Ext.grid.Panel', {
   }
 });
 
-var property_grid = Ext.create('Ext.grid.Panel', {
+Ext.define('CF.view.MisfitPropertyGrid', {
+  extend: 'Ext.grid.Panel',
+  alias: 'widget.misfit_property_grid',
   //renderTo: Ext.getBody(),
 
   //height: 300,
@@ -339,8 +345,9 @@ var property_grid = Ext.create('Ext.grid.Panel', {
   }]
 });
 
-
-var center_panel = Ext.create('Ext.panel.Panel', {
+Ext.define('CF.view.MisfitCenterPanel', {
+  extend: 'Ext.panel.Panel',
+  alias: 'widget.misfit_center_panel',
   //renderTo: Ext.getBody(),
   xtype: 'layout-border',
   requires: [
@@ -360,23 +367,24 @@ var center_panel = Ext.create('Ext.panel.Panel', {
     height: 200,
     layout: 'fit',
     margins: '0 0 0 0',
-    items: [grid]
+    items: [{
+      xtype: 'misfit_grid',
+    }]
   }, {
     region: 'center',
     flex: 1,
 
     margins: '0 0 0 0',
-    items: [property_grid]
+    items: [{
+      xtype: 'misfit_property_grid',
+    }]
 
   }] //,layout: 'vbox'
 });
 
-
-
-
-
-var pei_panel = Ext.create('Ext.panel.Panel', {
-  renderTo: Ext.getBody(),
+Ext.define('CF.view.Misfit', {
+  extend: 'Ext.panel.Panel',
+  alias: 'widget.misfit',
   xtype: 'layout-border',
   requires: [
     'Ext.layout.container.Border'
@@ -397,15 +405,17 @@ var pei_panel = Ext.create('Ext.panel.Panel', {
     height: "100%",
     layout: 'fit',
     margins: '0 0 0 0',
-    items: [
-      tree
-    ]
+    items: [{
+      xtype: 'misfit_tree',
+    }]
   }, {
     region: 'center',
     //height:"100%",
     layout: 'fit',
     margins: '0 0 0 0',
     //items : {layout:"vbox",items:[grid,property_grid]}
-    items: center_panel
+    items: [{
+      xtype: 'misfit_center_panel',
+    }],
   }]
 });
