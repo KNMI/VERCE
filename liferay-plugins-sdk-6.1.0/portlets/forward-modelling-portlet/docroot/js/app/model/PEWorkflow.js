@@ -9,5 +9,11 @@ Ext.define('CF.model.PEWorkflow', {
   }, {
     name: 'include_store',
     type: 'boolean'
+  }, {
+    name: 'raw',
+    type: 'boolean'
+  }, {
+    name: 'synt',
+    type: 'boolean'
   }]
 });

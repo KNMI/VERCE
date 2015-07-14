@@ -1,8 +1,14 @@
 //Ext.ux.tree.TreeGrid is no longer a Ux. You can simply use a tree.TreePanel
 Ext.define('CF.view.ProcessingTree', {
+
   extend: 'Ext.tree.Panel',
   alias: 'widget.processing_tree',
   requires: ['CF.store.PE'],
+  initComponent: function(options) {
+    this.store = Ext.create('CF.store.PE', {});
+
+    this.callParent();
+  },
 
   title: 'Available PEs',
   //width: 500,
@@ -12,12 +18,6 @@ Ext.define('CF.view.ProcessingTree', {
   collapsible: false,
   useArrows: true,
   rootVisible: false,
-
-  initComponent: function(options) {
-    this.store = Ext.create('CF.store.PE', {});
-
-    this.callParent();
-  },
   multiSelect: false,
   singleExpand: true,
   viewConfig: {
@@ -42,12 +42,13 @@ Ext.define('CF.view.ProcessingTree', {
     }
   },
 
+
   columns: [{
     xtype: 'treecolumn', //this is so we know which column will show the tree
     text: 'name',
     width: 150,
     sortable: true,
-    dataIndex: 'name'
+    dataIndex: 'ui_name'
   }, {
     text: 'description',
     flex: 1,
@@ -66,6 +67,13 @@ Ext.define('CF.view.ProcessingGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.processing_grid',
   requires: ['CF.store.PEWorkflow'],
+  initComponent: function(options) {
+    this.store = Ext.create('CF.store.PEWorkflow', {
+      data: []
+    });
+
+    this.callParent();
+  },
 
   title: 'PE Workflow',
   //width: 500,
@@ -76,23 +84,25 @@ Ext.define('CF.view.ProcessingGrid', {
   collapsible: false,
   useArrows: true,
   rootVisible: false,
-  initComponent: function(options) {
-    this.store = Ext.create('CF.store.PEWorkflow', {
-      data: []
-    });
-
-    this.callParent();
-  },
   multiSelect: false,
   singleExpand: true,
   selType: 'rowmodel',
-
+  tbar: [{
+    xtype: "combo",
+    itemId: "output_combo",
+    store: ["velocity", "displacement", "acceleration"],
+    fieldLabel: 'output unit'
+  }, {
+    xtype: "checkbox",
+    itemId: "rotation_checkbox",
+    fieldLabel: 'rotation'
+  }],
   listeners: {
     /*
-              selectionchange :function ( selected, eOpts ) {
-                  console.log("selectionchange",selected);
-              },
-              */
+                selectionchange :function ( selected, eOpts ) {
+                    console.log("selectionchange",selected);
+                },
+                */
     select: function(selected, eOpts) {
       if (!this.getSelectionModel().hasSelection()) {
         return;
@@ -107,7 +117,7 @@ Ext.define('CF.view.ProcessingGrid', {
       });
       var property_grid = Ext.getCmp('processing_property_grid');
       property_grid.setStore(store);
-      property_grid.setTitle("parameters of step " + (index) + ": " + d.data.name);
+      property_grid.setTitle("parameters of step " + (index) + ": " + d.data.ui_name);
 
     }
   },
@@ -128,7 +138,7 @@ Ext.define('CF.view.ProcessingGrid', {
       beforedrop: function(node, data, overModel, dropPosition, dropHandlers, eOpts) {
 
 
-        // reorder inside the this.store : let extjs manage that
+        // reorder inside the workflow_store : let extjs manage that                    
         if (overModel != null && data.records[0].store == overModel.store) {
           return;
         }
@@ -155,15 +165,21 @@ Ext.define('CF.view.ProcessingGrid', {
           }
           this.store.insert(index, {
             "name": d.name,
+            "ui_name": d.ui_name,
             "include_visu": true,
             "include_store": true,
+            "raw": true,
+            "synt": true,
             params: p
           });
         } else {
           this.store.add({
             "name": d.name,
+            "ui_name": d.ui_name,
             "include_visu": true,
             "include_store": true,
+            "raw": true,
+            "synt": true,
             params: p
           });
         }
@@ -172,6 +188,108 @@ Ext.define('CF.view.ProcessingGrid', {
         return 0;
       }
     }
+  },
+  getJson: function() {
+
+
+    var msg = {
+      "output_units": this.down("#output_combo").getValue(),
+      "rotate_to_ZRT": this.down("#rotation_checkbox").getValue(),
+      "data_processing": [],
+      "synthetics_processing": []
+    };
+
+    $.each(this.store.getRange(), function(i, r) {
+      if (r.data.raw == true) {
+        var step = {
+          "type": r.data.name
+        };
+
+        if (r.data.params != null) {
+          step["parameters"] = {};
+
+          $.each(r.data.params, function(i2, p) {
+            if (p.array_name != null) {
+              if (step["parameters"][p.array_name] == null) {
+                step["parameters"][p.array_name] = new Array(p.array_size);
+              }
+              step["parameters"][p.array_name][p.array_pos] = p.value;
+            } else {
+              step["parameters"][p.name] = p.value;
+            }
+          });
+
+        }
+        msg["data_processing"].push(step);
+
+        if (r.data.include_visu == true) {
+          msg["data_processing"].push({
+            "type": "plot_stream",
+            "parameters": {
+              "source": r.data.name,
+              "tag": "data"
+            }
+          });
+        }
+
+        if (r.data.include_store == true) {
+          msg["data_processing"].push({
+            "type": "store_stream",
+            "parameters": {
+              "source": r.data.name,
+              "tag": "data"
+            }
+          });
+        }
+
+      }
+    });
+
+    $.each(this.store.getRange(), function(i, r) {
+      if (r.data.synt == true) {
+        var step = {
+          "type": r.data.name
+        };
+
+        if (r.data.params != null) {
+          step["parameters"] = {};
+          $.each(r.data.params, function(i2, p) {
+            if (p.array_name != null) {
+              if (step["parameters"][p.array_name] == null) { // array is not created yet
+                step["parameters"][p.array_name] = new Array(p.array_size); // create it
+              }
+              step["parameters"][p.array_name][p.array_pos] = p.value;
+            } else {
+              step["parameters"][p.name] = p.value;
+            }
+          });
+        }
+        msg["synthetics_processing"].push(step);
+
+        if (r.data.include_visu == true) {
+          msg["synthetics_processing"].push({
+            "type": "plot_stream",
+            "parameters": {
+              "source": r.data.name,
+              "tag": "synt"
+            }
+          });
+        }
+
+        if (r.data.include_store == true) {
+          msg["synthetics_processing"].push({
+            "type": "store_stream",
+            "parameters": {
+              "source": r.data.name,
+              "tag": "synt"
+            }
+          });
+        }
+
+      }
+    });
+
+    return msg;
   },
   dockedItems: [
 
@@ -182,12 +300,20 @@ Ext.define('CF.view.ProcessingGrid', {
         xtype: 'button',
         text: 'remove selected step',
         handler: function() {
-          var selection = this.getView().getSelectionModel().getSelection()[0];
+          var grid = this.up('grid');
+          var selection = grid.getView().getSelectionModel().getSelection()[0];
           if (selection) {
-            var index = selection.store.indexOf(selection);
-            this.store.remove(selection);
+            var store = selection.store;
+            var index = store.indexOf(selection);
+            store.remove(selection);
+
             // TODO if index out of range : get last record, + remove all selection if no records in store
-            this.getView().getSelectionModel().selectRange(index, index);
+            var records_left = store.data.items.length;
+            if (records_left > index) {
+              grid.getView().getSelectionModel().selectRange(index, index);
+            } else if (records_left > 0) {
+              grid.getView().getSelectionModel().selectRange(records_left - 1, records_left - 1);
+            }
           }
         }
       }, {
@@ -195,22 +321,13 @@ Ext.define('CF.view.ProcessingGrid', {
       }, {
         xtype: 'button',
         text: 'get values',
+
         handler: function() {
-          var msg = "";
-          $.each(this.store.getRange(), function(i, r) {
-            var step = i + 1;
-            var name = r.data.name;
-            msg += "step=" + step + " - " + name + "<br/>";
-            msg += "visu=" + r.data.include_visu + "<br/>";
-            msg += "store=" + r.data.include_store + "<br/>";
-            if (r.data.params != null) {
-              $.each(r.data.params, function(i2, p) {
-                msg += p.name + "=" + p.value + "<br/>";
-              });
-            }
-            msg += "--------<br/>";
-          });
-          Ext.Msg.alert(msg);
+
+          var msg = this.up("panel").getJson();
+          var str = JSON.stringify(msg, null, 2);
+          console.log(str);
+          alert(str);
         }
       }]
     }
@@ -229,7 +346,7 @@ Ext.define('CF.view.ProcessingGrid', {
       }, {
         text: 'name',
         flex: 1,
-        dataIndex: 'name',
+        dataIndex: 'ui_name',
         sortable: false
       }, {
         text: 'visu',
@@ -238,6 +355,14 @@ Ext.define('CF.view.ProcessingGrid', {
       }, {
         text: 'store',
         dataIndex: 'include_store',
+        xtype: 'checkcolumn'
+      }, {
+        text: 'raw',
+        dataIndex: 'raw',
+        xtype: 'checkcolumn'
+      }, {
+        text: 'synt',
+        dataIndex: 'synt',
         xtype: 'checkcolumn'
       }
 
