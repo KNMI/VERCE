@@ -189,7 +189,7 @@ public class ForwardPortlet extends MVCPortlet{
             }
         }
 
-        System.out.println("Fetching runs " + offset + " - " + (offset + limit) + " with filters: " + filters);
+        System.out.println("Fetching runs " + offset + " - " + (offset + limit) + " of user " + req.getRemoteUser() + " with filters: " + filters);
 		try{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
