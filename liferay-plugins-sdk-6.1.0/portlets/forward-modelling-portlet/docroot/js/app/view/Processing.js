@@ -458,6 +458,7 @@ Ext.define('CF.view.ProcessingCenterPanel', {
     margins: '0 0 0 0',
     items: [{
       xtype: 'processing_grid',
+      id: 'processing',
     }]
   }, {
     region: 'center',
@@ -1054,6 +1055,14 @@ Ext.define('CF.view.DataSetup', {
   }]
 });
 
+var updateSubmitOverview = function(tabPanel) {
+  var stations = tabPanel.down('station_grid').getJson();
+  var PEs = tabPanel.down('processing_grid').getJson();
+
+  tabPanel.down('#processing_submit_stations').setValue(JSON.stringify(stations));
+  tabPanel.down('#processing_submit_pes').setValue(JSON.stringify(PEs));
+};
+
 Ext.define('CF.view.Processing', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.processing_panel',
@@ -1081,17 +1090,61 @@ Ext.define('CF.view.Processing', {
     }, {
       xtype: 'processing_setup',
     }, {
-      xtype: 'panel',
-      layout: 'border', // border
+      xtype: 'form',
+      layout: 'fit',
       height: "100%",
+      width: '100%',
       title: 'Submit',
+      id: 'processing_submit',
       bodyBorder: false,
 
       defaults: {
         collapsible: false,
-        split: true,
+        // split: true,
         bodyPadding: 0
       },
+
+      items: [{
+        xtype: 'form',
+        title: 'Submission review',
+        layout: 'auto',
+        height: '100%',
+        bodyBorder: false,
+
+        items: [{
+          xtype: 'textareafield',
+          id: 'processing_submit_stations',
+          fieldLabel: 'Selected stations',
+          disabled: true,
+          disabledCls: '',
+          width: '100%',
+          height: '50%',
+          value: 'QWEQWEQWE',
+        }, {
+          xtype: 'textareafield',
+          id: 'processing_submit_pes',
+          fieldLabel: 'PE pipeline',
+          disabled: true,
+          disabledCls: '',
+          width: '100%',
+          height: '50%',
+          value: 'ASDASDASD',
+        }],
+
+        buttons: [{
+          xtype: 'button',
+          text: 'Submit',
+          handler: function(button, event) {
+            tabPanel = button.up('tabpanel');
+
+            var stations = tabPanel.down('station_grid').getJson();
+            var PEs = tabPanel.down('processing_grid').getJson();
+
+            console.log(stations);
+            console.log(PEs);
+          }
+        }]
+      }],
     }, {
       xtype: 'panel',
       title: 'Control',
@@ -1105,5 +1158,13 @@ Ext.define('CF.view.Processing', {
         }]
       }]
     }],
+
+    listeners: {
+      'tabchange': function(tabPanel, tab) {
+        if (tab.id === 'processing_submit') {
+          updateSubmitOverview(tabPanel);
+        }
+      }
+    }
   }],
 });
