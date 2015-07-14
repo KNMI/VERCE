@@ -36,48 +36,28 @@ Ext.define('CF.view.Viewport', {
       split: true
     },
     items: [{
-      xtype: 'panel',
+      xtype: 'simulation_panel',
       title: 'Simulation',
       id: 'simulationtab',
       border: false,
-      layout: 'fit',
-      items: [{
-        xtype: 'simulation_panel',
-      }]
     }, {
-      xtype: 'panel',
+      xtype: 'download_panel',
       title: 'Download',
       id: 'downloadtab',
       border: false,
-      layout: 'fit',
-      items: [{
-        xtype: 'download_panel',
-      }]
     }, {
-      xtype: 'panel',
+      xtype: 'processing_panel',
       title: 'Processing',
       id: 'processingtab',
       border: false,
-      layout: 'fit',
-      items: [{
-        xtype: 'processing_panel',
-      }]
     }, {
+      xtype: 'misfit_panel',
       title: 'Misfit',
-      xtype: 'panel',
       border: false,
-      layout: 'fit',
-      items: [{
-        xtype: 'misfit_panel',
-      }],
     }, {
-      xtype: 'panel',
+      xtype: 'control',
       title: 'Control',
       border: false,
-      layout: 'fit',
-      items: [{
-        xtype: 'control'
-      }]
     }, {
       xtype: 'panel', // Earthquake & Station & Common
       id: 'resultstab',
