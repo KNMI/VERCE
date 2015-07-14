@@ -21,6 +21,7 @@ Ext.define('CF.view.Viewport', {
     'CF.view.Control',
     'CF.view.ResultsPane',
     'CF.view.Misfit',
+    'CF.view.Simulation',
   ],
 
   id: 'viewport',
@@ -33,95 +34,14 @@ Ext.define('CF.view.Viewport', {
       split: true
     },
     items: [{
+      xtype: 'panel',
       title: 'Simulation',
       id: 'simulationtab',
-      xtype: 'panel',
       border: false,
-      layout: 'border',
-      defaults: {
-        split: true
-      },
+      layout: 'fit',
       items: [{
-          xtype: 'cf_mappanel'
-        }, {
-          xtype: 'tabpanel', // Search & Upload
-          region: 'center',
-          border: false,
-          id: 'tabpanel_principal',
-          name: 'tabpanel_principal',
-          layout: {
-            type: 'vbox',
-            align: 'stretch'
-          },
-          deferredRender: false,
-          items: [{
-            xtype: 'panel',
-            title: 'Solver',
-            border: false,
-            layout: {
-              type: 'vbox',
-              align: 'stretch'
-            },
-            items: [{
-              xtype: 'solverselect'
-            }, {
-              xtype: 'solverconf'
-            }]
-          }, {
-            xtype: 'panel',
-            title: 'Earthquakes',
-            id: 'earthquakes',
-            name: 'earthquakes',
-            border: false,
-            disabled: true,
-            layout: {
-              type: 'vbox',
-              align: 'stretch'
-            },
-            items: [{
-              xtype: 'eventstabpanel'
-            }, {
-              xtype: 'eventgrid'
-            }]
-          }, {
-            xtype: 'panel',
-            title: 'Stations',
-            id: 'stations',
-            name: 'stations',
-            disabled: true,
-            border: false,
-            layout: {
-              type: 'vbox',
-              align: 'stretch'
-            },
-            items: [{
-              xtype: 'stationstabpanel'
-            }, {
-              xtype: 'stationgrid'
-            }]
-          }, {
-            xtype: 'panel',
-            title: 'Submit',
-            id: 'submit',
-            disabled: true,
-            border: false,
-            height: '100%',
-            layout: {
-              type: 'fit',
-              // align: 'stretch',
-            },
-            items: [{
-              xtype: 'submit'
-            }]
-          }],
-          listeners: {
-            'tabchange': function(tabPanel, tab) {
-              if (tab.id == "submit") updateSubmitOverview();
-            }
-          }
-        }
-
-      ]
+        xtype: 'simulation_panel',
+      }]
     }, {
       title: 'Misfit',
       xtype: 'panel',
