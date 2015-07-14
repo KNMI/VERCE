@@ -1152,13 +1152,6 @@ public class ForwardPortlet extends MVCPortlet{
             append.closeEntry();
         }
        
-        // append new content
-        //TODO: get new Files from iraklis WS
-        ZipEntry e = new ZipEntry("newContent");
-        append.putNextEntry(e);
-        append.write("This a simple example".getBytes());
-        append.closeEntry();
-
         // close
         zipFile.close();
         append.close();
