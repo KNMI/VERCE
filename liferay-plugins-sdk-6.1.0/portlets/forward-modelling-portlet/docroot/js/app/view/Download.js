@@ -47,7 +47,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
         return;
       }
 
-      config.input = [
+      params.input = [
         prov_workflow.stations,
         prov_workflow.quakeml,
         prov_workflow.solver_conf,

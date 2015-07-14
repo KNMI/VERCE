@@ -456,6 +456,7 @@ public class ForwardPortlet extends MVCPortlet{
             System.out.println(workflowId + " / " + ownerId);
 
             JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
+            JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
 
             config.put("user_name", userSN);
             config.put("user_id", userId);
@@ -510,14 +511,13 @@ public class ForwardPortlet extends MVCPortlet{
             System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
 
             JSONObject provenanceData = new JSONObject();
-            JSONArray input = new JSONArray();
             provenanceData.put("username", userSN)
                 .put("workflowId", workflowId)
                 .put("description", description)
                 .put("system_id", importedWfId)
                 .put("runId", runId)
                 .put("startTime", getNowAsISO())
-                .put("input", config.get("input"))
+                .put("input", input)
                 .put("_id", runId)
                 .put("type", "workflow_run")
                 .put("prov:type", "download")
