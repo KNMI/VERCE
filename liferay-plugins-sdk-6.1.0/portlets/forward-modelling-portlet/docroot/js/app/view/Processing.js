@@ -375,6 +375,18 @@ Ext.define('CF.view.Processing', {
       xtype: 'panel',
       layout: 'border', // border
       height: "100%",
+      title: 'Data Setup',
+      bodyBorder: false,
+
+      defaults: {
+        collapsible: false,
+        split: true,
+        bodyPadding: 0
+      },
+    }, {
+      xtype: 'panel',
+      layout: 'border', // border
+      height: "100%",
       title: 'Processing Setup',
       bodyBorder: false,
 
@@ -403,18 +415,6 @@ Ext.define('CF.view.Processing', {
           xtype: 'processing_center_panel',
         }],
       }],
-    }, {
-      xtype: 'panel',
-      layout: 'border', // border
-      height: "100%",
-      title: 'Data Setup',
-      bodyBorder: false,
-
-      defaults: {
-        collapsible: false,
-        split: true,
-        bodyPadding: 0
-      },
     }, {
       xtype: 'panel',
       layout: 'border', // border
