@@ -445,6 +445,7 @@ public class ForwardPortlet extends MVCPortlet{
             long groupId = PortalUtil.getScopeGroupId(resourceRequest);
             
             String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
+            String workflowName = ParamUtil.getString(resourceRequest, "workflowName");
             String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
 
             String portalUrl = PortalUtil.getPortalURL(resourceRequest);
@@ -462,7 +463,7 @@ public class ForwardPortlet extends MVCPortlet{
             System.out.println(config);
 
             String runId = config.getString("runId");
-            String submitMessage = "Download workflow for " + config.getString("simulationRunId");
+            String description = "Download workflow for " + config.getString("simulationRunId");
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
 
@@ -504,13 +505,30 @@ public class ForwardPortlet extends MVCPortlet{
                 }
             }
 
-            asm_service.submit(userId, importedWfId, submitMessage, "Never");
+            asm_service.submit(userId, importedWfId, description, "Never");
 
             // Log resource information
             ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, "Job0");
             System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
 
             JSONObject provenanceData = new JSONObject();
+            JSONArray input = new JSONArray();
+            provenanceData.put("username", userSN);
+            provenanceData.put("workflowId", workflowId);
+            provenanceData.put("description", description);
+            provenanceData.put("system_id", importedWfId);
+            provenanceData.put("runId", runId);
+            provenanceData.put("startTime", getNowAsISO());
+            provenanceData.put("input", input);
+            provenanceData.put("_id", runId);
+            provenanceData.put("prov:type", "download");
+            provenanceData.put("workflowName", workflowName);
+
+            JSONObject simulationWorkflow = new JSONObject();
+            simulationWorkflow.put("url", "");
+            simulationWorkflow.put("mime-type", "text/json");
+            simulationWorkflow.put("name", "simulation-workflow");
+            input.put(simulationWorkflow);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1255,14 +1273,19 @@ public class ForwardPortlet extends MVCPortlet{
          zos.close();
     }
 
-    private void saveSimulationProvenance(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
-            String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue) {
-        String runType = "workflow_run";
-
+    private String getNowAsISO() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
+        return nowAsISO;
+    }
+
+    private void saveSimulationProvenance(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
+            String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue) {
+        String runType = "workflow_run";
+
+        String nowAsISO = getNowAsISO();
 
         if(stationFileType.equals(Constants.STPOINTS_TYPE)) stationFileType = Constants.MIMETYPE_PLAIN;
         if(stationFileType.equals(Constants.STXML_TYPE))    stationFileType = Constants.MIMETYPE_XML;
