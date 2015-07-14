@@ -7,7 +7,7 @@ Ext.define('CF.view.ProcessingTree', {
   initComponent: function(options) {
     this.store = Ext.create('CF.store.PE', {});
 
-    this.callParent();
+    this.callParent(arguments);
   },
 
   title: 'Available PEs',
@@ -471,6 +471,158 @@ Ext.define('CF.view.ProcessingCenterPanel', {
   }] //,layout: 'vbox'
 });
 
+Ext.define('CF.model.MisfitStation', {
+  extend: 'Ext.data.Model',
+  fields: [{
+      name: 'network',
+      type: 'string'
+    }, {
+      name: 'station',
+      type: 'string'
+    }, {
+      name: 'count',
+      type: 'integer'
+    }, {
+      name: 'net_sta',
+      type: 'string'
+    }, {
+      name: 'selected',
+      type: 'boolean'
+    }
+    /*
+            {name: 'isFromDataStage',     type: 'boolean'},
+            {name: 'isFromRawStage',     type: 'boolean'},
+            {name: 'data_stagein_from',     type: 'array'},
+            {name: 'raw_stagein_from',     type: 'array'},
+            */
+  ]
+});
+
+function updateSimulationStation(newStore) {
+  var stationStore = Ext.getCmp("commonStations").getStore();
+
+  var stationToRemove = Ext.create('Ext.data.Store', {
+    model: 'CF.model.MisfitStation'
+  });
+  // 1) remove all station from simulation stage
+  for (var i = 0; i < stationStore.getCount(); i++) {
+    var d = stationStore.getAt(i);
+    // all station are unselected
+    d.data.selected = false;
+    if (d.data.isFromDataStage == true) {
+      if (d.data.isFromRawStage == true) {
+        d.data.isFromDataStage = false;
+        d.data.data_stagein_from = [];
+      } else {
+        stationToRemove.add(d);
+      }
+    }
+  }
+
+  for (var i = 0; i < stationToRemove.getCount(); i++) {
+    var d = stationToRemove.getAt(i);
+    stationStore.remove(d);
+  }
+
+  // now add station from newStore
+  for (var i = 0; i < newStore.getCount(); i++) {
+    var d = newStore.getAt(i);
+    var content = d.content();
+    var location = d.data.location;
+    for (var j = 0; j < content.getCount(); j++) {
+      var e = content.getAt(j);
+      var sta = e.get("station");
+      var net = e.get("network");
+      if (sta != null && net != null && sta != "" && net != "") {
+        var net_sta = net + "." + sta;
+        var station = stationStore.findRecord('net_sta', net_sta);
+        if (station == null) {
+          data_stagein_from = [location];
+          raw_stagein_from = [];
+          stationStore.add({
+            network: net,
+            station: sta,
+            net_sta: net_sta,
+            selected: false,
+            isFromDataStage: true,
+            isFromRawStage: false,
+            data_stagein_from: data_stagein_from,
+            raw_stagein_from: raw_stagein_from
+          });
+        } else {
+          // station already in array but we have to add location                       
+          station.get("data_stagein_from").push(location);
+          station.set("isFromDataStage", true);
+
+        }
+
+      }
+
+    }
+  }
+
+}
+
+function updateRawStation(newStore) {
+  var stationStore = Ext.getCmp("commonStations").getStore();
+
+  var stationToRemove = Ext.create('Ext.data.Store', {
+    model: 'CF.model.MisfitStation'
+  });
+  // 1) remove all station from simulation stage
+  for (var i = 0; i < stationStore.getCount(); i++) {
+    var d = stationStore.getAt(i);
+    d.data.selected = false;
+    if (d.data.isFromRawStage == true) {
+      if (d.data.isFromDataStage == true) {
+        d.data.isFromRawStage = false;
+        d.data.raw_stagein_from = [];
+      } else {
+        stationToRemove.add(d);
+      }
+    }
+  }
+
+  for (var i = 0; i < stationToRemove.getCount(); i++) {
+    var d = stationToRemove.getAt(i);
+    stationStore.remove(d);
+  }
+
+  // now add station from newStore
+  for (var i = 0; i < newStore.getCount(); i++) {
+    var d = newStore.getAt(i);
+    var content = d.content();
+    var location = d.data.location;
+    for (var j = 0; j < content.getCount(); j++) {
+      var e = content.getAt(j);
+      var sta = e.get("station");
+      var net = e.get("network");
+      if (sta != null && net != null && sta != "" && net != "") {
+        var net_sta = net + "." + sta;
+        var station = stationStore.findRecord('net_sta', net_sta);
+        if (station == null) {
+          data_stagein_from = [];
+          raw_stagein_from = [location];
+          stationStore.add({
+            network: net,
+            station: sta,
+            net_sta: net_sta,
+            selected: false,
+            isFromDataStage: false,
+            isFromRawStage: true,
+            data_stagein_from: data_stagein_from,
+            raw_stagein_from: raw_stagein_from
+          });
+        } else {
+          // station already in array but we have to add location                       
+          station.get("raw_stagein_from").push(location);
+          station.set("isFromRawStage", true);
+        }
+      }
+    }
+  }
+}
+
 Ext.define('CF.view.ProcessingSetup', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.processing_setup',
@@ -507,6 +659,340 @@ Ext.define('CF.view.ProcessingSetup', {
   }],
 });
 
+Ext.define('CF.model.RunId', {
+  extend: 'Ext.data.Model',
+  fields: [{
+    name: 'workflowName', // workflowId?
+    type: 'string'
+  }, {
+    name: '_id', // name
+    type: 'string'
+  }, {
+    name: 'system_id', // full name (including date etc)
+    type: 'string'
+  }, {
+    name: 'description', // desc
+    type: 'string'
+  }, {
+    name: 'startTime', // starttime
+    type: 'string'
+  }]
+});
+
+
+Ext.define('CF.store.RunId', {
+  extend: 'Ext.data.Store',
+  model: 'CF.model.RunId',
+  pageSize: 1000,
+  totalProperty: 'totalCount',
+  proxy: {
+    type: 'ajax',
+    url: '/j2ep-1.0/prov/workflow',
+
+    extraParams: {
+      username: userSN,
+    },
+    reader: {
+      type: 'json',
+      rootProperty: 'runIds',
+      totalProperty: 'totalCount'
+    }
+  }
+});
+
+Ext.define('CF.view.RunId', {
+  extend: 'Ext.grid.Panel',
+  alias: 'widget.runid',
+
+  initComponent: function() {
+    this.store = Ext.create("CF.store.RunId", this.store);
+
+    this.callParent(arguments);
+  },
+
+  title: 'list of RunID',
+  columns: [{
+    text: "Workflow name",
+    dataIndex: 'workflowName'
+  }, {
+    text: "Description",
+    dataIndex: 'description'
+  }, {
+    text: "Date",
+    dataIndex: 'startTime'
+  }],
+  dockedItems: [{
+    xtype: 'pagingtoolbar',
+    //store: store,
+    dock: 'bottom',
+    displayInfo: true,
+    emptyMsg: "no data"
+  }],
+  /*
+    // paging bar on the bottom
+        bbar: Ext.create('Ext.PagingToolbar', {            
+            //itemId:'paging',
+            displayInfo: true,
+            displayMsg: '{0} - {1} of {2}',
+            emptyMsg: "No topics to display"
+        }),
+        */
+  listeners: {
+    afterRender: function() {
+      this.down("pagingtoolbar").store = this.getStore();
+      this.getStore().loadPage(1);
+    },
+    rowclick: function(searchgrid, record, e) {
+      var me = this;
+
+      var st = new Ext.create("CF.store.Entity");
+      st.getProxy().extraParams = this.rowExtraParams;
+      st.getProxy().extraParams.runId = record.get('_id');
+
+
+      st.on('load', function(newStore, records, successful, eOpts) {
+
+
+        if (me.id == 'simulation_runs') {
+          updateSimulationStation(newStore);
+        } else {
+          updateRawStation(newStore);
+        }
+
+        Ext.getCmp("commonStations").setLoading(false);
+
+        Ext.getCmp("commonStations").getView().refresh();
+      });
+      Ext.getCmp("commonStations").setLoading(true);
+      st.load();
+
+    }
+  },
+
+});
+
+Ext.define('CF.model.EntityParameters', {
+  extend: 'Ext.data.Model',
+  fields: [{
+    name: 'val',
+    type: 'string'
+  }, {
+    name: 'key',
+    type: 'string'
+  }]
+});
+
+Ext.define('CF.model.EntityContent', {
+  extend: 'Ext.data.Model',
+  fields: [{
+    name: 'network',
+    type: 'string'
+  }, {
+    name: 'longitude',
+    type: 'float'
+  }, {
+    name: 'latitude',
+    type: 'float'
+  }, {
+    name: 'npts',
+    type: 'integer'
+  }, {
+    name: 'station',
+    type: 'string'
+  }, {
+    name: 'location',
+    type: 'string'
+  }, {
+    name: 'starttime',
+    type: 'string'
+  }, {
+    name: 'delta',
+    type: 'float'
+  }, {
+    name: 'calib',
+    type: 'integer'
+  }, {
+    name: 'sampling_rate',
+    type: 'integer'
+  }, {
+    name: 'endtime',
+    type: 'string'
+  }, {
+    name: 'type',
+    type: 'string'
+  }, {
+    name: 'id',
+    type: 'string'
+  }, {
+    name: 'channel',
+    type: 'string'
+  }]
+});
+
+Ext.define('CF.model.Entity', {
+  extend: 'Ext.data.Model',
+  requires: [
+    'CF.model.EntityParameters', 'CF.model.EntityContent'
+  ],
+  fields: [{
+    name: 'id',
+    type: 'string'
+  }, {
+    name: 'format',
+    type: 'string'
+  }, {
+    name: 'runId',
+    type: 'string'
+  }, {
+    name: 'port',
+    type: 'string'
+  }, {
+    name: 'endTime',
+    type: 'string'
+  }],
+  hasMany: [{
+    model: 'CF.model.EntityParameters',
+    name: 'parameters',
+    associationKey: 'parameters'
+  }, {
+    model: 'CF.model.EntityContent',
+    name: 'content',
+    associationKey: 'content'
+  }]
+});
+
+Ext.define('CF.store.Entity', {
+  extend: 'Ext.data.Store',
+  model: 'CF.model.Entity',
+  proxy: {
+    type: 'ajax',
+    url: '/j2ep-1.0/prov/entities/values-range?mime-type=application/octet-stream',
+    //url:'entities.json',
+    extraParams: {
+      runId: '',
+      keys: "",
+      maxvalues: "",
+      minvalues: ""
+    },
+    reader: {
+      type: 'json',
+      rootProperty: 'entities',
+      totalProperty: 'totalCount'
+    }
+  }
+});
+
+Ext.define('CF.store.EntityContent', {
+  extend: 'Ext.data.Store',
+  model: 'CF.model.EntityContent'
+});
+
+Ext.define('CF.view.StationGrid', {
+  extend: 'Ext.grid.Panel',
+  alias: 'widget.station_grid',
+  initComponent: function() {
+    this.store = Ext.create('Ext.data.Store', {
+      model: 'CF.model.MisfitStation'
+    });
+
+    this.callParent(arguments);
+  },
+
+  title: 'commons stations',
+  id: 'commonStations',
+
+  getJson: function() {
+
+    var networks = [];
+    var stations = [];
+    var data_stagein_from = [];
+    var raw_stagein_from = [];
+
+    $.each(this.getStore().getRange(), function(i, r) {
+      if (r.data.selected) {
+        networks.push(r.data.network);
+        stations.push(r.data.station);
+        data_stagein_from.push(r.data.data_stagein_from);
+        raw_stagein_from.push(r.data.raw_stagein_from);
+      }
+    });
+    var result = {
+      "data": [{
+        "input": {
+          "data_dir": "run_id/data",
+          "synt_dir": "run_id/synth",
+          "events_dir": "./",
+          "stations_dir": "run_id/stationxml",
+          "output_dir": "run_id/output",
+          "data_stagein_from": data_stagein_from,
+          "raw_stagein_from": raw_stagein_from,
+          "network": networks,
+          "station": stations
+        }
+
+
+      }]
+    };
+    return result;
+  },
+  dockedItems: [{
+    xtype: 'toolbar',
+    dock: 'bottom',
+    items: [{
+      xtype: 'button',
+      text: 'get json',
+      handler: function() {
+        var msg = this.up("grid").getJson();
+        var str = JSON.stringify(msg, null, 2);
+        console.log(str);
+        alert(str);
+      }
+    }]
+  }],
+
+  columns: [{
+    xtype: 'checkcolumn',
+    dataIndex: 'selected',
+    listeners: {
+      checkchange: function(column, recordIndex, checked) {
+        var record = this.up("grid").getStore().getAt(recordIndex);
+
+        if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
+          record.set("selected", false);
+        }
+
+      }
+    }
+  }, {
+    dataIndex: 'network'
+  }, {
+    dataIndex: 'station'
+  }],
+
+  listeners: {
+    cellclick: function(thisRef, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+
+
+      if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
+        return;
+      }
+      if (cellIndex !== 0) { //Considering index 0 is checkbox column
+        record.set("selected", !record.get("selected"));
+      }
+    }
+  },
+  viewConfig: {
+    markDirty: false,
+    getRowClass: function(record, index) {
+      if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
+        return 'x-item-disabled';
+      } else {
+        return 'bold-cell';
+      }
+    }
+  }
+});
+
 Ext.define('CF.view.DataSetup', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.data_setup',
@@ -522,7 +1008,50 @@ Ext.define('CF.view.DataSetup', {
     bodyPadding: 0
   },
 
-  items: []
+  items: [{
+    xtype: 'runid',
+    region: 'center',
+    id: 'simulation_runs',
+    height: '30%',
+    width: '50%',
+    title: 'Simulation runs',
+    rowExtraParams: {
+      "mime-type": "application/octet-stream",
+      keys: "type",
+      maxvalues: "velocity",
+      minvalues: "velocity",
+      start: 0,
+      limit: 100
+    },
+    store: {
+      proxy: {
+        extraParams: {
+          activities: "specfemRunSolverMov"
+        }
+      }
+    }
+  }, {
+    xtype: 'runid',
+    region: 'east',
+    id: 'raw_data_download_runs',
+    height: '30%',
+    width: '50%',
+    title: 'raw-data download runs',
+    rowExtraParams: {
+      activities: "PE_waveform_reader"
+    },
+    store: {
+      proxy: {
+        extraParams: {
+          activities: "downloadPE"
+        }
+      }
+    }
+  }, {
+    xtype: 'station_grid',
+    region: 'south',
+    height: '70%',
+  }]
 });
 
 Ext.define('CF.view.Processing', {
@@ -542,9 +1071,6 @@ Ext.define('CF.view.Processing', {
   },
 
   items: [{
-    xtype: 'cf_mappanel',
-    region: 'west',
-  }, {
     xtype: 'tabpanel',
     region: 'center',
     layout: 'fit',
