@@ -648,8 +648,7 @@ public class ForwardPortlet extends MVCPortlet{
 		   }
 
            // 2. EventFile (QuakeML)
-           String evPublicPath = "";
-           File eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runIds[0], userSN, groupId, evPublicPath);
+           EventFile eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runIds[0], userSN, groupId);
 		   
 		   //3. Generate zip file
 		   String zipName = runIds[0]+".zip";
@@ -676,7 +675,7 @@ public class ForwardPortlet extends MVCPortlet{
 	
 			   //6. Upload files
 			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
-			   asm_service.placeUploadedFile(userId, eventFile, importedWfId, jobName, "1");
+			   asm_service.placeUploadedFile(userId, eventFile.file, importedWfId, jobName, "1");
 			   asm_service.placeUploadedFile(userId, solverFile, importedWfId, jobName, "2");
 			   asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, jobName, "3");
 
@@ -715,7 +714,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 			   
 			   //10. Add run info in the Provenance Repository
-			   saveSimulationProvenance(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
+			   saveSimulationProvenance(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, eventFile.url, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
@@ -727,24 +726,32 @@ public class ForwardPortlet extends MVCPortlet{
 	   }
    }
 
-   public File downloadAndStoreEventFile(String portalURL, String portalURL2, String eventUrl, String runId, String userSN, long groupId, String evPublicPath) throws Exception {
-        File eventFile;
+    class EventFile {
+        public File file;
+        public String url;
+
+        public EventFile() {
+        }
+    }
+
+   public EventFile downloadAndStoreEventFile(String portalURL, String portalURL2, String eventUrl, String runId, String userSN, long groupId) throws Exception {
+        EventFile eventFile = new EventFile();
+        System.out.println("**++** Using event from " + eventUrl);
 
        if(!eventUrl.contains("documents")) { // eventfile not from documentLibrary
-           eventFile = FileUtil.createTempFile();
+           eventFile.file = FileUtil.createTempFile();
            URL wsUrl = new URL(portalURL2+eventUrl);
-           FileUtil.write(eventFile, wsUrl.openStream());
+           FileUtil.write(eventFile.file, wsUrl.openStream());
            String evFileName = "events_"+runId;
-           evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
-           evPublicPath = portalURL + evPublicPath;
-           System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
+           eventFile.url = portalURL + addFileToDL(eventFile.file, evFileName, groupId, userSN, Constants.WS_TYPE);
+           System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+eventFile.url);
        } else {
            String[] urlParts = eventUrl.split("/");
            long folderId = Long.parseLong(urlParts[urlParts.length - 2]);
            String evFileName = urlParts[urlParts.length - 1];
            FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, evFileName);
-           eventFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
-           evPublicPath = eventUrl;
+           eventFile.file = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
+           eventFile.url = eventUrl;
        }
 
        return eventFile;
