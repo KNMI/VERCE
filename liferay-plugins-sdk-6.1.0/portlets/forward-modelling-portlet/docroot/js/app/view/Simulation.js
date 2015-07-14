@@ -85,7 +85,7 @@ Ext.define('CF.view.Simulation', {
       items: [{
         xtype: 'control',
         filters: [{
-          property: 'type',
+          property: 'prov:type',
           value: 'simulation',
         }]
       }]

@@ -57,7 +57,7 @@ Ext.define('CF.view.Misfit', {
       items: [{
         xtype: 'control',
         filters: [{
-          property: 'type',
+          property: 'prov:type',
           value: 'misfit',
         }]
       }]

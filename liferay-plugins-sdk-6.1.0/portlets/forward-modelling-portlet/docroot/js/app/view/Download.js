@@ -273,7 +273,7 @@ Ext.define('CF.view.Download', {
       items: [{
         xtype: 'control',
         filters: [{
-          property: 'type',
+          property: 'prov:type',
           value: 'download',
         }]
       }]

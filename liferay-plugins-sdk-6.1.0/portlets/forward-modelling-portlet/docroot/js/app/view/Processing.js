@@ -435,7 +435,7 @@ Ext.define('CF.view.Processing', {
       items: [{
         xtype: 'control',
         filters: [{
-          property: 'type',
+          property: 'prov:type',
           value: 'processing',
         }]
       }]

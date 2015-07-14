@@ -194,7 +194,7 @@ public class ForwardPortlet extends MVCPortlet{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
 
-            String type = filters.get("type");
+            String type = filters.get("prov:type");
             if (type != null) {
                 java.util.Iterator<ASMWorkflow> iter = importedWfs.iterator();
                 while (iter.hasNext()) {
@@ -1131,6 +1131,8 @@ public class ForwardPortlet extends MVCPortlet{
 
     private void saveSimulationProvenance(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
             String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue) {
+        String runType = "workflow_run";
+
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
         df.setTimeZone(tz);
@@ -1142,7 +1144,8 @@ public class ForwardPortlet extends MVCPortlet{
         JSONObject params = new JSONObject();
         params.put("username", userSN)
               .put("_id", runId)
-              .put("type", "download")
+              .put("type", runType)
+              .put("prov:type", "simulation")
               .put("description", submitMessage)
               .put("workflowName", wfName)
               .put("workflowId", wfId)
