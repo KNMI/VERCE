@@ -3,6 +3,7 @@
   "leaf": false,
   "children": [{
       "name": "detrend",
+      "ui_name": "detrend",
       "description": "Method to remove a linear trend from all traces",
       "include_visu": false,
       "include_store": false,
@@ -19,6 +20,7 @@
       }]
     }, {
       "name": "taper",
+      "ui_name": "taper",
       "description": "Method to taper all Traces in Stream",
       "leaf": true,
       "iconCls": "task",
@@ -43,11 +45,15 @@
       }]
     }, {
       "name": "removeResponse",
+      "ui_name": "removeResponse",
       "description": "Method to deconvolve instrument response for all Traces in Stream",
       "leaf": true,
       "iconCls": "task",
       "params": [{
-          "name": "pre_filt_1",
+          "name": "pre_filt_f1",
+          "array_name": "pre_filt",
+          "array_pos": 0,
+          "array_size": 4,
           "value": 0.01,
           "description": "Apply a bandpass filter in frequency domain to the data before deconvolution. ",
           "editor": {
@@ -55,7 +61,10 @@
             "step": 0.01
           }
         }, {
-          "name": "pre_filt_2",
+          "name": "pre_filt_f2",
+          "array_name": "pre_filt",
+          "array_pos": 1,
+          "array_size": 4,
           "value": 0.02,
           "description": "The list or tuple defines the four corner frequencies (f1, f2, f3, f4) of a ",
           "editor": {
@@ -63,7 +72,10 @@
             "step": 0.01
           }
         }, {
-          "name": "pre_filt_3",
+          "name": "pre_filt_f3",
+          "array_name": "pre_filt",
+          "array_pos": 2,
+          "array_size": 4,
           "value": 8,
           "description": "cosine taper which is one between f2 and f3 and tapers to zero for ",
           "editor": {
@@ -71,7 +83,10 @@
             "step": 0.01
           }
         }, {
-          "name": "pre_filt_4",
+          "name": "pre_filt_f4",
+          "array_name": "pre_filt",
+          "array_pos": 3,
+          "array_size": 4,
           "value": 10,
           "description": "f1 < f < f2 and f3 < f < f4.",
           "editor": {
@@ -101,17 +116,17 @@
 
     {
       "iconCls": "task-folder",
-      "name": "filters",
-      "description": "Filters the data of all traces in the Stream",
-      "leaf": false,
+      "ui_name": "filters",
       "expanded": true,
       "expandable": false,
+      "description": "Filters the data of all traces in the Stream",
       "children": [{
-          "name": "bandpass",
+          "name": "filter_bandpass",
+          "ui_name": "bandpass",
           "description": "Butterworth-Bandpass",
           "leaf": true,
           "iconCls": "task",
-          "params": [{
+          params: [{
             "name": "freqmin",
             "value": 1.0 / 150.0,
             "description": "Pass band low corner frequency"
@@ -139,11 +154,12 @@
             }
           }, ]
         }, {
-          "name": "bandstop",
+          "name": "filter_bandstop",
+          "ui_name": "bandstop",
           "description": "Butterworth-Bandstop",
           "leaf": true,
           "iconCls": "task",
-          "params": [{
+          params: [{
             "name": "freqmin",
             "value": 1.0 / 150.0,
             "description": "Stop band low corner frequency"
@@ -171,16 +187,18 @@
             }
           }, ]
         }, {
-          "name": "envelope",
+          "name": "filter_envelope",
+          "ui_name": "envelope",
           "description": "Computes the envelope of the given function. The envelope is determined by adding the squared amplitudes of the function and it’s Hilbert-Transform and then taking the square-root",
           "leaf": true,
           "iconCls": "task"
         }, {
-          "name": "highpass",
+          "name": "filter_highpass",
+          "ui_name": "highpass",
           "description": "Butterworth-Highpass Filter : Filter data removing data below certain frequency freq using corners corners.",
           "leaf": true,
           "iconCls": "task",
-          "params": [{
+          params: [{
             "name": "freq",
             "value": "",
             "description": "Filter corner frequency."
@@ -210,6 +228,7 @@
       ]
     }, {
       "name": "resample",
+      "ui_name": "resample",
       "description": "Resample data in all traces of stream using Fourier method",
       "leaf": true,
       "iconCls": "task",
@@ -224,6 +243,8 @@
           "minValue": 0
         }
       }]
+
+
     }
   ]
 }
