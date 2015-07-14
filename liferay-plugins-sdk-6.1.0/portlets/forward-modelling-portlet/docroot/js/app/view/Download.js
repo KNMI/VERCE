@@ -170,11 +170,9 @@ Ext.define('CF.view.SimulationSelection', {
   }
 });
 
-
 Ext.define('CF.view.Download', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.download_panel',
-  id: 'download_panel',
   requires: [
     'Ext.layout.container.Border'
   ],
@@ -265,7 +263,11 @@ Ext.define('CF.view.Download', {
       border: false,
       layout: 'fit',
       items: [{
-        xtype: 'control'
+        xtype: 'control',
+        controlfilter: {
+          property: 'name',
+          value: /download_.*/,
+        }
       }]
     }],
   }],

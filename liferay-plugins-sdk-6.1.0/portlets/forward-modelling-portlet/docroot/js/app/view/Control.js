@@ -1,4 +1,14 @@
-var wfStore = Ext.create('CF.store.Workflow', {});
+var wfStore = Ext.create('CF.store.Workflow', {
+  id: 'workflowStore',
+  proxy: {
+    type: 'ajax',
+    url: getWorkflowListURL,
+    reader: {
+      rootProperty: 'list'
+    }
+  },
+  autoLoad: true
+});
 
 var handleDownloadLogfiles = function(grid, rowIndex, colIndex) {
   var rec = wfStore.getAt(rowIndex);
@@ -39,7 +49,7 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
   currentRun = record.get("name");
   owner = userSN;
 
-  this.up('viewport').getComponent('viewport_tabpanel').setActiveTab('resultstab');
+  this.up('viewport > #viewport_tabpanel').getComponent('viewport_tabpanel');
 };
 
 var getWorkflowAndSolverConf = function(runId, callback) {
@@ -117,7 +127,7 @@ var handleReuse = function(grid, rowIndex, colIndex) {
       return;
     }
 
-    self.up('viewport').getComponent('viewport_tabpanel').setActiveTab('simulationtab');
+    self.up('viewport > #viewport_tabpanel').setActiveTab('simulationtab');
 
     // reuse velocity when velocity model store finishes loading
     var velocityCombo = Ext.getCmp('velocity');
@@ -328,7 +338,7 @@ var getMeshData = function(solver_url, mesh_name, callback) {
 
 Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
-  alias: 'widget.WfGrid',
+  alias: 'widget.wfgrid',
   store: wfStore,
   viewConfig: {
     enableTextSelection: true,
@@ -411,9 +421,6 @@ Ext.define('CF.view.WfGrid', {
     }]
   }],
   flex: 1,
-  initComponent: function() {
-    this.callParent(arguments);
-  }
 });
 
 var refreshMenuControl = [{
@@ -476,8 +483,24 @@ Ext.define('CF.view.Control', {
     items: refreshMenuControl
   }],
   items: [{
-    xtype: 'WfGrid'
-  }]
+    xtype: 'wfgrid'
+  }],
+  initComponent: function() {
+    var self = this;
+
+    var tab = this.up('#viewport_tabpanel > panel') || this.id === 'controltab' && this;
+
+    if (tab != null) {
+      tab.on('activate', function() {
+        var store = Ext.data.StoreManager.lookup('workflowStore');
+        store.clearFilter();
+        if (self.controlfilter != null) {
+          store.addFilter(self.controlfilter);
+        }
+      });
+    }
+    this.callParent(arguments);
+  }
 });
 
 function statusRenderer(val) {

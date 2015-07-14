@@ -83,13 +83,17 @@ Ext.define('CF.view.Simulation', {
       border: false,
       layout: 'fit',
       items: [{
-        xtype: 'control'
+        xtype: 'control',
+        controlfilter: {
+          property: 'name',
+          value: /.*/,
+        }
       }]
     }],
     listeners: {
       'tabchange': function(tabPanel, tab) {
         if (tab.id == "submit") updateSubmitOverview();
-      }
+      },
     }
   }]
 });

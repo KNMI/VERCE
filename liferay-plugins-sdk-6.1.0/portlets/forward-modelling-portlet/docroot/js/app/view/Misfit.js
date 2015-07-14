@@ -55,7 +55,11 @@ Ext.define('CF.view.Misfit', {
       border: false,
       layout: 'fit',
       items: [{
-        xtype: 'control'
+        xtype: 'control',
+        controlfilter: {
+          property: 'name',
+          value: /misfit_.*/,
+        }
       }]
     }],
   }],

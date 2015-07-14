@@ -433,7 +433,11 @@ Ext.define('CF.view.Processing', {
       border: false,
       layout: 'fit',
       items: [{
-        xtype: 'control'
+        xtype: 'control',
+        controlfilter: {
+          property: 'name',
+          value: /processing_.*/,
+        }
       }]
     }],
   }],
