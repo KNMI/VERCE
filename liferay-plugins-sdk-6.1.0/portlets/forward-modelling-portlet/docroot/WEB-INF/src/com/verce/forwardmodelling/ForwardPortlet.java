@@ -519,6 +519,7 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("startTime", getNowAsISO())
                 .put("input", config.get("input"))
                 .put("_id", runId)
+                .put("type", "workflow_run")
                 .put("prov:type", "download")
                 .put("workflowName", workflowName)
                 .put("resourceType", resourceBean.getType())
