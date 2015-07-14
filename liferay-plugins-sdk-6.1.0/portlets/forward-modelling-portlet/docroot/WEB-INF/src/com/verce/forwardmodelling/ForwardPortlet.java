@@ -543,6 +543,7 @@ public class ForwardPortlet extends MVCPortlet{
             long groupId = PortalUtil.getScopeGroupId(resourceRequest);
 
             String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
+            String workflowName = ParamUtil.getString(resourceRequest, "workflowName");
             String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
 
             System.out.println(workflowId + " / " + ownerId);
@@ -552,20 +553,24 @@ public class ForwardPortlet extends MVCPortlet{
 
             JSONObject stations = new JSONObject(resourceRequest.getParameterValues("stations")[0]);
             JSONObject pipelines = new JSONObject(resourceRequest.getParameterValues("PEs")[0]);
+            JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
 
             System.out.println(runId);
             System.out.println(stations);
             System.out.println(pipelines);
 
-            String submitMessage = "Processing workflow for " + simulationRunId;
+            String description = "Processing workflow for " + simulationRunId;
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
 
-            File configFile = FileUtil.createTempFile();
-            FileUtil.write(configFile, stations.toString());
+            File processing_conf = FileUtil.createTempFile();
+            FileUtil.write(processing_conf, stations.toString());
+            String processing_conf_path = addFileToDL(processing_conf, runId+"_processing_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            input.put(new JSONObject().put("name", "processing_conf").put("url", processing_conf_path).put("mime-type", "text/json"));
+
             // temporary for fake workflow
             try {
-                asm_service.placeUploadedFile(userId, configFile, importedWfId, "sync", "1");
+                asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "sync", "1");
             } catch (Exception e) {
 
             }
@@ -603,6 +608,11 @@ public class ForwardPortlet extends MVCPortlet{
             append.close();
             asm_service.placeUploadedFile(userId, tmpFile, importedWfId, "Job0", "1");
 
+            File pe_conf = FileUtil.createTempFile();
+            FileUtil.write(pe_conf, stations.toString());
+            String pe_conf_path = addFileToDL(pe_conf, runId+"_pe_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            input.put(new JSONObject().put("name", "pe_conf").put("url", pe_conf_path).put("mime-type", "text/json"));
+
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
             {
@@ -616,12 +626,31 @@ public class ForwardPortlet extends MVCPortlet{
                 }
             }
 
-            asm_service.submit(userId, importedWfId, submitMessage, "Never");
+            asm_service.submit(userId, importedWfId, description, "Never");
 
             // Log resource information
             ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, "Job0");
             System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
 
+            JSONObject provenanceData = new JSONObject();
+            provenanceData.put("username", userSN)
+                .put("workflowId", workflowId)
+                .put("description", description)
+                .put("system_id", importedWfId)
+                .put("runId", runId)
+                .put("startTime", getNowAsISO())
+                .put("input", input)
+                .put("_id", runId)
+                .put("type", "workflow_run")
+                .put("prov:type", "processing")
+                .put("workflowName", workflowName)
+                .put("resourceType", resourceBean.getType())
+                .put("grid", resourceBean.getGrid())
+                .put("resource", resourceBean.getResource())
+                .put("queue", resourceBean.getQueue());
+
+            System.out.println(provenanceData.toString());
+            updateProvenanceRepository(provenanceData);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1134,6 +1134,7 @@ Ext.define('CF.view.Processing', {
             tabPanel = button.up('tabpanel');
 
             var runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+            var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
 
             var stations = tabPanel.down('station_grid').getJson();
 
@@ -1154,11 +1155,34 @@ Ext.define('CF.view.Processing', {
               success: function(response, config) {
                 var workflowProv = JSON.parse(response.responseText);
                 var quakemlURL;
+                var solver_conf;
+                var vercepes;
                 workflowProv.input.forEach(function(input) {
                   if (input.name === 'quakeml') {
                     quakemlURL = input.url;
+                  } else if (input.name === 'solver_conf') {
+                    solver_conf = input.url;
+                  } else if (input.name === 'vercepes') {
+                    vercepes = input.url;
                   }
                 });
+
+                params.input = [{
+                    'name': 'quakeml',
+                    'mime-type': 'application/xml',
+                    'url': quakemlURL,
+                  }, {
+                    'url': '/j2ep-1.0/prov/workflow/' + runId,
+                    'mime-type': 'text/json',
+                    'name': 'simulation-workflow',
+                  }, {
+                    'url': '/j2ep-1.0/prov/workflow/' + download_runId,
+                    'mime-type': 'text/json',
+                    'name': 'download-workflow',
+                  },
+                  solver_conf,
+                  vercepes,
+                ];
 
                 params.quakemlURL = quakemlURL;
                 params.stations = Ext.encode(stations);
