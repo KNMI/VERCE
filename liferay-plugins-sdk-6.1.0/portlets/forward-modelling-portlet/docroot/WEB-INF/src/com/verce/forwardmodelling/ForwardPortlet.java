@@ -1329,18 +1329,25 @@ public class ForwardPortlet extends MVCPortlet{
 			con.setRequestProperty("Accept", "application/json");
 
 			// System.out.println("[updateProvenanceRepository] Params: "+params.toString());
-			String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
+            // String urlParameters = "prov="+URLEncoder.encode("asd", "UTF-8");
+            // String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
 			
 			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
+            // String data = new JSONObject().put("prov", params).toString();
+            String data = "prov=" + params.toString();
+            con.setRequestProperty("Content-Length", Integer.toString(data.length()));
+            // con.getOutputStream().write(data.getBytes("UTF-8"));
+            con.getOutputStream().write(data.getBytes("ISO-8859-1"));
 
-			if(con.getResponseCode()!=200)
-				System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Error: " + con.getResponseCode());
+            InputStream inputStream;
+			if(con.getResponseCode()!=200) {
+				System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Error: " + con.getResponseCode() + ": " + con.getResponseMessage());
+                inputStream = con.getErrorStream();
+            } else {
+                inputStream = con.getInputStream();
+            }
 			
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
 	 
@@ -1354,7 +1361,7 @@ public class ForwardPortlet extends MVCPortlet{
 		catch(Exception e)
 		{
 			// We log the exception but continue the normal flow
-			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Exception catched!!");
+			System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Exception caught!!");
 			e.printStackTrace();
 		}
     }
