@@ -951,6 +951,7 @@ Ext.define('CF.view.StationGrid', {
   }],
 
   columns: [{
+    text: 'Selection',
     xtype: 'checkcolumn',
     dataIndex: 'selected',
     listeners: {
@@ -962,11 +963,15 @@ Ext.define('CF.view.StationGrid', {
         }
 
       }
-    }
+    },
   }, {
-    dataIndex: 'network'
+    text: 'Network',
+    dataIndex: 'network',
+    flex: 1,
   }, {
-    dataIndex: 'station'
+    text: 'Station',
+    dataIndex: 'station',
+    flex: 1,
   }],
 
   listeners: {
