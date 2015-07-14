@@ -42,6 +42,51 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
   this.up('viewport').getComponent('viewport_tabpanel').setActiveTab('resultstab');
 };
 
+var getWorkflowAndSolverConf = function(runId, callback) {
+  Ext.Ajax.request({
+    url: "/j2ep-1.0/prov/workflow/" + encodeURIComponent(runId),
+    params: {},
+    method: 'GET',
+    success: function(response, config) {
+      var prov_workflow = JSON.parse(response.responseText);
+
+      if (prov_workflow == null) {
+        Ext.getCmp('viewport').setLoading(true);
+        Ext.Msg.alert("Error", "Workflow missing from provenance repository. Please contact support and list the workflow name and username.");
+        return;
+      }
+
+      prov_workflow.input.forEach(function(item) {
+        prov_workflow[item.name] = item;
+      });
+      delete prov_workflow.input;
+
+      Ext.Ajax.request({
+        url: prov_workflow.solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
+        success: function(response, config) {
+          var solver_conf = JSON.parse(response.responseText);
+          if (solver_conf === null) {
+            Ext.Msg.alert("Failed to get workflow settings");
+            Ext.getCmp('viewport').setLoading(false);
+            return;
+          }
+
+          // callback without error
+          callback(null, prov_workflow, solver_conf);
+        },
+        failure: function(response, config) {
+          // error callback
+          callback("Failed to get workflow settings!");
+        }
+      });
+    },
+    failure: function(response, config) {
+      // error callback
+      callback("Failed to get workflow from provenance api!");
+    }
+  });
+}
+
 var handleReuse = function(grid, rowIndex, colIndex) {
   var self = this;
 
@@ -51,155 +96,124 @@ var handleReuse = function(grid, rowIndex, colIndex) {
   // number of asynchronous calls remaining
   var numRemaining = 3;
 
-  Ext.Ajax.request({
-    url: "/j2ep-1.0/prov/workflow/" + encodeURIComponent(rec.get('name')),
-    params: {},
-    method: 'GET',
-    success: function(response) {
-      var prov_object = JSON.parse(response.responseText);
+  getWorkflowAndSolverConf(rec.get('name'), function(err, prov_workflow, solver_conf) {
+    if (err != null) {
+      Ext.Msg.alert("Error", err);
+      Ext.getCmp('viewport').setLoading(false);
 
-      if (prov_object == null) {
-        Ext.getCmp('viewport').setLoading(true);
-        Ext.Msg.alert("Error", "Workflow missing from provenance repository. Please contact support and list the workflow name and username.");
-        return;
+      return;
+    }
+
+    // reuse solver
+    var solverType = Ext.getCmp('solvertype');
+    var solver = solverType.store.findRecord('name', solver_conf.solver);
+    if (solver != null) {
+      solverType.clearValue();
+      solverType.setValue(solver.get('abbr'));
+    } else {
+      // TODO fix partial reuse when solver unavailable
+      Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
+      Ext.getCmp('viewport').setLoading(false);
+      return;
+    }
+
+    self.up('viewport').getComponent('viewport_tabpanel').setActiveTab('simulationtab');
+
+    // reuse velocity when velocity model store finishes loading
+    var velocityCombo = Ext.getCmp('velocity');
+    velocityCombo.store.addListener('refresh', function() {
+      velocityCombo.setValue(solver_conf.velocity_model);
+
+      if (solver_conf.custom_mesh) {
+        velocityCombo.up('form').getForm().findField('minlat').setValue(solver_conf.custom_mesh_boundaries.minlat);
+        velocityCombo.up('form').getForm().findField('maxlat').setValue(solver_conf.custom_mesh_boundaries.maxlat);
+        velocityCombo.up('form').getForm().findField('minlon').setValue(solver_conf.custom_mesh_boundaries.minlon);
+        velocityCombo.up('form').getForm().findField('maxlon').setValue(solver_conf.custom_mesh_boundaries.maxlon);
       }
 
-      prov_object.input.forEach(function(item) {
-        prov_object[item.name] = item;
-      });
-      delete prov_object.input;
+      CF.app.getController('Map').getStore('SolverConf').loadData(solver_conf.fields);
 
-      Ext.Ajax.request({
-        url: prov_object.solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
-        success: function(response) {
-          var object = JSON.parse(response.responseText);
-          if (object === null) {
-            Ext.Msg.alert("Failed to get workflow settings");
-            Ext.getCmp('viewport').setLoading(false);
-            return;
-          }
+      // HACK ensure correct event binding order by binding here
+      var eventLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Events')[0];
+      CF.app.getController('Map').getStore('Event').bind(eventLayer);
 
-          // reuse solver
-          var solverType = Ext.getCmp('solvertype');
-          var solver = solverType.store.findRecord('name', object.solver);
-          if (solver != null) {
-            solverType.clearValue();
-            solverType.setValue(solver.get('abbr'));
-          } else {
-            // TODO fix partial reuse when solver unavailable
-            Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
-            Ext.getCmp('viewport').setLoading(false);
-            return;
-          }
-
-          self.up('viewport').getComponent('viewport_tabpanel').setActiveTab('simulationtab');
-
-          // reuse velocity when velocity model store finishes loading
-          var velocityCombo = Ext.getCmp('velocity');
-          velocityCombo.store.addListener('refresh', function() {
-            velocityCombo.setValue(object.velocity_model);
-
-            if (object.custom_mesh) {
-              velocityCombo.up('form').getForm().findField('minlat').setValue(object.custom_mesh_boundaries.minlat);
-              velocityCombo.up('form').getForm().findField('maxlat').setValue(object.custom_mesh_boundaries.maxlat);
-              velocityCombo.up('form').getForm().findField('minlon').setValue(object.custom_mesh_boundaries.minlon);
-              velocityCombo.up('form').getForm().findField('maxlon').setValue(object.custom_mesh_boundaries.maxlon);
+      eventLayer.events.on({
+        featureadded: function(event) {},
+        featuresadded: function(event) {
+          event.features.forEach(function(feature) {
+            if (solver_conf.events.indexOf(feature.data.eventId) >= 0) {
+              CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
+            } else {
+              CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
             }
-
-            CF.app.getController('Map').getStore('SolverConf').loadData(object.fields);
-
-            // HACK ensure correct event binding order by binding here
-            var eventLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Events')[0];
-            CF.app.getController('Map').getStore('Event').bind(eventLayer);
-
-            eventLayer.events.on({
-              featureadded: function(event) {},
-              featuresadded: function(event) {
-                event.features.forEach(function(feature) {
-                  if (object.events.indexOf(feature.data.eventId) >= 0) {
-                    CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                  } else {
-                    CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                  }
-                });
-                eventLayer.events.un(this);
-                if (--numRemaining === 0) {
-                  Ext.getCmp('viewport').setLoading(false);
-                }
-              },
-              scope: this
-            });
-
-            // reuse events
-            CF.app.getController('Map').getEvents(CF.app.getController('Map'), prov_object.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
-
-            var stationFileType = prov_object.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
-            var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
-            Ext.getCmp('station-filetype').select(stationFileType);
-
-            // HACK ensure correct event binding order by binding here
-            var stationLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Stations')[0];
-            CF.app.getController('Map').getStore('Station').bind(stationLayer);
-
-            stationLayer.events.on({
-              featureadded: function(event) {},
-              featuresadded: function(event) {
-                event.features.forEach(function(feature) {
-                  if (object.stations.indexOf(feature.data.network + '.' + feature.data.station) >= 0) {
-                    CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                  } else {
-                    CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                  }
-                });
-                stationLayer.events.un(this);
-                if (--numRemaining === 0) {
-                  Ext.getCmp('viewport').setLoading(false);
-                }
-              },
-              scope: this
-            });
-
-            // reuse stations
-            CF.app.getController('Map').getStations(CF.app.getController('Map'), prov_object.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
-
-            // Only set old workflow if it's still available
-            if (prov_object.workflowId != null) {
-              var workflowDropdown = Ext.getCmp('wfSelection');
-              if (workflowDropdown.store.findRecord('workflowId', prov_object.workflowId) == null) {
-                Ext.Msg.alert("Error", "Workflow used in old run not available anymore. Select a new workflow in the Submit tab.");
-                workflowDropdown.clearValue();
-              } else {
-                workflowDropdown.setValue(prov_object.workflowId);
-              }
-            }
-
-            Ext.getCmp('submitName').setValue(prov_object._id.slice(0, -14)); // remove runid
-            Ext.getCmp('submitMessage').setValue(prov_object.description);
-          }, this, {
-            single: true
           });
-
-          // set mesh when solverconfstore finishes loading
-          CF.app.getController('Map').getStore('SolverConf').addListener('refresh', function() {
-            // reuse mesh and trigger velocity store reload
-            Ext.getCmp('meshes').setValue(object.mesh);
-            if (--numRemaining === 0) {
-              Ext.getCmp('viewport').setLoading(false);
-            }
-          }, this, {
-            single: true
-          });
+          eventLayer.events.un(this);
+          if (--numRemaining === 0) {
+            Ext.getCmp('viewport').setLoading(false);
+          }
         },
-        failure: function(response) {
-          Ext.Msg.alert("Error", "Failed to get workflow settings!");
-          Ext.getCmp('viewport').setLoading(false);
+        scope: this
+      });
+
+      // reuse events
+      CF.app.getController('Map').getEvents(CF.app.getController('Map'), prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
+
+      var stationFileType = prov_workflow.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
+      var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
+      Ext.getCmp('station-filetype').select(stationFileType);
+
+      // HACK ensure correct event binding order by binding here
+      var stationLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Stations')[0];
+      CF.app.getController('Map').getStore('Station').bind(stationLayer);
+
+      stationLayer.events.on({
+        featureadded: function(event) {},
+        featuresadded: function(event) {
+          event.features.forEach(function(feature) {
+            if (solver_conf.stations.indexOf(feature.data.network + '.' + feature.data.station) >= 0) {
+              CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
+            } else {
+              CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
+            }
+          });
+          stationLayer.events.un(this);
+          if (--numRemaining === 0) {
+            Ext.getCmp('viewport').setLoading(false);
+          }
+        },
+        scope: this
+      });
+
+      // reuse stations
+      CF.app.getController('Map').getStations(CF.app.getController('Map'), prov_workflow.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
+
+      // Only set old workflow if it's still available
+      if (prov_workflow.workflowId != null) {
+        var workflowDropdown = Ext.getCmp('wfSelection');
+        if (workflowDropdown.store.findRecord('workflowId', prov_workflow.workflowId) == null) {
+          Ext.Msg.alert("Error", "Workflow used in old run not available anymore. Select a new workflow in the Submit tab.");
+          workflowDropdown.clearValue();
+        } else {
+          workflowDropdown.setValue(prov_workflow.workflowId);
         }
-      })
-    },
-    failure: function(response) {
-      Ext.Msg.alert("Error", "Failed to get workflow from provenance api!");
-      Ext.getCmp('viewport').setLoading(false);
-    }
+      }
+
+      Ext.getCmp('submitName').setValue(prov_workflow._id.slice(0, -14)); // remove runid
+      Ext.getCmp('submitMessage').setValue(prov_workflow.description);
+    }, this, {
+      single: true
+    });
+
+    // set mesh when solverconfstore finishes loading
+    CF.app.getController('Map').getStore('SolverConf').addListener('refresh', function() {
+      // reuse mesh and trigger velocity store reload
+      Ext.getCmp('meshes').setValue(solver_conf.mesh);
+      if (--numRemaining === 0) {
+        Ext.getCmp('viewport').setLoading(false);
+      }
+    }, this, {
+      single: true
+    });
   });
 };
 
@@ -221,7 +235,7 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
             "encryptedIrodsSession": encryptedIrodsSession,
           },
           waitTitle: 'Deleting from data base',
-          success: function(response) {
+          success: function(response, config) {
             wfStore.load();
 
             Ext.Ajax.request({ //delete from provenance
@@ -234,12 +248,180 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
               }
             });
           },
-          failure: function(response) {
+          failure: function(response, config) {
             Ext.Msg.alert("Error", "Delete failed!");
           }
         });
       }
     });
+};
+
+var getEventData = function(event_url, callback) {
+  Ext.Ajax.request({
+    url: event_url,
+    method: 'GET',
+    params: {},
+    success: function(response, config) {
+      var quakeml = OpenLayers.Format.XML.prototype.read.apply(this, [response.responseText]);
+      var eventsXML = quakeml.getElementsByTagName('event');
+
+      var events = [];
+      Array.prototype.forEach.call(eventsXML, function(eventXML) {
+        var origin;
+
+        // Origin
+        var prefOrigin = eventXML.getElementsByTagName('preferredOriginID')[0];
+        var origins = eventXML.getElementsByTagName('origin');
+        if (prefOrigin) {
+          prefOrigin = prefOrigin.childNodes[0].nodeValue;
+          for (var o = 0; o < origins.length; o++) {
+            origin = origins[o];
+            if (origin.getAttribute('publicID') == prefOrigin) break;
+          }
+        } else {
+          if (origins.length > 0) origin = origins[0];
+        }
+
+        var timeElem = origin.getElementsByTagName('time')[0];
+        var time = timeElem.getElementsByTagName('value')[0].firstChild.data;
+
+        events.push({
+          'startTime': time
+        });
+      });
+
+      // callback without error
+      callback(null, events);
+    },
+    failure: function(response, config) {
+      // error callback
+      callback(response);
+    }
+  });
+};
+
+var getMeshData = function(solver_url, mesh_name, callback) {
+  Ext.Ajax.request({
+    url: solver_url,
+    method: 'GET',
+    params: {},
+    success: function(response, config) {
+      var solver = JSON.parse(response.responseText);
+
+      var mesh;
+      solver.meshes.forEach(function(_mesh) {
+        if (_mesh.name === mesh_name) {
+          mesh = _mesh;
+        }
+      });
+
+      // callback without error
+      callback(null, mesh);
+    },
+    failure: function(response, config) {
+      // error callback
+      callback(response);
+    }
+  });
+
+};
+
+var doSubmitDownloadWorkflow = function(url, config, params, callback) {
+  params.config = Ext.encode(config);
+
+  Ext.Ajax.request({
+    url: url,
+    params: params,
+    success: function(response, config) {
+      callback(null, response);
+    },
+    failure: function(response, config) {
+      callback(response);
+    }
+  });
+};
+
+var handleSubmitDownloadWorkflow = function(grid, rowIndex, colIndex) {
+  var rec = wfStore.getAt(rowIndex);
+  var runId = rec.get('name');
+  var url = submitDownloadWorkflowURL;
+
+  var config = {
+    'simulationRunId': runId,
+    'runId': 'download_' + runId,
+    'downloadPE': [{
+      'input': {
+        // TODO handle multiple events
+        'endtime': '?',
+        'minimum_interstation_distance_in_m': 100,
+        'channel_priorities': ['BH[E,N,Z]', 'EH[E,N,Z]'],
+        'location_priorities': ['', '00', '10'],
+        'mseed_path': 'mseed',
+        'stationxml_path': 'stationxml'
+      }
+    }]
+  };
+
+  var params = {
+    // TODO
+    'workflowId': downloadWorkflow.workflowId,
+    'ownerId': downloadWorkflow.ownerId,
+    'workflowName': downloadWorkflow.workflowName,
+  };
+
+  // get workflow from prov
+  // && get solver configuration from liferay document store
+  getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf) {
+    if (err != null) {
+      Ext.Msg.alert("Error", err);
+
+      return;
+    }
+
+    // get the events
+    var event_url = prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/');
+
+    getEventData(event_url, function(err, events) {
+      if (err != null) {
+        Ext.Msg.alert("Error", err);
+
+        return;
+      }
+
+      config.downloadPE[0].input.starttime = events[0].startTime;
+
+      if (solver_conf.custom_mesh) {
+        config.downloadPE[0].input.minlatitude = solver_conf.custom_mesh_boundaries.minlat;
+        config.downloadPE[0].input.maxlatitude = solver_conf.custom_mesh_boundaries.maxlat;
+        config.downloadPE[0].input.minlongitude = solver_conf.custom_mesh_boundaries.minlon;
+        config.downloadPE[0].input.maxlongitude = solver_conf.custom_mesh_boundaries.maxlon;
+
+        doSubmitDownloadWorkflow(url, config, params, function(err, res) {
+          console.log(err, res);
+        });
+      } else {
+        // get the meshes for the solver
+        var solver_url = '/j2ep-1.0/prov/solver/' + solver_conf.solver;
+
+        getMeshData(solver_url, solver_conf.mesh, function(err, mesh) {
+          if (err != null) {
+            Ext.Msg.alert("Error", err);
+
+            return;
+          }
+
+          config.downloadPE[0].input.minlatitude = mesh.geo_minLat;
+          config.downloadPE[0].input.maxlatitude = mesh.geo_maxLat;
+          config.downloadPE[0].input.minlongitude = mesh.geo_minLon;
+          config.downloadPE[0].input.maxlongitude = mesh.geo_maxLon;
+
+          doSubmitDownloadWorkflow(url, config, params, function(err, res) {
+            console.log(err, res);
+          });
+        });
+      }
+    });
+  });
 };
 
 Ext.define('CF.view.WfGrid', {
@@ -309,11 +491,15 @@ Ext.define('CF.view.WfGrid', {
     dataIndex: 'date'
   }, {
     xtype: 'actioncolumn',
-    width: 70,
+    width: 85,
     items: [{
       icon: localResourcesPath + '/img/Farm-Fresh_page_white_text.png',
       tooltip: 'Download logfiles',
       handler: handleDownloadLogfiles,
+    }, {
+      icon: localResourcesPath + '/img/download_cloud.png',
+      tooltip: 'Prepare obersvational data',
+      handler: handleSubmitDownloadWorkflow,
     }, {
       icon: localResourcesPath + '/img/eye-3-256.png',
       tooltip: 'View results',

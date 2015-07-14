@@ -125,7 +125,9 @@ public class ForwardPortlet extends MVCPortlet{
 	   if(resourceRequest.getResourceID().equals("uploadFile"))
 		   uploadFile(resourceRequest, resourceResponse);
 	   else if(resourceRequest.getResourceID().equals("submit"))
-		   submit(resourceRequest, resourceResponse);
+		   submitSimulationWorkflow(resourceRequest, resourceResponse);
+       else if(resourceRequest.getResourceID().equals("submitDownloadWorkflow"))
+           submitDownloadWorkflow(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("downloadOutput"))
 		   downloadOutput(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
@@ -398,8 +400,71 @@ public class ForwardPortlet extends MVCPortlet{
         }
         return new String(irodsSession);
     }
+
+    private void submitDownloadWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+        try {
+            User u = PortalUtil.getUser(resourceRequest);
+            String userSN = u.getScreenName();
+            String userId = u.getUserId()+"";
+            
+            String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
+            String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
+
+            System.out.println(workflowId + " / " + ownerId);
+
+            JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
+
+            config.put("user_name", userSN);
+            config.put("user_id", userId);
+
+            System.out.println(config);
+
+            String runId = config.getString("runId");
+            String submitMessage = "Download workflow for " + config.getString("simulationRunId");
+
+            String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
+
+            File solverFile = FileUtil.createTempFile();
+            FileUtil.write(solverFile, config.toString());
+
+            // TODO check port numbers
+            asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Job0", "2");
+            // stagein => Sync for final workflow
+            asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
+
+            Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
+            if(errorVector!=null && !errorVector.isEmpty())
+            {
+                for (WorkflowConfigErrorBean err : errorVector) {
+                    System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+err.getErrorID()+"'! JobName: " + err.getJobName() + " userSN: "+userSN+", runId: "+runId);
+                    if(err.getErrorID().contains("noproxy") || err.getErrorID().contains("proxyexpired"))
+                    {
+                        catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
+                        return;
+                    }
+                }
+            }
+
+            asm_service.submit(userId, importedWfId, submitMessage, "Never");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Vector<WorkflowConfigErrorBean> checkCredentialErrors(String userId, String importedWfId) throws Exception {
+        WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
+
+        ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
+        List resources = rc.get();
+        Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources, userId, wfData);
+        if(errorVector!=null && !errorVector.isEmpty()) {
+            return errorVector;
+        }
+
+        return null;
+    }
    
-   private void submit(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
+   private void submitSimulationWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
    {
 	   try {
 		   asm_service = ASMService.getInstance();
@@ -556,39 +621,34 @@ public class ForwardPortlet extends MVCPortlet{
                    System.out.println("*** Port 0 on job Sync doesn't exist.");
                }
 			   
-			   //7. Check for credential errors
-			   //TODO: we should check just once
-			   WorkflowData wfData = PortalCacheService.getInstance().getUser(userId).getWorkflow(importedWfId);
-
-			   ResourceConfigurationFace rc=(ResourceConfigurationFace)InformationBase.getI().getServiceClient("resourceconfigure", "portal");
-			   List resources = rc.get();
-			   Vector<WorkflowConfigErrorBean> errorVector = (Vector<WorkflowConfigErrorBean>)RealWorkflowUtils.getInstance().getWorkflowConfigErrorVector(resources, userId, wfData);
-			   if(errorVector!=null && !errorVector.isEmpty())
-			   {
-				   for (WorkflowConfigErrorBean er : errorVector) {
-					   System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+er.getErrorID()+"'! userSN: "+userSN+", runId: "+runIds[i]);
-					   if(er.getErrorID().contains("noproxy") || er.getErrorID().contains("proxyexpired"))
-					   {
-						   catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
-						   return;
-					   }
-				   }
-			   }
-			   
 			   //8. Change number of MPI nodes
 			   if(solverType.toLowerCase().contains(Constants.SPECFEM_TYPE))
 			   {
 				   System.out.println("[ForwardModellingPortlet.submitSolver] Set number of processors to "+nProc+", by "+userSN);
 				   asm_service.setJobAttribute(userId, importedWfId, jobName, "gt5.keycount", nProc);
 			   }
-			   
-			   //9. Submit
-			   asm_service.submit(userId, importedWfId, submitMessage, "Never");
-			   
+
+               //TODO: we should check just once
+               Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
+               if(errorVector!=null && !errorVector.isEmpty())
+               {
+                   for (WorkflowConfigErrorBean er : errorVector) {
+                       System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+er.getErrorID()+"'! userSN: "+userSN+", runId: "+runIds[i]);
+                       if(er.getErrorID().contains("noproxy") || er.getErrorID().contains("proxyexpired"))
+                       {
+                           catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission stoped");
+                           return;
+                       }
+                   }
+               }
+
+               asm_service.submit(userId, importedWfId, submitMessage, "Never");
+
                // Log resource information
                ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, jobName);
                System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
 
+			   
 			   //10. Add run info in the Provenance Repository
 			   updateProvenanceRepository(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, evPublicPath, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
 				   

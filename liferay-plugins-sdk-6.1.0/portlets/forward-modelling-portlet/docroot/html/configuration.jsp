@@ -30,6 +30,7 @@ if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
 
 String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
+String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
 
 try{
 	ASMService asm_service = null;
@@ -57,8 +58,33 @@ catch(Exception e){
 		<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 		
 		<aui:input name="preferences--visibleWorkflowIds--" type="input" label="Visible workflows" value="<%=visibleWorkflowIds %>"
-		 	helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'"/>
-		 	
+		 	helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'" first="true"/>
+		
+        <aui:select name="preferences--downloadWorkflowId--" label="Download workflow"
+            helpMessage="The workflow that will serve as download workflow"
+            showEmptyOption="true" last="true">
+<%
+try{
+    ASMService asm_service = null;
+    asm_service = ASMService.getInstance();
+    Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
+    for(String developer : developers)
+    {
+        Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
+        for(ASMRepositoryItemBean workflow : workflows) {
+        %>
+            <aui:option selected='<%= downloadWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= developer + " - " + workflow.getItemID() %></aui:option>
+        <%
+        }
+    }
+}
+catch(Exception e){
+    out.write("<strong>Error</strong>: The list could not be retrieved. Are you connected to guse?<br>");
+    out.write("You can continue working but if you are not connected to guse you are not going to be able to do the import<br>");
+}
+%>
+        </aui:select>
+
 		<aui:button-row>
 			<aui:button type="submit"/>
 		</aui:button-row>

@@ -34,6 +34,8 @@
 
 <liferay-portlet:resourceURL id="downloadVelocityModelDetails" var="downloadVelocityModelDetailsURL" />
 
+<liferay-portlet:resourceURL id="submitDownloadWorkflow" var="submitDownloadWorkflowURL" />
+
 <portlet:resourceURL id="meshVelocityModelUpload" var="meshVelocityModelUploadURL" />
 
 <portlet:resourceURL id="uploadFile" var="uploadFileURL" />
@@ -53,32 +55,35 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
 String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
+String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
+String downloadWorkflowName = "";
+String downloadWorkflowOwner = "";
 
 List<String> wfNames = new ArrayList();
 List<String> wfIds = new ArrayList();
 List<String> ownerIds = new ArrayList();
-try{
+try {
 	ASMService asm_service = null;
 	asm_service = ASMService.getInstance();
 	
 	Vector<String> aut = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
-	for(String a : aut)
-	{
+	for(String a : aut) {
 		Vector<ASMRepositoryItemBean> wfs = asm_service.getWorkflowsFromRepository(a, RepositoryItemTypeConstants.Application);
-		for(ASMRepositoryItemBean i : wfs)
-		{
+		for(ASMRepositoryItemBean i : wfs) {
 			String wfId = i.getId()+"";
-			if(visibleWorkflowIds.contains(wfId))
-			{
+			if(visibleWorkflowIds.contains(wfId)) {
 				wfNames.add(i.getItemID());
 				wfIds.add(wfId);
 				ownerIds.add(a);
 			}
+            if (downloadWorkflowId.equals(wfId)) {
+                downloadWorkflowName = i.getItemID();
+                downloadWorkflowOwner = a;
+            }
 		}
 	}
-
 }
-catch(Exception e){
+catch(Exception e) {
 	wfNames.add("Error. Are you connected to guse?");
 	wfIds.add("Error");
 	ownerIds.add("Error");
@@ -101,6 +106,7 @@ catch(Exception e){
 	var getFileListURL='<%=getFileListURL.toString()%>';
 	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
+    var submitDownloadWorkflowURL='<%=submitDownloadWorkflowURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
@@ -110,18 +116,17 @@ catch(Exception e){
            	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
            <% } %>
        ];
+    var downloadWorkflow = {"workflowName": "<%=downloadWorkflowName%>", "workflowId": "<%=downloadWorkflowId%>", "ownerId": "<%=downloadWorkflowOwner%>"};
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";
 </script>
 
 <%!
-public String getResourcesString(String a, ASMWorkflow w, ASMService asm_service)
-{
+public String getResourcesString(String a, ASMWorkflow w, ASMService asm_service) {
 	String sRes="";
 	Hashtable<String, ASMJob> jobs = w.getJobs();
-	for(String jobName : jobs.keySet())
-	{
+	for(String jobName : jobs.keySet()) {
 		ASMResourceBean res = asm_service.getResource(a, w.getWorkflowName(), jobName);
 		if(!sRes.contains(res.getGrid()))	sRes+=res.getGrid()+", ";
 	}
@@ -129,7 +134,6 @@ public String getResourcesString(String a, ASMWorkflow w, ASMService asm_service
 	sRes = " <div style=\"color:grey\">("+sRes+")</div>";
 	return sRes;
 }
-
 %>
 
 
