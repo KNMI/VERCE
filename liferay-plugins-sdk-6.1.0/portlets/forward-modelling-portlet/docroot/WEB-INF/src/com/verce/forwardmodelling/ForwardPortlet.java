@@ -175,17 +175,15 @@ public class ForwardPortlet extends MVCPortlet{
 	public void getWorkflowList(ResourceRequest req, ResourceResponse res) {
         int offset = Integer.parseInt(ParamUtil.getString(req, "start"));
         int limit = Integer.parseInt(ParamUtil.getString(req, "limit"));
+
         String filterString = ParamUtil.getString(req, "filter");
-        System.out.println(filterString);
         HashMap<String, String> filters = new HashMap<String, String>();
 
         if (filterString != null && !"".equals(filterString)) {
             JSONArray filterList = new JSONArray(filterString);
-            System.out.println(filterList);
 
             for (int ii = 0; ii < filterList.length(); ii++) {
                 JSONObject filter = filterList.getJSONObject(ii);
-                System.out.println(filter);
 
                 filters.put(filter.getString("property"), filter.getString("value"));
             }
