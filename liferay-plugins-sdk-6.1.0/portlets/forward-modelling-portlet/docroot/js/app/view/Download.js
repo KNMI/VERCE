@@ -30,7 +30,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 
   // get workflow from prov
   // && get solver configuration from liferay document store
-  getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf) {
+  getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf, workflow_url) {
     if (err != null) {
       Ext.Msg.alert("Error", err);
 
@@ -46,6 +46,17 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 
         return;
       }
+
+      config.input = [
+        prov_workflow.stations,
+        prov_workflow.quakeml,
+        prov_workflow.solver_conf,
+        prov_workflow.vercepes, {
+          'url': workflow_url,
+          'mime-type': 'text/json',
+          'name': 'simulation-workflow',
+        }
+      ];
 
       config.downloadPE[0].input.ORIGIN_TIME = events[0].startTime;
       config.downloadPE[0].input.DT = Ext.Array.findBy(solver_conf.fields, function(field) {

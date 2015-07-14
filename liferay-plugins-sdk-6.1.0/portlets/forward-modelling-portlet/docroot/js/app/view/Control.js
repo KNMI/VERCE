@@ -41,8 +41,10 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
 };
 
 var getWorkflowAndSolverConf = function(runId, callback) {
+  var url = "/j2ep-1.0/prov/workflow/" + encodeURIComponent(runId);
+
   Ext.Ajax.request({
-    url: "/j2ep-1.0/prov/workflow/" + encodeURIComponent(runId),
+    url: url,
     params: {},
     method: 'GET',
     success: function(response, config) {
@@ -70,7 +72,7 @@ var getWorkflowAndSolverConf = function(runId, callback) {
           }
 
           // callback without error
-          callback(null, prov_workflow, solver_conf);
+          callback(null, prov_workflow, solver_conf, url);
         },
         failure: function(response, config) {
           // error callback
