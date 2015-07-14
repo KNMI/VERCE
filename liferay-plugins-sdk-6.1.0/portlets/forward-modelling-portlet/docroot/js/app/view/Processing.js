@@ -471,6 +471,60 @@ Ext.define('CF.view.ProcessingCenterPanel', {
   }] //,layout: 'vbox'
 });
 
+Ext.define('CF.view.ProcessingSetup', {
+  extend: 'Ext.panel.Panel',
+  alias: 'widget.processing_setup',
+
+  layout: 'border', // border
+  height: "100%",
+  title: 'Processing Setup',
+  bodyBorder: false,
+
+  defaults: {
+    collapsible: false,
+    split: true,
+    bodyPadding: 0
+  },
+
+  items: [{
+    region: 'west',
+    width: 300,
+    height: "100%",
+    layout: 'fit',
+    margins: '0 0 0 0',
+    items: [{
+      xtype: 'processing_tree',
+    }]
+  }, {
+    region: 'center',
+    //height:"100%",
+    layout: 'fit',
+    margins: '0 0 0 0',
+    //items : {layout:"vbox",items:[grid,property_grid]}
+    items: [{
+      xtype: 'processing_center_panel',
+    }],
+  }],
+});
+
+Ext.define('CF.view.DataSetup', {
+  extend: 'Ext.panel.Panel',
+  alias: 'widget.data_setup',
+
+  layout: 'border', // border
+  height: "100%",
+  title: 'Data Setup',
+  bodyBorder: false,
+
+  defaults: {
+    collapsible: false,
+    split: true,
+    bodyPadding: 0
+  },
+
+  items: []
+});
+
 Ext.define('CF.view.Processing', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.processing_panel',
@@ -497,49 +551,9 @@ Ext.define('CF.view.Processing', {
     bodyBorder: false,
 
     items: [{
-      xtype: 'panel',
-      layout: 'border', // border
-      height: "100%",
-      title: 'Data Setup',
-      bodyBorder: false,
-
-      defaults: {
-        collapsible: false,
-        split: true,
-        bodyPadding: 0
-      },
+      xtype: 'data_setup',
     }, {
-      xtype: 'panel',
-      layout: 'border', // border
-      height: "100%",
-      title: 'Processing Setup',
-      bodyBorder: false,
-
-      defaults: {
-        collapsible: false,
-        split: true,
-        bodyPadding: 0
-      },
-
-      items: [{
-        region: 'west',
-        width: 300,
-        height: "100%",
-        layout: 'fit',
-        margins: '0 0 0 0',
-        items: [{
-          xtype: 'processing_tree',
-        }]
-      }, {
-        region: 'center',
-        //height:"100%",
-        layout: 'fit',
-        margins: '0 0 0 0',
-        //items : {layout:"vbox",items:[grid,property_grid]}
-        items: [{
-          xtype: 'processing_center_panel',
-        }],
-      }],
+      xtype: 'processing_setup',
     }, {
       xtype: 'panel',
       layout: 'border', // border
