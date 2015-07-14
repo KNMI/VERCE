@@ -428,50 +428,6 @@ Ext.define('CF.view.WfGrid', {
   }
 });
 
-var refreshMenuControl = [{
-    html: '<strong style="color: #416DA3; position: relative; font-size: 12px; top: -1px;">Submitted workflows</strong>'
-  },
-  "->", {
-    tooltip: 'Refresh list',
-    handler: function() {
-      this.up('panel').down('grid').getStore().removeAll();
-      this.up('panel').down('grid').getStore().load();
-    },
-    style: {
-      background: 'none',
-      backgroundImage: 'url(' + localResourcesPath + '/img/refresh-icon.png)',
-      backgroundSize: '90% 85%',
-      backgroundRepeat: 'no-repeat',
-      height: 32,
-      width: 45,
-      margin: 1,
-      marginRight: '10px'
-    },
-    height: 35,
-    width: 35
-  }, {
-    tooltip: 'Go to Document Library<br>(open in a new win)',
-    height: 32,
-    width: 32,
-    handler: function() {
-      openInNewTab('file-manager');
-    },
-    style: {
-      background: 'none',
-      backgroundImage: 'url(' + localResourcesPath + '/img/folder-icon.png)',
-      backgroundSize: '90% 90%',
-      backgroundRepeat: 'no-repeat',
-      height: 32,
-      width: 32,
-      top: 0,
-      margin: 1,
-      marginRight: '10px'
-    },
-    height: 32,
-    width: 32
-  }
-];
-
 Ext.define('CF.view.Control', {
   extend: 'Ext.form.Panel',
   alias: 'widget.control',
@@ -482,11 +438,31 @@ Ext.define('CF.view.Control', {
       overflowX: 'hidden'
     }
   },
-  dockedItems: [{
-    xtype: 'toolbar',
-    dock: 'top',
-    height: 35,
-    items: refreshMenuControl
+  title: 'Submitted workflows',
+  tools: [{
+    type: 'refresh',
+    tooltip: 'Refresh list',
+    handler: function() {
+      this.up('panel').down('grid').getStore().removeAll();
+      this.up('panel').down('grid').getStore().load();
+    },
+  }, {
+    type: 'custom',
+    tooltip: 'Go to Document Library<br>(open in a new win)',
+    handler: function() {
+      openInNewTab('file-manager');
+    },
+    baseCls: 'x-tool-dl',
+    style: {
+      backgroundImage: 'url(' + localResourcesPath + '/img/folder-icon.png)',
+      backgroundSize: '100% 100%',
+      backgroundRepeat: 'no-repeat',
+      height: 16,
+      width: 16,
+      top: 0,
+      margin: 1,
+      cursor: 'pointer',
+    }
   }],
   initComponent: function() {
     this.items = [{

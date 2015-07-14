@@ -718,22 +718,30 @@ Ext.define('CF.view.RunId', {
   title: 'list of RunID',
   columns: [{
     text: "RunID",
-    dataIndex: '_id'
+    dataIndex: '_id',
+    flex: 2,
   }, {
     text: "Workflow name",
-    dataIndex: 'workflowName'
+    dataIndex: 'workflowName',
+    flex: 1,
   }, {
     text: "Description",
-    dataIndex: 'description'
+    dataIndex: 'description',
+    flex: 2,
   }, {
     text: "Date",
-    dataIndex: 'startTime'
+    dataIndex: 'startTime',
+    flex: 1,
+  }],
+  tools: [{
+    type: 'refresh',
+    tooltip: 'Refresh list',
+    handler: function() {
+      this.up('panel').getStore().removeAll();
+      this.up('panel').getStore().load();
+    },
   }],
   listeners: {
-    // afterRender: function() {
-    //   this.down("pagingtoolbar").store = this.getStore();
-    //   this.getStore().loadPage(1);
-    // },
     rowclick: function(searchgrid, record, e) {
       var me = this;
 

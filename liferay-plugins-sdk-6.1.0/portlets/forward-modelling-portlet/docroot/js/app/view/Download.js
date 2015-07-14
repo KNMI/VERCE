@@ -226,29 +226,6 @@ Ext.define('CF.view.Download', {
           overflowX: 'hidden'
         }
       },
-      dockedItems: [{
-        xtype: 'toolbar',
-        dock: 'top',
-        height: 35,
-        items: ["->", {
-          tooltip: 'Refresh list',
-          handler: function() {
-            this.up('panel').down('grid').getStore().load();
-          },
-          style: {
-            background: 'none',
-            backgroundImage: 'url(' + localResourcesPath + '/img/refresh-icon.png)',
-            backgroundSize: '90% 85%',
-            backgroundRepeat: 'no-repeat',
-            height: 32,
-            width: 45,
-            margin: 1,
-            marginRight: '10px'
-          },
-          height: 35,
-          width: 35
-        }]
-      }],
       items: [{
         xtype: 'form',
         layout: 'anchor',
@@ -256,6 +233,13 @@ Ext.define('CF.view.Download', {
         items: [{
           xtype: 'simulation_selection',
           anchor: '100% 50%',
+          tools: [{
+            type: 'refresh',
+            tooltip: 'Refresh list',
+            handler: function() {
+              this.up('panel').getStore().load();
+            },
+          }],
         }, {
           xtype: 'textarea',
           id: 'download_submit_summary',
