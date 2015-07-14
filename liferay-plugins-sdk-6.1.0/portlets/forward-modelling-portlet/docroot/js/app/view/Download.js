@@ -6,7 +6,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 
   config = {
     'simulationRunId': runId,
-    'runId': 'download_' + runId,
+    'runId': 'download_' + runId.replace(/^simulation_/, ''),
     'downloadPE': [{
       'input': {
         // TODO handle multiple events
