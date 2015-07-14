@@ -2,7 +2,6 @@ var config = null;
 var params = null;
 
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  var workflow = grid.getStore().getAt(rowIndex);
   var runId = workflow.get('name');
 
   config = {
@@ -159,7 +158,11 @@ Ext.define('CF.view.SimulationSelection', {
           rootProperty: 'list'
         }
       },
-      autoLoad: true
+      autoLoad: true,
+      filters: [{
+        property: 'type',
+        value: 'simulation',
+      }]
     });
 
     this.callParent(arguments);
@@ -252,8 +255,9 @@ Ext.define('CF.view.Download', {
           id: 'download_submit_button',
           disabled: true,
           handler: function() {
+            var self = this;
             doSubmitDownloadWorkflow(config, params, function() {
-              this.up('panel').down('grid').getStore().load();
+              self.up('panel').down('grid').getStore().reload();
             });
           },
         }],
