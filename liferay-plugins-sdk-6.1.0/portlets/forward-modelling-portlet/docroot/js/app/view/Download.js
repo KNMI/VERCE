@@ -1,6 +1,6 @@
-Ext.define('CF.view.Misfit', {
+Ext.define('CF.view.Download', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.misfit_panel',
+  alias: 'widget.download_panel',
   requires: [
     'Ext.layout.container.Border'
   ],

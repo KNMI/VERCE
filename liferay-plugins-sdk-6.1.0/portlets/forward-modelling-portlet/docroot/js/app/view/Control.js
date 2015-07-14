@@ -428,8 +428,6 @@ Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.WfGrid',
   store: wfStore,
-  id: 'wfGrid',
-
   viewConfig: {
     enableTextSelection: true,
   },

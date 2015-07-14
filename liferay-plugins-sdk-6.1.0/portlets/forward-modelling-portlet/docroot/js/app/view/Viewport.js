@@ -22,6 +22,8 @@ Ext.define('CF.view.Viewport', {
     'CF.view.ResultsPane',
     'CF.view.Misfit',
     'CF.view.Simulation',
+    'CF.view.Download',
+    'CF.view.Processing'
   ],
 
   id: 'viewport',
@@ -43,12 +45,30 @@ Ext.define('CF.view.Viewport', {
         xtype: 'simulation_panel',
       }]
     }, {
+      xtype: 'panel',
+      title: 'Download',
+      id: 'downloadtab',
+      border: false,
+      layout: 'fit',
+      items: [{
+        xtype: 'download_panel',
+      }]
+    }, {
+      xtype: 'panel',
+      title: 'Processing',
+      id: 'processingtab',
+      border: false,
+      layout: 'fit',
+      items: [{
+        xtype: 'processing_panel',
+      }]
+    }, {
       title: 'Misfit',
       xtype: 'panel',
       border: false,
       layout: 'fit',
       items: [{
-        xtype: 'misfit',
+        xtype: 'misfit_panel',
       }],
     }, {
       xtype: 'panel',

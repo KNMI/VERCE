@@ -77,6 +77,14 @@ Ext.define('CF.view.Simulation', {
       items: [{
         xtype: 'submit'
       }]
+    }, {
+      xtype: 'panel',
+      title: 'Control',
+      border: false,
+      layout: 'fit',
+      items: [{
+        xtype: 'control'
+      }]
     }],
     listeners: {
       'tabchange': function(tabPanel, tab) {
