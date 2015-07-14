@@ -66,7 +66,7 @@ Ext.define('CF.view.SubmitFormPanel', {
   buttons: [{
     text: 'Submit',
     id: 'submitbutton',
-    handler: function() {
+    handler: function(button, event) {
       var submitName = 'simulation_' + Ext.getCmp('submitName').getValue().split(" ").join("_"); //replace ' ' by '_'
       var submitMessage = Ext.getCmp('submitMessage').getValue();
       var wfcombo = Ext.getCmp('wfSelection');
@@ -83,7 +83,7 @@ Ext.define('CF.view.SubmitFormPanel', {
         Ext.getCmp('submitName').focus();
         return;
       }
-      if (submitName.length > 20) {
+      if (submitName.length > (20 + 11)) {
         Ext.Msg.alert("Warning", "Name cannot be longer than 20 characters");
         Ext.getCmp('submitName').focus();
         return;
@@ -139,7 +139,8 @@ Ext.define('CF.view.SubmitFormPanel', {
             Ext.Msg.alert("Success", successMsg);
             Ext.getCmp('submitbutton').enable();
             Ext.getCmp('viewport').setLoading(false);
-            wfStore.load();
+            // TODO FIX
+            // wfStore.load();
           },
           failure: function(response) {
             //alert("response.status (f): "+response.status);
@@ -151,7 +152,8 @@ Ext.define('CF.view.SubmitFormPanel', {
               Ext.Msg.alert("Error", "Submission failed!");
             Ext.getCmp('submitbutton').enable();
             Ext.getCmp('viewport').setLoading(false);
-            wfStore.load();
+            // TODO FIX
+            // wfStore.load();
           }
         });
       }
