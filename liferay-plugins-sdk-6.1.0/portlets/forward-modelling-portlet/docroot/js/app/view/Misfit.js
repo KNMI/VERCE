@@ -572,7 +572,6 @@ Ext.define('CF.view.MisfitCenterPanel', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.misfit_center_panel',
   //renderTo: Ext.getBody(),
-  xtype: 'layout-border',
   requires: [
     'Ext.layout.container.Border'
   ],
@@ -608,7 +607,6 @@ Ext.define('CF.view.MisfitCenterPanel', {
 Ext.define('CF.view.Misfit', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.misfit',
-  xtype: 'layout-border',
   requires: [
     'Ext.layout.container.Border'
   ],
