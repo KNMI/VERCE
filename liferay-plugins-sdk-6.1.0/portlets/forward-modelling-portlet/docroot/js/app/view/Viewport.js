@@ -56,11 +56,6 @@ Ext.define('CF.view.Viewport', {
       id: 'misfittab',
       border: false,
     }, {
-      xtype: 'control',
-      title: 'Control',
-      id: 'controltab',
-      border: false,
-    }, {
       xtype: 'panel', // Earthquake & Station & Common
       id: 'resultstab',
       title: 'Results',
