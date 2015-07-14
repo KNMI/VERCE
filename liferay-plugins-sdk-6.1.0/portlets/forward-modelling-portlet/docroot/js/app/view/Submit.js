@@ -67,7 +67,7 @@ Ext.define('CF.view.SubmitFormPanel', {
     text: 'Submit',
     id: 'submitbutton',
     handler: function(button, event) {
-      var submitName = 'simulation_' + Ext.getCmp('submitName').getValue().split(" ").join("_"); //replace ' ' by '_'
+      var submitName = 'simulation_' + Ext.getCmp('submitName').getValue().split(" ").join("_").replace(/^simulation_/, ''); //replace ' ' by '_'
       var submitMessage = Ext.getCmp('submitMessage').getValue();
       var wfcombo = Ext.getCmp('wfSelection');
       var wfModel = wfcombo.store.findRecord('workflowId', wfcombo.getValue());
