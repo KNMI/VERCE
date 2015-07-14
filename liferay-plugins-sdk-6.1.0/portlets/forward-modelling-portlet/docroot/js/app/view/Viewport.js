@@ -20,6 +20,7 @@ Ext.define('CF.view.Viewport', {
     'CF.view.Submit',
     'CF.view.Control',
     'CF.view.ResultsPane',
+    'CF.view.Misfit',
   ],
 
   id: 'viewport',
@@ -121,6 +122,14 @@ Ext.define('CF.view.Viewport', {
         }
 
       ]
+    }, {
+      title: 'Misfit',
+      xtype: 'panel',
+      border: false,
+      layout: 'fit',
+      items: [{
+        xtype: 'misfit',
+      }],
     }, {
       xtype: 'panel',
       title: 'Control',
