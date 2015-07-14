@@ -53,10 +53,12 @@ Ext.define('CF.view.Viewport', {
     }, {
       xtype: 'misfit_panel',
       title: 'Misfit',
+      id: 'misfittab',
       border: false,
     }, {
       xtype: 'control',
       title: 'Control',
+      id: 'controltab',
       border: false,
     }, {
       xtype: 'panel', // Earthquake & Station & Common
