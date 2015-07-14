@@ -57,7 +57,7 @@ Ext.define('CF.view.dataviews.SolverConf', {
           value: value,
           xtype: 'numberfield',
           allowDecimals: true,
-          allowExponential: true,
+          allowExponential: false,
           decimalPrecision: 3,
           step: record.get('step'),
           listeners: {
