@@ -84,10 +84,10 @@ Ext.define('CF.view.Simulation', {
       layout: 'fit',
       items: [{
         xtype: 'control',
-        controlfilter: {
-          property: 'name',
-          value: /.*/,
-        }
+        filters: [{
+          property: 'type',
+          value: 'download',
+        }]
       }]
     }],
     listeners: {

@@ -1,19 +1,8 @@
-var wfStore = Ext.create('CF.store.Workflow', {
-  proxy: {
-    type: 'ajax',
-    url: getWorkflowListURL,
-    reader: {
-      rootProperty: 'list'
-    }
-  },
-  autoLoad: true
-});
-
 var config = null;
 var params = null;
 
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  var workflow = wfStore.getAt(rowIndex);
+  var workflow = grid.getStore().getAt(rowIndex);
   var runId = workflow.get('name');
 
   config = {
@@ -99,7 +88,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
   });
 };
 
-var doSubmitDownloadWorkflow = function(config, params) {
+var doSubmitDownloadWorkflow = function(config, params, callback) {
   var url = submitDownloadWorkflowURL;
   params.config = Ext.encode(config);
 
@@ -111,7 +100,7 @@ var doSubmitDownloadWorkflow = function(config, params) {
     success: function(response, config) {
       Ext.Msg.alert("Submission succeeded", "The download workflow can now be monitored on the control panel.");
       Ext.getCmp('viewport').setLoading(false);
-      wfStore.load();
+      callback();
     },
     failure: function(response, config) {
       Ext.Msg.alert("Submission failed", response);
@@ -123,7 +112,6 @@ var doSubmitDownloadWorkflow = function(config, params) {
 Ext.define('CF.view.SimulationSelection', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.simulation_selection',
-  store: wfStore,
 
   columns: [{
     text: 'Name',
@@ -163,6 +151,17 @@ Ext.define('CF.view.SimulationSelection', {
   }],
   flex: 1,
   initComponent: function() {
+    this.store = Ext.create('CF.store.Workflow', {
+      proxy: {
+        type: 'ajax',
+        url: getWorkflowListURL,
+        reader: {
+          rootProperty: 'list'
+        }
+      },
+      autoLoad: true
+    });
+
     this.callParent(arguments);
   },
   listeners: {
@@ -216,7 +215,7 @@ Ext.define('CF.view.Download', {
         items: ["->", {
           tooltip: 'Refresh list',
           handler: function() {
-            wfStore.load();
+            this.up('panel').down('grid').getStore().load();
           },
           style: {
             background: 'none',
@@ -253,7 +252,9 @@ Ext.define('CF.view.Download', {
           id: 'download_submit_button',
           disabled: true,
           handler: function() {
-            doSubmitDownloadWorkflow(config, params);
+            doSubmitDownloadWorkflow(config, params, function() {
+              this.up('panel').down('grid').getStore().load();
+            });
           },
         }],
       }],
@@ -264,10 +265,10 @@ Ext.define('CF.view.Download', {
       layout: 'fit',
       items: [{
         xtype: 'control',
-        controlfilter: {
-          property: 'name',
-          value: /download_.*/,
-        }
+        filters: [{
+          property: 'type',
+          value: 'download',
+        }]
       }]
     }],
   }],

@@ -1,23 +1,11 @@
-var wfStore = Ext.create('CF.store.Workflow', {
-  id: 'workflowStore',
-  proxy: {
-    type: 'ajax',
-    url: getWorkflowListURL,
-    reader: {
-      rootProperty: 'list'
-    }
-  },
-  autoLoad: true
-});
-
 var handleDownloadLogfiles = function(grid, rowIndex, colIndex) {
-  var rec = wfStore.getAt(rowIndex);
+  var rec = grid.getStore().getAt(rowIndex);
 
   window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
 };
 
 var handleViewResults = function(grid, rowIndex, colIndex) {
-  var record = wfStore.getAt(rowIndex);
+  var record = grid.getStore().getAt(rowIndex);
 
   var activityStore = Ext.data.StoreManager.lookup('activityStore');
   var artifactStore = Ext.data.StoreManager.lookup('artifactStore');
@@ -100,7 +88,7 @@ var getWorkflowAndSolverConf = function(runId, callback) {
 var handleReuse = function(grid, rowIndex, colIndex) {
   var self = this;
 
-  var rec = wfStore.getAt(rowIndex);
+  var rec = grid.getStore().getAt(rowIndex);
 
   Ext.getCmp('viewport').setLoading(true);
   // number of asynchronous calls remaining
@@ -234,7 +222,7 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
     return;
   }
 
-  var rec = wfStore.getAt(rowIndex);
+  var rec = grid.getStore().getAt(rowIndex);
   Ext.Msg.confirm('Warning', 'Are you sure that you want to delete ' + rec.get('name') + "?",
     function(btn) {
       if (btn === 'yes') {
@@ -246,7 +234,7 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
           },
           waitTitle: 'Deleting from data base',
           success: function(response, config) {
-            wfStore.load();
+            grid.getStore().load();
 
             Ext.Ajax.request({ //delete from provenance
               url: PROV_SERVICE_BASEURL + "workflow/delete/" + rec.get('name'),
@@ -339,7 +327,6 @@ var getMeshData = function(solver_url, mesh_name, callback) {
 Ext.define('CF.view.WfGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.wfgrid',
-  store: wfStore,
   viewConfig: {
     enableTextSelection: true,
   },
@@ -421,6 +408,24 @@ Ext.define('CF.view.WfGrid', {
     }]
   }],
   flex: 1,
+  initComponent: function() {
+    console.log(this.config.filters);
+
+    this.store = Ext.create('CF.store.Workflow', {
+      proxy: {
+        type: 'ajax',
+        url: getWorkflowListURL,
+        reader: {
+          rootProperty: 'list'
+        },
+      },
+      autoLoad: true,
+      filters: this.config.filters,
+      remoteFilter: true,
+    });
+
+    this.callParent(arguments);
+  }
 });
 
 var refreshMenuControl = [{
@@ -429,7 +434,9 @@ var refreshMenuControl = [{
   "->", {
     tooltip: 'Refresh list',
     handler: function() {
-      wfStore.load();
+      console.log(this.up('panel').down('grid').getStore().getFilters());
+      this.up('panel').down('grid').getStore().load();
+      console.log(this.up('panel').down('grid').getStore().getFilters());
     },
     style: {
       background: 'none',
@@ -482,25 +489,31 @@ Ext.define('CF.view.Control', {
     height: 35,
     items: refreshMenuControl
   }],
-  items: [{
-    xtype: 'wfgrid'
-  }],
   initComponent: function() {
-    var self = this;
+    this.items = [{
+      xtype: 'wfgrid',
+      filters: this.filters,
+    }];
 
-    var tab = this.up('#viewport_tabpanel > panel') || this.id === 'controltab' && this;
+    // var store = this.down('grid').getStore();
+    // store.addFilter(this.controlfilter);
 
-    if (tab != null) {
-      tab.on('activate', function() {
-        var store = Ext.data.StoreManager.lookup('workflowStore');
-        store.clearFilter();
-        if (self.controlfilter != null) {
-          store.addFilter(self.controlfilter);
-        }
-      });
-    }
+    // var self = this;
+
+    // var tab = this.up('#viewport_tabpanel > panel') || this.id === 'controltab' && this;
+
+    // if (tab != null) {
+    //   tab.on('activate', function() {
+    //     var store = self.down('grid').getStore();
+    //     store.clearFilter();
+    //     if (self.controlfilter != null) {
+    //       store.addFilter(self.controlfilter);
+    //     }
+    //   });
+    // }
+
     this.callParent(arguments);
-  }
+  },
 });
 
 function statusRenderer(val) {

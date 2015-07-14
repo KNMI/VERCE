@@ -175,10 +175,46 @@ public class ForwardPortlet extends MVCPortlet{
 	public void getWorkflowList(ResourceRequest req, ResourceResponse res) {
         int offset = Integer.parseInt(ParamUtil.getString(req, "start"));
         int limit = Integer.parseInt(ParamUtil.getString(req, "limit"));
-        System.out.println("Fetching runs " + offset + " - " + (offset + limit));
+        String filterString = ParamUtil.getString(req, "filter");
+        System.out.println(filterString);
+        HashMap<String, String> filters = new HashMap<String, String>();
+
+        if (filterString != null && !"".equals(filterString)) {
+            JSONArray filterList = new JSONArray(filterString);
+            System.out.println(filterList);
+
+            for (int ii = 0; ii < filterList.length(); ii++) {
+                JSONObject filter = filterList.getJSONObject(ii);
+                System.out.println(filter);
+
+                filters.put(filter.getString("property"), filter.getString("value"));
+            }
+        }
+
+        System.out.println("Fetching runs " + offset + " - " + (offset + limit) + " with filters: " + filters);
 		try{
 			asm_service = ASMService.getInstance();
 			ArrayList<ASMWorkflow> importedWfs = asm_service.getASMWorkflows(req.getRemoteUser());
+
+            String type = filters.get("type");
+            if (type != null) {
+                java.util.Iterator<ASMWorkflow> iter = importedWfs.iterator();
+                while (iter.hasNext()) {
+                    ASMWorkflow workflow = iter.next();
+
+                    // remove those workflows that begin with a prefix that doesn't match type
+                    if (workflow.getWorkflowName().indexOf(type + "_") >= 0) {
+
+                    } else if (
+                            workflow.getWorkflowName().indexOf("simulation_") >= 0
+                            || workflow.getWorkflowName().indexOf("download_") >= 0
+                            || workflow.getWorkflowName().indexOf("processing_") >= 0
+                            || workflow.getWorkflowName().indexOf("misfit_") >= 0
+                    ) {
+                        iter.remove();
+                    }
+                }
+            }
 
             Collections.sort(importedWfs, new Comparator<ASMWorkflow>() {
                 // sort by date from the workflow name in reverse order
