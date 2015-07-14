@@ -1135,13 +1135,32 @@ Ext.define('CF.view.Processing', {
           xtype: 'button',
           text: 'Submit',
           handler: function(button, event) {
-            tabPanel = button.up('tabpanel');
+            var url = submitProcessingWorkflowURL;
 
+            var params = {};
+
+            tabPanel = button.up('tabpanel');
             var stations = tabPanel.down('station_grid').getJson();
             var PEs = tabPanel.down('processing_grid').getJson();
 
-            console.log(stations);
-            console.log(PEs);
+            params.stations = Ext.encode(stations);
+            params.PEs = Ext.encode(PEs);
+
+            Ext.getCmp('viewport').setLoading(true);
+
+            Ext.Ajax.request({
+              url: url,
+              params: params,
+              success: function(response, config) {
+                Ext.Msg.alert("Submission succeeded", "The processing workflow can now be monitored on the control panel.");
+                Ext.getCmp('viewport').setLoading(false);
+              },
+              failure: function(response, config) {
+                Ext.Msg.alert("Submission failed", response);
+                Ext.getCmp('viewport').setLoading(false);
+              },
+            });
+
           }
         }]
       }],
