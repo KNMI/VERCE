@@ -1133,7 +1133,8 @@ Ext.define('CF.view.Processing', {
 
             tabPanel = button.up('tabpanel');
 
-            var runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+            var simulation_runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+            var run_id = 'processing_' + simulation_runId.replace(/^simulation_/, '') + (new Date()).getTime();
             var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
 
             var stations = tabPanel.down('station_grid').getJson();
@@ -1187,7 +1188,7 @@ Ext.define('CF.view.Processing', {
                 params.quakemlURL = quakemlURL;
                 params.stations = Ext.encode(stations);
                 params.PEs = Ext.encode(PEs);
-                params.runId = runId;
+                params.simulation_runId = simulation_runId;
 
                 Ext.getCmp('viewport').setLoading(true);
 

@@ -548,8 +548,8 @@ public class ForwardPortlet extends MVCPortlet{
 
             System.out.println(workflowId + " / " + ownerId);
 
-            String simulationRunId = resourceRequest.getParameterValues("runId")[0];
-            String runId = "processing_" + simulationRunId;
+            String simulationRunId = resourceRequest.getParameterValues("simulation_runId")[0];
+            String runId = resourceRequest.getParameterValues("simulation_runId")[0];
 
             JSONObject stations = new JSONObject(resourceRequest.getParameterValues("stations")[0]);
             JSONObject pipelines = new JSONObject(resourceRequest.getParameterValues("PEs")[0]);
