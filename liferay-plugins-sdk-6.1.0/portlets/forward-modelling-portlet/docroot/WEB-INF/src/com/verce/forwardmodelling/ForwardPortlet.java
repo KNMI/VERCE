@@ -548,7 +548,7 @@ public class ForwardPortlet extends MVCPortlet{
 
         return null;
     }
-   
+
    private void submitSimulationWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
    {
 	   try {
@@ -568,12 +568,9 @@ public class ForwardPortlet extends MVCPortlet{
 		   String jobName = "Job0";
 		   String submitMessage = ParamUtil.getString(resourceRequest, "submitMessage");
 		   String nProc = ParamUtil.getString(resourceRequest, "nProc");
-		   boolean eventDLFile = eventUrl.contains("documents");
 		   boolean stationDLFile = stationUrl.contains("documents");
 		   File stationFile = null;
-		   File eventFile = null;
 		   String stPublicPath;
-		   String evPublicPath;
 		   long groupId = PortalUtil.getScopeGroupId(resourceRequest);
 		   long repositoryId = DLFolderConstants.getDataRepositoryId(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 		   ServiceContext serviceContext = new ServiceContext();
@@ -583,12 +580,11 @@ public class ForwardPortlet extends MVCPortlet{
 		   String currentURL = PortalUtil.getCurrentURL(resourceRequest);
 		   String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
 		   portalUrl += portal;
-		   
-		   String portalUrl2 = PortalUtil.getPortalURL(resourceRequest);
 
-		   if(portalUrl2.equals("http://localhost:8081")) {
-                portalUrl2 = "http://localhost:8080";	//TODO: careful
-            }
+           String portalUrl2 = PortalUtil.getPortalURL(resourceRequest);
+           if(portalUrl2.equals("http://localhost:8081")) {
+                portalUrl2 = "http://localhost:8080";   //TODO: careful
+           }
 
 		   // System.out.println("Try to fetch workflow zip from repository for workflow with ID: " + workflowId);
 		   String job0bin = "";
@@ -650,26 +646,10 @@ public class ForwardPortlet extends MVCPortlet{
 			   stationFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
 			   stPublicPath = stationUrl;
 		   }
-		   
-		   if(!eventDLFile)	 //2a. create EventFile and store it
-		   {
-			   eventFile = FileUtil.createTempFile();
-			   URL wsUrl = new URL(portalUrl2+eventUrl);
-			   FileUtil.write(eventFile, wsUrl.openStream());
-			   String evFileName = "events_"+runIds[0];
-			   evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
-			   evPublicPath = portalUrl + evPublicPath;
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
-		   }
-		   else	 			//2b. Retrieve EventFile
-		   {
-			   String[] urlParts = eventUrl.split("/");
-			   long folderId = Long.parseLong(urlParts[urlParts.length - 2]);
-			   String evFileName = urlParts[urlParts.length - 1];
-			   FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, evFileName);
-			   eventFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
-			   evPublicPath = eventUrl;
-		   }
+
+           // 2. EventFile (QuakeML)
+           String evPublicPath = "";
+           File eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runIds[0], userSN, groupId, evPublicPath);
 		   
 		   //3. Generate zip file
 		   String zipName = runIds[0]+".zip";
@@ -745,6 +725,29 @@ public class ForwardPortlet extends MVCPortlet{
 	   {
 		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception catched!");
 	   }
+   }
+
+   public File downloadAndStoreEventFile(String portalURL, String portalURL2, String eventUrl, String runId, String userSN, long groupId, String evPublicPath) throws Exception {
+        File eventFile;
+
+       if(!eventUrl.contains("documents")) { // eventfile not from documentLibrary
+           eventFile = FileUtil.createTempFile();
+           URL wsUrl = new URL(portalURL2+eventUrl);
+           FileUtil.write(eventFile, wsUrl.openStream());
+           String evFileName = "events_"+runId;
+           evPublicPath = addFileToDL(eventFile, evFileName, groupId, userSN, Constants.WS_TYPE);
+           evPublicPath = portalURL + evPublicPath;
+           System.out.println("[ForwardModellingPortlet.submitSolver] Events file created in the document library by "+userSN+", accessible in: "+evPublicPath);
+       } else {
+           String[] urlParts = eventUrl.split("/");
+           long folderId = Long.parseLong(urlParts[urlParts.length - 2]);
+           String evFileName = urlParts[urlParts.length - 1];
+           FileEntry fileEntry = DLAppServiceUtil.getFileEntry(groupId, folderId, evFileName);
+           eventFile = DLFileEntryLocalServiceUtil.getFile(fileEntry.getUserId(), fileEntry.getFileEntryId(), fileEntry.getVersion(), false);
+           evPublicPath = eventUrl;
+       }
+
+       return eventFile;
    }
 
    public void downloadOutput(ResourceRequest resourceRequest,
