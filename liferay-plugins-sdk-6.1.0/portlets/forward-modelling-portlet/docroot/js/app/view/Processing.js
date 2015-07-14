@@ -713,6 +713,9 @@ Ext.define('CF.view.RunId', {
 
   title: 'list of RunID',
   columns: [{
+    text: "RunID",
+    dataIndex: '_id'
+  }, {
     text: "Workflow name",
     dataIndex: 'workflowName'
   }, {
