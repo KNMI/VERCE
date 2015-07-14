@@ -466,7 +466,13 @@ public class ForwardPortlet extends MVCPortlet{
             // TODO check port numbers
             asm_service.placeUploadedFile(userId, solverFile, importedWfId, "Job0", "2");
             // stagein => Sync for final workflow
-            asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
+
+            // temporary for fake workflow
+            try {
+                asm_service.placeUploadedFile(userId, solverFile, importedWfId, "sync", "0");
+            } catch (Exception e) {
+
+            }
 
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
@@ -482,6 +488,12 @@ public class ForwardPortlet extends MVCPortlet{
             }
 
             asm_service.submit(userId, importedWfId, submitMessage, "Never");
+
+            // Log resource information
+            ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, "Job0");
+            System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
+
+            JSONObject provenanceData = new JSONObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -541,7 +553,17 @@ public class ForwardPortlet extends MVCPortlet{
             append.write(pipelines.toString().getBytes("utf-8"));
             append.closeEntry();
 
+            append.putNextEntry(new ZipEntry("quakeml"));
+            FileInputStream fileInputStream = new FileInputStream(eventFile.file);
+            byte[] buffer = new byte[1024];
+            int charsRead = 0;
+            while ((charsRead = fileInputStream.read(buffer)) > 0) {
+                append.write(buffer, 0, charsRead);
+            };
+            append.closeEntry();
+
             // close
+            fileInputStream.close();
             append.close();
             asm_service.placeUploadedFile(userId, tmpFile, importedWfId, "Job0", "1");
 
@@ -559,6 +581,11 @@ public class ForwardPortlet extends MVCPortlet{
             }
 
             asm_service.submit(userId, importedWfId, submitMessage, "Never");
+
+            // Log resource information
+            ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, "Job0");
+            System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
