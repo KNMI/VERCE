@@ -26,15 +26,16 @@ Ext.define('CF.view.Viewport', {
   items: [{
     xtype: 'tabpanel',
     id: 'viewport_tabpanel',
-    border: 'false',
+    border: false,
     layout: 'border',
     defaults: {
       split: true
     },
     items: [{
-      title: 'Setup',
+      title: 'Simulation',
+      id: 'simulationtab',
       xtype: 'panel',
-      border: 'false',
+      border: false,
       layout: 'border',
       defaults: {
         split: true
@@ -111,14 +112,6 @@ Ext.define('CF.view.Viewport', {
             items: [{
               xtype: 'submit'
             }]
-          }, {
-            xtype: 'panel',
-            title: 'Control',
-            border: false,
-            layout: 'fit',
-            items: [{
-              xtype: 'control'
-            }]
           }],
           listeners: {
             'tabchange': function(tabPanel, tab) {
@@ -128,6 +121,14 @@ Ext.define('CF.view.Viewport', {
         }
 
       ]
+    }, {
+      xtype: 'panel',
+      title: 'Control',
+      border: false,
+      layout: 'fit',
+      items: [{
+        xtype: 'control'
+      }]
     }, {
       xtype: 'panel', // Earthquake & Station & Common
       id: 'resultstab',
