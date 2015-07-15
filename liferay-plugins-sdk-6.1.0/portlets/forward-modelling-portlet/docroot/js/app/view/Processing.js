@@ -682,7 +682,7 @@ Ext.define('CF.model.RunId', {
 
 
 Ext.define('CF.store.RunId', {
-  extend: 'Ext.data.Store',
+  extend: 'Ext.data.BufferedStore',
   model: 'CF.model.RunId',
   totalProperty: 'totalCount',
 
