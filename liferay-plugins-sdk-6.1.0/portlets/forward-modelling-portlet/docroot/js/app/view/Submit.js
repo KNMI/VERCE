@@ -248,7 +248,7 @@ function createSubmitObject(submitName, multipleSubmits) {
       fields: Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data'),
       stations: stations,
       events: multipleSubmits ? [events[i]] : events,
-      runId: submitName + i + (new Date()).getTime(),
+      runId: submitName + i + '_' + (new Date()).getTime(),
       user_name: userSN,
       user_id: userId,
       station_url: gl_stationUrl,
