@@ -548,23 +548,22 @@ public class ForwardPortlet extends MVCPortlet{
 
             System.out.println(workflowId + " / " + ownerId);
 
-            String simulationRunId = resourceRequest.getParameterValues("simulation_runId")[0];
-            String runId = resourceRequest.getParameterValues("simulation_runId")[0];
+            String runId = resourceRequest.getParameterValues("runId")[0];
 
-            JSONObject stations = new JSONObject(resourceRequest.getParameterValues("stations")[0]);
+            JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
             JSONObject pipelines = new JSONObject(resourceRequest.getParameterValues("PEs")[0]);
             JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
 
             System.out.println(runId);
-            System.out.println(stations);
+            System.out.println(config);
             System.out.println(pipelines);
 
-            String description = "Processing workflow for " + simulationRunId;
+            String description = resourceRequest.getParameterValues("description")[0];
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
 
             File processing_conf = FileUtil.createTempFile();
-            FileUtil.write(processing_conf, stations.toString());
+            FileUtil.write(processing_conf, config.toString());
             String processing_conf_path = addFileToDL(processing_conf, runId+"_processing_conf.json", groupId, userSN, Constants.ZIP_TYPE);
             input.put(new JSONObject().put("name", "processing_conf").put("url", processing_conf_path).put("mime-type", "text/json"));
 
@@ -609,7 +608,7 @@ public class ForwardPortlet extends MVCPortlet{
             asm_service.placeUploadedFile(userId, tmpFile, importedWfId, "Job0", "1");
 
             File pe_conf = FileUtil.createTempFile();
-            FileUtil.write(pe_conf, stations.toString());
+            FileUtil.write(pe_conf, config.toString());
             String pe_conf_path = addFileToDL(pe_conf, runId+"_pe_conf.json", groupId, userSN, Constants.ZIP_TYPE);
             input.put(new JSONObject().put("name", "pe_conf").put("url", pe_conf_path).put("mime-type", "text/json"));
 

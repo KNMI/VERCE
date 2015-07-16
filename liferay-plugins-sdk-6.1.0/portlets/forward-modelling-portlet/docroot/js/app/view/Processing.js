@@ -190,10 +190,11 @@ Ext.define('CF.view.ProcessingGrid', {
     }
   },
   getJson: function() {
-
+    var output_units = this.down("#output_combo").getValue();
+    output_units = output_units != null ? output_units : "N/A";
 
     var msg = {
-      "output_units": this.down("#output_combo").getValue(),
+      "output_units": output_units,
       "rotate_to_ZRT": this.down("#rotation_checkbox").getValue(),
       "data_processing": [],
       "synthetics_processing": []
@@ -916,14 +917,26 @@ Ext.define('CF.view.StationGrid', {
         raw_stagein_from.push(r.data.raw_stagein_from);
       }
     });
+
+    var simulation_runId = 'N/A';
+    var runId = 'N/A';
+    var selected_simulations = this.up().down('#simulation_runs').getSelectionModel().getSelection();
+    if (selected_simulations.length >= 1) {
+      simulation_runId = this.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+      runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();
+    }
+
     var result = {
+      "username": userSN,
+      "runId": runId,
       "data": [{
         "input": {
-          "data_dir": "run_id/data",
-          "synt_dir": "run_id/synth",
-          "events_dir": "./",
-          "stations_dir": "run_id/stationxml",
-          "output_dir": "run_id/output",
+          "data_dir": "./data",
+          "synt_dir": "./synth",
+          "events_dir": "../../quakeml",
+          "event_id": "<set upon submission>",
+          "stations_dir": "./stationxml",
+          "output_dir": "./output",
           "data_stagein_from": data_stagein_from,
           "raw_stagein_from": raw_stagein_from,
           "network": networks,
@@ -1146,13 +1159,9 @@ Ext.define('CF.view.Processing', {
 
             tabPanel = button.up('tabpanel');
 
-            var simulation_runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
-            var run_id = 'processing_' + simulation_runId.replace(/^simulation_/, '') + (new Date()).getTime();
-            var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
+            var wfConfig = tabPanel.down('station_grid').getJson();
 
-            var stations = tabPanel.down('station_grid').getJson();
-
-            if (stations.data[0].input.station.length <= 0) {
+            if (wfConfig.data[0].input.station.length <= 0) {
               Ext.Msg.alert('No stations', 'Please select one or more stations on the Data Setup tab.');
               return;
             }
@@ -1164,64 +1173,52 @@ Ext.define('CF.view.Processing', {
               return;
             }
 
-            Ext.Ajax.request({
-              url: '/j2ep-1.0/prov/workflow/' + runId,
-              success: function(response, config) {
-                var workflowProv = JSON.parse(response.responseText);
-                var quakemlURL;
-                var solver_conf;
-                var vercepes;
-                workflowProv.input.forEach(function(input) {
-                  if (input.name === 'quakeml') {
-                    quakemlURL = input.url;
-                  } else if (input.name === 'solver_conf') {
-                    solver_conf = input.url;
-                  } else if (input.name === 'vercepes') {
-                    vercepes = input.url;
-                  }
-                });
+            if (PEs.output_units == null) {
+              Ext.Msg.alert("Please choose an output unit");
+              return;
+            }
 
-                params.input = [{
-                    'name': 'quakeml',
-                    'mime-type': 'application/xml',
-                    'url': quakemlURL,
-                  }, {
-                    'url': '/j2ep-1.0/prov/workflow/' + runId,
-                    'mime-type': 'text/json',
-                    'name': 'simulation-workflow',
-                  }, {
-                    'url': '/j2ep-1.0/prov/workflow/' + download_runId,
-                    'mime-type': 'text/json',
-                    'name': 'download-workflow',
-                  },
-                  solver_conf,
-                  vercepes,
-                ];
+            var simulation_runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
+            var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
+            var runId = wfConfig.runId;
 
-                params.quakemlURL = quakemlURL;
-                params.stations = Ext.encode(stations);
-                params.PEs = Ext.encode(PEs);
-                params.simulation_runId = simulation_runId;
+            getWorkflowAndSolverConf(simulation_runId, function(err, workflowProv, solverconf_json) {
+              wfConfig.event_id = solverconf_json['events'][0];
 
-                Ext.getCmp('viewport').setLoading(true);
+              params.input = Ext.encode([workflowProv.quakeml, {
+                  'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
+                  'mime-type': 'text/json',
+                  'name': 'simulation-workflow',
+                }, {
+                  'url': '/j2ep-1.0/prov/workflow/' + download_runId,
+                  'mime-type': 'text/json',
+                  'name': 'download-workflow',
+                },
+                workflowProv.solverconf,
+                workflowProv.vercepes,
+              ]);
 
-                Ext.Ajax.request({
-                  url: url,
-                  params: params,
-                  success: function(response, config) {
-                    Ext.Msg.alert("Submission succeeded", "The processing workflow can now be monitored on the control panel.");
-                    Ext.getCmp('viewport').setLoading(false);
-                  },
-                  failure: function(response, config) {
-                    Ext.Msg.alert("Submission failed", response);
-                    Ext.getCmp('viewport').setLoading(false);
-                  },
-                });
+              params.config = Ext.encode(wfConfig);
+              params.PEs = Ext.encode(PEs);
+              params.runId = runId;
+              params.description = "Processing for " + simulation_runId + " and " + download_runId;
+              params.quakemlURL = workflowProv.quakeml.url;
 
-              },
-              failure: function(response, config) {
+              Ext.getCmp('viewport').setLoading(true);
 
-              }
+              Ext.Ajax.request({
+                url: url,
+                params: params,
+                success: function(response, config) {
+                  Ext.Msg.alert("Submission succeeded", "The processing workflow can now be monitored on the control panel.");
+                  Ext.getCmp('viewport').setLoading(false);
+                },
+                failure: function(response, config) {
+                  Ext.Msg.alert("Submission failed", response);
+                  Ext.getCmp('viewport').setLoading(false);
+                },
+              });
+
             });
           }
         }]
