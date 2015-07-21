@@ -562,7 +562,6 @@ function updateSimulationStation(newStore) {
 
     }
   }
-
 }
 
 function updateRawStation(newStore) {
@@ -893,7 +892,17 @@ Ext.define('CF.view.StationGrid', {
   alias: 'widget.station_grid',
   initComponent: function() {
     this.store = Ext.create('Ext.data.Store', {
-      model: 'CF.model.MisfitStation'
+      model: 'CF.model.MisfitStation',
+      sorters: [{
+        sorterFn: function(record1, record2) {
+          var scoreFn = function(record) {
+            return (record.get("isFromDataStage") ? 2 : 0) + (record.get("isFromRawStage") ? 1 : -1);
+          };
+
+          return scoreFn(record1) > scoreFn(record2) ? 1 : (scoreFn(record1) === scoreFn(record2) ? 0 : -1);
+        },
+        direction: 'DESC',
+      }]
     });
 
     this.callParent(arguments);
