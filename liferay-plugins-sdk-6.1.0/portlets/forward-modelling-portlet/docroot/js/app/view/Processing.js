@@ -91,7 +91,8 @@ Ext.define('CF.view.ProcessingGrid', {
     xtype: "combo",
     itemId: "output_combo",
     store: ["velocity", "displacement", "acceleration"],
-    fieldLabel: 'output unit'
+    fieldLabel: 'output unit',
+    value: "velocity"
   }, {
     xtype: "checkbox",
     itemId: "rotation_checkbox",
@@ -228,7 +229,8 @@ Ext.define('CF.view.ProcessingGrid', {
             "type": "plot_stream",
             "parameters": {
               "source": r.data.name,
-              "tag": "data"
+              "tag": "data",
+              "output_dir": "./output-images/"
             }
           });
         }
@@ -238,7 +240,8 @@ Ext.define('CF.view.ProcessingGrid', {
             "type": "store_stream",
             "parameters": {
               "source": r.data.name,
-              "tag": "data"
+              "tag": "data",
+              "output_dir": "./output-intermediate/"
             }
           });
         }
@@ -272,7 +275,8 @@ Ext.define('CF.view.ProcessingGrid', {
             "type": "plot_stream",
             "parameters": {
               "source": r.data.name,
-              "tag": "synt"
+              "tag": "synt",
+              "output_dir": "./output-images/"
             }
           });
         }
@@ -282,7 +286,8 @@ Ext.define('CF.view.ProcessingGrid', {
             "type": "store_stream",
             "parameters": {
               "source": r.data.name,
-              "tag": "synt"
+              "tag": "synt",
+              "output_dir": "./output-intermediate/"
             }
           });
         }
@@ -494,7 +499,7 @@ Ext.define('CF.model.MisfitStation', {
     /*
             {name: 'isFromDataStage',     type: 'boolean'},
             {name: 'isFromRawStage',     type: 'boolean'},
-            {name: 'data_stagein_from',     type: 'array'},
+            {name: 'syn_stagein_from',     type: 'array'},
             {name: 'raw_stagein_from',     type: 'array'},
             */
   ]
@@ -514,7 +519,7 @@ function updateSimulationStation(newStore) {
     if (d.data.isFromDataStage == true) {
       if (d.data.isFromRawStage == true) {
         d.data.isFromDataStage = false;
-        d.data.data_stagein_from = [];
+        d.data.syn_stagein_from = [];
       } else {
         stationToRemove.add(d);
       }
@@ -539,8 +544,6 @@ function updateSimulationStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          data_stagein_from = [location];
-          raw_stagein_from = [];
           stationStore.add({
             network: net,
             station: sta,
@@ -548,12 +551,13 @@ function updateSimulationStation(newStore) {
             selected: false,
             isFromDataStage: true,
             isFromRawStage: false,
-            data_stagein_from: data_stagein_from,
-            raw_stagein_from: raw_stagein_from
+            syn_stagein_from: [location],
+            raw_stagein_from: [],
+            stationxml_stagein_from: null
           });
         } else {
           // station already in array but we have to add location                       
-          station.get("data_stagein_from").push(location);
+          station.get("syn_stagein_from").push(location);
           station.set("isFromDataStage", true);
 
         }
@@ -594,6 +598,8 @@ function updateRawStation(newStore) {
     var d = newStore.getAt(i);
     var content = d.content();
     var location = d.data.location;
+    // TODO replace with more robust extra call for data from provenance
+    var stationxml_location = location.replace(/mseed\/([^.]*\.[^.]*)\.\.[^.]*\.mseed/g, "stationxml/$1.xml");
     for (var j = 0; j < content.getCount(); j++) {
       var e = content.getAt(j);
       var sta = e.get("station");
@@ -602,8 +608,6 @@ function updateRawStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          data_stagein_from = [];
-          raw_stagein_from = [location];
           stationStore.add({
             network: net,
             station: sta,
@@ -611,12 +615,14 @@ function updateRawStation(newStore) {
             selected: false,
             isFromDataStage: false,
             isFromRawStage: true,
-            data_stagein_from: data_stagein_from,
-            raw_stagein_from: raw_stagein_from
+            syn_stagein_from: [],
+            raw_stagein_from: [location],
+            stationxml_stagein_from: stationxml_location
           });
         } else {
-          // station already in array but we have to add location                       
+          // station already in array but we have to add location
           station.get("raw_stagein_from").push(location);
+          station.set("stationxml_stagein_from", stationxml_location);
           station.set("isFromRawStage", true);
         }
       }
@@ -915,15 +921,17 @@ Ext.define('CF.view.StationGrid', {
 
     var networks = [];
     var stations = [];
-    var data_stagein_from = [];
+    var syn_stagein_from = [];
     var raw_stagein_from = [];
+    var stationxml_stagein_from = [];
 
     $.each(this.getStore().getRange(), function(i, r) {
       if (r.data.selected) {
         networks.push(r.data.network);
         stations.push(r.data.station);
-        data_stagein_from.push(r.data.data_stagein_from);
+        syn_stagein_from.push(r.data.syn_stagein_from);
         raw_stagein_from.push(r.data.raw_stagein_from);
+        stationxml_stagein_from.push(r.data.stationxml_stagein_from);
       }
     });
 
@@ -938,21 +946,35 @@ Ext.define('CF.view.StationGrid', {
     var result = {
       "username": userSN,
       "runId": runId,
-      "data": [{
+      "readJSONstgin": [{
         "input": {
           "data_dir": "./data",
           "synt_dir": "./synth",
-          "events_dir": "../../quakeml",
+          "events": "../../quakeml",
           "event_id": "<set upon submission>",
           "stations_dir": "./stationxml",
           "output_dir": "./output",
-          "data_stagein_from": data_stagein_from,
+          "syn_stagein_from": syn_stagein_from,
           "raw_stagein_from": raw_stagein_from,
+          "stationxml_stagein_from": stationxml_stagein_from,
           "network": networks,
           "station": stations
         }
-
-
+      }],
+      "readDataPE": [{
+        "input": {
+          "data_dir": "./data",
+          "synt_dir": "./synth",
+          "events": "../../quakeml",
+          "event_id": "<set upon submission>",
+          "stations_dir": "./stationxml",
+          "output_dir": "./output",
+          "syn_stagein_from": syn_stagein_from,
+          "raw_stagein_from": raw_stagein_from,
+          "stationxml_stagein_from": stationxml_stagein_from,
+          "network": networks,
+          "station": stations
+        }
       }]
     };
     return result;
@@ -1048,7 +1070,7 @@ Ext.define('CF.view.DataSetup', {
       maxvalues: "velocity",
       minvalues: "velocity",
       start: 0,
-      limit: 100
+      limit: 99999
     },
     store: {
       proxy: {
@@ -1065,7 +1087,9 @@ Ext.define('CF.view.DataSetup', {
     width: '50%',
     title: 'raw-data download runs',
     rowExtraParams: {
-      activities: "PE_waveform_reader"
+      activities: "PE_waveform_reader",
+      start: 0,
+      limit: 99999
     },
     store: {
       proxy: {
@@ -1170,7 +1194,7 @@ Ext.define('CF.view.Processing', {
 
             var wfConfig = tabPanel.down('station_grid').getJson();
 
-            if (wfConfig.data[0].input.station.length <= 0) {
+            if (wfConfig.readJSONstgin[0].input.station.length <= 0) {
               Ext.Msg.alert('No stations', 'Please select one or more stations on the Data Setup tab.');
               return;
             }
@@ -1192,7 +1216,12 @@ Ext.define('CF.view.Processing', {
             var runId = wfConfig.runId;
 
             getWorkflowAndSolverConf(simulation_runId, function(err, workflowProv, solverconf_json) {
+              if (err != null) {
+                Ext.Msg.alert("Run missing", "Run missing from provenance, please try again with a different run.");
+              }
               wfConfig.event_id = solverconf_json['events'][0];
+              wfConfig.readJSONstgin[0].input.event_id = solverconf_json['events'][0];
+              wfConfig.readDataPE[0].input.event_id = solverconf_json['events'][0]
 
               params.input = Ext.encode([workflowProv.quakeml, {
                   'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
@@ -1252,8 +1281,8 @@ Ext.define('CF.view.Processing', {
           var stations = tabPanel.down('station_grid').getJson();
           var PEs = tabPanel.down('processing_grid').getJson();
 
-          tabPanel.down('#processing_submit_stations').setValue(JSON.stringify(stations));
-          tabPanel.down('#processing_submit_pes').setValue(JSON.stringify(PEs));
+          tabPanel.down('#processing_submit_stations').setValue(JSON.stringify(stations, null, 2));
+          tabPanel.down('#processing_submit_pes').setValue(JSON.stringify(PEs, null, 2));
         }
       }
     }

@@ -61,6 +61,11 @@ var getWorkflowAndSolverConf = function(runId, callback) {
       });
       delete prov_workflow.input;
 
+      if (prov_workflow.solverconf == null) {
+        Ext.Msg.alert("Error", "Provenance information incomplete. Please select another run.");
+        return;
+      }
+
       Ext.Ajax.request({
         url: prov_workflow.solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
         success: function(response, config) {
