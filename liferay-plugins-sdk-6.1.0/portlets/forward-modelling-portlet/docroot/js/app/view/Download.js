@@ -1,10 +1,7 @@
-var config = null;
-var params = null;
-
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
   var runId = workflow.get('_id');
 
-  config = {
+  var config = Ext.getCmp('download_submit_button').verceConfig = {
     'simulationRunId': runId,
     'runId': 'download_' + runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime(),
     'downloadPE': [{
@@ -21,7 +18,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
     }]
   };
 
-  params = {};
+  var params = Ext.getCmp('download_submit_button').verceParams = {};
 
   // get workflow from prov
   // && get solver configuration from liferay document store
@@ -42,7 +39,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
         return;
       }
 
-      params.input = [
+      params.input = Ext.encode([
         prov_workflow.stations,
         prov_workflow.quakeml,
         prov_workflow.solver_conf,
@@ -51,7 +48,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
           'mime-type': 'text/json',
           'name': 'simulation-workflow',
         }
-      ];
+      ]);
 
       config.downloadPE[0].input.ORIGIN_TIME = events[0].startTime;
       config.downloadPE[0].input.DT = Ext.Array.findBy(solver_conf.fields, function(field) {
@@ -255,7 +252,7 @@ Ext.define('CF.view.Download', {
           disabled: true,
           handler: function() {
             var self = this;
-            doSubmitDownloadWorkflow(config, params, function() {
+            doSubmitDownloadWorkflow(this.verceConfig, this.verceParams, function() {
               self.up('panel').down('grid').getStore().reload();
             });
           },
