@@ -38,6 +38,8 @@
 
 <liferay-portlet:resourceURL id="submitProcessingWorkflow" var="submitProcessingWorkflowURL" />
 
+<liferay-portlet:resourceURL id="submitMisfitWorkflow" var="submitMisfitWorkflowURL" />
+
 <portlet:resourceURL id="meshVelocityModelUpload" var="meshVelocityModelUploadURL" />
 
 <portlet:resourceURL id="uploadFile" var="uploadFileURL" />
@@ -65,6 +67,10 @@ String processingWorkflowId = preferences.getValue("processingWorkflowId", "");
 String processingWorkflowName = "";
 String processingWorkflowOwner = "";
 
+String misfitWorkflowId = preferences.getValue("misfitWorkflowId", "");
+String misfitWorkflowName = "";
+String misfitWorkflowOwner = "";
+
 List<String> wfNames = new ArrayList();
 List<String> wfIds = new ArrayList();
 List<String> ownerIds = new ArrayList();
@@ -89,6 +95,10 @@ try {
             if (processingWorkflowId.equals(wfId)) {
                 processingWorkflowName = i.getItemID();
                 processingWorkflowOwner = developer;
+            }
+            if (misfitWorkflowId.equals(wfId)) {
+                misfitWorkflowName = i.getItemID();
+                misfitWorkflowOwner = developer;
             }
 		}
 	}
@@ -118,6 +128,7 @@ catch(Exception e) {
 	var submitSolverURL='<%=submitSolverURL.toString()%>';
     var submitDownloadWorkflowURL='<%=submitDownloadWorkflowURL.toString()%>';
     var submitProcessingWorkflowURL='<%=submitProcessingWorkflowURL.toString()%>';
+    var submitMisfitWorkflowURL='<%=submitMisfitWorkflowURL.toString()%>';
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
@@ -129,6 +140,7 @@ catch(Exception e) {
        ];
     var downloadWorkflow = <%=((downloadWorkflowName != null && !downloadWorkflowName.trim().equals("") && downloadWorkflowId != null && !downloadWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + downloadWorkflowName + "\", \"workflowId\": \"" + downloadWorkflowId + "\", \"ownerId\": \"" + downloadWorkflowOwner + "\"}" : "null")%>;
     var processingWorkflow = <%=((processingWorkflowName != null && !processingWorkflowName.trim().equals("") && processingWorkflowId != null && !processingWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + processingWorkflowName + "\", \"workflowId\": \"" + processingWorkflowId + "\", \"ownerId\": \"" + processingWorkflowOwner + "\"}" : "null")%>;
+    var misfitWorkflow = <%=((misfitWorkflowName != null && !misfitWorkflowName.trim().equals("") && misfitWorkflowId != null && !misfitWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + misfitWorkflowName + "\", \"workflowId\": \"" + misfitWorkflowId + "\", \"ownerId\": \"" + misfitWorkflowOwner + "\"}" : "null")%>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";

@@ -32,6 +32,7 @@ if (portletResource!=null && !portletResource.equals(""))
 String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
 String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
 String processingWorkflowId = preferences.getValue("processingWorkflowId", "");
+String misfitWorkflowId = preferences.getValue("misfitWorkflowId", "");
 
 try{
 	ASMService asm_service = null;
@@ -100,6 +101,31 @@ try{
         for(ASMRepositoryItemBean workflow : workflows) {
         %>
             <aui:option selected='<%= processingWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
+        <%
+        }
+    }
+}
+catch(Exception e){
+    out.write("<strong>Error</strong>: The list could not be retrieved. Are you connected to guse?<br>");
+    out.write("You can continue working but if you are not connected to guse you are not going to be able to do the import<br>");
+}
+%>
+        </aui:select>
+
+        <aui:select name="preferences--misfitWorkflowId--" label="Misfit workflow"
+            helpMessage="The workflow that will serve as misfit workflow"
+            showEmptyOption="true" last="true">
+<%
+try{
+    ASMService asm_service = null;
+    asm_service = ASMService.getInstance();
+    Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
+    for(String developer : developers)
+    {
+        Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
+        for(ASMRepositoryItemBean workflow : workflows) {
+        %>
+            <aui:option selected='<%= misfitWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
         <%
         }
     }

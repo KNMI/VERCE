@@ -130,6 +130,8 @@ public class ForwardPortlet extends MVCPortlet{
            submitDownloadWorkflow(resourceRequest, resourceResponse);
        else if(resourceRequest.getResourceID().equals("submitProcessingWorkflow"))
            submitProcessingWorkflow(resourceRequest, resourceResponse);
+       else if(resourceRequest.getResourceID().equals("submitMisfitWorkflow"))
+           submitMisfitWorkflow(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("downloadOutput"))
 		   downloadOutput(resourceRequest, resourceResponse);
 	   else if (resourceRequest.getResourceID().equals("deleteWorkflow"))
@@ -570,6 +572,7 @@ public class ForwardPortlet extends MVCPortlet{
             // temporary for fake workflow
             try {
                 asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "sync", "1");
+                asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "Job0", "2");
             } catch (Exception e) {
 
             }
@@ -607,6 +610,16 @@ public class ForwardPortlet extends MVCPortlet{
             append.close();
             asm_service.placeUploadedFile(userId, tmpFile, importedWfId, "Job0", "1");
 
+            // add vercepes.zip
+            String zipName = runId+".zip";
+            createZipFile("temp/"+zipName);
+            File tempZipFile = new File("temp/"+zipName);
+            String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
+            zipPublicPath = portalUrl + zipPublicPath;
+            System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+
+            asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
+
             File pe_conf = FileUtil.createTempFile();
             FileUtil.write(pe_conf, config.toString());
             String pe_conf_path = addFileToDL(pe_conf, runId+"_pe_conf.json", groupId, userSN, Constants.ZIP_TYPE);
@@ -642,6 +655,126 @@ public class ForwardPortlet extends MVCPortlet{
                 .put("_id", runId)
                 .put("type", "workflow_run")
                 .put("prov:type", "processing")
+                .put("workflowName", workflowName)
+                .put("resourceType", resourceBean.getType())
+                .put("grid", resourceBean.getGrid())
+                .put("resource", resourceBean.getResource())
+                .put("queue", resourceBean.getQueue());
+
+            System.out.println(provenanceData.toString());
+            updateProvenanceRepository(provenanceData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void submitMisfitWorkflow(ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
+        try {
+            User u = PortalUtil.getUser(resourceRequest);
+            String userSN = u.getScreenName();
+            String userId = u.getUserId()+"";
+            long groupId = PortalUtil.getScopeGroupId(resourceRequest);
+
+            String workflowId = ParamUtil.getString(resourceRequest, "workflowId");
+            String workflowName = ParamUtil.getString(resourceRequest, "workflowName");
+            String ownerId = ParamUtil.getString(resourceRequest, "ownerId");
+
+            System.out.println(workflowId + " / " + ownerId);
+
+            String runId = resourceRequest.getParameterValues("runId")[0];
+
+            JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
+            JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
+
+            System.out.println(runId);
+            System.out.println(config);
+
+            String description = resourceRequest.getParameterValues("description")[0];
+
+            String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
+
+            File misfit_conf = FileUtil.createTempFile();
+            FileUtil.write(misfit_conf, config.toString());
+            String misfit_conf_path = addFileToDL(misfit_conf, runId+"_misfit_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            input.put(new JSONObject().put("name", "misfit_conf").put("url", misfit_conf_path).put("mime-type", "text/json"));
+
+            // temporary for fake workflow
+            try {
+                asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "sync", "1");
+                asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "Job0", "2");
+            } catch (Exception e) {
+
+            }
+
+            String portalUrl = PortalUtil.getPortalURL(resourceRequest);
+            String currentURL = PortalUtil.getCurrentURL(resourceRequest);
+            String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
+            portalUrl += portal;
+
+            String eventUrl = resourceRequest.getParameterValues("quakemlURL")[0];
+            String portalUrl2 = PortalUtil.getPortalURL(resourceRequest);
+            if(portalUrl2.equals("http://localhost:8081")) {
+                 portalUrl2 = "http://localhost:8080";   //TODO: careful
+            }
+            EventFile eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runId, userSN, groupId);
+
+            File tmpFile = FileUtil.createTempFile();
+            ZipOutputStream append = new ZipOutputStream(new FileOutputStream(tmpFile));
+
+            append.putNextEntry(new ZipEntry("quakeml"));
+            FileInputStream fileInputStream = new FileInputStream(eventFile.file);
+            byte[] buffer = new byte[1024];
+            int charsRead = 0;
+            while ((charsRead = fileInputStream.read(buffer)) > 0) {
+                append.write(buffer, 0, charsRead);
+            };
+            append.closeEntry();
+
+            // close
+            fileInputStream.close();
+            append.close();
+            asm_service.placeUploadedFile(userId, tmpFile, importedWfId, "Job0", "1");
+
+            // add vercepes.zip
+            String zipName = runId+".zip";
+            createZipFile("temp/"+zipName);
+            File tempZipFile = new File("temp/"+zipName);
+            String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
+            zipPublicPath = portalUrl + zipPublicPath;
+            System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+
+            asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
+
+            Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
+            if(errorVector!=null && !errorVector.isEmpty())
+            {
+                for (WorkflowConfigErrorBean err : errorVector) {
+                    System.out.println("[ForwardModellingPortlet.submitSolver] Alert '"+err.getErrorID()+"'! JobName: " + err.getJobName() + " userSN: "+userSN+", runId: "+runId);
+                    if(err.getErrorID().contains("noproxy") || err.getErrorID().contains("proxyexpired"))
+                    {
+                        catchError(null, resourceResponse, "401", "[ForwardModellingPortlet.submitSolver] Credential Error! Submission aborted");
+                        return;
+                    }
+                }
+            }
+
+            asm_service.submit(userId, importedWfId, description, "Never");
+
+            // Log resource information
+            ASMResourceBean resourceBean = asm_service.getResource(userId, importedWfId, "Job0");
+            System.out.println("RESOURCE type: " + resourceBean.getType() + ", grid: " + resourceBean.getGrid() + ", resource: " + resourceBean.getResource() + ", queue: " + resourceBean.getQueue());
+
+            JSONObject provenanceData = new JSONObject();
+            provenanceData.put("username", userSN)
+                .put("workflowId", workflowId)
+                .put("description", description)
+                .put("system_id", importedWfId)
+                .put("runId", runId)
+                .put("startTime", getNowAsISO())
+                .put("input", input)
+                .put("_id", runId)
+                .put("type", "workflow_run")
+                .put("prov:type", "misfit")
                 .put("workflowName", workflowName)
                 .put("resourceType", resourceBean.getType())
                 .put("grid", resourceBean.getGrid())
