@@ -86,6 +86,7 @@ Ext.define('CF.view.ProcessingGrid', {
   rootVisible: false,
   multiSelect: false,
   singleExpand: true,
+  sortable: false,
   selType: 'rowmodel',
   tbar: [{
     xtype: "combo",
