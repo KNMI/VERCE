@@ -894,18 +894,56 @@ Ext.define('CF.store.EntityContent', {
   model: 'CF.model.EntityContent'
 });
 
+var scoreFn = function(record) {
+  return (record.get("isFromDataStage") ? 2 : 0) + (record.get("isFromRawStage") ? 1 : 0);
+};
+
+Ext.define('CF.CheckboxModel', {
+  extend: 'Ext.selection.CheckboxModel',
+  alias: 'selection.customcheckboxmodel',
+
+  /**
+   * @private
+   */
+  updateHeaderState: function() {
+    // check to see if all records are selected
+    var me = this,
+      store = me.store,
+      storeCount = store.queryBy(function(record, id) {
+        return record.get("isFromDataStage") && record.get("isFromRawStage");
+      }).count(),
+      views = me.views,
+      hdSelectStatus = false,
+      selectedCount = 0,
+      selected, len, i;
+
+    if (!store.isBufferedStore && storeCount > 0) {
+      selected = me.selected;
+      hdSelectStatus = true;
+      for (i = 0, len = selected.getCount(); i < len; ++i) {
+        if (store.indexOfId(selected.getAt(i).id) === -1) {
+          break;
+        }
+        ++selectedCount;
+      }
+      hdSelectStatus = storeCount === selectedCount;
+    }
+
+    if (views && views.length) {
+      me.toggleUiHeader(hdSelectStatus);
+    }
+  }
+});
+
 Ext.define('CF.view.StationGrid', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.station_grid',
+  requires: 'Ext.selection.CheckboxModel',
   initComponent: function() {
     this.store = Ext.create('Ext.data.Store', {
       model: 'CF.model.MisfitStation',
       sorters: [{
         sorterFn: function(record1, record2) {
-          var scoreFn = function(record) {
-            return (record.get("isFromDataStage") ? 2 : 0) + (record.get("isFromRawStage") ? 1 : -1);
-          };
-
           return scoreFn(record1) > scoreFn(record2) ? 1 : (scoreFn(record1) === scoreFn(record2) ? 0 : -1);
         },
         direction: 'DESC',
@@ -999,21 +1037,25 @@ Ext.define('CF.view.StationGrid', {
     }]
   }],
 
-  columns: [{
-    text: 'Selection',
-    xtype: 'checkcolumn',
-    dataIndex: 'selected',
+  selModel: {
+    selType: 'customcheckboxmodel',
     listeners: {
-      checkchange: function(column, recordIndex, checked) {
-        var record = this.up("grid").getStore().getAt(recordIndex);
-
-        if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
-          record.set("selected", false);
+      beforeSelect: function(grid, record, index, eOpts) {
+        if (!(record.get("isFromDataStage") && record.get("isFromRawStage"))) {
+          return false;
         }
-
+        return true;
+      },
+      select: function(grid, record, index, eOpts) {
+        record.set("selected", true);
+      },
+      deselect: function(grid, record, index, eOpts) {
+        record.set("selected", false);
       }
-    },
-  }, {
+    }
+  },
+
+  columns: [{
     text: 'Network',
     dataIndex: 'network',
     flex: 1,
@@ -1021,27 +1063,30 @@ Ext.define('CF.view.StationGrid', {
     text: 'Station',
     dataIndex: 'station',
     flex: 1,
+  }, {
+    text: 'Source',
+    renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
+      var sources = [];
+      if (record.get("isFromDataStage")) {
+        sources.push("syn");
+      }
+      if (record.get("isFromRawStage")) {
+        sources.push("raw");
+      }
+      return sources.join(", ");
+    },
+    cls: 'source'
   }],
 
-  listeners: {
-    cellclick: function(thisRef, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-
-
-      if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
-        return;
-      }
-      if (cellIndex !== 0) { //Considering index 0 is checkbox column
-        record.set("selected", !record.get("selected"));
-      }
-    }
-  },
   viewConfig: {
     markDirty: false,
     getRowClass: function(record, index) {
-      if (record.get("isFromDataStage") == false || record.get("isFromRawStage") == false) {
-        return 'x-item-disabled';
+      if (record.get("isFromRawStage") && !record.get("isFromDataStage")) {
+        return "onlyRaw x-item-disabled";
+      } else if (!record.get("isFromRawStage") && record.get("isFromDataStage")) {
+        return "onlyData x-item-disabled";
       } else {
-        return 'bold-cell';
+        return "bold-cell";
       }
     }
   }
