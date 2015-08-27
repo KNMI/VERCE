@@ -103,7 +103,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                   streamProducers[network_dot_name].input.data.push(observed.entities[ii].location.replace(data_path, ""));
                 }
 
-                var misfitRunId = 'misfit' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime();
+                var misfitRunId = 'misfit_' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime();
                 var config = Ext.getCmp('misfit_submit_button').verceConfig = {
                   "username": userSN,
                   'processingRunId': runId,
