@@ -1071,9 +1071,6 @@ Ext.define('CF.view.DataSetup', {
     title: 'Simulation runs',
     rowExtraParams: {
       "mime-type": "application/octet-stream",
-      keys: "type",
-      maxvalues: "velocity",
-      minvalues: "velocity",
       start: 0,
       limit: 99999
     },
