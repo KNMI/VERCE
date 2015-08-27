@@ -270,7 +270,7 @@ Ext.define('CF.view.PreprocessingSelection', {
           rootProperty: 'list'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=StreamMapper,data',
+          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=StreamMapper,readJSONstgin',
         },
         reader: {
           rootProperty: 'runIds',
