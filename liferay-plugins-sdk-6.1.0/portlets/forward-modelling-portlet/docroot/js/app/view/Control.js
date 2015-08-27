@@ -40,6 +40,27 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
   this.up('viewport > #viewport_tabpanel').setActiveTab('resultstab');
 };
 
+var getSolverConf = function(solverconf, callback) {
+  Ext.Ajax.request({
+    url: solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
+    success: function(response, config) {
+      var solver_conf = JSON.parse(response.responseText);
+      if (solver_conf === null) {
+        Ext.Msg.alert("Failed to get workflow settings");
+        Ext.getCmp('viewport').setLoading(false);
+        return;
+      }
+
+      // callback without error
+      callback(null, solver_conf);
+    },
+    failure: function(response, config) {
+      // error callback
+      callback("Failed to get workflow settings!");
+    }
+  });
+}
+
 var getWorkflowAndSolverConf = function(runId, callback) {
   var url = "/j2ep-1.0/prov/workflow/" + encodeURIComponent(runId);
 
@@ -59,31 +80,29 @@ var getWorkflowAndSolverConf = function(runId, callback) {
       prov_workflow.input.forEach(function(item) {
         prov_workflow[item.name] = item;
       });
-      delete prov_workflow.input;
 
-      if (prov_workflow.solverconf == null) {
-        Ext.Msg.alert("Error", "Provenance information incomplete. Please select another run.");
-        return;
-      }
-
-      Ext.Ajax.request({
-        url: prov_workflow.solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
-        success: function(response, config) {
-          var solver_conf = JSON.parse(response.responseText);
-          if (solver_conf === null) {
-            Ext.Msg.alert("Failed to get workflow settings");
-            Ext.getCmp('viewport').setLoading(false);
-            return;
+      if (prov_workflow.solverconf != null) {
+        getSolverConf(prov_workflow.solverconf, function(err, solverconf) {
+          callback(err, prov_workflow, solverconf, url);
+        });
+      } else {
+        Ext.Ajax.request({
+          url: prov_workflow.simulation_workflow.url,
+          success: function(response, config) {
+            var simulation_workflow = JSON.parse(response.responseText);
+            simulation_workflow.input.forEach(function(item) {
+              simulation_workflow[item.name] = item;
+            });
+            getSolverConf(simulation_workflow.solverconf, function(err, solverconf) {
+              callback(err, prov_workflow, solverconf, url);
+            });
+          },
+          failure: function(response, config) {
+            // error callback
+            callback("Failed to get workflow settings!");
           }
-
-          // callback without error
-          callback(null, prov_workflow, solver_conf, url);
-        },
-        failure: function(response, config) {
-          // error callback
-          callback("Failed to get workflow settings!");
-        }
-      });
+        });
+      }
     },
     failure: function(response, config) {
       // error callback

@@ -470,7 +470,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             File download_conf = FileUtil.createTempFile();
             FileUtil.write(download_conf, config.toString());
-            String download_conf_path = addFileToDL(download_conf, runId+"_download_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            String download_conf_path = addFileToDL(download_conf, runId+"_download_conf.json", groupId, userSN, "download");
             input.put(new JSONObject().put("name", "download_conf").put("url", download_conf_path).put("mime-type", "text/json"));
 
             asm_service.placeUploadedFile(userId, download_conf, importedWfId, "Job0", "2");
@@ -491,6 +491,7 @@ public class ForwardPortlet extends MVCPortlet{
             String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
             zipPublicPath = portalUrl + zipPublicPath;
             System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+            input.put(new JSONObject().put("name", "vercepes").put("url", zipPublicPath).put("mime-type", "zip"));
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
 
@@ -566,7 +567,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             File processing_conf = FileUtil.createTempFile();
             FileUtil.write(processing_conf, config.toString());
-            String processing_conf_path = addFileToDL(processing_conf, runId+"_processing_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            String processing_conf_path = addFileToDL(processing_conf, runId+"_processing_conf.json", groupId, userSN, "processing");
             input.put(new JSONObject().put("name", "processing_conf").put("url", processing_conf_path).put("mime-type", "text/json"));
 
             // temporary for fake workflow
@@ -588,6 +589,12 @@ public class ForwardPortlet extends MVCPortlet{
                  portalUrl2 = "http://localhost:8080";   //TODO: careful
             }
             EventFile eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runId, userSN, groupId);
+            input.put(new JSONObject().put("name", "quakeml").put("url", eventFile.url).put("mime-type", "application/xml"));
+
+            File pipelinesFile = FileUtil.createTempFile();
+            FileUtil.write(pipelinesFile, pipelines.toString());
+            String pipelinesURL = addFileToDL(pipelinesFile, runId+"_pipelines.json", groupId, userSN, "pipelines");
+            input.put(new JSONObject().put("name", "pipelines").put("url", pipelinesURL).put("mime-type", "text/json"));
 
             File tmpFile = FileUtil.createTempFile();
             ZipOutputStream append = new ZipOutputStream(new FileOutputStream(tmpFile));
@@ -617,13 +624,9 @@ public class ForwardPortlet extends MVCPortlet{
             String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
             zipPublicPath = portalUrl + zipPublicPath;
             System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+            input.put(new JSONObject().put("name", "vercepes").put("url", zipPublicPath).put("mime-type", "zip"));
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
-
-            File pe_conf = FileUtil.createTempFile();
-            FileUtil.write(pe_conf, config.toString());
-            String pe_conf_path = addFileToDL(pe_conf, runId+"_pe_conf.json", groupId, userSN, Constants.ZIP_TYPE);
-            input.put(new JSONObject().put("name", "pe_conf").put("url", pe_conf_path).put("mime-type", "text/json"));
 
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
@@ -695,7 +698,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             File misfit_conf = FileUtil.createTempFile();
             FileUtil.write(misfit_conf, config.toString());
-            String misfit_conf_path = addFileToDL(misfit_conf, runId+"_misfit_conf.json", groupId, userSN, Constants.ZIP_TYPE);
+            String misfit_conf_path = addFileToDL(misfit_conf, runId+"_misfit_conf.json", groupId, userSN, "misfit");
             input.put(new JSONObject().put("name", "misfit_conf").put("url", misfit_conf_path).put("mime-type", "text/json"));
 
             // temporary for fake workflow
@@ -717,6 +720,7 @@ public class ForwardPortlet extends MVCPortlet{
                  portalUrl2 = "http://localhost:8080";   //TODO: careful
             }
             EventFile eventFile = downloadAndStoreEventFile(portalUrl, portalUrl2, eventUrl, runId, userSN, groupId);
+            input.put(new JSONObject().put("name", "quakeml").put("url", eventFile.url).put("mime-type", "application/xml"));
 
             File tmpFile = FileUtil.createTempFile();
             ZipOutputStream append = new ZipOutputStream(new FileOutputStream(tmpFile));
@@ -742,6 +746,7 @@ public class ForwardPortlet extends MVCPortlet{
             String zipPublicPath = addFileToDL(tempZipFile, zipName, groupId, userSN, Constants.ZIP_TYPE);
             zipPublicPath = portalUrl + zipPublicPath;
             System.out.println("[ForwardModellingPortlet.submitSolver] Zip file created in the document library by "+userSN+", accessible in: "+zipPublicPath);
+            input.put(new JSONObject().put("name", "vercepes").put("url", zipPublicPath).put("mime-type", "zip"));
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
 

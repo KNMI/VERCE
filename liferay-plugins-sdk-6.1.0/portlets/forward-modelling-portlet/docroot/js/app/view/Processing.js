@@ -1225,18 +1225,15 @@ Ext.define('CF.view.Processing', {
               wfConfig.readJSONstgin[0].input.event_id = solverconf_json['events'][0];
               wfConfig.readDataPE[0].input.event_id = solverconf_json['events'][0]
 
-              params.input = Ext.encode([workflowProv.quakeml, {
-                  'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
-                  'mime-type': 'text/json',
-                  'name': 'simulation-workflow',
-                }, {
-                  'url': '/j2ep-1.0/prov/workflow/' + download_runId,
-                  'mime-type': 'text/json',
-                  'name': 'download-workflow',
-                },
-                workflowProv.solverconf,
-                workflowProv.vercepes,
-              ]);
+              params.input = Ext.encode([{
+                'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
+                'mime-type': 'text/json',
+                'name': 'simulation_workflow',
+              }, {
+                'url': '/j2ep-1.0/prov/workflow/' + download_runId,
+                'mime-type': 'text/json',
+                'name': 'download_workflow',
+              }, ]);
 
               params.config = Ext.encode(wfConfig);
               params.PEs = Ext.encode(PEs);
