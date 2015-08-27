@@ -919,6 +919,7 @@ Ext.define('CF.view.StationGrid', {
   id: 'commonStations',
 
   getJson: function() {
+    var output_unit = this.up('tabpanel').down('processing_grid').getJson().output_units.substr(0, 1);
 
     var networks = [];
     var stations = [];
@@ -930,8 +931,11 @@ Ext.define('CF.view.StationGrid', {
       if (r.data.selected) {
         networks.push(r.data.network);
         stations.push(r.data.station);
-        syn_stagein_from.push(r.data.syn_stagein_from);
-        raw_stagein_from.push(r.data.raw_stagein_from);
+
+        syn_stagein_from = syn_stagein_from.concat(Ext.Array.filter(r.data.syn_stagein_from, function(item) {
+          return item.replace(/.*\.seed([adv])$/, "$1") == output_unit;
+        }));
+        raw_stagein_from = raw_stagein_from.concat(r.data.raw_stagein_from);
         stationxml_stagein_from.push(r.data.stationxml_stagein_from);
       }
     });
