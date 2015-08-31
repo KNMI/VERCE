@@ -407,10 +407,11 @@ Ext.define('CF.view.WfGrid', {
     renderer: statusRenderer,
     dataIndex: 'status'
   }, {
+    xtype: 'datecolumn',
+    format: 'd - m - Y',
     text: 'Date',
     width: 90,
     sortable: false,
-    renderer: Ext.util.Format.dateRenderer('d - m - Y'),
     dataIndex: 'date'
   }, {
     xtype: 'actioncolumn',

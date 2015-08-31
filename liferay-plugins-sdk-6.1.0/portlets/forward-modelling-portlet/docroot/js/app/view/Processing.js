@@ -737,6 +737,8 @@ Ext.define('CF.view.RunId', {
     flex: 2,
   }, {
     text: "Date",
+    xtype: 'datecolumn',
+    format: 'd - m - Y',
     dataIndex: 'startTime',
     flex: 1,
   }],

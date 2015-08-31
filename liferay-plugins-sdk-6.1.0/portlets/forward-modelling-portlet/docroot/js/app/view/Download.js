@@ -150,9 +150,10 @@ Ext.define('CF.view.SimulationSelection', {
     }
   }, {
     text: 'Date',
+    xtype: 'datecolumn',
     width: 90,
     sortable: true,
-    renderer: Ext.util.Format.dateRenderer('d - m - Y'),
+    format: 'd - m - Y',
     dataIndex: 'startTime'
   }],
   flex: 1,

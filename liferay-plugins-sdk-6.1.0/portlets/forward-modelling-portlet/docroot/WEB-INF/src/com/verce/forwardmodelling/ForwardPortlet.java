@@ -1442,7 +1442,7 @@ public class ForwardPortlet extends MVCPortlet{
 
     private String getNowAsISO() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         return nowAsISO;
@@ -1451,8 +1451,6 @@ public class ForwardPortlet extends MVCPortlet{
     private void saveSimulationProvenance(String userSN, String runId, String submitMessage, String wfName, String wfId, String asmRunId, 
             String stationUrl, String eventUrl, String solverUrl, String zipUrl, String stationFileType, String job0bin, Date job0binModified, String resourceType, String grid, String resource, String queue) {
         String runType = "workflow_run";
-
-        String nowAsISO = getNowAsISO();
 
         if(stationFileType.equals(Constants.STPOINTS_TYPE)) stationFileType = Constants.MIMETYPE_PLAIN;
         if(stationFileType.equals(Constants.STXML_TYPE))    stationFileType = Constants.MIMETYPE_XML;
@@ -1466,7 +1464,7 @@ public class ForwardPortlet extends MVCPortlet{
               .put("workflowName", wfName)
               .put("workflowId", wfId)
               .put("system_id", asmRunId)
-              .put("startTime", nowAsISO)
+              .put("startTime", getNowAsISO())
               .put("job0bin", job0bin)
               .put("job0binModified", new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(job0binModified))
               .put("resourceType", resourceType)

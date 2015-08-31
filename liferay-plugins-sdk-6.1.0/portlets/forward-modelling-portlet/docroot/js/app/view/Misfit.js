@@ -248,9 +248,10 @@ Ext.define('CF.view.PreprocessingSelection', {
     }
   }, {
     text: 'Date',
+    xtype: 'datecolumn',
+    format: 'd - m - Y',
     width: 90,
     sortable: true,
-    renderer: Ext.util.Format.dateRenderer('d - m - Y'),
     dataIndex: 'startTime'
   }],
   flex: 1,
