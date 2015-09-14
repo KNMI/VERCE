@@ -989,7 +989,7 @@ Ext.define('CF.view.StationGrid', {
     }
 
     var result = {
-      "username": userSN,
+      "user_name": userSN,
       "runId": runId,
       "readJSONstgin": [{
         "input": {
