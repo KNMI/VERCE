@@ -102,10 +102,6 @@ Ext.define('CF.view.EventSearchForm', {
     format: 'Y-m-d\\TH:i:s',
     value: "2013-08-02T00:00:00",
     margin: '5 5 5 0'
-  }, {
-    xtype: 'hidden',
-    name: 'user',
-    value: 'verce_' + userSN //user screen name, it is populated in html/init.jsp
   }],
   buttons: [{
     itemId: 'event_but', //action defined in controller/Map.js

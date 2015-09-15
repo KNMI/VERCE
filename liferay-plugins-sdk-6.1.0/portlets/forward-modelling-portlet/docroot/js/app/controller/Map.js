@@ -292,10 +292,20 @@ Ext.define('CF.controller.Map', {
   onEventSearch: function(button) {
     var form = button.up('form').getForm();
     if (form.isValid()) {
-      var baseUrl = Ext.getCmp('event_catalog').findRecordByValue(Ext.getCmp('event_catalog').getValue()).get('url') + '/fdsnws/event/1/query?';
+      var provider = Ext.getCmp('event_catalog').findRecordByValue(Ext.getCmp('event_catalog').getValue());
+      var baseUrl = provider.get('url') + '/fdsnws/event/1/query?';
       var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
-      this.getEvents(this, baseUrl + form.getValues(true) + bbox);
+      var formValues = form.getValues();
+      var formValuesString = "";
+      for (key in formValues) {
+        if (!formValues.hasOwnProperty(key) || key === 'catalog') { // remove catalog and inherited properties
+          continue;
+        };
+        formValuesString += (formValuesString === "" ? "" : "&") + key + "=" + formValues[key];
+      };
+      var extraParams = provider.get('extraParams') != null ? provider.get('extraParams') : "";
+      this.getEvents(this, baseUrl + formValuesString + bbox + extraParams);
     }
   },
   onStationSearch: function(button) {
