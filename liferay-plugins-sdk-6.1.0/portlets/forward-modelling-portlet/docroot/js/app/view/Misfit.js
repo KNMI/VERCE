@@ -3,6 +3,19 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
     desc: "",
     editable: true,
     group: "Basic",
+    req: true,
+    type: "option",
+    options: [
+      "time_frequency",
+      "pyflex_and_time_frequency",
+      "pyflex"
+    ],
+    name: "misfit_type",
+    value: "time_frequency",
+  }, {
+    desc: "",
+    editable: true,
+    group: "Basic",
     minValue: 0,
     req: true,
     step: 0.1,
@@ -31,6 +44,8 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
     value: 6.0
   }]);
 
+  var runId = this.getSelection()[0].get('_id');
+  this.up('tabpanel').down('#misfit_runid').setValue('misfit_' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime());
   Ext.getCmp('misfit_conf').setDisabled(false);
   Ext.getCmp('misfit_submit').setDisabled(false);
 };
@@ -139,11 +154,10 @@ var getMisfitJson = function(runId, callback) {
                   streamProducers[network_dot_name].input.data.push(observed.entities[ii].location.replace(data_path, ""));
                 }
 
-                var misfitRunId = 'misfit_' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime();
                 var config = {
                   "username": userSN,
                   'processingRunId': runId,
-                  'runId': misfitRunId,
+                  'runId': Ext.getCmp('misfit_runid').getValue(),
                   "readJSONstgin": [{
                     "input": {
                       "data_dir": "./",
@@ -186,8 +200,8 @@ var getMisfitJson = function(runId, callback) {
                 var params = {};
 
                 params.config = config;
-                params.runId = misfitRunId;
-                params.description = "Misfit for " + runId;
+                params.runId = Ext.getCmp('misfit_runid').getValue();
+                params.description = Ext.getCmp('misfit_description').getValue();
                 params.quakemlURL = prov_workflow.quakeml.url;
 
                 params.input = Ext.encode([
@@ -376,13 +390,30 @@ Ext.define('CF.view.Misfit', {
       id: 'misfit_submit',
       border: false,
       disabled: true,
-      layout: 'fit',
+      layout: {
+        type: 'vbox',
+        align: 'stretch'
+      },
       items: [{
         xtype: 'textarea',
+        title: 'Configuration Summary',
         id: 'misfit_submit_summary',
         disabled: true,
         disabledCls: '',
-        anchor: '100% 50%',
+        flex: 2,
+      }, {
+        xtype: 'fieldset',
+        title: 'Submission settings',
+        items: [{
+          xtype: 'textfield',
+          id: 'misfit_runid',
+          disabled: true,
+          fieldLabel: 'Name:',
+        }, {
+          xtype: 'textfield',
+          id: 'misfit_description',
+          fieldLabel: 'Description:',
+        }]
       }],
 
       buttons: [{

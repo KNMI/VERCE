@@ -1,17 +1,13 @@
 var runId = new Array();
 
-var reposWorkflowsStore = Ext.create('CF.store.ExportedWorkflow', {});
-
 Ext.define('CF.view.WorkflowCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.workflowcombo',
   fieldLabel: 'Workflow',
-  id: 'wfSelection',
   name: 'wfSelection',
   queryMode: 'local',
   width: 350,
   listWidth: 400,
-  store: reposWorkflowsStore,
   displayField: 'workflowName',
   valueField: 'workflowId',
   allowBlank: false,
@@ -29,7 +25,9 @@ Ext.define('CF.view.SubmitFormPanel', {
   border: false,
   bodyPadding: '10 10 0 10',
   items: [{
-    xtype: 'workflowcombo'
+    xtype: 'workflowcombo',
+    id: 'wfSelection',
+    store: Ext.create('CF.store.ExportedWorkflow', {})
   }, {
     xtype: 'textfield',
     id: 'submitName',
