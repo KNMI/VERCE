@@ -1,6 +1,41 @@
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  var runId = workflow.get('_id');
+  Ext.getCmp('misfit_conf').getStore().loadData([{
+    desc: "",
+    editable: true,
+    group: "Basic",
+    minValue: 0,
+    req: true,
+    step: 0.1,
+    type: "float",
+    name: "min_period",
+    value: 0.5
+  }, {
+    desc: "",
+    editable: true,
+    group: "Basic",
+    minValue: 0,
+    req: true,
+    step: 0.1,
+    type: "float",
+    name: "max_period",
+    value: 1.0
+  }, {
+    desc: "",
+    editable: true,
+    group: "Basic",
+    minValue: 0,
+    req: true,
+    step: 0.1,
+    type: "float",
+    name: "wavelet_parameter",
+    value: 6.0
+  }]);
 
+  Ext.getCmp('misfit_conf').setDisabled(false);
+  Ext.getCmp('misfit_submit').setDisabled(false);
+};
+
+var getMisfitJson = function(runId, callback) {
   // get workflow from prov
   // && get solver configuration from liferay document store
   getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf, workflow_url) {
@@ -62,6 +97,12 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                 // "file://wn1//home/aspinuso/concrete_misfit_preproc2/stationxml/"
                 var station_path = stations.entities[0].location[0].replace(/[^.\/]*.[^.\/]*.xml$/, "");
 
+                var misfitConfStore = Ext.getCmp('misfit_conf').getStore();
+                var parameters = {};
+                for (var ii = 0; ii < misfitConfStore.data.items.length; ++ii) {
+                  parameters[misfitConfStore.data.items[ii].get('name')] = misfitConfStore.data.items[ii].get('value');
+                }
+
                 var streamProducers = {};
                 for (var ii = 0; ii < stations.entities.length; ++ii) {
                   var station = stations.entities[ii];
@@ -78,12 +119,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                       ],
                       "misfit_type": "time_frequency",
                       "output_folder": "./output/output_time_frequency",
-                      "parameters": {
-                        "min_period": 0.5,
-                        "max_period": 10.0,
-                        "wavelet_parameter": 6.0
-                      }
-
+                      "parameters": parameters,
                     }
                   };
 
@@ -104,7 +140,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                 }
 
                 var misfitRunId = 'misfit_' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime();
-                var config = Ext.getCmp('misfit_submit_button').verceConfig = {
+                var config = {
                   "username": userSN,
                   'processingRunId': runId,
                   'runId': misfitRunId,
@@ -147,7 +183,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                   "streamProducer": Ext.Object.getValues(streamProducers),
                 };
 
-                var params = Ext.getCmp('misfit_submit_button').verceParams = {};
+                var params = {};
 
                 params.config = config;
                 params.runId = misfitRunId;
@@ -163,21 +199,21 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
                   }
                 ]);
 
-                Ext.getCmp('misfit_submit_summary').setValue(JSON.stringify(config, null, 2));
-                Ext.getCmp('misfit_submit_button').enable();
+                callback(null, config, params);
+                return;
               },
               failure: function(response, config) {
-                Ext.Msg.alert("Failed to get synthetic-waveform provenance", response);
+                callback("Failed to get synthetic-waveform provenance");
               },
             });
           },
           failure: function(response, config) {
-            Ext.Msg.alert("Failed to get observed-waveform provenance", response);
+            callback("Failed to get observed-waveform provenance");
           },
         });
       },
       failure: function(response, config) {
-        Ext.Msg.alert("Failed to get observed-waveform provenance", response);
+        callback("Failed to get observed-waveform provenance");
       },
     });
   });
@@ -264,7 +300,7 @@ Ext.define('CF.view.PreprocessingSelection', {
           rootProperty: 'list'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=StreamMapper,readJSONstgin',
+          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=StreamMapper,readJSONstgin,StoreStreamChannel',
         },
         reader: {
           rootProperty: 'runIds',
@@ -327,6 +363,21 @@ Ext.define('CF.view.Misfit', {
           },
         }],
       }, {
+        xtype: 'form',
+        items: [{
+          xtype: 'conf',
+          store: Ext.create('CF.store.MisfitConf'),
+          id: 'misfit_conf',
+        }],
+      }],
+    }, {
+      xtype: 'panel',
+      title: 'Submit',
+      id: 'misfit_submit',
+      border: false,
+      disabled: true,
+      layout: 'fit',
+      items: [{
         xtype: 'textarea',
         id: 'misfit_submit_summary',
         disabled: true,
@@ -338,12 +389,14 @@ Ext.define('CF.view.Misfit', {
         xtype: 'button',
         text: 'Submit',
         id: 'misfit_submit_button',
-        disabled: true,
         handler: function() {
           var self = this;
 
-          doSubmitMisfitWorkflow(this.verceConfig, this.verceParams, function() {
-            self.up('panel').down('grid').getStore().reload();
+          var runId = this.up('tabpanel').down('preprocessing_selection').getSelection()[0].get('_id');
+          getMisfitJson(runId, function(err, config, params) {
+            doSubmitMisfitWorkflow(config, params, function() {
+              self.up('tabpanel').down('control').down('grid').getStore().reload();
+            });
           });
         },
       }],
@@ -360,5 +413,18 @@ Ext.define('CF.view.Misfit', {
         }]
       }]
     }],
+    listeners: {
+      'tabchange': function(tabPanel, tab) {
+        if (tab.id === 'misfit_submit') {
+          var runId = this.up('panel').down('preprocessing_selection').getSelection()[0].get('_id');
+          Ext.getCmp('misfit_submit_summary').setLoading(true);
+          getMisfitJson(runId, function(err, config, params) {
+            Ext.getCmp('misfit_submit_summary').setValue(JSON.stringify(config, null, 2));
+            Ext.getCmp('misfit_submit_summary').setLoading(false);
+          });
+        }
+      }
+    }
+
   }],
 });

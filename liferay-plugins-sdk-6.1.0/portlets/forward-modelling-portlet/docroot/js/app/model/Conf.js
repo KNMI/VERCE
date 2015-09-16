@@ -1,4 +1,4 @@
-Ext.define('CF.model.SolverConf', {
+Ext.define('CF.model.Conf', {
   extend: 'Ext.data.Model',
   fields: [{
     name: 'name',
