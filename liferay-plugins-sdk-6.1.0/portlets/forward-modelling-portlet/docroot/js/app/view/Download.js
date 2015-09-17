@@ -1,9 +1,11 @@
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  var runId = workflow.get('_id');
+  Ext.getCmp('download_submit_button').enable();
+};
 
-  var config = Ext.getCmp('download_submit_button').verceConfig = {
+var getDownloadJSON = function(runId, callback) {
+  var config = {
     'simulationRunId': runId,
-    'runId': 'download_' + runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime(),
+    'runId': 'download_' + runId.replace(/^simulation_/, '') + '_<suffix set at submission time>',
     'downloadPE': [{
       'input': {
         // TODO handle multiple events
@@ -24,8 +26,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
   // && get solver configuration from liferay document store
   getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf, workflow_url) {
     if (err != null) {
-      Ext.Msg.alert("Error", err);
-
+      callback(err);
       return;
     }
 
@@ -34,8 +35,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 
     getEventData(event_url, function(err, events) {
       if (err != null) {
-        Ext.Msg.alert("Error", err);
-
+        callback(err);
         return;
       }
 
@@ -67,8 +67,7 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
 
         getMeshData(solver_url, solver_conf.mesh, function(err, mesh) {
           if (err != null) {
-            Ext.Msg.alert("Error", err);
-
+            callback(err);
             return;
           }
 
@@ -77,26 +76,26 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
           config.downloadPE[0].input.minlongitude = mesh.geo_minLon;
           config.downloadPE[0].input.maxlongitude = mesh.geo_maxLon;
 
-          Ext.getCmp('download_submit_summary').setValue(JSON.stringify(config.downloadPE[0], null, 4));
-          Ext.getCmp('download_submit_button').enable();
+          callback(null, config, params);
         });
       }
     });
   });
-};
+}
 
 var doSubmitDownloadWorkflow = function(config, params, callback) {
   var url = submitDownloadWorkflowURL;
   params.config = Ext.encode(config);
 
+  var downloadWorkflow = Ext.getCmp('download_workflow').findRecordByValue(Ext.getCmp('download_workflow').getValue());
   if (downloadWorkflow == null) {
     Ext.Msg.alert("No Workflow", "No workflow configured, cannot submit. Please contact an administrator.");
     return;
   }
 
-  params['workflowId'] = downloadWorkflow.workflowId;
-  params['ownerId'] = downloadWorkflow.ownerId;
-  params['workflowName'] = downloadWorkflow.workflowName;
+  params['workflowId'] = downloadWorkflow.get('workflowId');
+  params['ownerId'] = downloadWorkflow.get('ownerId');
+  params['workflowName'] = downloadWorkflow.get('workflowName');
 
   Ext.getCmp('viewport').setLoading(true);
 
@@ -220,39 +219,75 @@ Ext.define('CF.view.Download', {
         }
       },
       items: [{
-        xtype: 'form',
-        layout: 'anchor',
-
-        items: [{
-          xtype: 'simulation_selection',
-          anchor: '100% 50%',
-          tools: [{
-            type: 'refresh',
-            tooltip: 'Refresh list',
-            handler: function() {
-              this.up('panel').getStore().load();
-            },
-          }],
-        }, {
-          xtype: 'textarea',
-          id: 'download_submit_summary',
-          disabled: true,
-          disabledCls: '',
-          anchor: '100% 50%',
-        }],
-
-        buttons: [{
-          xtype: 'button',
-          text: 'Submit',
-          id: 'download_submit_button',
-          disabled: true,
+        xtype: 'simulation_selection',
+        tools: [{
+          type: 'refresh',
+          tooltip: 'Refresh list',
           handler: function() {
-            var self = this;
-            doSubmitDownloadWorkflow(this.verceConfig, this.verceParams, function() {
-              self.up('panel').down('grid').getStore().reload();
-            });
+            this.up('panel').getStore().load();
           },
         }],
+      }]
+    }, {
+      xtype: 'panel',
+      layout: 'border', // border
+      height: "100%",
+      title: 'Submit',
+      id: 'download_submit',
+      bodyBorder: false,
+
+      layout: {
+        type: 'vbox',
+        align: 'stretch'
+      },
+      viewConfig: {
+        style: {
+          overflow: 'scroll',
+          overflowX: 'hidden'
+        }
+      },
+      items: [{
+        xtype: 'textarea',
+        id: 'download_submit_summary',
+        disabled: true,
+        disabledCls: '',
+        flex: 1,
+      }, {
+        xtype: 'fieldset',
+        title: 'Submission settings',
+        items: [{
+          xtype: 'workflowcombo',
+          id: 'download_workflow',
+          store: Ext.create('CF.store.ExportedWorkflow', {
+            data: downloadWorkflows
+          }),
+        }, {
+          xtype: 'textfield',
+          id: 'download_runid',
+          disabled: true,
+          fieldLabel: 'Name:',
+        }, {
+          xtype: 'textfield',
+          id: 'download_description',
+          fieldLabel: 'Description:',
+        }]
+      }],
+
+      buttons: [{
+        xtype: 'button',
+        text: 'Submit',
+        id: 'download_submit_button',
+        disabled: true,
+        handler: function() {
+          var self = this;
+          var runId = this.up('tabpanel').down('simulation_selection').getSelection()[0].get('_id');
+          getDownloadJSON(runId, function(err, config, params) {
+            config.runId = 'download_' + runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();
+            doSubmitDownloadWorkflow(config, params, function() {
+              self.up('tabpanel').down('control').down('grid').getStore().reload();
+            });
+          });
+        },
       }],
     }, {
       xtype: 'panel',
@@ -267,5 +302,18 @@ Ext.define('CF.view.Download', {
         }]
       }]
     }],
+    listeners: {
+      'tabchange': function(tabPanel, tab) {
+        if (tab.id === 'download_submit') {
+          var runId = this.up('panel').down('simulation_selection').getSelection()[0].get('_id');
+          Ext.getCmp('download_runid').setValue('download_' + runId.replace(/^simulation_/, '') + '_<suffix set at submission time>');
+          Ext.getCmp('download_submit_summary').setLoading(true);
+          getDownloadJSON(runId, function(err, config, params) {
+            Ext.getCmp('download_submit_summary').setValue(JSON.stringify(config, null, 2));
+            Ext.getCmp('download_submit_summary').setLoading(false);
+          });
+        }
+      }
+    }
   }],
 });

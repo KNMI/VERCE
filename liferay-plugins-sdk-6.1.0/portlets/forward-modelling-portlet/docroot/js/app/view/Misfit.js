@@ -45,12 +45,13 @@ var handleSelect = function(grid, workflow, rowIndex, listeners) {
   }]);
 
   var runId = this.getSelection()[0].get('_id');
-  this.up('tabpanel').down('#misfit_runid').setValue('misfit_' + runId.replace(/^processing_/, '') + '_' + (new Date()).getTime());
+  this.up('tabpanel').down('#misfit_runid').setValue(runId + '_<suffix set at submission time>');
+
   Ext.getCmp('misfit_conf').setDisabled(false);
   Ext.getCmp('misfit_submit').setDisabled(false);
 };
 
-var getMisfitJson = function(runId, callback) {
+var getMisfitJSON = function(runId, callback) {
   // get workflow from prov
   // && get solver configuration from liferay document store
   getWorkflowAndSolverConf(runId, function(err, prov_workflow, solver_conf, workflow_url) {
@@ -132,8 +133,7 @@ var getMisfitJson = function(runId, callback) {
                       "data": [
                         // "./IV.SGG.BHZ.observed.seed",
                       ],
-                      "misfit_type": "time_frequency",
-                      "output_folder": "./output/output_time_frequency",
+                      "output_folder": "./output/",
                       "parameters": parameters,
                     }
                   };
@@ -176,31 +176,12 @@ var getMisfitJson = function(runId, callback) {
                       ]
                     }
                   }],
-                  "readDataPE": [{
-                    "input": {
-                      "data_dir": "./",
-                      "synt_dir": "./",
-                      "events": "../../quakeml",
-                      // TODO multiple events
-                      "event_id": solver_conf.events[0], // "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261"
-                      "stations_dir": "./stationxml/",
-                      "output_dir": "./output/",
-                      // TODO why an array?
-                      "data_stagein_from": [
-                        data_path
-                      ],
-                      "stationxml_stagein_from": [
-                        station_path
-                      ]
-                    }
-                  }],
                   "streamProducer": Ext.Object.getValues(streamProducers),
                 };
 
                 var params = {};
 
                 params.config = config;
-                params.runId = Ext.getCmp('misfit_runid').getValue();
                 params.description = Ext.getCmp('misfit_description').getValue();
                 params.quakemlURL = prov_workflow.quakeml.url;
 
@@ -237,14 +218,15 @@ var doSubmitMisfitWorkflow = function(config, params, callback) {
   var url = submitMisfitWorkflowURL;
   params.config = Ext.encode(config);
 
+  var misfitWorkflow = Ext.getCmp('misfit_workflow').findRecordByValue(Ext.getCmp('misfit_workflow').getValue());
   if (misfitWorkflow == null) {
     Ext.Msg.alert("No Workflow", "No workflow configured, cannot submit. Please contact an administrator.");
     return;
   }
 
-  params['workflowId'] = misfitWorkflow.workflowId;
-  params['ownerId'] = misfitWorkflow.ownerId;
-  params['workflowName'] = misfitWorkflow.workflowName;
+  params['workflowId'] = misfitWorkflow.get('workflowId');
+  params['ownerId'] = misfitWorkflow.get('ownerId');
+  params['workflowName'] = misfitWorkflow.get('workflowName');
 
   Ext.getCmp('viewport').setLoading(true);
 
@@ -405,6 +387,12 @@ Ext.define('CF.view.Misfit', {
         xtype: 'fieldset',
         title: 'Submission settings',
         items: [{
+          xtype: 'workflowcombo',
+          id: 'misfit_workflow',
+          store: Ext.create('CF.store.ExportedWorkflow', {
+            data: misfitWorkflows
+          }),
+        }, {
           xtype: 'textfield',
           id: 'misfit_runid',
           disabled: true,
@@ -423,8 +411,11 @@ Ext.define('CF.view.Misfit', {
         handler: function() {
           var self = this;
 
-          var runId = this.up('tabpanel').down('preprocessing_selection').getSelection()[0].get('_id');
-          getMisfitJson(runId, function(err, config, params) {
+          var processing_runId = this.up('tabpanel').down('preprocessing_selection').getSelection()[0].get('_id');
+          var runId = 'misfit_' + processing_runId.replace(/^processing_/, '') + '_' + (new Date()).getTime();
+
+          getMisfitJSON(processing_runId, function(err, config, params) {
+            config.runId = runId;
             doSubmitMisfitWorkflow(config, params, function() {
               self.up('tabpanel').down('control').down('grid').getStore().reload();
             });
@@ -449,13 +440,12 @@ Ext.define('CF.view.Misfit', {
         if (tab.id === 'misfit_submit') {
           var runId = this.up('panel').down('preprocessing_selection').getSelection()[0].get('_id');
           Ext.getCmp('misfit_submit_summary').setLoading(true);
-          getMisfitJson(runId, function(err, config, params) {
+          getMisfitJSON(runId, function(err, config, params) {
             Ext.getCmp('misfit_submit_summary').setValue(JSON.stringify(config, null, 2));
             Ext.getCmp('misfit_submit_summary').setLoading(false);
           });
         }
       }
     }
-
   }],
 });

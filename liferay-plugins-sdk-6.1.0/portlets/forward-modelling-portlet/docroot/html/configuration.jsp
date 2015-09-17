@@ -29,10 +29,10 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
 
-String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
-String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
-String processingWorkflowId = preferences.getValue("processingWorkflowId", "");
-String misfitWorkflowId = preferences.getValue("misfitWorkflowId", "");
+String simulationWorkflowIds = preferences.getValue("simulationWorkflowIds", "");
+String downloadWorkflowIds = preferences.getValue("downloadWorkflowIds", "");
+String processingWorkflowIds = preferences.getValue("processingWorkflowIds", "");
+String misfitWorkflowIds = preferences.getValue("misfitWorkflowIds", "");
 
 try{
 	ASMService asm_service = null;
@@ -54,92 +54,26 @@ catch(Exception e){
 
 <br>
 <liferay-portlet:actionURL portletConfiguration="true" var="configurationURL" />
-<aui:fieldset>
-	<aui:form action="<%= configurationURL %>" method="post" name="fm">
+<aui:form action="<%= configurationURL %>" method="post" name="fm">
+    <aui:fieldset>
 		<aui:input name="cmd" type="hidden" value="update" />
 		<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 		
-		<aui:input name="preferences--visibleWorkflowIds--" type="input" label="Visible workflows" value="<%=visibleWorkflowIds %>"
+		<aui:input name="preferences--simulationWorkflowIds--" type="input" label="Simulation workflows" value="<%=simulationWorkflowIds %>"
 		 	helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'" first="true"/>
 		
-        <aui:select name="preferences--downloadWorkflowId--" label="Download workflow"
-            helpMessage="The workflow that will serve as download workflow"
-            showEmptyOption="true" last="true">
-<%
-try{
-    ASMService asm_service = null;
-    asm_service = ASMService.getInstance();
-    Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
-    for(String developer : developers)
-    {
-        Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
-        for(ASMRepositoryItemBean workflow : workflows) {
-        %>
-            <aui:option selected='<%= downloadWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
-        <%
-        }
-    }
-}
-catch(Exception e){
-    out.write("<strong>Error</strong>: The list could not be retrieved. Are you connected to guse?<br>");
-    out.write("You can continue working but if you are not connected to guse you are not going to be able to do the import<br>");
-}
-%>
-        </aui:select>
+        <aui:input name="preferences--downloadWorkflowIds--" type="input" label="Download workflows" value="<%=downloadWorkflowIds %>"
+            helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'" first="true"/>
 
-        <aui:select name="preferences--processingWorkflowId--" label="Processing workflow"
-            helpMessage="The workflow that will serve as processing workflow"
-            showEmptyOption="true" last="true">
-<%
-try{
-    ASMService asm_service = null;
-    asm_service = ASMService.getInstance();
-    Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
-    for(String developer : developers)
-    {
-        Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
-        for(ASMRepositoryItemBean workflow : workflows) {
-        %>
-            <aui:option selected='<%= processingWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
-        <%
-        }
-    }
-}
-catch(Exception e){
-    out.write("<strong>Error</strong>: The list could not be retrieved. Are you connected to guse?<br>");
-    out.write("You can continue working but if you are not connected to guse you are not going to be able to do the import<br>");
-}
-%>
-        </aui:select>
+        <aui:input name="preferences--processingWorkflowIds--" type="input" label="Processing workflows" value="<%=processingWorkflowIds %>"
+            helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'" first="true"/>
 
-        <aui:select name="preferences--misfitWorkflowId--" label="Misfit workflow"
-            helpMessage="The workflow that will serve as misfit workflow"
-            showEmptyOption="true" last="true">
-<%
-try{
-    ASMService asm_service = null;
-    asm_service = ASMService.getInstance();
-    Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
-    for(String developer : developers)
-    {
-        Vector<ASMRepositoryItemBean> workflows = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
-        for(ASMRepositoryItemBean workflow : workflows) {
-        %>
-            <aui:option selected='<%= misfitWorkflowId.equals(""+workflow.getId()) %>' value="<%= workflow.getId() %>"> <%= workflow.getId() + " - " + workflow.getItemID() %></aui:option>
-        <%
-        }
-    }
-}
-catch(Exception e){
-    out.write("<strong>Error</strong>: The list could not be retrieved. Are you connected to guse?<br>");
-    out.write("You can continue working but if you are not connected to guse you are not going to be able to do the import<br>");
-}
-%>
-        </aui:select>
+        <aui:input name="preferences--misfitWorkflowIds--" type="input" label="Misfit workflows" value="<%=misfitWorkflowIds %>"
+            helpMessage="List of workflows ids (numbers) that will be shown to the users, separated by ';'" first="true"/>
 
 		<aui:button-row>
 			<aui:button type="submit"/>
 		</aui:button-row>
-	</aui:form>
-</aui:fieldset>
+    </aui:fieldset>
+</aui:form>
 <br/>

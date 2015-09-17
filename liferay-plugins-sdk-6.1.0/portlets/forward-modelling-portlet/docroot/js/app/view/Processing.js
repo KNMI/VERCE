@@ -985,7 +985,8 @@ Ext.define('CF.view.StationGrid', {
     var selected_simulations = this.up().down('#simulation_runs').getSelectionModel().getSelection();
     if (selected_simulations.length >= 1) {
       simulation_runId = this.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
-      runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();
+      runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_<suffix set at submission time>';
+      Ext.getCmp("processing_runid").setValue(runId);
     }
 
     var result = {
@@ -1198,12 +1199,15 @@ Ext.define('CF.view.Processing', {
       items: [{
         xtype: 'form',
         title: 'Submission review',
-        layout: 'auto',
+        layout: {
+          type: 'vbox',
+          align: 'stretch',
+        },
         height: '100%',
         bodyBorder: false,
 
         items: [{
-          xtype: 'textareafield',
+          xtype: 'textarea',
           id: 'processing_submit_stations',
           fieldLabel: 'Selected stations',
           disabled: true,
@@ -1211,8 +1215,9 @@ Ext.define('CF.view.Processing', {
           width: '100%',
           height: '50%',
           value: 'QWEQWEQWE',
+          flex: 1,
         }, {
-          xtype: 'textareafield',
+          xtype: 'textarea',
           id: 'processing_submit_pes',
           fieldLabel: 'PE pipeline',
           disabled: true,
@@ -1220,6 +1225,26 @@ Ext.define('CF.view.Processing', {
           width: '100%',
           height: '50%',
           value: 'ASDASDASD',
+          flex: 1,
+        }, {
+          xtype: 'fieldset',
+          title: 'Submission settings',
+          items: [{
+            xtype: 'workflowcombo',
+            id: 'processing_workflow',
+            store: Ext.create('CF.store.ExportedWorkflow', {
+              data: processingWorkflows
+            }),
+          }, {
+            xtype: 'textfield',
+            id: 'processing_runid',
+            disabled: true,
+            fieldLabel: 'Name:',
+          }, {
+            xtype: 'textfield',
+            id: 'processing_description',
+            fieldLabel: 'Description:',
+          }]
         }],
 
         buttons: [{
@@ -1228,15 +1253,16 @@ Ext.define('CF.view.Processing', {
           handler: function(button, event) {
             var url = submitProcessingWorkflowURL;
 
+            var processingWorkflow = Ext.getCmp("processing_workflow").findRecordByValue(Ext.getCmp("processing_workflow").getValue());
             if (processingWorkflow == null) {
               Ext.Msg.alert("No Workflow", "No workflow configured, cannot submit. Please contact an administrator.");
               return;
             }
 
             var params = {
-              'workflowId': processingWorkflow.workflowId,
-              'ownerId': processingWorkflow.ownerId,
-              'workflowName': processingWorkflow.workflowName,
+              'workflowId': processingWorkflow.get('workflowId'),
+              'ownerId': processingWorkflow.get('ownerId'),
+              'workflowName': processingWorkflow.get('workflowName'),
             };
 
             tabPanel = button.up('tabpanel');
@@ -1262,7 +1288,7 @@ Ext.define('CF.view.Processing', {
 
             var simulation_runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
             var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
-            var runId = wfConfig.runId;
+            var runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();;
 
             getWorkflowAndSolverConf(simulation_runId, function(err, workflowProv, solverconf_json) {
               if (err != null) {
@@ -1270,7 +1296,8 @@ Ext.define('CF.view.Processing', {
               }
               wfConfig.event_id = solverconf_json['events'][0];
               wfConfig.readJSONstgin[0].input.event_id = solverconf_json['events'][0];
-              wfConfig.readDataPE[0].input.event_id = solverconf_json['events'][0]
+              wfConfig.readDataPE[0].input.event_id = solverconf_json['events'][0];
+              wfConfig.runId = runId;
 
               params.input = Ext.encode([{
                 'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
@@ -1284,8 +1311,7 @@ Ext.define('CF.view.Processing', {
 
               params.config = Ext.encode(wfConfig);
               params.PEs = Ext.encode(PEs);
-              params.runId = runId;
-              params.description = "Processing for " + simulation_runId + " and " + download_runId;
+              params.description = Ext.getCmp('processing_description').getValue();
               params.quakemlURL = workflowProv.quakeml.url;
 
               Ext.getCmp('viewport').setLoading(true);

@@ -3,6 +3,7 @@
 
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
@@ -19,6 +20,9 @@
 <%@ page import="hu.sztaki.lpds.pgportal.services.asm.beans.ASMResourceBean" %>
 <%@ page import="hu.sztaki.lpds.pgportal.services.asm.ASMJob" %>
 <%@ page import="com.verce.forwardmodelling.Constants"%>
+<%@ page import="com.verce.forwardmodelling.Workflow"%>
+<%@ page import="com.verce.forwardmodelling.WorkflowList"%>
+<%@ page import="org.json.*"%>
 
 <portlet:defineObjects />
 
@@ -58,22 +62,15 @@ PortletPreferences preferences = renderRequest.getPreferences();
 String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
-String visibleWorkflowIds = preferences.getValue("visibleWorkflowIds", "");
-String downloadWorkflowId = preferences.getValue("downloadWorkflowId", "");
-String downloadWorkflowName = "";
-String downloadWorkflowOwner = "";
+String[] simulationWorkflowIds = preferences.getValue("simulationWorkflowIds", "").split(";");
+String[] downloadWorkflowIds = preferences.getValue("downloadWorkflowIds", "").split(";");
+String[] processingWorkflowIds = preferences.getValue("processingWorkflowIds", "").split(";");
+String[] misfitWorkflowIds = preferences.getValue("misfitWorkflowIds", "").split(";");
 
-String processingWorkflowId = preferences.getValue("processingWorkflowId", "");
-String processingWorkflowName = "";
-String processingWorkflowOwner = "";
-
-String misfitWorkflowId = preferences.getValue("misfitWorkflowId", "");
-String misfitWorkflowName = "";
-String misfitWorkflowOwner = "";
-
-List<String> wfNames = new ArrayList();
-List<String> wfIds = new ArrayList();
-List<String> ownerIds = new ArrayList();
+WorkflowList simulationWorkflows = new WorkflowList();
+WorkflowList downloadWorkflows = new WorkflowList();
+WorkflowList processingWorkflows = new WorkflowList();
+WorkflowList misfitWorkflows = new WorkflowList();
 try {
 	ASMService asm_service = null;
 	asm_service = ASMService.getInstance();
@@ -83,30 +80,24 @@ try {
 		Vector<ASMRepositoryItemBean> wfs = asm_service.getWorkflowsFromRepository(developer, RepositoryItemTypeConstants.Application);
 		for(ASMRepositoryItemBean i : wfs) {
 			String wfId = i.getId()+"";
-			if(visibleWorkflowIds.contains(wfId)) {
-				wfNames.add(i.getItemID());
-				wfIds.add(wfId);
-				ownerIds.add(developer);
+			if(Arrays.asList(simulationWorkflowIds).contains(wfId)) {
+                simulationWorkflows.add(new Workflow(i.getItemID(), wfId, developer));
 			}
-            if (downloadWorkflowId.equals(wfId)) {
-                downloadWorkflowName = i.getItemID();
-                downloadWorkflowOwner = developer;
+            if (Arrays.asList(downloadWorkflowIds).contains(wfId)) {
+                downloadWorkflows.add(new Workflow(i.getItemID(), wfId, developer));
             }
-            if (processingWorkflowId.equals(wfId)) {
-                processingWorkflowName = i.getItemID();
-                processingWorkflowOwner = developer;
+            if (Arrays.asList(processingWorkflowIds).contains(wfId)) {
+                processingWorkflows.add(new Workflow(i.getItemID(), wfId, developer));
             }
-            if (misfitWorkflowId.equals(wfId)) {
-                misfitWorkflowName = i.getItemID();
-                misfitWorkflowOwner = developer;
+            if (Arrays.asList(misfitWorkflowIds).contains(wfId)) {
+                misfitWorkflows.add(new Workflow(i.getItemID(), wfId, developer));
             }
 		}
 	}
 }
 catch(Exception e) {
-	wfNames.add("Error. Are you connected to guse?");
-	wfIds.add("Error");
-	ownerIds.add("Error");
+  e.printStackTrace();
+  // TODO add error
 }
 %>
 
@@ -133,14 +124,10 @@ catch(Exception e) {
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
 	var portalUrl = '<%=PortalUtil.getPortalURL(request) %>';
-	var reposWorkflows = [
-   	    <% for(int i=0; i< wfNames.size();i++){ %>
-           	{"workflowName":"<%=wfNames.get(i) %>","workflowId":"<%=wfIds.get(i) %>","ownerId":"<%=ownerIds.get(i) %>"},
-           <% } %>
-       ];
-    var downloadWorkflow = <%=((downloadWorkflowName != null && !downloadWorkflowName.trim().equals("") && downloadWorkflowId != null && !downloadWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + downloadWorkflowName + "\", \"workflowId\": \"" + downloadWorkflowId + "\", \"ownerId\": \"" + downloadWorkflowOwner + "\"}" : "null")%>;
-    var processingWorkflow = <%=((processingWorkflowName != null && !processingWorkflowName.trim().equals("") && processingWorkflowId != null && !processingWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + processingWorkflowName + "\", \"workflowId\": \"" + processingWorkflowId + "\", \"ownerId\": \"" + processingWorkflowOwner + "\"}" : "null")%>;
-    var misfitWorkflow = <%=((misfitWorkflowName != null && !misfitWorkflowName.trim().equals("") && misfitWorkflowId != null && !misfitWorkflowId.trim().equals("")) ? "{\"workflowName\": \"" + misfitWorkflowName + "\", \"workflowId\": \"" + misfitWorkflowId + "\", \"ownerId\": \"" + misfitWorkflowOwner + "\"}" : "null")%>;
+    var simulationWorkflows = <%= simulationWorkflows.toJSONArray().toString() %>;
+    var downloadWorkflows = <%= downloadWorkflows.toJSONArray().toString() %>;
+    var processingWorkflows = <%= processingWorkflows.toJSONArray().toString() %>;
+    var misfitWorkflows = <%= misfitWorkflows.toJSONArray().toString() %>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
 	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
 	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";

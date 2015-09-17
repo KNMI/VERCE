@@ -463,8 +463,8 @@ public class ForwardPortlet extends MVCPortlet{
             config.put("user_name", userSN);
             config.put("user_id", userId);
 
-            String runId = config.getString("runId");
-            String description = "Download workflow for " + config.getString("simulationRunId");
+            String runId = config.getString('runId');
+            String description = resourceRequest.getParameterValues("description")[0];
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
 
@@ -551,11 +551,11 @@ public class ForwardPortlet extends MVCPortlet{
 
             System.out.println(workflowId + " / " + ownerId);
 
-            String runId = resourceRequest.getParameterValues("runId")[0];
 
             JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
             JSONObject pipelines = new JSONObject(resourceRequest.getParameterValues("PEs")[0]);
             JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
+            String runId = config.getString("runId");
 
             System.out.println(runId);
             System.out.println(config);
@@ -684,10 +684,9 @@ public class ForwardPortlet extends MVCPortlet{
 
             System.out.println(workflowId + " / " + ownerId);
 
-            String runId = resourceRequest.getParameterValues("runId")[0];
-
             JSONObject config = new JSONObject(resourceRequest.getParameterValues("config")[0]);
             JSONArray input = new JSONArray(resourceRequest.getParameterValues("input")[0]);
+            String runId = config.getString("runId");
 
             System.out.println(runId);
             System.out.println(config);
