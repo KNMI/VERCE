@@ -310,7 +310,7 @@ Ext.define('CF.view.Download', {
       }]
     }],
     listeners: {
-      'beforetabchange': function() {
+      'beforetabchange': function(tabPanel, tab) {
         if (tab.id === 'download_submit') {
           if (this.up('panel').down('simulation_selection').getSelection().length === 0) {
             Ext.Msg.alert("No simulation run selected", "Please select a simulation run first.");
