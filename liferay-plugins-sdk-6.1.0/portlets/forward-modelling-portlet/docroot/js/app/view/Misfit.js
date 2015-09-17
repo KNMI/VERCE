@@ -75,10 +75,11 @@ var getMisfitJSON = function(runId, callback) {
                 var streamProducers = {};
                 for (var ii = 0; ii < stations.entities.length; ++ii) {
                   var station = stations.entities[ii];
+                  var station_file = station.location[0].replace(station_path, "");
                   var resultStation = {
                     "input": {
                       "quakeml": "../../quakeml",
-                      "stationxml": "./stationxml/",
+                      "stationxml": "./stationxml/" + station_file,
                       "event_id": solver_conf.events[0], // "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
                       "synthetics": [
                         // "./IV.SGG.HXZ.synthetic.seed",
