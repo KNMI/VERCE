@@ -70,6 +70,7 @@ var getMisfitJSON = function(runId, callback) {
                 for (var ii = 0; ii < misfitConfStore.data.items.length; ++ii) {
                   parameters[misfitConfStore.data.items[ii].get('name')] = misfitConfStore.data.items[ii].get('value');
                 }
+                parameters.misfit_type = Ext.getCmp('misfit_type').getRawValue();
 
                 var streamProducers = {};
                 for (var ii = 0; ii < stations.entities.length; ++ii) {
