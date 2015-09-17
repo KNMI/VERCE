@@ -1,54 +1,6 @@
 var handleSelect = function(grid, workflow, rowIndex, listeners) {
-  Ext.getCmp('misfit_conf').getStore().loadData([{
-    desc: "",
-    editable: true,
-    group: "Basic",
-    req: true,
-    type: "option",
-    options: [
-      "time_frequency",
-      "pyflex_and_time_frequency",
-      "pyflex"
-    ],
-    name: "misfit_type",
-    value: "time_frequency",
-  }, {
-    desc: "",
-    editable: true,
-    group: "Basic",
-    minValue: 0,
-    req: true,
-    step: 0.1,
-    type: "float",
-    name: "min_period",
-    value: 0.5
-  }, {
-    desc: "",
-    editable: true,
-    group: "Basic",
-    minValue: 0,
-    req: true,
-    step: 0.1,
-    type: "float",
-    name: "max_period",
-    value: 1.0
-  }, {
-    desc: "",
-    editable: true,
-    group: "Basic",
-    minValue: 0,
-    req: true,
-    step: 0.1,
-    type: "float",
-    name: "wavelet_parameter",
-    value: 6.0
-  }]);
-
   var runId = this.getSelection()[0].get('_id');
   this.up('tabpanel').down('#misfit_runid').setValue(runId + '_<suffix set at submission time>');
-
-  Ext.getCmp('misfit_conf').setDisabled(false);
-  Ext.getCmp('misfit_submit').setDisabled(false);
 };
 
 var getMisfitJSON = function(runId, callback) {
@@ -155,7 +107,7 @@ var getMisfitJSON = function(runId, callback) {
                 }
 
                 var config = {
-                  "username": userSN,
+                  "user_name": userSN,
                   'processingRunId': runId,
                   'runId': Ext.getCmp('misfit_runid').getValue(),
                   "readJSONstgin": [{
@@ -333,11 +285,11 @@ Ext.define('CF.view.Misfit', {
     xtype: 'tabpanel',
     region: 'center',
     layout: 'fit',
+    height: "100%",
     bodyBorder: false,
 
     items: [{
       xtype: 'panel',
-      layout: 'anchor', // border
       height: "100%",
       title: 'Setup',
       bodyBorder: false,
@@ -350,7 +302,7 @@ Ext.define('CF.view.Misfit', {
 
       items: [{
         xtype: 'preprocessing_selection',
-        anchor: '100% 50%',
+        height: 250,
         tools: [{
           type: 'refresh',
           tooltip: 'Refresh list',
@@ -359,19 +311,37 @@ Ext.define('CF.view.Misfit', {
           },
         }],
       }, {
-        xtype: 'form',
-        items: [{
-          xtype: 'conf',
-          store: Ext.create('CF.store.MisfitConf'),
-          id: 'misfit_conf',
+        xtype: 'combobox',
+        fieldLabel: 'Misfit type:',
+        id: 'misfit_type',
+        queryMode: 'local',
+        displayField: 'name',
+        valueField: 'parameters',
+        allowBlank: false,
+        store: Ext.create("CF.store.MisfitType"),
+        listeners: {
+          change: function(f, e) {
+            var conf = this.up('panel').down('conf');
+            conf.getStore().loadData(this.getValue());
+            conf.enable();
+          }
+        }
+      }, {
+        xtype: 'conf',
+        height: 300,
+        store: Ext.create('CF.store.MisfitConf'),
+        features: [{
+          id: 'grouping',
+          ftype: 'grouping',
+          startCollapsed: false
         }],
+        id: 'misfit_conf',
       }],
     }, {
       xtype: 'panel',
       title: 'Submit',
       id: 'misfit_submit',
       border: false,
-      disabled: true,
       layout: {
         type: 'vbox',
         align: 'stretch'
