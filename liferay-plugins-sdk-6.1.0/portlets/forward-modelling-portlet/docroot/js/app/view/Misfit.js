@@ -111,6 +111,7 @@ var getMisfitJSON = function(runId, callback) {
                   "user_name": userSN,
                   'processingRunId': runId,
                   'runId': Ext.getCmp('misfit_runid').getValue(),
+                  'nproc': Ext.getCmp('misfit_nproc').getValue(),
                   "readJSONstgin": [{
                     "input": {
                       "data_dir": "./",
@@ -372,6 +373,12 @@ Ext.define('CF.view.Misfit', {
           xtype: 'textfield',
           id: 'misfit_description',
           fieldLabel: 'Description:',
+        }, {
+          xtype: 'numberfield',
+          id: 'misfit_nproc',
+          fieldLabel: 'NPROC',
+          value: '64',
+          step: 1,
         }]
       }],
 

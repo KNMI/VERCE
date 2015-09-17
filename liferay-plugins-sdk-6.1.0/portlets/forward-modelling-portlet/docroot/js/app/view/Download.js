@@ -6,6 +6,7 @@ var getDownloadJSON = function(runId, callback) {
   var config = {
     'simulationRunId': runId,
     'runId': 'download_' + runId.replace(/^simulation_/, '') + '_<suffix set at submission time>',
+    'nproc': Ext.getCmp('download_nproc').getValue(),
     'downloadPE': [{
       'input': {
         // TODO handle multiple events
@@ -270,6 +271,12 @@ Ext.define('CF.view.Download', {
           xtype: 'textfield',
           id: 'download_description',
           fieldLabel: 'Description:',
+        }, {
+          xtype: 'numberfield',
+          id: 'download_nproc',
+          fieldLabel: 'NPROC',
+          value: '64',
+          step: 1,
         }]
       }],
 
@@ -303,6 +310,14 @@ Ext.define('CF.view.Download', {
       }]
     }],
     listeners: {
+      'beforetabchange': function() {
+        if (tab.id === 'download_submit') {
+          if (this.up('panel').down('simulation_selection').getSelection().length === 0) {
+            Ext.Msg.alert("No simulation run selected", "Please select a simulation run first.");
+            return false;
+          }
+        }
+      },
       'tabchange': function(tabPanel, tab) {
         if (tab.id === 'download_submit') {
           var runId = this.up('panel').down('simulation_selection').getSelection()[0].get('_id');

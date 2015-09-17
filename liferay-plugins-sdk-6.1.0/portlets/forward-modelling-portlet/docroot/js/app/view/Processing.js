@@ -992,6 +992,7 @@ Ext.define('CF.view.StationGrid', {
     var result = {
       "user_name": userSN,
       "runId": runId,
+      'nproc': Ext.getCmp('processing_nproc').getValue(),
       "readJSONstgin": [{
         "input": {
           "data_dir": "./data",
@@ -1244,6 +1245,12 @@ Ext.define('CF.view.Processing', {
             xtype: 'textfield',
             id: 'processing_description',
             fieldLabel: 'Description:',
+          }, {
+            xtype: 'numberfield',
+            id: 'processing_nproc',
+            fieldLabel: 'NPROC',
+            value: '64',
+            step: 1,
           }]
         }],
 
