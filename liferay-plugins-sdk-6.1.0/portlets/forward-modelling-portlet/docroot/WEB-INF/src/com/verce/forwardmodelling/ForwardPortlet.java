@@ -463,7 +463,7 @@ public class ForwardPortlet extends MVCPortlet{
             config.put("user_name", userSN);
             config.put("user_id", userId);
 
-            String runId = config.getString('runId');
+            String runId = config.getString("runId");
             String description = resourceRequest.getParameterValues("description")[0];
 
             String importedWfId = importWorkflow(userId, ownerId, workflowId, runId);
