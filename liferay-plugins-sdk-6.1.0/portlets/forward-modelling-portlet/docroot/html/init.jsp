@@ -62,10 +62,10 @@ PortletPreferences preferences = renderRequest.getPreferences();
 String portletResource = ParamUtil.getString(request, "portletResource");
 if (portletResource!=null && !portletResource.equals(""))
 	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
-String[] simulationWorkflowIds = preferences.getValue("simulationWorkflowIds", "").split(";");
-String[] downloadWorkflowIds = preferences.getValue("downloadWorkflowIds", "").split(";");
-String[] processingWorkflowIds = preferences.getValue("processingWorkflowIds", "").split(";");
-String[] misfitWorkflowIds = preferences.getValue("misfitWorkflowIds", "").split(";");
+String[] simulationWorkflowIds = preferences.getValue("simulationWorkflowIds", "").split("[^\\d]");
+String[] downloadWorkflowIds = preferences.getValue("downloadWorkflowIds", "").split("[^\\d]");
+String[] processingWorkflowIds = preferences.getValue("processingWorkflowIds", "").split("[^\\d]");
+String[] misfitWorkflowIds = preferences.getValue("misfitWorkflowIds", "").split("[^\\d]");
 
 WorkflowList simulationWorkflows = new WorkflowList();
 WorkflowList downloadWorkflows = new WorkflowList();
