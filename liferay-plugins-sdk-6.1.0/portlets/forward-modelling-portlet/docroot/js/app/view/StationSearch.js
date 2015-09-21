@@ -25,6 +25,11 @@ Ext.define('CF.view.MultiCombo', {
   multiSelect: true,
   getInnerTpl: function() {
     return '<div data-qtip="{abbr}">{abbr} {name}</div>';
+  },
+  listeners: {
+    change: function(multicombo, value, display) {
+      multicombo.up('form').down('#station_but').enable();
+    }
   }
 });
 
@@ -93,6 +98,7 @@ Ext.define('CF.view.StationSearchPanel', {
   }],
   buttons: [{
     itemId: 'station_but',
+    disabled: true,
     text: 'Search'
   }, {
     itemId: 'station_cl_but',
