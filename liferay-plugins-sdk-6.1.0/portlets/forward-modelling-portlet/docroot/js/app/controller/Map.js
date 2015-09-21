@@ -311,12 +311,15 @@ Ext.define('CF.controller.Map', {
   onStationSearch: function(button) {
     var form = button.up('form').getForm();
     if (form.isValid()) {
-      var baseUrl = '/j2ep-1.0/odc/fdsnws/station/1/query?level=station&';
+      var baseUrl = button.up('form').down('combobox').getValue() + '/fdsnws/station/1/query?level=station&';
       var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
-      var formValues = form.getValues(true);
-      formValues = (formValues === 'net=Any%20network') ? 'net=*' : formValues;
-      this.getStations(this, baseUrl + formValues + bbox, STXML_TYPE);
+      var networks = button.up('form').down('multicombo').getValue();
+      if (typeof networks === 'string') {
+        // handle custom strings
+        networks = networks.split(',');
+      }
+      this.getStations(this, baseUrl + 'network=' + networks.join(',') + bbox, STXML_TYPE);
     }
   },
   getStations: function(elem, purl, formatType) {

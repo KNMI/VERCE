@@ -1,36 +1,14 @@
-Ext.Ajax.request({
-  type: 'GET',
-  url: '/j2ep-1.0/odc/fdsnws/station/1/query?level=network',
-  dataType: 'xml',
-  success: function(response) {
-    comboNetworks = [];
-    comboNetworks.push({
-      abbr: 'Any network',
-      name: '*'
-    });
-    var xml = response.responseText;
-
-    $('Network', xml).each(function() {
-      var net = {
-        abbr: $(this).attr('code'),
-        name: $('Description', this).text()
-      };
-      comboNetworks.push(net);
-    });
-    networksStore.add(comboNetworks);
-  },
-  failure: function() {
-    comboNetworks = [];
-    var net = {
-      abbr: "Error",
-      name: "Error: please reload the page to see the networks"
-    };
-    comboNetworks.push(net);
-    networksStore.add(comboNetworks);
-  }
-});
-
 var networksStore = Ext.create('CF.store.Network', {});
+
+var stationProvidersStore = Ext.create('CF.store.Provider', {
+  data: [{
+    abbr: "ODC",
+    url: "/j2ep-1.0/odc"
+  }, {
+    abbr: "IRIS",
+    url: "/j2ep-1.0/iris"
+  }]
+});
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.MultiCombo', {
@@ -39,12 +17,12 @@ Ext.define('CF.view.MultiCombo', {
   fieldLabel: 'Networks',
   name: 'net',
   displayField: 'abbr',
+  valueField: 'abbr',
   width: 300,
-  labelWidth: 130,
   store: networksStore,
   queryMode: 'local',
   allowBlank: false,
-  value: 'Any network',
+  multiSelect: true,
   getInnerTpl: function() {
     return '<div data-qtip="{abbr}">{abbr} {name}</div>';
   }
@@ -63,7 +41,55 @@ Ext.define('CF.view.StationSearchPanel', {
     model: 'CF.model.Station'
   },
   items: [{
-    xtype: 'multicombo'
+    xtype: 'combobox',
+    fieldLabel: "Provider:",
+    store: stationProvidersStore,
+    displayField: 'abbr',
+    valueField: 'url',
+    queryMode: 'local',
+    listeners: {
+      change: function(combobox, value, display) {
+        networksStore.removeAll();
+        combobox.up('panel').down('multicombo').disable();
+        Ext.Ajax.request({
+          type: 'GET',
+          url: value + '/fdsnws/station/1/query?level=network',
+          dataType: 'xml',
+          disableCaching: false,
+          success: function(response) {
+            comboNetworks = [];
+            comboNetworks.push({
+              abbr: '*',
+              name: '*'
+            });
+            var xml = response.responseText;
+
+            $('Network', xml).each(function() {
+              var net = {
+                abbr: $(this).attr('code'),
+                name: $('Description', this).text()
+              };
+              comboNetworks.push(net);
+            });
+            networksStore.add(comboNetworks);
+            combobox.up('panel').down('multicombo').setValue('*');
+            combobox.up('panel').down('multicombo').enable();
+          },
+          failure: function() {
+            comboNetworks = [];
+            var net = {
+              abbr: "Error",
+              name: "Error: please reload the page to see the networks"
+            };
+            comboNetworks.push(net);
+            networksStore.add(comboNetworks);
+          }
+        });
+      }
+    }
+  }, {
+    xtype: 'multicombo',
+    disabled: true
   }],
   buttons: [{
     itemId: 'station_but',
