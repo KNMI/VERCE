@@ -415,9 +415,17 @@ Ext.define('CF.view.Misfit', {
       }]
     }],
     listeners: {
+      'beforetabchange': function(tabPanel, tab) {
+        var processing_run = this.up('panel').down('preprocessing_selection').getSelection()[0];
+        if (processing_run == null) {
+          Ext.Msg.alert("No processing run selected", "Please select a processing run first");
+          return false;
+        }
+      },
       'tabchange': function(tabPanel, tab) {
         if (tab.id === 'misfit_submit') {
-          var runId = this.up('panel').down('preprocessing_selection').getSelection()[0].get('_id');
+          var processing_run = this.up('panel').down('preprocessing_selection').getSelection()[0];
+          var runId = processing_run.get('_id');
           Ext.getCmp('misfit_submit_summary').setLoading(true);
           getMisfitJSON(runId, function(err, config, params) {
             Ext.getCmp('misfit_submit_summary').setValue(JSON.stringify(config, null, 2));
