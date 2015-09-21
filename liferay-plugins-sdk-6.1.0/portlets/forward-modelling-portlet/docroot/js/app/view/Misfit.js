@@ -416,10 +416,12 @@ Ext.define('CF.view.Misfit', {
     }],
     listeners: {
       'beforetabchange': function(tabPanel, tab) {
-        var processing_run = this.up('panel').down('preprocessing_selection').getSelection()[0];
-        if (processing_run == null) {
-          Ext.Msg.alert("No processing run selected", "Please select a processing run first");
-          return false;
+        if (tab.id === 'misfit_submit') {
+          var processing_run = this.up('panel').down('preprocessing_selection').getSelection()[0];
+          if (processing_run == null) {
+            Ext.Msg.alert("No processing run selected", "Please select a processing run first");
+            return false;
+          }
         }
       },
       'tabchange': function(tabPanel, tab) {
