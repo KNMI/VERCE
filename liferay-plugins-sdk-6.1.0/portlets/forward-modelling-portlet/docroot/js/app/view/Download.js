@@ -21,7 +21,7 @@ var getDownloadJSON = function(runId, callback) {
     }]
   };
 
-  var params = Ext.getCmp('download_submit_button').verceParams = {};
+  var params = {};
 
   // get workflow from prov
   // && get solver configuration from liferay document store
