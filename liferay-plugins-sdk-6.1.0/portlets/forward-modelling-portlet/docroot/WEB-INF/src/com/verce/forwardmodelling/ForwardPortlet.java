@@ -1497,7 +1497,7 @@ public class ForwardPortlet extends MVCPortlet{
 			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+			con.setRequestProperty("Content-type", "application/json; charset=UTF-8");
 			con.setRequestProperty("Accept", "application/json");
 
 			// System.out.println("[updateProvenanceRepository] Params: "+params.toString());
@@ -1506,10 +1506,11 @@ public class ForwardPortlet extends MVCPortlet{
 			
 			con.setDoOutput(true);
             // String data = new JSONObject().put("prov", params).toString();
-            String data = "prov=" + params.toString();
+            String data = params.toString();
+            System.out.println(data);
             con.setRequestProperty("Content-Length", Integer.toString(data.length()));
             // con.getOutputStream().write(data.getBytes("UTF-8"));
-            con.getOutputStream().write(data.getBytes("ISO-8859-1"));
+            con.getOutputStream().write(data.getBytes("UTF-8"));
 
             InputStream inputStream;
 			if(con.getResponseCode()!=200) {

@@ -1307,12 +1307,14 @@ Ext.define('CF.view.Processing', {
               wfConfig.runId = runId;
 
               params.input = Ext.encode([{
-                'url': '/j2ep-1.0/prov/workflow/' + simulation_runId,
-                'mime-type': 'text/json',
+                'url': '/j2ep-1.0/prov/workflow/export/' + simulation_runId + '?all=true&format=w3c-prov-xml',
+                'mime-type': 'application/octet-stream',
+                'prov-type': 'wfrun',
                 'name': 'simulation_workflow',
               }, {
-                'url': '/j2ep-1.0/prov/workflow/' + download_runId,
-                'mime-type': 'text/json',
+                'url': '/j2ep-1.0/prov/workflow/export/' + download_runId + '?all=true&format=w3c-prov-xml',
+                'mime-type': 'application/octet-stream',
+                'prov-type': 'wfrun',
                 'name': 'download_workflow',
               }, ]);
 

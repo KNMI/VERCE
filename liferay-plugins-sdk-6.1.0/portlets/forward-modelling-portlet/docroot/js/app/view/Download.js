@@ -41,8 +41,9 @@ var getDownloadJSON = function(runId, callback) {
       }
 
       params.input = Ext.encode([{
-        'url': workflow_url,
-        'mime-type': 'text/json',
+        'url': '/j2ep-1.0/prov/workflow/export/' + runId + '?all=true&format=w3c-prov-xml',
+        'mime-type': 'application/octet-stream',
+        'prov-type': 'wfrun',
         'name': 'simulation_workflow',
       }]);
 
