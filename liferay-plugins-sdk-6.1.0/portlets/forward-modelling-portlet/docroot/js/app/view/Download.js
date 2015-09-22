@@ -46,6 +46,8 @@ var getDownloadJSON = function(runId, callback) {
         'name': 'simulation_workflow',
       }]);
 
+      params.description = Ext.getCmp('download_description').getValue();
+
       config.downloadPE[0].input.ORIGIN_TIME = events[0].startTime;
       config.downloadPE[0].input.DT = Ext.Array.findBy(solver_conf.fields, function(field) {
         return field.name == 'DT';
