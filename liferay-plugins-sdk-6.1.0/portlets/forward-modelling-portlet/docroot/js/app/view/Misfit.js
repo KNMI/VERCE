@@ -423,6 +423,12 @@ Ext.define('CF.view.Misfit', {
             Ext.Msg.alert("No processing run selected", "Please select a processing run first");
             return false;
           }
+
+          var misfit_type = Ext.getCmp('misfit_type').getValue();
+          if (misfit_type == null || misfit_type === "") {
+            Ext.Msg.alert("No misfit type selected", "Please select a misfit type first");
+            return false;
+          }
         }
       },
       'tabchange': function(tabPanel, tab) {
