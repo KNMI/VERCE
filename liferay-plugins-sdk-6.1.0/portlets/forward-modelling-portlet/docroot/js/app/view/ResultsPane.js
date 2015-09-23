@@ -1346,6 +1346,12 @@ Ext.define('CF.view.ArtifactView', {
             title: 'Download Script',
             height: 360,
             width: 800,
+            listeners:{
+                scope:this,
+                close:function(){
+                this.window = null
+                
+            },
             layout: {
               type: 'vbox',
               align: 'stretch',
