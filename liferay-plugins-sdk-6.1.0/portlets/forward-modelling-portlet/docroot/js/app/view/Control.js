@@ -87,7 +87,7 @@ var getWorkflowAndSolverConf = function(runId, callback) {
         });
       } else {
         Ext.Ajax.request({
-          url: prov_workflow.simulation_workflow.url,
+          url: prov_workflow.simulation_workflow.url.replace(/\/export\//, '/').replace(/\?.*$/, ''),
           success: function(response, config) {
             var simulation_workflow = JSON.parse(response.responseText);
             simulation_workflow.input.forEach(function(item) {
