@@ -15,8 +15,8 @@ var seismoMetaStore = Ext.create('CF.store.SeismoMeta');
 var mimetypesStore = Ext.create('CF.store.Mimetype');
 
 // regex to match worker-node protocol and domain name to be replaced with iRODS_URL
-var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
-// specifies the userhome of whom we are going to access the data from (for sharing purposes)
+var dn_regex = /file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
+  // specifies the userhome of whom we are going to access the data from (for sharing purposes)
 owner = userSN;
 
 
@@ -494,32 +494,30 @@ var onStoreLoad = function(store) {
 
 
 var renderActivityID = function(value, p, record) {
-	if (record.data.streams)
-	   for (i=0;i<=record.data.streams.length;i++)
-	   {
-	   		
-		if(record.data.streams[i]['con:immediateAccess'] && record.data.streams[i]['con:immediateAccess']!="")
-		   	return Ext.String.format(
-	    		"<strong><i>{0}</i></strong>",
-	    		record.data.ID
-	  	   	);
-	  	if(record.data.streams[i].location && record.data.streams[i].location!='')
-	    	return Ext.String.format(
-	    		"<i>{0}</i>",
-	    		record.data.ID
-	  	   	);
-	  	return Ext.String.format(
-	    	"{0}",
-	    	record.data.ID
-	  	   );
-	  	
-	  	}
-	else  	
-	  	return Ext.String.format(
-	    	"{0}",
-	    	record.data.ID
-	  	   );
-	}
+  if (record.data.streams)
+    for (i = 0; i <= record.data.streams.length; i++) {
+
+      if (record.data.streams[i]['con:immediateAccess'] && record.data.streams[i]['con:immediateAccess'] != "")
+        return Ext.String.format(
+          "<strong><i>{0}</i></strong>",
+          record.data.ID
+        );
+      if (record.data.streams[i].location && record.data.streams[i].location != '')
+        return Ext.String.format(
+          "<i>{0}</i>",
+          record.data.ID
+        );
+      return Ext.String.format(
+        "{0}",
+        record.data.ID
+      );
+
+    } else
+      return Ext.String.format(
+        "{0}",
+        record.data.ID
+      );
+}
 
 Ext.define('CF.view.ActivityMonitor', {
   title: 'Run Activity monitor',
@@ -1400,11 +1398,11 @@ Ext.define('CF.view.ArtifactView', {
             title: 'Download Script',
             height: 360,
             width: 800,
-            listeners:{
-                scope:this,
-                close:function(){
+            listeners: {
+              scope: this,
+              close: function() {
                 this.window = null
-                
+              }
             },
             layout: {
               type: 'vbox',
