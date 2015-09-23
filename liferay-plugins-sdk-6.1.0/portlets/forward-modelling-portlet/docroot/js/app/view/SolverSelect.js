@@ -620,10 +620,16 @@ Ext.define('CF.view.SolverSelect', {
 function updateSolverValues(newValues) {
   var solverConfStore = CF.app.getController('Map').getStore('SolverConf');
   for (var i = 0; i < newValues.length; i++) {
-    //alert(JSON.stringify(newValues[i]));
-    for (var propertyName in newValues[i]) {
-      var record = solverConfStore.findRecord("name", propertyName);
-      record.set("value", newValues[i][propertyName]);
+    if (newValues[i].name != null) {
+      var record = solverConfStore.findRecord("name", newValues[i].name);
+      for (propertyName in newValues[i]) {
+        record.set(propertyName, newValues[i][propertyName]);
+      }
+    } else {
+      for (var configrationName in newValues[i]) {
+        var record = solverConfStore.findRecord("name", configrationName);
+        record.set("value", newValues[i][configrationName]);
+      }
     }
   }
   Ext.getCmp('SolverConfPanel').setDisabled(false);
