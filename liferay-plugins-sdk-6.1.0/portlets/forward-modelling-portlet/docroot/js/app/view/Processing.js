@@ -168,8 +168,8 @@ Ext.define('CF.view.ProcessingGrid', {
           this.store.insert(index, {
             "name": d.name,
             "ui_name": d.ui_name,
-            "include_visu": true,
-            "include_store": true,
+            "include_visu": false,
+            "include_store": false,
             "raw": true,
             "synt": true,
             params: p
@@ -178,8 +178,8 @@ Ext.define('CF.view.ProcessingGrid', {
           this.store.add({
             "name": d.name,
             "ui_name": d.ui_name,
-            "include_visu": true,
-            "include_store": true,
+            "include_visu": false,
+            "include_store": false,
             "raw": true,
             "synt": true,
             params: p
