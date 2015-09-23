@@ -508,10 +508,9 @@ Ext.define('CF.model.MisfitStation', {
 
 function updateSimulationStation(newStore) {
   var stationStore = Ext.getCmp("commonStations").getStore();
+  stationStore.suspendEvents();
 
-  var stationToRemove = Ext.create('Ext.data.Store', {
-    model: 'CF.model.MisfitStation'
-  });
+  var stationToRemove = [];
   // 1) remove all station from simulation stage
   for (var i = 0; i < stationStore.getCount(); i++) {
     var d = stationStore.getAt(i);
@@ -522,16 +521,13 @@ function updateSimulationStation(newStore) {
         d.data.isFromDataStage = false;
         d.data.syn_stagein_from = [];
       } else {
-        stationToRemove.add(d);
+        stationToRemove.push(d);
       }
     }
   }
+  stationStore.remove(stationToRemove);
 
-  for (var i = 0; i < stationToRemove.getCount(); i++) {
-    var d = stationToRemove.getAt(i);
-    stationStore.remove(d);
-  }
-
+  var stationToAdd = [];
   // now add station from newStore
   for (var i = 0; i < newStore.getCount(); i++) {
     var d = newStore.getAt(i);
@@ -545,7 +541,7 @@ function updateSimulationStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          stationStore.add({
+          stationToAdd.push({
             network: net,
             station: sta,
             net_sta: net_sta,
@@ -560,21 +556,20 @@ function updateSimulationStation(newStore) {
           // station already in array but we have to add location                       
           station.get("syn_stagein_from").push(location);
           station.set("isFromDataStage", true);
-
         }
-
       }
-
     }
   }
+  stationStore.add(stationToAdd);
+
+  stationStore.resumeEvents();
 }
 
 function updateRawStation(newStore) {
   var stationStore = Ext.getCmp("commonStations").getStore();
+  stationStore.suspendEvents();
 
-  var stationToRemove = Ext.create('Ext.data.Store', {
-    model: 'CF.model.MisfitStation'
-  });
+  var stationToRemove = [];
   // 1) remove all station from simulation stage
   for (var i = 0; i < stationStore.getCount(); i++) {
     var d = stationStore.getAt(i);
@@ -584,16 +579,13 @@ function updateRawStation(newStore) {
         d.data.isFromRawStage = false;
         d.data.raw_stagein_from = [];
       } else {
-        stationToRemove.add(d);
+        stationToRemove.push(d);
       }
     }
   }
+  stationStore.remove(stationToRemove);
 
-  for (var i = 0; i < stationToRemove.getCount(); i++) {
-    var d = stationToRemove.getAt(i);
-    stationStore.remove(d);
-  }
-
+  var stationToAdd = [];
   // now add station from newStore
   for (var i = 0; i < newStore.getCount(); i++) {
     var d = newStore.getAt(i);
@@ -609,7 +601,7 @@ function updateRawStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          stationStore.add({
+          stationToAdd.push({
             network: net,
             station: sta,
             net_sta: net_sta,
@@ -629,6 +621,9 @@ function updateRawStation(newStore) {
       }
     }
   }
+  stationStore.add(stationToAdd);
+
+  stationStore.resumeEvents();
 }
 
 Ext.define('CF.view.ProcessingSetup', {
@@ -1085,12 +1080,11 @@ Ext.define('CF.view.StationGrid', {
   viewConfig: {
     markDirty: false,
     getRowClass: function(record, index) {
-      if (record.get("isFromRawStage") && !record.get("isFromDataStage")) {
-        return "onlyRaw x-item-disabled";
-      } else if (!record.get("isFromRawStage") && record.get("isFromDataStage")) {
-        return "onlyData x-item-disabled";
-      } else {
+      if (record.get("isFromRawStage") && record.get("isFromDataStage")) {
         return "bold-cell";
+      } else {
+        // TODO hack: added x-grid-row because it was missing after click simulation, click download, click simulation
+        return "x-item-disabled x-grid-row";
       }
     }
   }
