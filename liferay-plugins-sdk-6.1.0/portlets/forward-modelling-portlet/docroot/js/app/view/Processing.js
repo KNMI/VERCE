@@ -527,7 +527,6 @@ function updateSimulationStation(newStore) {
   }
   stationStore.remove(stationToRemove);
 
-  var stationToAdd = [];
   // now add station from newStore
   for (var i = 0; i < newStore.getCount(); i++) {
     var d = newStore.getAt(i);
@@ -541,7 +540,7 @@ function updateSimulationStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          stationToAdd.push({
+          stationStore.add({
             network: net,
             station: sta,
             net_sta: net_sta,
@@ -560,7 +559,6 @@ function updateSimulationStation(newStore) {
       }
     }
   }
-  stationStore.add(stationToAdd);
 
   stationStore.resumeEvents();
 }
@@ -585,7 +583,6 @@ function updateRawStation(newStore) {
   }
   stationStore.remove(stationToRemove);
 
-  var stationToAdd = [];
   // now add station from newStore
   for (var i = 0; i < newStore.getCount(); i++) {
     var d = newStore.getAt(i);
@@ -601,7 +598,7 @@ function updateRawStation(newStore) {
         var net_sta = net + "." + sta;
         var station = stationStore.findRecord('net_sta', net_sta);
         if (station == null) {
-          stationToAdd.push({
+          stationStore.add({
             network: net,
             station: sta,
             net_sta: net_sta,
@@ -621,7 +618,6 @@ function updateRawStation(newStore) {
       }
     }
   }
-  stationStore.add(stationToAdd);
 
   stationStore.resumeEvents();
 }
