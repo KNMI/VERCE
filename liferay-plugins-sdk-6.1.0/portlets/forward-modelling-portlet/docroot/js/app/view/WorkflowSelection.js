@@ -33,7 +33,7 @@ Ext.define('CF.view.WorkflowSelection', {
       sortable: false,
       groupable: false
     }, {
-      header: 'Description',
+      header: 'Description - Click to Edit',
       dataIndex: 'description',
       flex: 3,
       sortable: false,
