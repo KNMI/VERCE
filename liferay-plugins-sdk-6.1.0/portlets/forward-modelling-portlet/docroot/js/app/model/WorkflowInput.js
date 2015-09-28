@@ -13,5 +13,15 @@
      name: 'name',
      type: 'string',
      mapping: 'name'
+   },
+   {
+     name: 'type',
+     type: 'string',
+     mapping: 'prov-type'
+   },
+   {
+     name: 'provtype',
+     type: 'string',
+     mapping: 'prov:type'
    }]
  });

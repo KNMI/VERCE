@@ -1,3 +1,5 @@
+var iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'  
+
 var activityStore = Ext.create('CF.store.Activity');
 
 var artifactStore = Ext.create('CF.store.Artifact');
@@ -17,6 +19,28 @@ var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
 owner = userSN;
 
+
+function openRun(id)
+{		if (id) 
+		 	this.currentRun=id
+        activityStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun)+'?method=aggregate',
+          reader: {
+            rootProperty: 'activities',
+            totalProperty: 'totalCount'
+          },
+          simpleSortMode: true
+
+        });
+        activityStore.data.clear()
+        activityStore.on('load', onStoreLoad, this, {
+          single: true
+        });
+        activityStore.load()
+        
+
+}
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
@@ -498,7 +522,7 @@ var renderActivityID = function(value, p, record) {
 	}
 
 Ext.define('CF.view.ActivityMonitor', {
-  title: 'Run activity monitor',
+  title: 'Run Activity monitor',
   width: '25%',
   region: 'west',
   extend: 'Ext.grid.Panel',
@@ -585,7 +609,7 @@ Ext.define('CF.view.ActivityMonitor', {
           workflowIn = Ext.create('Ext.window.Window', {
             title: 'Workflow input - ' + currentRun,
             height: 300,
-            width: 400,
+            width: 500,
             layout: 'fit',
             items: [Ext.create('CF.view.WorkflowInputView')]
 
@@ -596,14 +620,22 @@ Ext.define('CF.view.ActivityMonitor', {
         }
       }, {
         tooltip: "Export the trace in a W3C-PROV JSON file",
-        text: 'Export',
+        text: 'Get W3C-PROV',
         disabled: 'true',
         id: 'exportrun',
 
         handler: function() {
           window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun) + '?' + 'all=True', 'Download')
 
-        }
+        },
+        {
+            tooltip: "Manage Files and Permissions with iDROP",
+            text: 'iDrop',
+      	    id: 'idrop',
+            handler: function() {
+             window.open(iDROP, 'Download')
+              
+            }
       }
 
     ]
@@ -1198,16 +1230,38 @@ var renderStreamSingle = function(value, p, record) {
   );
 };
 
+
 var renderWorkflowInput = function(value, p, record) {
-  return Ext.String.format(
-    '<br/><strong>Name: </strong>{0} <br/> <br/>' +
-    '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
-    '<strong>mime-type: </strong>{2}<br/> ',
-    record.data.name,
-    record.data.url,
-    record.data.mimetype
-  );
-};
+    
+    if (record.data.provtype=='wfrun' || record.data.type=='wfrun')
+    {  
+        wfid=record.data.url.substr(record.data.url.lastIndexOf('/') + 1)
+        if (wfid.indexOf('?')!=-1)
+	        wfid=wfid.substr(0,wfid.indexOf('?'))
+        
+       
+	     return Ext.String.format(
+       '<br/><strong>Workflow: </strong>{0} - <a href="javascript:openRun(\'{3}\')">{3}</a><br/><br/>' +
+       '<strong><a href="{1}" target="_blank">Get W3C-PROV Document</a><br/><br/>' +
+       '<strong><a href="javascript: openRun(\'{4}\')">Refresh Current</a><br/>',
+       record.data.name,
+       record.data.url,
+       record.data.mimetype,
+       wfid,
+       currentRun
+     );
+     }
+    else
+
+     return Ext.String.format(
+       '<br/><strong>File: </strong>{0} <br/> <br/>' +
+       '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
+       '<strong>mime-type: </strong>{2}<br/> ',
+       record.data.name,
+       record.data.url,
+       record.data.mimetype
+     );
+	};
 
 Ext.define('CF.view.SingleArtifactView', {
   extend: 'Ext.grid.Panel',
