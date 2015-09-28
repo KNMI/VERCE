@@ -1330,7 +1330,7 @@ Ext.define('CF.view.ArtifactView', {
   hideHeaders: true,
   split: true,
   collapsible: true,
-  title: 'Data products',
+  title: 'Data Products',
   trackOver: true,
   autoScroll: true,
   collapsible: true,
