@@ -507,6 +507,8 @@ Ext.define('CF.model.MisfitStation', {
 });
 
 function updateSimulationStation(newStore) {
+  var stationGrid = Ext.getCmp("commonStations").getSelectionModel().deselectAll();
+
   var stationStore = Ext.getCmp("commonStations").getStore();
   stationStore.suspendEvents();
 
@@ -515,7 +517,6 @@ function updateSimulationStation(newStore) {
   for (var i = 0; i < stationStore.getCount(); i++) {
     var d = stationStore.getAt(i);
     // all station are unselected
-    d.data.selected = false;
     if (d.data.isFromDataStage == true) {
       if (d.data.isFromRawStage == true) {
         d.data.isFromDataStage = false;
@@ -564,6 +565,8 @@ function updateSimulationStation(newStore) {
 }
 
 function updateRawStation(newStore) {
+  var stationGrid = Ext.getCmp("commonStations").getSelectionModel().deselectAll();
+
   var stationStore = Ext.getCmp("commonStations").getStore();
   stationStore.suspendEvents();
 
@@ -571,7 +574,6 @@ function updateRawStation(newStore) {
   // 1) remove all station from simulation stage
   for (var i = 0; i < stationStore.getCount(); i++) {
     var d = stationStore.getAt(i);
-    d.data.selected = false;
     if (d.data.isFromRawStage == true) {
       if (d.data.isFromDataStage == true) {
         d.data.isFromRawStage = false;
