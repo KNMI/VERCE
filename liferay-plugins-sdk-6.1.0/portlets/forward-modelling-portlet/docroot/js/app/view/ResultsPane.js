@@ -1181,10 +1181,10 @@ var renderStream = function(value, p, record) {
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><br/><div style="font-size:14px;height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
+    '<strong>Output Metadata:</strong><br/><div style="resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
-    '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
+    '<strong>Errors:</strong><div style="resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {8}</div><br/><br/>' +
     '</div>',
     record.data.ID,
     record.data.wasGeneratedBy,
@@ -1213,10 +1213,10 @@ var renderStreamSingle = function(value, p, record) {
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
+    '<strong>Output Metadata:</strong><div style="resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;""> {5}</div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
-    '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
+    '<strong>Errors:</strong><div style="resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;""> {8}</div><br/><br/>' +
     '</div>',
     record.data.ID,
     record.data.wasGeneratedBy,
