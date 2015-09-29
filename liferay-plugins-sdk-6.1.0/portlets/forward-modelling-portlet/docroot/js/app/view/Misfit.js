@@ -145,7 +145,7 @@ var getMisfitJSON = function(runId, callback) {
                   prov_workflow.download_workflow, {
                     'url': '/j2ep-1.0/prov/workflow/export/' + runId + '?all=true&format=w3c-prov-xml',
                     'mime-type': 'application/octet-stream',
-                    'prov-type': 'wfrun',
+                    'prov:type': 'wfrun',
                     'name': 'processing_workflow',
                   }
                 ]);
