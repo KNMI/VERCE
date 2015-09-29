@@ -80,34 +80,34 @@ Ext.define('CF.view.WorkflowSelection', {
                       "workflowId": xx.get('systemId')
                     },
                     success: function(response) {
-                      Ext.Msg.alert("Completed", "Data for Run ID "+xx.get("runId")+" has been successfully removed")
+                      Ext.Msg.alert("Completed", "Data for Run ID " + xx.get("runId") + " has been successfully removed")
                     },
                     failure: function(response) {
-					  Ext.Msg.alert("Error", "Error deleting workflow information from gUSE")
+                      Ext.Msg.alert("Error", "Error deleting workflow information from gUSE")
                     }
                   })
                   //PHPSESSID=vsb9rpreoten67g945pghhtde6
-                 
-                  Ext.util.Cookies.set('PHPSESSID',"1t1vt2c50oilnm21q9072gdbp6")
-                   
-                  
+
+                  Ext.util.Cookies.set('PHPSESSID', "1t1vt2c50oilnm21q9072gdbp6")
+
+
                   Ext.Ajax.request({
                     url: deleteWorkflowDataURL,
                     method: "POST",
-                    withCredentials : true,
-    				useDefaultXhrHeader : false,
+                    withCredentials: true,
+                    useDefaultXhrHeader: false,
                     params: {
                       "ruri": IRODS_URI,
-                      "dirs[]":	xx.get("runId")
+                      "dirs[]": xx.get("runId")
 
                     },
                     success: function(response) {
                       wfStore.load();
                     },
                     failure: function(response) {
-                    
-                    	
-                    	Ext.Msg.alert("Error", "Error deleting data for Run ID "+xx.get("runId"))
+
+
+                      Ext.Msg.alert("Error", "Error deleting data for Run ID " + xx.get("runId"))
 
                     }
                   })

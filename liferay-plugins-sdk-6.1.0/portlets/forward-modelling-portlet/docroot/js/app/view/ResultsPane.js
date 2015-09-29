@@ -1,4 +1,4 @@
-var iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'  
+var iDROP = 'http://iren-web.renci.org/idrop-release/idrop.jnlp';
 
 var activityStore = Ext.create('CF.store.Activity');
 
@@ -20,26 +20,24 @@ var dn_regex = /file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 owner = userSN;
 
 
-function openRun(id)
-{		if (id) 
-		 	this.currentRun=id
-        activityStore.setProxy({
-          type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun)+'?method=aggregate',
-          reader: {
-            rootProperty: 'activities',
-            totalProperty: 'totalCount'
-          },
-          simpleSortMode: true
+function openRun(id) {
+  if (id)
+    this.currentRun = id
+  activityStore.setProxy({
+    type: 'ajax',
+    url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun) + '?method=aggregate',
+    reader: {
+      rootProperty: 'activities',
+      totalProperty: 'totalCount'
+    },
+    simpleSortMode: true
 
-        });
-        activityStore.data.clear()
-        activityStore.on('load', onStoreLoad, this, {
-          single: true
-        });
-        activityStore.load()
-        
-
+  });
+  activityStore.data.clear()
+  activityStore.on('load', onStoreLoad, this, {
+    single: true
+  });
+  activityStore.load();
 }
 
 // ComboBox with multiple selection enabled
@@ -540,103 +538,99 @@ Ext.define('CF.view.ActivityMonitor', {
     itemId: 'toolbar',
     xtype: 'toolbar',
     items: [{
-        tooltip: 'Open Run',
-        text: 'Open Run',
+      tooltip: 'Open Run',
+      text: 'Open Run',
 
-        handler: function(url) {
-          if (this.workflowselectionwindow == null) {
-            this.workflowselectionwindow = Ext.create('CF.view.WorkFlowSelectionWindow');
-          }
-
-          this.workflowselectionwindow.show();
-
-          if (!workflowStore.isLoaded()) {
-            workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
-          }
-
-          workflowStore.load();
+      handler: function(url) {
+        if (this.workflowselectionwindow == null) {
+          this.workflowselectionwindow = Ext.create('CF.view.WorkFlowSelectionWindow');
         }
-      }, {
-        tooltip: 'Refresh View',
-        text: 'Refresh View',
 
+        this.workflowselectionwindow.show();
 
-        handler: function() {
-          activityStore.setProxy({
-            type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
-            reader: {
-              rootProperty: 'activities',
-              totalProperty: 'totalCount'
-            },
-            simpleSortMode: true
-
-          });
-          activityStore.data.clear()
-          activityStore.load()
-
+        if (!workflowStore.isLoaded()) {
+          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
         }
-      }, {
-        tooltip: 'View Run Inputs',
-        text: 'View Run Inputs',
-        id: 'viewworkflowinput',
-        disabled: 'true',
 
-        handler: function() {
-          workflowInputStore.setProxy({
-            type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
-            reader: {
-              rootProperty: 'input',
-              totalProperty: 'totalCount'
-            },
-
-            failure: function() {
-
-              Ext.Msg.alert("Error", "Error loading Workflow Inputs");
-
-            },
-            simpleSortMode: true
-
-          });
-
-          if (typeof workflowIn != "undefined") {
-            workflowIn.close();
-          }
-
-          workflowIn = Ext.create('Ext.window.Window', {
-            title: 'Workflow input - ' + currentRun,
-            height: 300,
-            width: 500,
-            layout: 'fit',
-            items: [Ext.create('CF.view.WorkflowInputView')]
-
-          }).show();
-          workflowInputStore.data.clear()
-          workflowInputStore.load()
-
-        }
-      }, {
-        tooltip: "Export the trace in a W3C-PROV JSON file",
-        text: 'Get W3C-PROV',
-        disabled: 'true',
-        id: 'exportrun',
-
-        handler: function() {
-          window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun) + '?' + 'all=True', 'Download')
-
-        },
-        {
-            tooltip: "Manage Files and Permissions with iDROP",
-            text: 'iDrop',
-      	    id: 'idrop',
-            handler: function() {
-             window.open(iDROP, 'Download')
-              
-            }
+        workflowStore.load();
       }
+    }, {
+      tooltip: 'Refresh View',
+      text: 'Refresh View',
 
-    ]
+
+      handler: function() {
+        activityStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
+          reader: {
+            rootProperty: 'activities',
+            totalProperty: 'totalCount'
+          },
+          simpleSortMode: true
+
+        });
+        activityStore.data.clear()
+        activityStore.load()
+
+      }
+    }, {
+      tooltip: 'View Run Inputs',
+      text: 'View Run Inputs',
+      id: 'viewworkflowinput',
+      disabled: 'true',
+
+      handler: function() {
+        workflowInputStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'workflow/' + encodeURIComponent(currentRun),
+          reader: {
+            rootProperty: 'input',
+            totalProperty: 'totalCount'
+          },
+
+          failure: function() {
+
+            Ext.Msg.alert("Error", "Error loading Workflow Inputs");
+
+          },
+          simpleSortMode: true
+
+        });
+
+        if (typeof workflowIn != "undefined") {
+          workflowIn.close();
+        }
+
+        workflowIn = Ext.create('Ext.window.Window', {
+          title: 'Workflow input - ' + currentRun,
+          height: 300,
+          width: 500,
+          layout: 'fit',
+          items: [Ext.create('CF.view.WorkflowInputView')]
+
+        }).show();
+        workflowInputStore.data.clear()
+        workflowInputStore.load()
+
+      }
+    }, {
+      tooltip: "Export the trace in a W3C-PROV JSON file",
+      text: 'Get W3C-PROV',
+      disabled: 'true',
+      id: 'exportrun',
+
+      handler: function() {
+        window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun) + '?' + 'all=True', 'Download');
+      }
+    }, {
+      tooltip: "Manage Files and Permissions with iDROP",
+      text: 'iDrop',
+      id: 'idrop',
+      handler: function() {
+        window.open(iDROP, 'Download');
+      }
+    }]
   },
 
   plugins: [{
@@ -1230,36 +1224,34 @@ var renderStreamSingle = function(value, p, record) {
 
 
 var renderWorkflowInput = function(value, p, record) {
-    
-    if (record.data.provtype=='wfrun' || record.data.type=='wfrun')
-    {  
-        wfid=record.data.url.substr(record.data.url.lastIndexOf('/') + 1)
-        if (wfid.indexOf('?')!=-1)
-	        wfid=wfid.substr(0,wfid.indexOf('?'))
-        
-       
-	     return Ext.String.format(
-       '<br/><strong>Workflow: </strong>{0} - <a href="javascript:openRun(\'{3}\')">{3}</a><br/><br/>' +
-       '<strong><a href="{1}" target="_blank">Get W3C-PROV Document</a><br/><br/>' +
-       '<strong><a href="javascript: openRun(\'{4}\')">Refresh Current</a><br/>',
-       record.data.name,
-       record.data.url,
-       record.data.mimetype,
-       wfid,
-       currentRun
-     );
-     }
-    else
 
-     return Ext.String.format(
-       '<br/><strong>File: </strong>{0} <br/> <br/>' +
-       '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
-       '<strong>mime-type: </strong>{2}<br/> ',
-       record.data.name,
-       record.data.url,
-       record.data.mimetype
-     );
-	};
+  if (record.data.provtype == 'wfrun' || record.data.type == 'wfrun') {
+    wfid = record.data.url.substr(record.data.url.lastIndexOf('/') + 1)
+    if (wfid.indexOf('?') != -1)
+      wfid = wfid.substr(0, wfid.indexOf('?'))
+
+
+    return Ext.String.format(
+      '<br/><strong>Workflow: </strong>{0} - <a href="javascript:openRun(\'{3}\')">{3}</a><br/><br/>' +
+      '<strong><a href="{1}" target="_blank">Get W3C-PROV Document</a><br/><br/>' +
+      '<strong><a href="javascript: openRun(\'{4}\')">Refresh Current</a><br/>',
+      record.data.name,
+      record.data.url,
+      record.data.mimetype,
+      wfid,
+      currentRun
+    );
+  } else
+
+    return Ext.String.format(
+    '<br/><strong>File: </strong>{0} <br/> <br/>' +
+    '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
+    '<strong>mime-type: </strong>{2}<br/> ',
+    record.data.name,
+    record.data.url,
+    record.data.mimetype
+  );
+};
 
 Ext.define('CF.view.SingleArtifactView', {
   extend: 'Ext.grid.Panel',
