@@ -523,7 +523,7 @@ var renderActivityID = function(value, p, record) {
 
 Ext.define('CF.view.ActivityMonitor', {
   title: 'Run Activity monitor',
-  width: '25%',
+  width: '30%',
   region: 'west',
   extend: 'Ext.grid.Panel',
   alias: 'widget.activitymonitor',
