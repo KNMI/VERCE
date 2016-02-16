@@ -92,20 +92,22 @@ var getMisfitJSON = function(runId, callback) {
                     }
                   };
 
-                  var network_dot_name = station.location[0].replace(station_path, "").split(".").slice(0, -1).join(".");
+                  var network_dot_name = station.location[0].replace(/.*\/([^.\/]*.[^.\/]*).xml$/, "$1");
                   streamProducers[network_dot_name] = resultStation;
                 }
 
                 // Add synthetics
                 for (var ii = 0; ii < synthetics.entities.length; ++ii) {
-                  var network_dot_name = synthetics.entities[ii].location.replace(data_path, "").split(".").slice(0, -3).join(".");
-                  streamProducers[network_dot_name].input.synthetics.push(synthetics.entities[ii].location.replace(data_path, ""));
+                  var network_dot_name_dot_channel = synthetics.entities[ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).synthetic.seed$/, "$1");
+                  var network_dot_name = network_dot_name_dot_channel.split(".").slice(0, -1).join(".");
+                  streamProducers[network_dot_name].input.synthetics.push(network_dot_name_dot_channel + ".synthetic.seed");
                 }
 
                 // Add observations
                 for (var ii = 0; ii < observed.entities.length; ++ii) {
-                  var network_dot_name = observed.entities[ii].location.replace(data_path, "").split(".").slice(0, -3).join(".");
-                  streamProducers[network_dot_name].input.data.push(observed.entities[ii].location.replace(data_path, ""));
+                  var network_dot_name_dot_channel = observed.entities[ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).observed.seed$/, "$1");
+                  var network_dot_name = network_dot_name_dot_channel.split(".").slice(0, -1).join(".");
+                  streamProducers[network_dot_name].input.data.push(network_dot_name_dot_channel + ".observed.seed");
                 }
 
                 var config = {
