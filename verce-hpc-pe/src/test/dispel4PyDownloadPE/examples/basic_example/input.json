@@ -1,0 +1,15 @@
+{"downloadPE": [
+    {"input": {
+        "minlatitude": 30,
+        "maxlatitude": 50,
+        "minlongitude": 10,
+        "maxlongitude": 20,
+        "starttime": "2012-01-01T00:00:00.000000Z",
+        "endtime": "2012-01-01T00:00:50.000000Z",
+        "minimum_interstation_distance_in_m": 100,
+        "channel_priorities": ["BH[E,N,Z]", "EH[E,N,Z]"],
+        "location_priorities": ["", "00", "10"],
+        "mseed_path": "blubbbb",
+        "stationxml_path": "blaaa"
+    }}]
+}

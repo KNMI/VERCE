@@ -1,0 +1,64 @@
+{ "username":"aspinuso",
+  "runId":"preprocessing_msfit",
+  "readJSONstgin": [
+    {
+      "input": {
+        "data_dir": "preprocessing_msfit/data",
+        "synt_dir": "preprocessing_msfit/synth",
+        "events_dir": "./",
+        "stations_dir": "preprocessing_msfit/stationxml",
+        "output_dir": "preprocessing_msfit/output",
+        "syn_stagein_from": 
+          [
+            "file://i19r01a25/gpfs/work/pr45lo/di68gex/home/hpc/pr45lo/di68gex/391f4ec9-4b5f-4fdc-9def-aef8375d4511/abruzzo100001410424049257/abruzzo100001410424049257_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.RNI2.HXE.seedv",
+            "file://i19r01a25/gpfs/work/pr45lo/di68gex/home/hpc/pr45lo/di68gex/391f4ec9-4b5f-4fdc-9def-aef8375d4511/abruzzo100001410424049257/abruzzo100001410424049257_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.RNI2.HXN.seedv",
+            "file://i19r01a25/gpfs/work/pr45lo/di68gex/home/hpc/pr45lo/di68gex/391f4ec9-4b5f-4fdc-9def-aef8375d4511/abruzzo100001410424049257/abruzzo100001410424049257_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.VAGA.HXN.seedv",
+            "file://i19r01a24/gpfs/work/pr45lo/di68gex/home/hpc/pr45lo/di68gex/391f4ec9-4b5f-4fdc-9def-aef8375d4511/abruzzo100001410424049257/abruzzo100001410424049257_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.TERO.HXN.seedv",
+            "file://i19r01a26/gpfs/work/pr45lo/di68gex/home/hpc/pr45lo/di68gex/391f4ec9-4b5f-4fdc-9def-aef8375d4511/abruzzo100001410424049257/abruzzo100001410424049257_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SMA1.HXE.seedv"
+          ],
+        "raw_stagein_from": [
+          
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.RNI2..BHE.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.RNI2..BHZ.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.RNI2..BHN.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.VAGA..BHE.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.VAGA..BHZ.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.VAGA..BHN.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.TERO..BHN.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.TERO..BHE.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.TERO..BHZ.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.SMA1..EHE.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.SMA1..EHZ.mseed",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/mseed/IV.SMA1..EHN.mseed"
+        ],
+        "stationxml_stagein_from": [
+          
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.RNI2..BHE.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.RNI2..BHZ.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.RNI2..BHN.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.VAGA..BHE.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.VAGA..BHZ.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.VAGA..BHN.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.TERO..BHN.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.TERO..BHE.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.TERO..BHZ.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.SMA1..EHE.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.SMA1..EHZ.xml",
+            "file://orfeus-as//Users/aspinuso2/irods/test_download/stationxml/IV.SMA1..EHN.xml"
+        ],
+        "network": [
+          "IV",
+          "IV",
+          "IV",
+          "IV"
+        ],
+        "station": [
+          "RNI2",
+          "VAGA",
+          "TERO",
+          "SMA1"
+        ]
+      }
+    }
+  ]
+}

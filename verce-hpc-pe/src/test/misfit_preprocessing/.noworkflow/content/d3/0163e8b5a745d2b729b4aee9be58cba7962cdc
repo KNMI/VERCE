@@ -1,0 +1,54 @@
+from obspy.core import read
+from obspy.signal.tf_misfit import plotTfMisfits, em, pm
+import io
+from PIL import Image
+
+ROOT_DIR = '/Users/aspinuso2/Documents/workspace/verce-hpc-pe-prod/test-resources/mseed/'
+
+obs_z = read(ROOT_DIR + 'CH.WIMIS..HHZ.START.OTLOC.SAC.20.100.real')
+obs_r = read(ROOT_DIR + 'CH.WIMIS..HHR.START.OTLOC.SAC.20.100.real')
+obs_t = read(ROOT_DIR + 'CH.WIMIS..HHT.START.OTLOC.SAC.20.100.real')
+
+
+syn_z = read(ROOT_DIR + 'WIMIS.CH.FXZ.semv.sac.20.100.synt')
+syn_r = read(ROOT_DIR + 'WIMIS.CH.FXR.semv.sac.20.100.synt')
+syn_t = read(ROOT_DIR + 'WIMIS.CH.FXT.semv.sac.20.100.synt')
+
+traces = [obs_z, obs_r, obs_t, syn_z, syn_r, syn_t]
+for tr in traces:
+    # This will introduce a time shift but is only a proof of concept.
+    tr.decimate(10)
+    tr.decimate(10)
+
+
+def Misfit(trace, comp, obs, syn, fmin, fmax):
+    dt = 1 / syn[0].stats['sampling_rate']
+    print("Starting misfit %s, comp %s fmin %s fmax %s" %
+          (trace, comp, fmin, fmax))
+    pl = plotTfMisfits(obs[0].data, syn[0].data, dt, fmin, fmax, show=False)
+    pm_inf = pm(obs[0].data, syn[0].data, dt=dt, fmin=fmin, fmax=fmax)
+    em_inf = em(obs[0].data, syn[0].data, dt=dt, fmin=fmin, fmax=fmax)
+    print("After misfit %s, comp %s pm %s em %s" %
+          (trace, comp, pm_inf, em_inf))
+    file_misfit = io.BytesIO()
+    pl.suptitle("Component:" + comp, fontsize=15)
+    pl.savefig(file_misfit)
+    file_misfit.seek(0)
+    pl.savefig(trace + '-' + comp + '.png')
+    im = Image.open(file_misfit)
+    return im
+
+fmin = 0.1
+fmax = .5
+im_z = Misfit('WIMIS.CH', 'Z', obs_z, syn_z, fmin, fmax)
+im_r = Misfit('WIMIS.CH', 'R', obs_r, syn_r, fmin, fmax)
+im_t = Misfit('WIMIS.CH', 'T', obs_t, syn_t, fmin, fmax)
+
+width, height = im_z.size
+
+
+result = Image.new("RGBA", (width, 3 * height))
+result.paste(im_z, (0, 0 * height))
+result.paste(im_r, (0, 1 * height))
+result.paste(im_t, (0, 2 * height))
+result.save("misfit.png", "PNG")

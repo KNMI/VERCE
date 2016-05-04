@@ -1,0 +1,16 @@
+def Misfit(trace, comp, obs, syn, fmin, fmax):
+    dt = 1 / syn[0].stats['sampling_rate']
+    print("Starting misfit %s, comp %s fmin %s fmax %s" %
+          (trace, comp, fmin, fmax))
+    pl = plotTfMisfits(obs[0].data, syn[0].data, dt, fmin, fmax, show=False)
+    pm_inf = pm(obs[0].data, syn[0].data, dt=dt, fmin=fmin, fmax=fmax)
+    em_inf = em(obs[0].data, syn[0].data, dt=dt, fmin=fmin, fmax=fmax)
+    print("After misfit %s, comp %s pm %s em %s" %
+          (trace, comp, pm_inf, em_inf))
+    file_misfit = io.BytesIO()
+    pl.suptitle("Component:" + comp, fontsize=15)
+    pl.savefig(file_misfit)
+    file_misfit.seek(0)
+    pl.savefig(trace + '-' + comp + '.png')
+    im = Image.open(file_misfit)
+    return im
