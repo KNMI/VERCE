@@ -624,7 +624,7 @@ function reload(par,sel){
   url=window.location+""
   if (sel=='setrange'){
   	
-  	url=updateURLParameter(url,'mindx',document.forms[0].minidx.value)
+  	url=updateURLParameter(url,'minidx',document.forms[0].minidx.value)
   	url=updateURLParameter(url,'maxidx',document.forms[0].maxidx.value)
   	window.location=url
   
