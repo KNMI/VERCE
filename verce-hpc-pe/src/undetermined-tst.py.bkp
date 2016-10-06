@@ -1,0 +1,105 @@
+
+# coding: utf-8
+
+# In[8]:
+
+from dispel4py.workflow_graph import WorkflowGraph 
+from dispel4py.provenance import *
+import time
+import random
+from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE, SimpleFunctionPE
+
+class Source(GenericPE):
+
+    def __init__(self):
+        GenericPE.__init__(self)
+        #self._add_input('input')
+        self._add_output('output')
+         
+        
+    
+    def _process(self,inputs):
+        print inputs
+        iter=70
+        while (iter>=5):
+            #time.sleep(0.5)
+            #val = random.random()
+            self.write('output',iter,metadata={'iter':iter})
+            iter=iter-5
+        
+        
+        
+
+
+def square(data):
+    
+    data=data*data
+    prov={'format':'Random float', 'metadata':{'value_s':str(data)}}
+    return {'_d4p_prov':prov,'_d4p_data':data}
+        
+    
+    
+    
+class Div(IterativePE):
+
+    def __init__(self):
+        IterativePE.__init__(self)
+        self._add_input('input')
+        self._add_output('output')
+         
+        self.operands=[]
+    
+    def _process(self,data):
+        #self.log("SSSSSS: "+str(data))
+        self.operands.append(data)
+        val=0
+        if (len(self.operands)==2):
+            #time.sleep(0.5)
+            val = self.operands[0]/self.operands[1]
+            self.write('output',val,metadata={'val':val})
+            self.log(val)
+            self.operands=[]
+            
+
+    
+    
+
+
+sc = Source()
+sc.name='source'
+
+
+squaref=SimpleFunctionPE(square)
+divf=Div()
+
+
+#processes=[squaref,divf]
+#chain = create_iterative_chain(processes, FunctionPE_class=SimpleFunctionPE)
+
+#Initialise the graph
+graph = WorkflowGraph()
+
+#Common way of composing the graph
+graph.connect(sc,'output',squaref,'input')
+graph.connect(squaref,'output',divf,'input')
+
+
+# Alternatively with pipeline array
+#Create pipelines from functions
+
+#graph.connect(sc,'output',chain,'input')
+
+
+
+graph.flatten()
+
+#Prepare Input
+input_data = {"source": [{"input": [0]}]}
+
+
+ProvenanceRecorderToServiceBulk.REPOS_URL='http://verce-portal-dev.scai.fraunhofer.de/j2ep-1.0/prov/workflow/insert'
+rid='RDWD_'+getUniqueId()
+InitiateNewRun(graph,ProvenanceRecorderToServiceBulk,provImpClass=ProvenancePE,username='aspinuso',runId=rid,w3c_prov=False,workflowName="test_under",workflowId="undet")
+
+
+

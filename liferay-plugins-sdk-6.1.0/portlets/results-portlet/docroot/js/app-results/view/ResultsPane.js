@@ -1,13 +1,16 @@
+
 delete Ext.tip.Tip.prototype.minWidth;
 
 
-	    	      	                    
+iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'   
+RADIAL='/results-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf'	      	                    
 PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
 var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
+var IRODS_URI=userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone/home/"+userSN+"/verce/"
+var deleteWorkflowDataURL = "/j2ep-1.0/irods/irodsweb/services/delete.php"
 
-
-var activityStore = Ext.create('RS.store.Activity');
+	var activityStore = Ext.create('RS.store.Activity');
 
 var artifactStore = Ext.create('RS.store.Artifact');
 
@@ -23,7 +26,7 @@ var mimetypesStore = Ext.create('RS.store.Mimetype');
 
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
 owner = userSN
-
+var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 
 // ComboBox with multiple selection enabled
 Ext.define('RS.view.metaCombo', {
@@ -65,6 +68,29 @@ Ext.define('RS.view.metaCombo', {
 //   }
 // });
 
+
+function openRun(id)
+{		if (id) 
+		 	this.currentRun=id
+        activityStore.setProxy({
+          type: 'ajax',
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun)+'?method=aggregate',
+          reader: {
+            rootProperty: 'activities',
+            totalProperty: 'totalCount'
+          },
+          simpleSortMode: true
+
+        });
+        activityStore.data.clear()
+        activityStore.on('load', onStoreLoad, this, {
+          single: true
+        });
+        activityStore.load()
+        
+
+}
+
 // ComboBox with single selection enabled
 Ext.define('RS.view.mimeCombo', {
   extend: 'Ext.form.field.ComboBox',
@@ -98,18 +124,45 @@ var colour = {
   limegreen: "#c1d72e",
   darkgreen: "#619b45",
   lightblue: "#009fc3",
-  pink: "#d11b67"
+  pink: "#d11b67",
+  red: "#ff0000",
+  lightgrey:"#CCCCCC",
+  black:"#000000"
 }
 
 var wasDerivedFromDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
-  if (parent) {
-    col = colour.orange
+  var edgecol= colour.darkblue
+   
+  
+  if (!parent) {
+    //col = colour.red
 
   }
-
+  
+  if (data.streams)
+  { 
+ 
+   console.log(data)
+  if (data.streams[0].port==null && !(data.streams[0].port===undefined))
+  {
+   edgecol=colour.lightblue
+   col = colour.lightgrey
+  }
+  
+  	if (data.streams[0].port=='_d4p_state')
+  	{
+  		col = colour.lightblue
+  		edgecol=colour.lightblue
+ 	 }
+  }
   //var node = graph.addNode(data["id"],{label:data["_id"].substring(0,5),'color':col, 'shape':'dot', 'radius':19,'alpha':1,mass:2})
   //node.runId=data["runId"]
+  //_d4p_state
+  
+ // if (!data.streams.port or data.streams.port=='')
+  
+  
   var nodea = graph.addNode(data["id"], {
     label: data["_id"].substring(0, 8),
     'color': col,
@@ -124,7 +177,8 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
-      weight: 2
+      weight: 4,
+      color:edgecol
     });
 
   }
@@ -141,13 +195,30 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
 
 
 var derivedDataDephtree = function(data, graph, parent) {
-  var col = colour.darkgreen;
-  if (parent) {
-    col = colour.orange;
-  }
+  var col = colour.darkblue;
+  var edgecol= colour.darkblue
+   if (!parent) {
+    //col = colour.red
 
+  }
+ if (data.streams)
+  {
+ if (data.streams[0].port==null && !(data.streams[0].port===undefined))
+  {
+  col = colour.lightgrey
+  edgecol=colour.lightblue
+  }
+  
+   if (data.streams[0].port=='_d4p_state')
+  {
+  col = colour.lightblue
+  edgecol=colour.lightblue
+  //edgecol=blue
+  }
+  }
   //var node = graph.addNode(data["id"],{label:data["_id"].substring(0,5),'color':col, 'shape':'dot', 'radius':19,'alpha':1,mass:2})
   //node.runId=data["runId"]
+  //console.log(data['derivedData'])
   var nodea = graph.addNode(data["dataId"], {
     label: data["_id"].substring(0, 8),
     'color': col,
@@ -161,7 +232,8 @@ var derivedDataDephtree = function(data, graph, parent) {
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
-      weight: 2
+      weight: 4,
+      color:edgecol
     });
   }
 
@@ -181,7 +253,7 @@ var derivedDataDephtree = function(data, graph, parent) {
           })
 
 
-          graph.addEdge(nodea, nodeb, {
+          graph.addEdge(nodeb, nodea,{
             length: 0.75,
             directed: true,
             weight: 2
@@ -203,11 +275,11 @@ graph.addEdge(node.name,data["streams"][0]["id"],{label:"wasDerivedBy"})*/
 
     var params = graph.addNode(data["entities"][0]["id"] + "loc", {
       label: JSON.stringify(data["entities"][0]["location"]),
-      'color': colour.darkgreen,
+      'color': colour.darkblue,
       'link': loc
     })
 
-    graph.addEdge(params.name, data["entities"][0]["id"], {
+    graph.addEdge( data["entities"][0]["id"],params.name, {
       label: "location",
       "weight": 10
     })
@@ -216,6 +288,7 @@ graph.addEdge(node.name,data["streams"][0]["id"],{label:"wasDerivedBy"})*/
 
 var wasDerivedFromAddBranch = function(url) {
   $.getJSON(url, function(data) {
+  	//console.log(data)
     wasDerivedFromDephtree(data, sys, null)
   });
 }
@@ -313,10 +386,10 @@ Ext.define('RS.view.WorkflowOpenByRunID', {
       var form = this.up('form').getForm();
 
       if (form.isValid()) {
-
+		
         activityStore.setProxy({
           type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false).trim()),
+          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(form.findField("runId").getValue(false).trim())+'?method=aggregate',
           reader: {
             rootProperty: 'activities',
             totalProperty: 'totalCount'
@@ -419,8 +492,8 @@ Ext.define('RS.view.WorkflowValuesRangeSearch', {
     handler: function() {
       var form = this.up('form').getForm();
       var keys = form.findField("keys").getValue(false).trim();
-      var minvalues = form.findField("minvalues").getValue(false).trim();
-      var maxvalues = form.findField("maxvalues").getValue(false).trim();
+      var minvalues = encodeURIComponent(form.findField("minvalues").getValue(false).trim());
+      var maxvalues = encodeURIComponent(form.findField("maxvalues").getValue(false).trim());
       owner = userSN;
 
       if (form.isValid()) {
@@ -475,9 +548,38 @@ var onStoreLoad = function(store) {
   Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
 }
 
+var renderActivityID = function(value, p, record) {
+if (record.data.streams)
+   for (i=0;i<=record.data.streams.length;i++)
+   {
+   		
+	if(record.data.streams[i]['con:immediateAccess'] && record.data.streams[i]['con:immediateAccess']!="")
+	   	return Ext.String.format(
+    		"<strong><i>{0}</i></strong>",
+    		record.data.ID
+  	   	);
+  	if(record.data.streams[i].location && record.data.streams[i].location!='')
+    	return Ext.String.format(
+    		"<i>{0}</i>",
+    		record.data.ID
+  	   	);
+  	return Ext.String.format(
+    	"{0}",
+    	record.data.ID
+  	   );
+  	
+  	}
+else  	
+  	return Ext.String.format(
+    	"{0}",
+    	record.data.ID
+  	   );
+}
+  	
+
 Ext.define('RS.view.ActivityMonitor', {
-  title: 'Run activity monitor',
-  width: '25%',
+  title: 'Run Activity monitor',
+  width: '30%',
   region: 'west',
   extend: 'Ext.grid.Panel',
   alias: 'widget.activitymonitor',
@@ -517,24 +619,10 @@ Ext.define('RS.view.ActivityMonitor', {
       text: 'Refresh View',
 
 
-      handler: function() {
-        activityStore.setProxy({
-          type: 'ajax',
-          url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(currentRun),
-          reader: {
-            rootProperty: 'activities',
-            totalProperty: 'totalCount'
-          },
-          simpleSortMode: true
-
-        });
-        activityStore.data.clear()
-        activityStore.load()
-
-      }
+      handler: openRun
     }, {
       tooltip: 'View Run Inputs',
-      text: 'View Run Inputs',
+      text: 'View Inputs',
       id: 'viewworkflowinput',
       disabled: 'true',
 
@@ -563,7 +651,7 @@ Ext.define('RS.view.ActivityMonitor', {
         workflowIn = Ext.create('Ext.window.Window', {
           title: 'Workflow input - ' + currentRun,
           height: 300,
-          width: 400,
+          width: 500,
           layout: 'fit',
           items: [Ext.create('RS.view.WorkflowInputView')]
 
@@ -575,12 +663,30 @@ Ext.define('RS.view.ActivityMonitor', {
     },
     {
         tooltip: "Export the trace in a W3C-PROV JSON file",
-        text: 'Export',
-  	  disabled: 'true',
-  	  id: 'exportrun',
+        text: 'Get W3C-PROV',
+        disabled: 'true',
+  	    id: 'exportrun',
 
         handler: function() {
          window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun)+'?'+'all=True', 'Download')
+          
+     	}
+    },
+    {
+        tooltip: "Manage Files and Permissions with iDROP",
+        text: 'iDrop',
+  	    id: 'idrop',
+        handler: function() {
+         window.open(iDROP, 'Download')
+          
+        }
+      },
+      {
+        tooltip: "Radial Provenance Analysis",
+        text: 'Radial',
+  	    id: 'Radial',
+        handler: function() {
+        	window.open(RADIAL+'&runId='+currentRun,'_blank')
           
         }
       }
@@ -614,7 +720,8 @@ Ext.define('RS.view.ActivityMonitor', {
       header: 'ID',
       dataIndex: 'ID',
       flex: 3,
-      sortable: false
+      sortable: true,
+      renderer: renderActivityID
     },
 
     {
@@ -625,7 +732,7 @@ Ext.define('RS.view.ActivityMonitor', {
       groupable: false
     }, // custom mapping
     {
-      header: 'Errors',
+      header: 'Messages',
       dataIndex: 'errors',
       flex: 3,
       sortable: false
@@ -680,7 +787,7 @@ var is_image = function(url, callback, errorcallback) {
 var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
   htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
   for (var i = 0; i < url.length; i++) {
-    url[i] = url[i].replace(/file:\/\/[\w-]+/, IRODS_URL + "/home/" + owner + "/verce/")
+    url[i] = url[i].replace(dn_regex, IRODS_URL + "/home/" + owner + "/verce/")
 
 
     htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
@@ -750,8 +857,8 @@ Ext.define('RS.view.StreamValuesRangeSearch', {
     handler: function() {
       var form = this.up('form').getForm();
       var keys = this.up('form').getForm().findField("keys").getValue(false);
-      var minvalues = this.up('form').getForm().findField("minvalues").getValue(false);
-      var maxvalues = this.up('form').getForm().findField("maxvalues").getValue(false);
+      var minvalues = encodeURIComponent(this.up('form').getForm().findField("minvalues").getValue(false));
+      var maxvalues = encodeURIComponent(this.up('form').getForm().findField("maxvalues").getValue(false));
       var mimetype = this.up('form').getForm().findField("mime-type").getValue(false);
       if (keys == null) keys = "";
       if (form.isValid()) {
@@ -828,8 +935,8 @@ Ext.define('RS.view.FilterOnAncestor', {
 
       var form = this.up('form').getForm();
       var keys = form.findField("keys").getValue(false).trim()
-      var minvalues = form.findField("minvalues").getValue(false).trim()
-      var maxvalues = form.findField("maxvalues").getValue(false).trim()
+      var minvalues = encodeURIComponent(form.findField("minvalues").getValue(false).trim())
+      var maxvalues = encodeURIComponent(form.findField("maxvalues").getValue(false).trim())
 
       if (form.isValid()) {
         FilterAjax.request({
@@ -1098,6 +1205,8 @@ var filterOnAncestorspane = Ext.create('Ext.window.Window', {
   }]
 });
 
+
+
 var renderStream = function(value, p, record) {
   var location = "</br>"
   var contenthtm = ""
@@ -1126,11 +1235,12 @@ var renderStream = function(value, p, record) {
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
+    '<strong>output-port :</strong>{9}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><br/><div style="font-size:14px;height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"><p style="margin-left:20px;"> {5} </p></div><br/><br/>' +
+    '<strong>Output Metadata:</strong><br/><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {5} </p></div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
-    '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
+    '<strong>Errors:</strong><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {8}</div><br/><br/>' +
     '</div>',
     record.data.ID,
     record.data.wasGeneratedBy,
@@ -1140,7 +1250,8 @@ var renderStream = function(value, p, record) {
     contenthtm,
     record.data.runId,
     record.data.endTime,
-    record.data.errors
+    record.data.errors,
+  	record.data.port
   );
 };
 
@@ -1158,11 +1269,12 @@ var renderStreamSingle = function(value, p, record) {
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Date :</strong>{7}<br/> <br/>' +
+    '<strong>output-port :</strong>{9}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
-    '<strong>Output Metadata:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {5}</div><br/><br/>' +
+    '<strong>Output Metadata:</strong><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {5}</div><br/><br/>' +
     '<strong>Parameters :</strong>{2}<br/> <br/>' +
     '<strong>Annotations :</strong>{3}<br/> <br/>' +
-    '<strong>Errors:</strong><div style="height:350px;background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888;overflow: auto; width :700px; max-height:100px;"> {8}</div><br/><br/>' +
+    '<strong>Errors:</strong><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {8}</div><br/><br/>' +
     '</div>',
     record.data.ID,
     record.data.wasGeneratedBy,
@@ -1172,13 +1284,35 @@ var renderStreamSingle = function(value, p, record) {
     record.data.content.substring(0, 1000) + "...",
     record.data.runId,
     record.data.endTime,
-    record.data.errors
+    record.data.errors,
+    record.data.port
   );
 };
 
 var renderWorkflowInput = function(value, p, record) {
+ 
+ if (record.data.provtype=='wfrun' || record.data.type=='wfrun')
+ {  
+ 	 wfid=record.data.url.substr(record.data.url.lastIndexOf('/') + 1)
+ 	 if (wfid.indexOf('?')!=-1)
+	 	 wfid=wfid.substr(0,wfid.indexOf('?'))
+ 	 
+    
+	  return Ext.String.format(
+    '<br/><strong>Workflow: </strong>{0} - <a href="javascript:openRun(\'{3}\')">{3}</a><br/><br/>' +
+    '<strong><a href="{1}" target="_blank">Get W3C-PROV Document</a><br/><br/>' +
+    '<strong><a href="javascript: openRun(\'{4}\')">Refresh Current</a><br/>',
+    record.data.name,
+    record.data.url,
+    record.data.mimetype,
+    wfid,
+    currentRun
+  );
+  }
+else
+
   return Ext.String.format(
-    '<br/><strong>Name: </strong>{0} <br/> <br/>' +
+    '<br/><strong>File: </strong>{0} <br/> <br/>' +
     '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
     '<strong>mime-type: </strong>{2}<br/> ',
     record.data.name,
@@ -1186,6 +1320,9 @@ var renderWorkflowInput = function(value, p, record) {
     record.data.mimetype
   );
 };
+
+
+
 
 Ext.define('RS.view.SingleArtifactView', {
   extend: 'Ext.grid.Panel',
@@ -1220,7 +1357,7 @@ Ext.define('RS.view.WorkflowInputView', {
   extend: 'Ext.grid.Panel',
 
   width: '100%',
-  height: 100,
+  height: 400,
 
   store: workflowInputStore,
   disableSelection: true,
@@ -1301,8 +1438,9 @@ Ext.define('RS.view.ArtifactView', {
       text: 'Produce Download Script',
       id: 'downloadscript',
       disabled: 'true',
-
+    
       handler: function(url) {
+      
         var htmlcontent = "";
 
         artifactStore.each(function(record, id) {
@@ -1312,18 +1450,28 @@ Ext.define('RS.view.ArtifactView', {
             var locations = location.split(",");
 
             for (var i = 0; i < locations.length; i++) {
-              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
+              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(dn_regex, IRODS_URL_GSI + "~/verce/"+currentRun+"/") + " ./ <br/>";
             }
           } else {
-            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(/file:\/\/[\w-]+/, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
+            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(dn_regex, IRODS_URL_GSI + "~/verce/"+currentRun+"/") + " ./ <br/>";
           }
         });
-
+		
         if (this.window == null) {
+        	
           this.window = Ext.create('Ext.window.Window', {
             title: 'Download Script',
             height: 360,
             width: 800,
+            
+            listeners:{
+            	scope:this,
+       		 	close:function(){
+            	this.window = null
+              	  
+               	 
+            	}
+        	},
             layout: {
               type: 'vbox',
               align: 'stretch',
@@ -1334,7 +1482,6 @@ Ext.define('RS.view.ArtifactView', {
               overflowX: 'auto',
               height: 330,
               width: 800,
-
               xtype: 'panel',
               html: htmlcontent
             }]
@@ -1353,7 +1500,7 @@ Ext.define('RS.view.provenanceGraphsViewer', {
 
   // configure how to read the XML Data
   region: 'center',
-  title: 'Data Derivations Graph',
+  title: 'Data Dependency Graph',
   split: true,
   collapsible: true,
   require: ['Ext.layout.container.Fit',
@@ -1373,7 +1520,17 @@ Ext.define('RS.view.provenanceGraphsViewer', {
     region: 'center',
 
     xtype: 'panel',
-    html: '<strong>Double Click on the Yellow Dots to expand. Right Click to see the content</strong><center> <div style="width:100%" height="700"><canvas id="viewportprov" width="1200" height="500"></canvas></div></center>'
+    html: '<strong>Double Click on the border nodes to expand. Right Click to see the content</strong>'+
+          '<div class="my-legend">'+
+		  '<div class="legend-title"></div>'+
+		  '<div class="legend-scale">'+
+          '<ul class="legend-labels">'+
+    	  '<li><span style="background:'+colour.darkblue+'"></span>data-flow</li>'+
+    	  //'<li><span style="background:'+colour.red+'"></span>expanded</li>'+
+     	  '<li><span style="background:'+colour.lightgrey+'"></span>stateful</li>'+
+   		  '<li><span style="background:'+colour.lightblue+'"></span>no-data-flow</li>'+
+   		  '</ul></div></div>'+
+		  '<center> <div style="width:100%" height="700"><canvas id="viewportprov" width="1200" height="500"></canvas></div></center>'
   }],
 
   listeners: {

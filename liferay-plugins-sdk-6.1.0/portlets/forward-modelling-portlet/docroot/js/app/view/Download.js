@@ -34,7 +34,7 @@ var getDownloadJSON = function(runId, callback) {
     // get the events
     var event_url = prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/');
 
-    getEventData(event_url, function(err, events) {
+    getEventData(event_url, solver_conf.events, function(err, events) {
       if (err != null) {
         callback(err);
         return;

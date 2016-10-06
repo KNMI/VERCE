@@ -280,7 +280,7 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
     });
 };
 
-var getEventData = function(event_url, callback) {
+var getEventData = function(event_url, publicIds, callback) {
   Ext.Ajax.request({
     url: event_url,
     method: 'GET',
@@ -292,7 +292,9 @@ var getEventData = function(event_url, callback) {
       var events = [];
       Array.prototype.forEach.call(eventsXML, function(eventXML) {
         var origin;
-
+        
+        if ($.inArray(eventXML.getAttribute('publicID'), publicIds)!=-1)
+        {
         // Origin
         var prefOrigin = eventXML.getElementsByTagName('preferredOriginID')[0];
         var origins = eventXML.getElementsByTagName('origin');
@@ -312,6 +314,7 @@ var getEventData = function(event_url, callback) {
         events.push({
           'startTime': time
         });
+        }
       });
 
       // callback without error

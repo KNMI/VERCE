@@ -1,0 +1,47 @@
+{
+    "mother_PE": [{
+        "input": {
+            "quakeml": "../test-resources/misfit-data/event.xml",
+            "stationxml": "../test-resources/misfit-data/IV.CAFR.xml",
+            "synthetics": ["../test-resources/misfit-data/IV.CAFR.FXR.synth",
+                           "../test-resources/misfit-data/IV.CAFR.FXT.synth",
+                           "../test-resources/misfit-data/IV.CAFR.FXZ.synth"],
+            "data": ["../test-resources/misfit-data/IV.CAFR.HHR.data",
+                     "../test-resources/misfit-data/IV.CAFR.HHT.data",
+                     "../test-resources/misfit-data/IV.CAFR.HHZ.data"],
+            
+            "output_folder": "./output/",
+            "parameters": {
+            	"misfit_type": "pyflex",
+                "min_period": 0.5,
+                "max_period": 10.0,
+                "stalta_waterlevel": 0.1,
+                "s2n_limit":4.0,
+                "snr_max_base": 3.5,
+                "tshift_acceptance_level": 2.0,
+                "tshift_reference": 0.0,
+                "dlna_acceptance_level": 0.8,
+                "dlna_reference": 0.0,
+                "cc_acceptance_level": 0.7,
+                "earth_model": "ak135",
+                "min_surface_wave_velocity": 0.1,
+                "max_time_before_first_arrival": 5.0,
+                "c_0": 1.0,
+                "c_1": 2.0,
+                "c_2": 0.0,
+                "c_3a": 4.0,
+                "c_3b": 2.5,
+                "c_4a": 2.0,
+                "c_4b": 6.0,
+                "check_global_data_quality": true,
+                "snr_integrate_base": 10.0,
+                "noise_start_index": 0,
+                "noise_end_index": null,
+                "signal_start_index": null,
+                "signal_end_index": -1,
+                "window_signal_to_noise_type": "amplitude",
+                "resolution_strategy": "interval_scheduling"
+            }
+        }
+    }]
+}
