@@ -1,4 +1,3 @@
-from pymongo import *
 from obspy.imaging.beachball import Beachball
 import json
 import uuid
