@@ -1,7 +1,0 @@
-2016-11-02 09:19:59+0000 [-] Log opened.
-2016-11-02 09:19:59+0000 [-] Server running....
-2016-11-02 09:20:02+0000 [-] "127.0.0.1" - - [02/Nov/2016:09:20:01 +0000] "GET /mt/components-image?mrr=3.825e15&mtt=637190000000000&mpp=-4.46219e15&mrt=-660970000000000&mrp=-818060000000000&mtp=3.26067e15 HTTP/1.1" 500 10568 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:49.0) Gecko/20100101 Firefox/49.0"
-2016-11-02 09:20:04+0000 [-] Received SIGINT, shutting down.
-2016-11-02 09:20:04+0000 [twisted.web.server.Site] (TCP Port 8083 Closed)
-2016-11-02 09:20:04+0000 [-] Stopping factory <twisted.web.server.Site instance at 0x1064b8b48>
-2016-11-02 09:20:04+0000 [-] Main loop terminated.
