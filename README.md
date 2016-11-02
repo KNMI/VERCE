@@ -6,6 +6,12 @@ This project contains (some components of) the VERCE Science Gateway as availabl
 
 The forward-modelling portlet requires a working installation of the WS-PGRADE/gUSE liferay-based science portal. Once running it can be deployed as a portlet. A few additional components are required, which will hopefully be shared here in the future.
 
+The scigateway-api is a WEB API for the generation of the solverinput files and moment tensor images. It runs with the following modules:
+
+1. Obspy 0.10.1
+2. Twisted 16.2.0
+
+
 ## Usage
 
 TODO: Write usage instructions
