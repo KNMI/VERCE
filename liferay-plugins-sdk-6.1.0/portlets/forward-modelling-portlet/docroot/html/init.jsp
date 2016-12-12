@@ -129,9 +129,9 @@ catch(Exception e) {
     var processingWorkflows = <%= processingWorkflows.toJSONArray().toString() %>;
     var misfitWorkflows = <%= misfitWorkflows.toJSONArray().toString() %>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
-	var IRODS_URL = "https://verce-portal-test.scai.fraunhofer.de/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
+	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
     var IRODS_URL_GSI = "gsiftp://verce-portal-test.scai.fraunhofer.de/"
-    var RADIAL= "/forward-modeling/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf"	      	                    
+    var RADIAL= "/forward-modelling-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf"	      	                    
     
 
 </script>

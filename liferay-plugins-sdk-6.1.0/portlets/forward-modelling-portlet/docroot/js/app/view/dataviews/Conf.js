@@ -58,7 +58,7 @@ Ext.define('CF.view.dataviews.Conf', {
           xtype: 'numberfield',
           allowDecimals: true,
           allowExponential: false,
-          decimalPrecision: record.get('decimalPrecision') || 3,
+          decimalPrecision: 10,
           step: record.get('step'),
           listeners: {
             change: change,
