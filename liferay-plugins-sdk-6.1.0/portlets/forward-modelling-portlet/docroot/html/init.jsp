@@ -129,8 +129,11 @@ catch(Exception e) {
     var processingWorkflows = <%= processingWorkflows.toJSONArray().toString() %>;
     var misfitWorkflows = <%= misfitWorkflows.toJSONArray().toString() %>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
-	var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/" + userSN + ".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone";
-	var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/";
+	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
+    var IRODS_URL_GSI = "gsiftp://verce-portal-test.scai.fraunhofer.de/"
+    var RADIAL= "/forward-modelling-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf"	      	                    
+    
+
 </script>
 
 <%!
