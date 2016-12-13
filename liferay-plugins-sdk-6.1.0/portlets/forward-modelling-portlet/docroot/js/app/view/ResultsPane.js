@@ -18,6 +18,16 @@ var mimetypesStore = Ext.create('CF.store.Mimetype');
 owner = userSN
 var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 
+
+function relPathToAbs (sRelPath) {
+  var nUpLn, sDir = "", sPath = location.pathname.replace(/[^\/]*$/, sRelPath.replace(/(\/|^)(?:\.?\/+)+/g, "$1"));
+  for (var nEnd, nStart = 0; nEnd = sPath.indexOf("/../", nStart), nEnd > -1; nStart = nEnd + nUpLn) {
+    nUpLn = /^\/(?:\.\.\/)*/.exec(sPath.slice(nEnd))[0].length;
+    sDir = (sDir + sPath.substring(nStart, nEnd)).replace(new RegExp("(?:\\\/+[^\\\/]*){0," + ((nUpLn - 1) / 3) + "}$"), "/");
+  }
+  return sDir + sPath.substr(nStart);
+}
+		
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
   extend: 'Ext.form.field.ComboBox',
@@ -778,7 +788,7 @@ var is_image = function(url, callback, errorcallback) {
 var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
   htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
   for (var i = 0; i < url.length; i++) {
-	url[i] = url[i].replace(dn_regex, IRODS_URL)
+	url[i] = relPathToAbs(url[i].replace(dn_regex, IRODS_URL)).replace("//","/")
 
 
     htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
