@@ -1,0 +1,46 @@
+._jsPlumb_endpoint {
+  z-index: 4; }
+
+.workflowbuilder {
+  font: bold 12px arial;
+  background-color: #ffffff; }
+
+.workflowbuilder span {
+  float: left;
+  margin-top: 10px;
+  text-align: center;
+  width: 100%; }
+
+.item {
+  height: 80px;
+  width: 80px; }
+
+#wf-trash {
+  background-color: #efefef;
+  height: 300px;
+  width: 100%;
+  border: 1px solid #000000; }
+
+#wf-items {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #ffffff;
+  height: 100px; }
+
+.item {
+  background: #ababab;
+  color: #3b3b3b;
+  float: left;
+  margin-right: 10px;
+  border-radius: 10px; }
+
+.itemUsed {
+  background: #ababab;
+  color: #3b3b3b;
+  border-radius: 10px;
+  height: 80px;
+  width: 80px; }
+
+.dragActive {
+  border: 3px solid #346789; }
+
