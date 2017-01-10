@@ -2,7 +2,7 @@
 	    <head>
             <link rel="stylesheet" type="text/css" href="https://extjs.cachefly.net/ext/gpl/5.0.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css" />
             <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/theme/default/style.css" />
-            <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/custom.css" ></script>
+            <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/custom.css" />
 			<style>
 			#search-results a {
             color: #385F95;
@@ -197,8 +197,12 @@
 	    </head>
 	
 	    <body>
-            <%@ include file="init.jsp" %>	
-	        <div style="display: none; left: 100px; position: absolute; top: 100px; z-index: 100;">
+
+            <!-- ### include init.jsp ### -->
+            <%@ include file="init.jsp" %>
+            <!-- ### end include init.jsp ### -->
+
+           <div style="display: none; left: 100px; position: absolute; top: 100px; z-index: 100;">
 	        </div>
             <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
             <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.debug.js"></script>
