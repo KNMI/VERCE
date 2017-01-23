@@ -69,8 +69,8 @@ Ext.define('CF.view.Map', {
     var geowms =
       new OpenLayers.Layer.WMS(
         "Geology (OneGeology) ",
-        " http://www.bgr.de/Service/OneGeology/BGR_Geological_Units_IGME5000/", {
-          layers: 'EUROPE_BGR_5M_ONSH',
+        "http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology",
+         {layers: 'Europe_GISEurope_1500K_BedrockAge',        
           transparent: 'true'
         }, {
           isBaseLayer: false
@@ -376,7 +376,7 @@ Ext.define('CF.view.Map', {
                     xtype: "gx_legendimage",
 
 
-                    url: 'http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=Europe_GISEurope_1500K_BedrockAge&format=image/png&STYLE=default',
+                    url: 'http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&FORMAT=image%2Fpng&SRS=EPSG%3A4326&VISIBILITY=true&LAYER=hmap469',
 
                     padding: 5
                   }]
@@ -422,7 +422,7 @@ Ext.define('CF.view.Map', {
                   autoScroll: true,
                   items: [{
                     xtype: "gx_legendimage",
-                    url: 'http://www.bgr.de/Service/OneGeology/BGR_Geological_Units_IGME5000/?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=EUROPE_BGR_5M_ONSH&format=image/png&STYLE=default',
+                    url: "http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=Europe_GISEurope_1500K_BedrockAge&format=image/png&STYLE=default",
                     padding: 5
                   }]
                 })]
