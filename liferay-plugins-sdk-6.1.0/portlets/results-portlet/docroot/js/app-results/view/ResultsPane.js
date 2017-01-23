@@ -3,14 +3,7 @@ delete Ext.tip.Tip.prototype.minWidth;
 
 
 iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'   
-RADIAL='/results-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf'	      	                    
-PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
-var IRODS_URL = "http://dir-irods.epcc.ed.ac.uk/irodsweb/rodsproxy/"+userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone"
-var IRODS_URL_GSI = "gsiftp://dir-irods.epcc.ed.ac.uk/"
-var IRODS_URI=userSN+".UEDINZone@dir-irods.epcc.ed.ac.uk:1247/UEDINZone/home/"+userSN+"/verce/"
-var deleteWorkflowDataURL = "/j2ep-1.0/irods/irodsweb/services/delete.php"
-
-	var activityStore = Ext.create('RS.store.Activity');
+var activityStore = Ext.create('RS.store.Activity');
 
 var artifactStore = Ext.create('RS.store.Artifact');
 
@@ -115,6 +108,8 @@ var graphMode = ""
 
 var currentRun
 
+var deriv_run
+
 var level = 1;
 
 var colour = {
@@ -130,11 +125,26 @@ var colour = {
   black:"#000000"
 }
 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
+
+var edgecol= colour.darkblue
+
+
 var wasDerivedFromDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
-  var edgecol= colour.darkblue
-   
   
+
+   
   if (!parent) {
     //col = colour.red
 
@@ -143,18 +153,26 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
   if (data.streams)
   { 
  
-   console.log(data)
+   
   if (data.streams[0].port==null && !(data.streams[0].port===undefined))
   {
    edgecol=colour.lightblue
    col = colour.lightgrey
   }
   
+  if (!(data.feedbackIteration===undefined) && data.feedbackIteration)
+  {
+   edgecol=colour.lightblue
+   col = colour.red
+  }
+ 
   	if (data.streams[0].port=='_d4p_state')
-  	{
+  	{     //console.log(data.streams[0].port)
   		col = colour.lightblue
-  		edgecol=colour.lightblue
+  		
  	 }
+ 	 
+ 	 
   }
   //var node = graph.addNode(data["id"],{label:data["_id"].substring(0,5),'color':col, 'shape':'dot', 'radius':19,'alpha':1,mass:2})
   //node.runId=data["runId"]
@@ -169,16 +187,32 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
     'shape': 'dot',
     'radius': 19,
     'alpha': 1,
+    'data': {'runId':data.runId},
     mass: 2
   });
 
   if (parent) {
-
+    
+  var edgecolour
+    if(nodea.data.data.runId!=parent.data.data.runId)
+	{    	 
+			deriv_run=nodea.data.data.runId
+    		edgecolour=colour.red
+    		 
+    		
+    }
+    else
+	{     
+			deriv_run=nodea.data.data.runId
+			edgecolour=colour.darkblue
+    		 
+    }
+    //console.log(parent.data.data.runId)
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
       weight: 4,
-      color:edgecol
+      color:edgecolour
     });
 
   }
@@ -196,7 +230,7 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
 
 var derivedDataDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
-  var edgecol= colour.darkblue
+   
    if (!parent) {
     //col = colour.red
 
@@ -217,7 +251,6 @@ var derivedDataDephtree = function(data, graph, parent) {
   }
   }
   //var node = graph.addNode(data["id"],{label:data["_id"].substring(0,5),'color':col, 'shape':'dot', 'radius':19,'alpha':1,mass:2})
-  //node.runId=data["runId"]
   //console.log(data['derivedData'])
   var nodea = graph.addNode(data["dataId"], {
     label: data["_id"].substring(0, 8),
@@ -225,15 +258,30 @@ var derivedDataDephtree = function(data, graph, parent) {
     'shape': 'dot',
     'radius': 19,
     'alpha': 1,
+     'data': {'runId':data.runId},
     mass: 2
   });
+   
 
   if (parent) {
+   if(nodea.data.data.runId!=parent.data.data.runId)
+	{    	 
+			deriv_run=nodea.data.data.runId
+    		edgecolour=colour.red
+    		 
+    		
+    }
+    else
+	{     
+			deriv_run=nodea.data.data.runId
+			edgecolour=colour.purple
+    		 
+    }
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
       weight: 4,
-      color:edgecol
+      color:edgecolour
     });
   }
 
@@ -401,6 +449,7 @@ Ext.define('RS.view.WorkflowOpenByRunID', {
         activityStore.load({
           callback: function() {
             currentRun = form.findField("runId").getValue(false).trim()
+            deriv_run= currentRun
             owner = form.findField("usename").getValue(false).trim()
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
@@ -413,6 +462,7 @@ Ext.define('RS.view.WorkflowOpenByRunID', {
         });
 
         currentRun = form.findField("runId").getValue(false).trim();
+        deriv_run= currentRun
       };
 
       activityStore.load();
@@ -479,7 +529,7 @@ Ext.define('RS.view.WorkflowValuesRangeSearch', {
   }],
 
   buttons: [{
-    text: 'Clear',
+    text: 'Refresh',
     handler: function() {
       this.up('form').getForm().reset();
       workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
@@ -545,7 +595,7 @@ Ext.define('RS.view.WorkFlowSelectionWindow', {
 var onStoreLoad = function(store) {
   Ext.getCmp('viewworkflowinput').enable()
   Ext.getCmp('exportrun').enable();;
-  Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
+  Ext.getCmp("activitymonitor").setTitle(userSN+' - Run activity monitor - ' + currentRun)
 }
 
 var renderActivityID = function(value, p, record) {
@@ -686,7 +736,7 @@ Ext.define('RS.view.ActivityMonitor', {
         text: 'Radial',
   	    id: 'Radial',
         handler: function() {
-        	window.open(RADIAL+'&runId='+currentRun,'_blank')
+         window.open(RADIAL+'&runId='+currentRun,'_blank')
           
         }
       }
@@ -781,6 +831,7 @@ var is_image = function(url, callback, errorcallback) {
     }
   }
   img.src = url;
+  
 };
 
 
@@ -1190,6 +1241,22 @@ var searchartifactspane = Ext.create('Ext.window.Window', {
   }]
 });
 
+
+var insertusername = Ext.create('Ext.window.Window', {
+  title: 'Search Data',
+  height: 230,
+  width: 500,
+  layout: 'fit',
+  closeAction: 'hide',
+  items: [{
+    xtype: 'tabpanel',
+    items: [
+      Ext.create('RS.view.StreamValuesRangeSearch'),
+      Ext.create('RS.view.AnnotationSearch')
+    ]
+  }]
+});
+
 var filterOnAncestorspane = Ext.create('Ext.window.Window', {
   title: 'Filter Current View',
   height: 230,
@@ -1210,6 +1277,7 @@ var filterOnAncestorspane = Ext.create('Ext.window.Window', {
 var renderStream = function(value, p, record) {
   var location = "</br>"
   var contenthtm = ""
+  var prov='<a href=\"'+PROV_SERVICE_BASEURL + 'workflow/export/data/'+record.data.ID+'?all=true\" target=\"_blank">Download Provenance</a><br/>'
 
   if (record.data.location != "") {
     location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
@@ -1229,12 +1297,14 @@ var renderStream = function(value, p, record) {
   return Ext.String.format(
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
-    '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
-    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+    '<strong>Lineage:</strong><br/><br/>' +
+    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Trace Backwards</a><br/><br/></strong>' +
+    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Trace Forward</a><br/><br/></strong>' +
+    '<strong>{10}</strong><br/><hr/><br/>' +
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
-    '<strong>Date :</strong>{7}<br/> <br/>' +
+    '<strong>Start Time Iteration :</strong>{11}<br/> <br/>' +
+    '<strong>Production Time :</strong>{7}<br/> <br/>' +
     '<strong>output-port :</strong>{9}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
     '<strong>Output Metadata:</strong><br/><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {5} </p></div><br/><br/>' +
@@ -1251,24 +1321,28 @@ var renderStream = function(value, p, record) {
     record.data.runId,
     record.data.endTime,
     record.data.errors,
-  	record.data.port
+  	record.data.port,
+  	prov,
+  	record.data.startTime
   );
 };
 
 var renderStreamSingle = function(value, p, record) {
   var location = '</br>'
+   
   if (record.data.location != "")
     location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
 
   return Ext.String.format(
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
-    '<strong>Navigate the Data Derivations Graph:</strong><br/><br/>' +
-    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+    '<strong>Lineage:</strong><br/><br/>' +
+    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Trace Backwards</a><br/><br/></strong>' +
+    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Trace Forward</a><br/><br/><hr/></strong>' +
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
-    '<strong>Date :</strong>{7}<br/> <br/>' +
+    '<strong>Start Time Iteration :</strong>{10}<br/> <br/>' +
+    '<strong>Production Time :</strong>{7}<br/> <br/>' +
     '<strong>output-port :</strong>{9}<br/> <br/>' +
     '<strong>Output Files :</strong> {4} <br/>' +
     '<strong>Output Metadata:</strong><div style="font-size:15;padding: 10px; resize:both; overflow:auto; height:150px; background-color:#6495ed; color:white; border:2px solid; box-shadow: 10px 10px 5px #888888; width :700px;"> {5}</div><br/><br/>' +
@@ -1285,7 +1359,9 @@ var renderStreamSingle = function(value, p, record) {
     record.data.runId,
     record.data.endTime,
     record.data.errors,
-    record.data.port
+    record.data.port,
+    record.data.startTime
+    
   );
 };
 
@@ -1525,10 +1601,11 @@ Ext.define('RS.view.provenanceGraphsViewer', {
 		  '<div class="legend-title"></div>'+
 		  '<div class="legend-scale">'+
           '<ul class="legend-labels">'+
-    	  '<li><span style="background:'+colour.darkblue+'"></span>data-flow</li>'+
+    	  '<li><span style="background:'+colour.darkblue+'"></span>trace-bw</li>'+
+    	  '<li><span style="background:'+colour.purple+'"></span>trace-fw</li>'+
     	  //'<li><span style="background:'+colour.red+'"></span>expanded</li>'+
-     	  '<li><span style="background:'+colour.lightgrey+'"></span>stateful</li>'+
-   		  '<li><span style="background:'+colour.lightblue+'"></span>no-data-flow</li>'+
+     	  '<li><span style="background:'+colour.lightblue+'"></span>stateful</li>'+
+   		  '<li><span style="background:'+colour.red+'"></span>cross-run</li>'+
    		  '</ul></div></div>'+
 		  '<center> <div style="width:100%" height="700"><canvas id="viewportprov" width="1200" height="500"></canvas></div></center>'
   }],
@@ -1551,7 +1628,7 @@ Ext.define('RS.view.provenanceGraphsViewer', {
           //   addMeta('/j2ep-1.0/prov/streamchunk/?runid='+currentRun+'&id='+selected.node.name)
           singleArtifactStore.setProxy({
             type: 'ajax',
-            url: PROV_SERVICE_BASEURL + 'entities/run?runId=' + currentRun + '&dataId=' + selected.node.name,
+            url: PROV_SERVICE_BASEURL + 'entities/'+selected.node.name,
             reader: {
               rootProperty: 'entities',
               totalProperty: 'totalCount'

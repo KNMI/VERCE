@@ -52,29 +52,7 @@ Ext.define('RS.view.Viewport', {
 				       ]
                     },
                     ,
-	               	 {
-	                    xtype: 'panel',
-	                    title: 'iRods',
-	                    region: 'center',
-	                    border: false,
-	                    autoScroll:true,
-	                    layout: 'border',
-	                    defaults: {
-	                    },
-	                    items: [
-	                        {
-	                            xtype : "component",
-	                            autoEl : {
-	                                tag : "iframe",
-	                                seamless: "seamless",
-	                                // TODO real url
-	                                src: "http://dir-irods.epcc.ed.ac.uk/irodsweb/browse.php?ruri="+(userSN?userSN+"@":"")+"dir-irods.epcc.ed.ac.uk%3A1247/UEDINZone/home/"+(userSN?userSN+"/verce":"")
-	                            },
-	                            region: 'center',
-	                            border: false,
-	                        }
-	                    ]
-	                }
+	               	 
                 ]
 }
 
