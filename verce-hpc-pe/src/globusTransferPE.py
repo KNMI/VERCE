@@ -27,6 +27,7 @@ class globusTransferPE(SeismoPreprocessingActivity):
                                                     )]],os.environ.copy())
         
         self.error+=str(stderrdata)
+        print (str(self.error))
         
                 
 

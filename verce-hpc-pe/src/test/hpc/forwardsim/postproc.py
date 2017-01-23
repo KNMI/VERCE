@@ -16,7 +16,7 @@ class ReadJSON(GenericPE):
     
     def _process(self, inputs):
         
-        self.write(ReadJSON.OUTPUT_NAME, input_json,control={"con:skip":True})
+        self.write(ReadJSON.OUTPUT_NAME, input_json)
     
     
     
@@ -35,12 +35,12 @@ class WatchDirectory(GenericPE):
             pass
         
         directory = pickle.loads(inputs['input']["streams"][0]['data'])
-        
+        #self.addToProv('stami',metadata={'stami':1})
         for dir_entry in os.listdir(directory):
              
             dir_entry_path = os.path.join(directory, dir_entry)
-#           self.log("VVVVV: "+dir_entry_path)
             if os.path.isfile(dir_entry_path):
+                
                 self.write('output',dir_entry_path)
          
 

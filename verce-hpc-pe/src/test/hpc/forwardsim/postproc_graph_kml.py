@@ -26,8 +26,9 @@ kmlGenerator.controlParameters = { 'outputdest' : "./" }
 
 graph.connect(read, ReadJSON.OUTPUT_NAME, kmlGenerator, "input")
 
-
-injectProv(graph,ProvenancePE)
-attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
+ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
+ProvenancePE.BULK_SIZE=20
+injectProv(graph, (ProvenancePE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':controlInput["metadata"]["username"],'runId':controlInput["metadata"]["runId"],'outputdest':os.environ['EVENT_PATH']})
+#attachProvenanceRecorderPE(graph,ProvenanceRecorderToFile,username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
 
  

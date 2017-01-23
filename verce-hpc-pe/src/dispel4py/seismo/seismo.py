@@ -17,10 +17,9 @@ class SeismoPE(ProvenancePE):
     
     def __init__(self,*args,**kwargs):
         ProvenancePE.__init__(self,*args,**kwargs)
-        self.outputconnections[OUTPUT_DATA][TYPE] = ['timestamp', 'location', 'streams']
-
         
-    def extractItemMetadata(self,data):
+        
+    def extractItemMetadata(self,data,port):
         try:
                
             st=[]
@@ -69,7 +68,7 @@ class SeismoPE(ProvenancePE):
         except Exception, err:
             self.log("Applying default metadata extraction")
             #self.error=self.error+"Extract Metadata error: "+str(traceback.format_exc())
-            return super(SeismoPE, self).extractItemMetadata(data);
+            return super(SeismoPE, self).extractItemMetadata(data,port);
         
    
    
