@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.ArrayList" %>
@@ -25,8 +26,7 @@
 <%@ page import="org.json.*"%>
 
 <portlet:defineObjects />
-
-<%ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute("THEME_DISPLAY");%>
+<liferay-theme:defineObjects />
 
 <liferay-portlet:resourceURL id="getWorkflowList" var="getWorkflowListURL"/>
 
@@ -71,8 +71,9 @@ WorkflowList simulationWorkflows = new WorkflowList();
 WorkflowList downloadWorkflows = new WorkflowList();
 WorkflowList processingWorkflows = new WorkflowList();
 WorkflowList misfitWorkflows = new WorkflowList();
+
+ASMService asm_service = null;
 try {
-	ASMService asm_service = null;
 	asm_service = ASMService.getInstance();
 	
 	Vector<String> developers = asm_service.getWorkflowDevelopers(RepositoryItemTypeConstants.Application);
@@ -94,33 +95,28 @@ try {
             }
 		}
 	}
-}
-catch(Exception e) {
-  e.printStackTrace();
-  // TODO add error
-}
-%>
 
+%>
 <script>
 	var EVENT_TYPE = '<%=Constants.EVENT_TYPE %>';
 	var STXML_TYPE = '<%=Constants.STXML_TYPE %>';
 	var STPOINTS_TYPE = '<%=Constants.STPOINTS_TYPE %>';
 	var SOLVER_TYPE = '<%=Constants.SOLVER_TYPE %>';
 	
-	var updateWorkflowDescriptionURL='<%=updateWorkflowDescriptionURL.toString()%>';
-	var deleteWorkflowURL='<%=deleteWorkflowURL.toString()%>';
-	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString()%>';
-	var downloadMeshDetailsURL='<%=downloadMeshDetailsURL.toString()%>';
-	var downloadVelocityModelDetailsURL='<%=downloadVelocityModelDetailsURL.toString()%>';
-	var meshVelocityModelUploadURL='<%=meshVelocityModelUploadURL.toString()%>';
-	var uploadFileURL='<%=uploadFileURL.toString()%>';
-	var getFileListURL='<%=getFileListURL.toString()%>';
-	var getWorkflowListURL='<%=getWorkflowListURL.toString()%>';
-	var submitSolverURL='<%=submitSolverURL.toString()%>';
-    var submitDownloadWorkflowURL='<%=submitDownloadWorkflowURL.toString()%>';
-    var submitProcessingWorkflowURL='<%=submitProcessingWorkflowURL.toString()%>';
-    var submitMisfitWorkflowURL='<%=submitMisfitWorkflowURL.toString()%>';
-	var localResourcesPath = '<%=request.getContextPath()%>';
+	var updateWorkflowDescriptionURL='<%=updateWorkflowDescriptionURL.toString() %>';
+	var deleteWorkflowURL='<%=deleteWorkflowURL.toString() %>';
+	var downloadWorkflowOutputURL='<%=downloadWorkflowOutputURL.toString() %>';
+	var downloadMeshDetailsURL='<%=downloadMeshDetailsURL.toString() %>';
+	var downloadVelocityModelDetailsURL='<%=downloadVelocityModelDetailsURL.toString() %>';
+	var meshVelocityModelUploadURL='<%=meshVelocityModelUploadURL.toString() %>';
+	var uploadFileURL='<%=uploadFileURL.toString() %>';
+	var getFileListURL='<%=getFileListURL.toString() %>';
+	var getWorkflowListURL='<%=getWorkflowListURL.toString() %>';
+	var submitSolverURL='<%=submitSolverURL.toString() %>';
+    var submitDownloadWorkflowURL='<%=submitDownloadWorkflowURL.toString() %>';
+    var submitProcessingWorkflowURL='<%=submitProcessingWorkflowURL.toString() %>';
+    var submitMisfitWorkflowURL='<%=submitMisfitWorkflowURL.toString() %>';
+	var localResourcesPath = '<%=request.getContextPath() %>';
 	var userSN = '<%=themeDisplay.getUser().getScreenName() %>';
 	var userId = '<%=themeDisplay.getUser().getUserId() %>';
 	var portalUrl = '<%=PortalUtil.getPortalURL(request) %>';
@@ -129,12 +125,18 @@ catch(Exception e) {
     var processingWorkflows = <%= processingWorkflows.toJSONArray().toString() %>;
     var misfitWorkflows = <%= misfitWorkflows.toJSONArray().toString() %>;
    	var PROV_SERVICE_BASEURL = "/j2ep-1.0/prov/";
-	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
-    var IRODS_URL_GSI = "gsiftp://verce-irods.scai.fraunhofer.de/"
-    var RADIAL= "/forward-modelling-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf"	      	                    
-    
-
+	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce";
+    var IRODS_URL_GSI = "gsiftp://verce-irods.scai.fraunhofer.de/";
+    var RADIAL= "/forward-modelling-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf";
 </script>
+<%
+}
+catch(Exception e) {
+  // TODO add error
+  System.out.println("ASM Service failed, WSPGRADE not yet connected to gUSE?");
+  e.printStackTrace();
+}
+%>
 
 <%!
 public String getResourcesString(String a, ASMWorkflow w, ASMService asm_service) {
