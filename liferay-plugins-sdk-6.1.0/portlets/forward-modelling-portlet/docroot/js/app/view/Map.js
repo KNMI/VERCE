@@ -376,7 +376,7 @@ Ext.define('CF.view.Map', {
                     xtype: "gx_legendimage",
 
 
-                    url: 'http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&FORMAT=image%2Fpng&SRS=EPSG%3A4326&VISIBILITY=true&LAYER=hmap469',
+                    url: 'http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=Europe_GISEurope_1500K_BedrockAge&format=image/png&STYLE=default',
 
                     padding: 5
                   }]
@@ -395,7 +395,7 @@ Ext.define('CF.view.Map', {
             x: 10,
             y: 20
           }, {
-            text: 'Geology - Europe BGR 5M Geological Units - Onshore'
+            text: 'Geology - GIS Europe Bedrock and Structural Geology'
           }, {
             xtype: "gx_opacityslider",
             text: 'Geology',
