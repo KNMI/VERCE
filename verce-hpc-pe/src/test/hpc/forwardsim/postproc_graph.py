@@ -80,7 +80,7 @@ seedtostream.parameters = { 'filedestination' : '/OUTPUT_FILES/TRANSFORMED/SEED/
 
 graph.connect(read, ReadJSON.OUTPUT_NAME, watcher, "input")
 graph.connect(watcher, "output", specfem2stream, "input")
-graph.connect(specfem2stream, "output", waveplot, "input")
+graph.connect(seedtostream, "output", waveplot, "input")
 graph.connect(specfem2stream, "output", seedtostream, "input")
 
 #graph=attachProvenancePE(graph,ProvenanceRecorderToFile(toW3C=False),username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
