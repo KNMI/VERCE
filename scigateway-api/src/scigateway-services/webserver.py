@@ -122,15 +122,12 @@ class SolverParFile(resource.Resource):
         
     def render_POST(self, request):
         request.setHeader('Content-type', 'application/octet-stream')
-        fileloc=None
-        
-        
-        if self.path=="specfem3d_cartesian_202_dev":
-           
-            fileloc = self.solvergen.produceFileSpecfem_202_DEV(json.loads(str(request.args["jsondata"].pop(0))))
-          
-        
-        return fileloc 
+
+        if self.path == "specfem3d_cartesian_202_dev":
+            return self.solvergen.produceFileSpecfem_202_DEV(json.loads(str(request.args["jsondata"].pop(0))))
+
+        if self.path == "specfem3d_globe":
+            return self.solvergen.produceFileSpecfem_globe(json.loads(str(request.args["jsondata"].pop(0))))
             
     
     def getChild(self, path, request):
