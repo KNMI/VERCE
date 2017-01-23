@@ -365,14 +365,16 @@ public class ForwardPortlet extends MVCPortlet{
 		try{
 			asm_service = ASMService.getInstance();
 			String wfId = ParamUtil.getString(resourceRequest, "workflowId");
-			String encryptedIrodsSession = ParamUtil.getString(resourceRequest, "encryptedIrodsSession");
-			String irodsSession = decryptIrodsSession(encryptedIrodsSession);
+			// TO BE HANDLED WITH THE NEW IRODS CLOUD BROWSER
+			//String encryptedIrodsSession = ParamUtil.getString(resourceRequest, "encryptedIrodsSession");
+			//String irodsSession = decryptIrodsSession(encryptedIrodsSession);
 
 			asm_service.abort(userId, wfId);	//TODO: fixme!
 			asm_service.DeleteWorkflow(userId, wfId);
-			System.out.println("[ForwardModellingPortlet.delete] workflow "+wfId+" has been deleted by user "+userId);
+			System.out.println("[ForwardModellingPortlet.delete] workflow run "+wfId+" has been deleted by user "+userId);
 
-            deleteFromIrods(irodsSession);
+            
+			//deleteFromIrods(irodsSession);
 		}
 		catch(Exception e)
 		{

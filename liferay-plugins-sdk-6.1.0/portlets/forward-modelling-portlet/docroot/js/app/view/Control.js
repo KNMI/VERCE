@@ -243,10 +243,11 @@ var handleReuse = function(grid, rowIndex, colIndex) {
 
 var handleDeleteInstance = function(grid, rowIndex, colIndex) {
   var encryptedIrodsSession = CF.app.getController('Map').encryptedIrodsSession;
-  if (encryptedIrodsSession == null) {
-    Ext.Msg.alert('Error', 'Cannot remove run. Please log out from and back into iRods and try again.');
-    return;
-  }
+  //TO BE HANDLED WITH THE NEW IRODS CLOUD BROWSER
+  //if (encryptedIrodsSession == null) {
+  //  Ext.Msg.alert('Error', 'Cannot remove run. Please log out from and back into iRods and try again.');
+  //  return;
+  //}
 
   var rec = grid.getStore().getAt(rowIndex);
   Ext.Msg.confirm('Warning', 'Are you sure that you want to delete ' + rec.get('name') + "?",
