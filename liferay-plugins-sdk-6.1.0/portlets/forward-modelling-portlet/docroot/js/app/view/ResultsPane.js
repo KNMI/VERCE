@@ -14,20 +14,22 @@ var seismoMetaStore = Ext.create('CF.store.SeismoMeta');
 
 var mimetypesStore = Ext.create('CF.store.Mimetype');
 
-// regex to match worker-node protocol and domain name to be replaced with iRODS_URL
+// specifies the userhome of whom we are going to access the data from (for sharing purposes)
 owner = userSN
 var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 
-
+	
 function relPathToAbs (sRelPath) {
   var nUpLn, sDir = "", sPath = location.pathname.replace(/[^\/]*$/, sRelPath.replace(/(\/|^)(?:\.?\/+)+/g, "$1"));
   for (var nEnd, nStart = 0; nEnd = sPath.indexOf("/../", nStart), nEnd > -1; nStart = nEnd + nUpLn) {
-    nUpLn = /^\/(?:\.\.\/)*/.exec(sPath.slice(nEnd))[0].length;
-    sDir = (sDir + sPath.substring(nStart, nEnd)).replace(new RegExp("(?:\\\/+[^\\\/]*){0," + ((nUpLn - 1) / 3) + "}$"), "/");
-  }
+          nUpLn = /^\/(?:\.\.\/)*/.exec(sPath.slice(nEnd))[0].length;
+          sDir = (sDir + sPath.substring(nStart, nEnd)).replace(new RegExp("(?:\\\/+[^\\\/]*){0," + ((nUpLn - 1) / 3) + "}$"), "/");
+     }
   return sDir + sPath.substr(nStart);
 }
-		
+
+
+
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
   extend: 'Ext.form.field.ComboBox',
@@ -115,6 +117,8 @@ var graphMode = ""
 
 var currentRun
 
+var deriv_run
+
 var level = 1;
 
 var colour = {
@@ -130,11 +134,26 @@ var colour = {
   black:"#000000"
 }
 
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
+
+var edgecol= colour.darkblue
+
+
 var wasDerivedFromDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
-  var edgecol= colour.darkblue
-   
   
+
+   
   if (!parent) {
     //col = colour.red
 
@@ -143,18 +162,26 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
   if (data.streams)
   { 
  
-   console.log(data)
+   
   if (data.streams[0].port==null && !(data.streams[0].port===undefined))
   {
    edgecol=colour.lightblue
    col = colour.lightgrey
   }
   
+  if (!(data.feedbackIteration===undefined) && data.feedbackIteration)
+  {
+   edgecol=colour.lightblue
+   col = colour.red
+  }
+ 
   	if (data.streams[0].port=='_d4p_state')
-  	{
+  	{     //console.log(data.streams[0].port)
   		col = colour.lightblue
-  		edgecol=colour.lightblue
+  		
  	 }
+ 	 
+ 	 
   }
   //var node = graph.addNode(data["id"],{label:data["_id"].substring(0,5),'color':col, 'shape':'dot', 'radius':19,'alpha':1,mass:2})
   //node.runId=data["runId"]
@@ -169,16 +196,32 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
     'shape': 'dot',
     'radius': 19,
     'alpha': 1,
+    'data': {'runId':data.runId},
     mass: 2
   });
 
   if (parent) {
-
+    
+  var edgecolour
+    if(nodea.data.data.runId!=parent.data.data.runId)
+	{    	 
+			deriv_run=nodea.data.data.runId
+    		edgecolour=colour.red
+    		 
+    		
+    }
+    else
+	{     
+			deriv_run=nodea.data.data.runId
+			edgecolour=colour.darkblue
+    		 
+    }
+    //console.log(parent.data.data.runId)
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
       weight: 4,
-      color:edgecol
+      color:edgecolour
     });
 
   }
@@ -196,7 +239,7 @@ var wasDerivedFromDephtree = function(data, graph, parent) {
 
 var derivedDataDephtree = function(data, graph, parent) {
   var col = colour.darkblue;
-  var edgecol= colour.darkblue
+   
    if (!parent) {
     //col = colour.red
 
@@ -224,17 +267,30 @@ var derivedDataDephtree = function(data, graph, parent) {
     'shape': 'dot',
     'radius': 19,
     'alpha': 1,
+     'data': {'runId':data.runId},
     mass: 2
   });
    
-  
 
   if (parent) {
+   if(nodea.data.data.runId!=parent.data.data.runId)
+	{    	 
+			deriv_run=nodea.data.data.runId
+    		edgecolour=colour.red
+    		 
+    		
+    }
+    else
+	{     
+			deriv_run=nodea.data.data.runId
+			edgecolour=colour.purple
+    		 
+    }
     graph.addEdge(parent, nodea, {
       length: 0.75,
       directed: true,
       weight: 4,
-      color:edgecol
+      color:edgecolour
     });
   }
 
@@ -402,6 +458,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
         activityStore.load({
           callback: function() {
             currentRun = form.findField("runId").getValue(false).trim()
+            deriv_run= currentRun
             owner = form.findField("usename").getValue(false).trim()
             Ext.getCmp('filtercurrent').enable();
             Ext.getCmp('searchartifacts').enable();
@@ -414,6 +471,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
         });
 
         currentRun = form.findField("runId").getValue(false).trim();
+        deriv_run= currentRun
       };
 
       activityStore.load();
@@ -480,7 +538,7 @@ Ext.define('CF.view.WorkflowValuesRangeSearch', {
   }],
 
   buttons: [{
-    text: 'Clear',
+    text: 'Refresh',
     handler: function() {
       this.up('form').getForm().reset();
       workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflow/user/' + userSN;
@@ -546,7 +604,7 @@ Ext.define('CF.view.WorkFlowSelectionWindow', {
 var onStoreLoad = function(store) {
   Ext.getCmp('viewworkflowinput').enable()
   Ext.getCmp('exportrun').enable();;
-  Ext.getCmp("activitymonitor").setTitle('Run activity monitor - ' + currentRun)
+  Ext.getCmp("activitymonitor").setTitle(userSN+' - Run activity monitor - ' + currentRun)
 }
 
 var renderActivityID = function(value, p, record) {
@@ -782,13 +840,14 @@ var is_image = function(url, callback, errorcallback) {
     }
   }
   img.src = url;
+  
 };
 
 
 var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
   htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
   for (var i = 0; i < url.length; i++) {
-	url[i] = relPathToAbs(url[i].replace(dn_regex, IRODS_URL)).replace("//","/")
+    url[i] = relPathToAbs(url[i].replace(dn_regex, IRODS_URL)).replace("//","/")
 
 
     htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
@@ -1191,6 +1250,22 @@ var searchartifactspane = Ext.create('Ext.window.Window', {
   }]
 });
 
+
+var insertusername = Ext.create('Ext.window.Window', {
+  title: 'Search Data',
+  height: 230,
+  width: 500,
+  layout: 'fit',
+  closeAction: 'hide',
+  items: [{
+    xtype: 'tabpanel',
+    items: [
+      Ext.create('CF.view.StreamValuesRangeSearch'),
+      Ext.create('CF.view.AnnotationSearch')
+    ]
+  }]
+});
+
 var filterOnAncestorspane = Ext.create('Ext.window.Window', {
   title: 'Filter Current View',
   height: 230,
@@ -1211,7 +1286,7 @@ var filterOnAncestorspane = Ext.create('Ext.window.Window', {
 var renderStream = function(value, p, record) {
   var location = "</br>"
   var contenthtm = ""
-  var prov='<a href=\"'+PROV_SERVICE_BASEURL + 'workflow/export/data/'+record.data.ID+'?all=true\" target=\"_blank">Download</a><br/>'
+  var prov='<a href=\"'+PROV_SERVICE_BASEURL + 'workflow/export/data/'+record.data.ID+'?all=true\" target=\"_blank">Download Provenance</a><br/>'
 
   if (record.data.location != "") {
     location = '<a href="javascript:viewData(\'' + record.data.location + '\'.split(\',\'),true)">Open</a><br/>'
@@ -1232,8 +1307,8 @@ var renderStream = function(value, p, record) {
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
     '<strong>Lineage:</strong><br/><br/>' +
-    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/></strong>' +
+    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Trace Backwards</a><br/><br/></strong>' +
+    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Trace Forward</a><br/><br/></strong>' +
     '<strong>{10}</strong><br/><hr/><br/>' +
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
@@ -1271,8 +1346,8 @@ var renderStreamSingle = function(value, p, record) {
     '<div class="search-item" style="border:2px solid; box-shadow: 10px 10px 5px #888888;"><br/>' +
     '<strong>Data ID: {0} </strong> <br/> <br/></strong><hr/>' +
     '<strong>Lineage:</strong><br/><br/>' +
-    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Backwards</a><br/><br/></strong>' +
-    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Forward</a><br/><br/><hr/></strong>' +
+    '<strong><a href="javascript:wasDerivedFromNewGraph(\'' + PROV_SERVICE_BASEURL + 'wasDerivedFrom/{0}?level=' + level + '\')">Trace Backwards</a><br/><br/></strong>' +
+    '<strong><a href="javascript:derivedDataNewGraph(\'' + PROV_SERVICE_BASEURL + 'derivedData/{0}?level=' + level + '\')">Trace Forward</a><br/><br/><hr/></strong>' +
     '<strong>Generated By :</strong> {1} <br/> <br/>' +
     '<strong>Run Id :</strong> {6} <br/> <br/>' +
     '<strong>Start Time Iteration :</strong>{10}<br/> <br/>' +
@@ -1535,10 +1610,11 @@ Ext.define('CF.view.provenanceGraphsViewer', {
 		  '<div class="legend-title"></div>'+
 		  '<div class="legend-scale">'+
           '<ul class="legend-labels">'+
-    	  '<li><span style="background:'+colour.darkblue+'"></span>data-flow</li>'+
+    	  '<li><span style="background:'+colour.darkblue+'"></span>trace-bw</li>'+
+    	  '<li><span style="background:'+colour.purple+'"></span>trace-fw</li>'+
     	  //'<li><span style="background:'+colour.red+'"></span>expanded</li>'+
-     	  '<li><span style="background:'+colour.lightgrey+'"></span>stateful</li>'+
-   		  '<li><span style="background:'+colour.lightblue+'"></span>no-data-flow</li>'+
+     	  '<li><span style="background:'+colour.lightblue+'"></span>stateful</li>'+
+   		  '<li><span style="background:'+colour.red+'"></span>cross-run</li>'+
    		  '</ul></div></div>'+
 		  '<center> <div style="width:100%" height="700"><canvas id="viewportprov" width="1200" height="500"></canvas></div></center>'
   }],
