@@ -16,7 +16,7 @@ class ReadJSON(GenericPE):
     
     def _process(self, inputs):
         
-        self.write(ReadJSON.OUTPUT_NAME, input_json)
+        self.write(ReadJSON.OUTPUT_NAME, input_json,control={"con:skip":True})
     
     
     
@@ -41,7 +41,7 @@ class WatchDirectory(GenericPE):
             dir_entry_path = os.path.join(directory, dir_entry)
             if os.path.isfile(dir_entry_path):
                 
-                self.write('output',dir_entry_path)
+                self.write('output',dir_entry_path,control={"con:skip":True})
          
 
  
