@@ -9,16 +9,17 @@ from dispel4py.provenance import ProvenancePE
 import gc 
 
 
-
 class WavePlot_INGV(IterativePE):
     
     
-     
 
     
     
     def _process(self,data):
+        self.error=""
+         
         self.outputdest=self.outputdest+"%s" % (self.parameters["filedestination"],);
+        
         try:
             if not os.path.exists(self.outputdest):
                 os.makedirs(self.outputdest)
@@ -48,6 +49,7 @@ class WavePlot_INGV(IterativePE):
         
         t0=719164.
         self.outputdest=self.outputdest+"/"+name+".png"
+        #self.log("FFF:"+self.outputdest)
         if mdt.date2num(data[0].stats.starttime) > t0:
             date="Date: " + str(data[0].stats.starttime.date)
         else:
@@ -80,12 +82,13 @@ class WavePlot_INGV(IterativePE):
         fig1 = plt.gcf()
          
         plt.draw()
+        
         fig1.savefig(self.outputdest)
         __file = open(self.outputdest)
         plt.close(fig1)
         fig1.clf()
         plt.close(fig1)
-        del t
+        del t, data[i].data
         gc.collect()
         
         

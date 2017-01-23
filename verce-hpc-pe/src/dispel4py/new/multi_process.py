@@ -49,9 +49,10 @@ import argparse
 import copy
 import multiprocessing
 import traceback
+import os
 import types
 from dispel4py.new.processor \
-    import GenericWrapper, simpleLogger, STATUS_ACTIVE, STATUS_TERMINATED
+    import GenericWrapper, simpleLogger, STATUS_ACTIVE, STATUS_TERMINATED, SimpleProcessingPE
 from dispel4py.new import processor
 
 
@@ -190,7 +191,8 @@ class MultiProcessingWrapper(GenericWrapper):
         return data, status
 
     def _write(self, name, data):
-        # self.pe.log('Writing %s to %s' % (data, name))
+        #self.pe.log('MP Writing %s to %s' % (data, name))
+        
         try:
             targets = self.targets[name]
         except KeyError:
@@ -199,10 +201,15 @@ class MultiProcessingWrapper(GenericWrapper):
                 self.result_queue.put((self.pe.id, name, data))
             return
         for (inputName, communication) in targets:
+             
+            if isinstance(self.pe, SimpleProcessingPE):
+                dest = communication.getDestination({inputName: data[0]})
+            else:
+                dest = communication.getDestination({inputName: data})
+                
             output = {inputName: data}
-            dest = communication.getDestination(output)
             for i in dest:
-                # self.pe.log('Writing out %s' % output)
+                #self.pe.log('Writing out %s' % output)
                 try:
                     self.output_queues[i].put((output, STATUS_ACTIVE))
                 except:
@@ -214,7 +221,7 @@ class MultiProcessingWrapper(GenericWrapper):
                 for i in communication.destinations:
                     self.output_queues[i].put((None, STATUS_TERMINATED))
 
-
+import time
 def main():    # pragma: no cover
     from dispel4py.new.processor \
         import load_graph_and_inputs, parse_common_args
@@ -224,6 +231,12 @@ def main():    # pragma: no cover
 
     graph, inputs = load_graph_and_inputs(args)
     if graph is not None:
+        elapsed_time=0
+        start_time = time.time()
+        process(graph, inputs=input_data, args=args)
+        elapsed_time+= time.time() - start_time
+    
         errormsg = process(graph, inputs, args)
         if errormsg:
             print(errormsg)
+        print ("ELAPSED TIME: "+str(elapsed_time/num))

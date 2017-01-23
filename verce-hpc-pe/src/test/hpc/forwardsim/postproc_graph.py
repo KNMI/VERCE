@@ -30,7 +30,7 @@ class ReadJSON(GenericPE):
         
     def _process(self, inputs):
         
-        self.write(ReadJSON.OUTPUT_NAME, input_json,control={"con:skip":True})
+        self.write(ReadJSON.OUTPUT_NAME, input_json)
 
 graph = WorkflowGraph()
 read = ReadJSON()
@@ -39,25 +39,41 @@ watcher = WatchDirectory()
 waveplot = WavePlot_INGV()
 specfem2stream = Specfem3d2Stream()
 seedtostream=StreamToSeedFile()
-kmlGenerator = kmlGenerator_INGV()
+#kmlGenerator = kmlGenerator_INGV()
 
-
+#os.environ['EVENT_PATH']='./'
 
 controlInput = json.load(open(os.environ['JSON_OUT']+"/jsonout_run_specfem"))
 
 
-kmlGenerator.appParameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
+#kmlGenerator.appParameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
 
 specfem2stream.parameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
-specfem2stream.controlParameters = { 'outputdest' : "./" ,'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
+#specfem2stream.controlParameters = { 'outputdest' : "./" ,'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
 
 waveplot.parameters = { 'filedestination' : '/OUTPUT_FILES/TRANSFORMED/PLOT/' }
-waveplot.controlParameters = {'outputdest' : os.environ['EVENT_PATH'], 'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
+#waveplot.controlParameters = {'outputdest' : os.environ['EVENT_PATH'], 'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
 
 seedtostream.parameters = { 'filedestination' : '/OUTPUT_FILES/TRANSFORMED/SEED/' }
-seedtostream.controlParameters = { 'outputdest' : os.environ['EVENT_PATH'], 'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
+#seedtostream.controlParameters =
+#seedtostream.outputdest=os.environ['EVENT_PATH']
+#seedtostream.runId=controlInput["metadata"]["runId"]
+#seedtostream.username=controlInput["metadata"]["username"]
 
-watcher.controlParameters = { 'outputdest' : os.environ['EVENT_PATH'], 'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
+
+#waveplot.outputdest=os.environ['EVENT_PATH']
+#waveplot.runId=controlInput["metadata"]["runId"]
+#waveplot.username=controlInput["metadata"]["username"]
+
+#specfem2stream.outputdest=os.environ['EVENT_PATH']
+#print("DADADADAD "+specfem2stream.outputdest)
+#specfem2stream.runId=controlInput["metadata"]["runId"]
+#specfem2stream.username=controlInput["metadata"]["username"]
+
+#watcher.controlParameters = { 'outputdest' : os.environ['EVENT_PATH'], 'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
+#watcher.outputdest=os.environ['EVENT_PATH']
+#watcher.runId=controlInput["metadata"]["runId"]
+#watcher.username=controlInput["metadata"]["username"]
 
 
 
@@ -69,10 +85,15 @@ graph.connect(specfem2stream, "output", seedtostream, "input")
 
 #graph=attachProvenancePE(graph,ProvenanceRecorderToFile(toW3C=False),username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
 
-injectProv(graph,SeismoPE)
-graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
+#injectProv(graph,SeismoPE)
+ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
+ProvenancePE.BULK_SIZE=20
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':controlInput["metadata"]["username"],'runId':controlInput["metadata"]["runId"],'outputdest':os.environ['EVENT_PATH']})
+#graph=attachProvenanceRecorderPE(graph,None, username=controlInput["metadata"]["username"],runId=controlInput["metadata"]["runId"])
 
-#InitiateNewRun(graph,ProvenanceRecorderToService,provImpClass=SeismoPE,input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="postprocessing",runId="datavisualtest4",w3c_prov=False)
+#ProvenancePE.REPOS_URL='http://verce-portal-dev.scai.fraunhofer.de/j2ep-1.0/prov/workflow/insert'
+
+#InitiateNewRun(graph,ProvenanceRecorderToFileBulk,provImpClass=SeismoPE,input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="postprocessing",runId="instancetest90335s3",w3c_prov=False)
 
 
 #display(graph)

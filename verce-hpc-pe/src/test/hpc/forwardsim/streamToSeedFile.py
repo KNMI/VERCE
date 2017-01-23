@@ -29,6 +29,8 @@ class StreamToSeedFile(IterativePE):
         #tokenz=folder.split(' - ');
         
         #folder=tokenz[0]+" - "+tokenz[1];
+        #self.outputdest='./'
+        
         self.outputdest=self.outputdest+"%s" % (self.parameters["filedestination"],);
         for tr in data:
             try:
@@ -56,7 +58,8 @@ class StreamToSeedFile(IterativePE):
             if not os.path.exists(self.outputdest):
                 os.makedirs(self.outputdest)
         except Exception, e:
-            print "folder exists: "+self.outputdest
+            self.log("folder exists: "+self.outputdest)
+            
         self.outputdest=self.outputdest+"/"+self.outfile
             
 #stores the file in a folder created on the date of the first trace

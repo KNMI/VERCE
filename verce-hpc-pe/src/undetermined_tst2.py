@@ -1,16 +1,9 @@
-
-# coding: utf-8
-
-# In[1]:
-
 from dispel4py.workflow_graph import WorkflowGraph 
 from dispel4py.provenance import *
 import time
 import random
-import pickle
 from dispel4py.base import create_iterative_chain, GenericPE, ConsumerPE, IterativePE, SimpleFunctionPE
-import marshal, types
-
+from dispel4py.new.simple_process import process_and_return
 
 class Source(GenericPE):
 
@@ -19,6 +12,7 @@ class Source(GenericPE):
         self._add_input('input')
         self._add_output('output')
         #self._add_input('input2')
+        
     
     def _process(self,inputs):
         print inputs
@@ -34,9 +28,10 @@ class Source(GenericPE):
         #self.addToProv(0,metadata={'this':"mine"})
         
         while (iter>=5):
-            time.sleep(0.002)
+            #time.sleep(0.5)
+            #val = random.random()
             self.write('output',iter,metadata={'iter':iter})
-            iter=iter-5
+            iter=iter-10
         
         
         
@@ -44,12 +39,14 @@ class Source(GenericPE):
 
 def square(data,prov_cluster):
     data=data*data
-    prov={'format':'Random float', 'metadata':{'value_s':data}}
-    #print ("SQUARE: "+str(data))
+    prov={'format':'Random float', 'metadata':{'value_s':str(data)}}
+    
     return {'_d4p_prov':prov,'_d4p_data':data} 
     #return data
 
 
+    
+    
 class Div(GenericPE):
 
     def __init__(self):
@@ -57,19 +54,17 @@ class Div(GenericPE):
         self._add_input('input')
         self._add_output('output')
         self.prov_cluster='mycluster'
+         
         self.operands=[]
-        #self.par='A'
         
-        
-        
+    def _process_feedback(data):
+        print "FEEEEDBACK: "+str(data)
     
-        
-        
     def _process(self,data):
-        self.log("OLD IMPL")
+        self.log("SSSSSS: "+str(data))
         self.operands.append(data['input'])
         #self.addToProv(0,metadata={'that':"yours"})
-        
+       
         val=0
         if (len(self.operands)==2):
             #time.sleep(0.5)
@@ -78,14 +73,6 @@ class Div(GenericPE):
             self.log(val)
             self.operands=[]
             
-    'must be implemented to handle provenance feedbacks'
-#   
-    def _process_feedback(self,data):
-        code = pickle.loads(data)
-        self.log("REDEFINING from Feedback: "+str(code))
-        Div._process = code
-
-         
 
     
     
@@ -94,8 +81,8 @@ class Div(GenericPE):
 sc = Source()
 sc.name='PE_source'
 
-
 squaref=SimpleFunctionPE(square,{'prov_cluster':'mycluster'})
+#squaref=SimpleFunctionPE(square)
 divf=Div()
 divf.name='PE_div'
 
@@ -109,9 +96,7 @@ graph = WorkflowGraph()
 #Common way of composing the graph
 graph.connect(sc,'output',squaref,'input')
 graph.connect(squaref,'output',divf,'input')
-#graph.connect(divf,'output',sc,'input2')
 #graph.connect(divf,'output',squaref,'input')
- 
 
 # Alternatively with pipeline array
 #Create pipelines from functions
@@ -119,45 +104,7 @@ graph.connect(squaref,'output',divf,'input')
 #graph.connect(sc,'output',chain,'input')
 
 
-#graph.flatten()
+graph.flatten()
 
 #Prepare Input
-input_data = {"PE_source": [{"input": [25]},{"input": [45]}]}
-
-#Launch in simple process
-#simple_process.process_and_return(graph, input_data)
-
-
-
-
-
-# In[2]:
-
-ProvenanceRecorder.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
-rid='RDWD_'+getUniqueId()
-InitiateNewRun(graph,ProvenanceRecorderToServiceBulk,provImpClass=ProvenancePE,username='aspinuso',runId=rid,w3c_prov=False,workflowName="test_rdwd",workflowId="xx",clustersRecorders={'mycluster':ProvenanceRecorderToServiceWFeedback},feedbackPEs=['PE_div'])
-
-
-#from IPython.display import HTML
-#HTML("<iframe src='http://127.0.01:8080/provenance-explorer/html/d3js.jsp?level=PE&runId="+rid+"' width=800 height=800></iframe>")
-
-
-# In[3]:
-
-
-
-
-# In[4]:
-
-#simple_process.process_and_return(graph, input_data)
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
+input_data = {"PE_source": [{"input": [25]}]}
