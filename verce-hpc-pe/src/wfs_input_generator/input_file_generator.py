@@ -489,8 +489,8 @@ class InputFileGenerator(object):
 
         # Call the write function. The write function is supposed to raise the
         # appropriate error in case anything is amiss.
-        input_files = writer["function"](config=config, events=_events,
-                                         stations=_stations)
+        input_files = writer["function"](config=config, events=self._events,
+                                         stations=self._stations)
 
         # If an output directory is given, it will be used.
         if output_dir:
