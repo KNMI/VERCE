@@ -1,4 +1,4 @@
-Ext.define('CF.view.dataviews.Conf', {
+ Ext.define('CF.view.dataviews.Conf', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.conf',
 
@@ -12,10 +12,12 @@ Ext.define('CF.view.dataviews.Conf', {
   border: false,
   columns: [{
     header: 'Name',
-    dataIndex: 'name'
+    dataIndex: 'name',
+    flex: 40 / 100,
   }, {
     header: 'Value',
     dataIndex: 'value',
+    flex: 30 / 100,
     xtype: 'componentcolumn',
     renderer: function(value, meta, record) {
       var change = function(component, newValue, oldValue, options) {
@@ -99,7 +101,11 @@ Ext.define('CF.view.dataviews.Conf', {
   }, {
     flex: 1,
     header: 'Description',
-    dataIndex: 'desc'
+    dataIndex: 'desc',
+    renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+        metaData.tdAttr = 'data-qtip="' + value + '"';
+        return  '<img src="/../../forward-modelling-portlet/img/help.png" style="margin-left: 20px; width: 16px; height: 16px;" />';   
+    }
   }],
   flex: 1,
   selType: 'cellmodel',
