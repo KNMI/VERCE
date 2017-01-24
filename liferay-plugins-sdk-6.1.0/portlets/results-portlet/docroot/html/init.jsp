@@ -28,6 +28,5 @@
 	var PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 	var deleteWorkflowDataURL = "/j2ep-1.0/irods/irodsweb/services/delete.php"
 	
-	 
-</script>  
- 
+	  
+</script>    
