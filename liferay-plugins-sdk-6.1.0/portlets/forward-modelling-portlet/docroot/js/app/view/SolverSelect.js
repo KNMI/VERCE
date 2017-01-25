@@ -1,6 +1,57 @@
 var solverstore = Ext.create('CF.store.Solver', {});
 var meshesstore = Ext.create('CF.store.Mesh', {});
 var velocitystore = Ext.create('CF.store.Velocity', {});
+var specfem3dGlobeEventProviders = Ext.create('CF.store.Provider', {
+	  data: [{
+	    "abbr": "GCMT",
+	    "name": "Global Centroid Moment Tensor Catalog",
+	    "url": "/j2ep-1.0/gcmt",
+	  }]
+	});
+var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
+	data: [{
+	    "abbr": "INGV",
+	    "name": "Istituto Nazionale di Geofisica e Vulcanologia",
+	    "url": "/j2ep-1.0/ingv",
+	    "extraParams": "&user=verce_" + userSN,
+	  }, {
+	    "abbr": "GCMT",
+	    "name": "Global Centroid Moment Tensor Catalog",
+	    "url": "/j2ep-1.0/gcmt",
+	  }, {
+	    "abbr": "NCEDC",
+	    "name": "Northern California Earthquake Data Center",
+	    "url": "/j2ep-1.0/ncedc",
+	    "extraParams": "&includemechanisms=true"
+	    // "http://service.ncedc.org/fdsnws/event/1/query?minmag=7&maxmag=9&includemechanisms=true",
+	  }, {
+	    "abbr": "USGS",
+	    "name": "United States Geological Service",
+	    "url": "/j2ep-1.0/usgs",
+	    "extraParams": "&format=xml&producttype=moment-tensor"
+	    // "http://earthquake.usgs.gov/fdsnws/event/1/query?format=xml&starttime=2014-01-01&endtime=2014-01-02&minmagnitude=5&producttype=moment-tensor",
+	  }, {
+	    "abbr": "ISC",
+	    "name": "International Seismological Centre",
+	    "url": "/j2ep-1.0/isc",
+	    // http://isc-mirror.iris.washington.edu/fdsnws/event/1/query?starttime=2011-01-07T14:00:00&endtime=2011-02-07&minlatitude=15&maxlatitude=40&minlongitude=-170&maxlongitude=170&minmagnitude=5&includeallmagnitudes=true&orderby=magnitude
+	  }]
+	});
+var specfem3dGlobeStationProvidersStore = Ext.create('CF.store.Provider', {
+	  data: [{
+	    abbr: "IRIS",
+	    url: "/j2ep-1.0/iris"
+	  }]
+	});
+var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
+	  data: [{
+	    abbr: "ODC",
+	    url: "/j2ep-1.0/odc"
+	  }, {
+	    abbr: "IRIS",
+	    url: "/j2ep-1.0/iris"
+	  }]
+	});
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.SolverCombo', {
@@ -20,19 +71,21 @@ Ext.define('CF.view.SolverCombo', {
   listeners: {
     scope: this,
     'beforeselect': function(combo, record, index) {
-      // Note: findRecordByValue returns object or false
-      if (Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue())) {
-        Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
-          function(btn) {
-            if (btn === 'no') {
-              return false;
-            }
-          });
-      } else {
-        selectSolver(record.get('abbr'));
-        return true;
-      }
-    },
+        // Note: findRecordByValue returns object or false
+        if (Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue())) {
+            Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
+              function(btn) {
+                if (btn == 'yes') { 
+                    combo.setValue(record.get('abbr'));
+                    return true;
+                }                
+              });
+        } else {
+          selectSolver(record.get('abbr'));
+          return true;
+        }
+        return false;
+      }, 
     'change': function(combo, newValue, oldValue, eOpts) {
       // inconsistent use of name and abbr
       var record = combo.store.findRecord('abbr', newValue);
@@ -223,9 +276,30 @@ Ext.define('CF.view.VelocityCombo', {
       Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
       Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
       Ext.getCmp('solver_but').setDisabled(false);
+      updateEventAndStationCatalog();
     },
   }
 });
+function updateEventAndStationCatalog()
+{ 
+	Ext.getCmp('station_catalog').clearValue();
+	Ext.getCmp('station_catalog').up('panel').down('multicombo').setValue('*');
+	if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+	{
+		Ext.getCmp('event_catalog').value= 'GCMT'; 
+		Ext.getCmp('event_catalog').bindStore(specfem3dGlobeEventProviders);
+		Ext.getCmp('station_catalog').bindStore(specfem3dGlobeStationProvidersStore);   
+		
+	}
+	else
+		{
+		Ext.getCmp('event_catalog').value= 'INGV'; 
+		Ext.getCmp('event_catalog').bindStore(specfem3dCartesianEventProviders);
+		Ext.getCmp('station_catalog').bindStore(specfem3dCartesianStationProvidersStore);		
+		
+		}
+}
+
 
 Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',

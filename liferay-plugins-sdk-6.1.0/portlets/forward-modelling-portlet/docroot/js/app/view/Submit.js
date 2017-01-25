@@ -113,10 +113,9 @@ Ext.define('CF.view.SubmitFormPanel', {
         var workflowId = wfModel.get('workflowId');
         var ownerId = wfModel.get('ownerId');
         var workflowName = wfModel.get('workflowName');
-
-        var r = solverConfStore.findRecord("name", "NPROC");
+        var r = solverConfStore.findRecord("name", "NPROC"); 
         var nProc = r.get("value");
-
+       
         Ext.Ajax.request({
           url: submitSolverURL,
           params: {
@@ -222,6 +221,11 @@ function createSubmitObject(submitName, multipleSubmits) {
   if (selectedEvents.length < 1) {
     Ext.Msg.alert("Alert!", "You must select at least one event");
     return null;
+  }
+  if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && selectedEvents.length > 1 )
+  {
+	  Ext.Msg.alert("Alert!", "You cannot select more than one event");
+	    return null;
   }
   if (selectedEvents.length > GL_EVENTSLIMIT) {
     Ext.Msg.alert("Alert!", "You cannot select more than " + GL_EVENTSLIMIT + " events.");
