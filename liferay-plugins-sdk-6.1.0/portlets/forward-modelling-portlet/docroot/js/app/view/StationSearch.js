@@ -48,7 +48,9 @@ Ext.define('CF.view.StationSearchPanel', {
   items: [{
     xtype: 'combobox',
     fieldLabel: "Provider:",
-    store: stationProvidersStore,
+    id:"station_catalog",
+    // store is going to be updated later when a user selects a type of solver    
+    //store: stationProvidersStore,
     displayField: 'abbr',
     valueField: 'url',
     queryMode: 'local',
@@ -77,7 +79,14 @@ Ext.define('CF.view.StationSearchPanel', {
               comboNetworks.push(net);
             });
             networksStore.add(comboNetworks);
-            combobox.up('panel').down('multicombo').setValue('*');
+            if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+        	{ 
+            	combobox.up('panel').down('multicombo').setValue('II,IU');
+        	}
+            else
+            {
+            	combobox.up('panel').down('multicombo').setValue('*');
+            }
             combobox.up('panel').down('multicombo').enable();
           },
           failure: function() {
