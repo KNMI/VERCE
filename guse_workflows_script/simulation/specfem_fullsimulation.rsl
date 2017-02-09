@@ -1,0 +1,57 @@
+#!/bin/bash -l
+module load verce
+python verce-hpc-pe/src/bulk_inputgen.py quakeml stations solverconf
+date
+echo  -------------------------------------------------------
+echo "  decomposing mesh..."
+date
+python verce-hpc-pe/src/bulk_decompose.py jsonout_inputgen solverconf 
+echo "mesh decomposition completed..."
+date
+
+SIMULATION_PATHS=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen)
+RUN_ID=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen runId)
+echo $RUN_ID
+arr=(`echo $SIMULATION_PATHS`);
+for i in "${arr[@]}"
+do
+   :
+pwd
+mkdir -p $i/../OUTPUT_FILES
+mkdir -p $i/../bin
+cp -r $RUN_ID/OUTPUT_FILES/DATABASES_MPI $i/../OUTPUT_FILES
+echo $i -------------------------------------------------------
+cd $i
+
+cd ../
+
+# runs database generation
+echo
+echo "  running database generation..."
+echo
+cd bin/
+date
+mpiexec xgenerate_databases
+cd ../
+echo "database generation completed..."
+date
+
+# runs simulation
+echo
+echo "  running solver..."
+echo
+cd bin/
+date
+mpiexec xspecfem3D
+cd ../
+#-------------------------------------------
+echo "SPECFEM3D completed!"
+echo `date`
+date
+echo "see results in directory: OUTPUT_FILES/"
+cd ../
+cd ../
+done
+python verce-hpc-pe/src/PEProvenanceMerge.py provout_decompose provout_inputgen
+
+
