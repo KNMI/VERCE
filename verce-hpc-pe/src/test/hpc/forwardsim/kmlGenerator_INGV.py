@@ -147,7 +147,7 @@ class kmlGenerator_INGV(IterativePE):
 
     
     def _process(self,inputs):
-        self.buildDerivation(inputs["streams"][0])
+        #self.buildDerivation(inputs["streams"][0])
         stationsfile=self.parameters["stations_filtered"]
         cmtsolution=self.parameters["cmt_solution"]
         par=self.parameters["par_file"]
