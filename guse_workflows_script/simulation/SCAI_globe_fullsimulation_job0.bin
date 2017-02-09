@@ -13,6 +13,7 @@ module load tools/python/2.7.9 intel/studio/2015.1.133 apps/specfem3d/2.0.2 tool
 
 unzip vercepes
 
+########################## INPUT PREPARATION ############################################
 echo "producing input files..."
 python verce-hpc-pe/src/bulk_inputgen.py quakeml stations solverconf
 # paths set up
@@ -37,7 +38,7 @@ rm -rf $RUN_PATH/OUTPUT_FILES/*
 rm -rf $RUN_PATH/DATA/*
 # copy input files 
 cp $RUN_PATH/$RUN_ID/$RUN_ID"_0"/DATA/* DATA 
-#################################################################################
+############################### COMPILATION  ##################################################
 echo "configuration and compilation of specfem3d_globe"
 echo "copying input files for compilation"
 cp $RUN_PATH/DATA/* $RUN_PATH/specfem/DATA
@@ -82,7 +83,7 @@ ln -s $RUN_PATH/specfem/DATA/s362ani
 ln -s $RUN_PATH/specfem/DATA/QRFSI12
 ln -s $RUN_PATH/specfem/DATA/topo_bathy
 cd ..
-################################################################################# 
+########################################################################################
 PROV="provfold"$(cat control)
 MODEL="modelfold"$(cat control)
 mkdir -p $HOME/$PROV
@@ -99,7 +100,7 @@ echo "--- file copy for runtime metadata messaging -- "
 TIME=$(date +%s)
 cp $RUN_PATH/provout_inputgen $PROV_PATH/provout_inputgen$RUN_ID$TIME
 
-################################################################################# 
+############################### SIMULATIONS cycles through events  ######################
 echo  -------------------------------------------------------
 echo " mesher and solver generation..."
 export MYMPIEXEC_CMD_PAR_MOV="-np $(($PBS_NUM_NODES * 4)) -perhost 4 -f $PBS_NODEFILE"
@@ -113,6 +114,8 @@ for i in "${arr[@]}"
 do
    :
 pwd
+
+############################ PREPARE SIMULATION PARTITION in WORK ######################
 mkdir -p $WORK/$i/../OUTPUT_FILES
 mkdir -p $WORK/$i/../DATABASES_MPI
 mkdir -p $WORK/$i/../specfem
@@ -122,6 +125,9 @@ cp -r $RUN_PATH/DATABASES_MPI $WORK/$i/../
 cp  $RUN_PATH/OUTPUT_FILES/*  $WORK/$i/../OUTPUT_FILES 
 cp -r $RUN_PATH/specfem $WORK/$i/../
 cp -r $RUN_PATH/DATA $WORK/$i/../
+
+#create STATIONS_FILTERED file for compatibility with the cartesian output for postproc_graph_kml
+cp $WORK/$i/STATIONS $WORK/$i/STATIONS_FILTERED
 cp $RUN_PATH/bin/* $WORK/$i/../bin
 cp -r $i/ $WORK/$i/../
 echo $WORK/$i -------------------------------------------------------
@@ -133,27 +139,26 @@ echo "database generation and simulation... complete"
 echo "see results in directory: OUTPUT_FILES/"
 
 
-#add a STATIONS_FILTERED file as this is needed for postproc_graph_kml
-#cp DATA/STATIONS DATA/STATIONS_FILTERED
+
 
 export EVENT_PATH=$(pwd)
 echo "update provenance simulation..."
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ provloc $EVENT_PATH/provout_run_specfem
 echo "--- file copy for runtime metadata messaging -- " 
-################################################################################# 
+#######################    POSTPROCESSING    ################################## 
 echo "generation of seed and plot files..."
 cp $RUN_PATH/jsonout_run_specfem $JSON_OUT
 export INPUT_FILE=$JSON_OUT/jsonout_run_specfem
 cd $RUN_PATH/verce-hpc-pe/src/
 mpiexec.hydra python -m dispel4py.new.processor mpi test.hpc.forwardsim.postproc_graph
 #python -m dispel4py.new.processor multi test.hpc.forwardsim.postproc_graph -n 50
-################################################################################# 
 echo "generation of kmz file..."
 python -m dispel4py.new.processor simple test.hpc.forwardsim.postproc_graph_kml
 
 let COUNTER=COUNTER+1
 
-################################################################################# 
+############################# HOUSE KEEPING #################################### 
+
 echo "---Set Transfer and Cleanup folders ---"
 
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ dataloc $i/
@@ -164,7 +169,7 @@ python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverco
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ cleanloc $HOME/$PROV
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ cleanloc $HOME/$MODEL
 done
+############################# END OF SIMULATIONS #################################### 
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ hostname $HOSTN
 echo "--- terminates PROV job -- "
 touch $PROV_PATH/exitf
- 

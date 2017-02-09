@@ -71,10 +71,12 @@ class Specfem3d2Stream(IterativePE):
         tr.stats['sampling_rate']=round(1./delta,1) #maybe decimal here
         if filepath.endswith('.semv'):
             tr.stats['type']="velocity"
-        if filepath.endswith('.sema'):
+        elif filepath.endswith('.sema'):
             tr.stats['type']='acceleration'
-        if filepath.endswith('.semd'):
+        elif filepath.endswith('.semd') or filepath.endswith('.ascii'):
             tr.stats['type']='displacement'
+         
+        
          
             
         st=Stream()
