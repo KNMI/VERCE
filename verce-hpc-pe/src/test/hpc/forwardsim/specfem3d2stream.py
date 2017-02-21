@@ -36,7 +36,12 @@ class Specfem3d2Stream(IterativePE):
             tr.stats['network']=tail.split('.')[1]
             tr.stats['station']=tail.split('.')[0]
             tr.stats['channel']=tail.split('.')[2]
-             
+
+            # the convention for specfem3d_globe requires the following changes:
+            if self.parameters["solver_name"] == "SPECFEM3D_GLOBE":
+                tr.stats['network'] = tail.split('.')[0]
+                tr.stats['station'] = tail.split('.')[1]
+
             try:
                 doc = etree.parse(StringIO(open(self.parameters["stations_file"]).read()))
                 ns = {"ns": "http://www.fdsn.org/xml/station/1"}

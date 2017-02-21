@@ -47,8 +47,12 @@ controlInput = json.load(open(os.environ['JSON_OUT']+"/jsonout_run_specfem"))
 
 
 #kmlGenerator.appParameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
+solver_name=""
+if "SOLVER_NAME" in os.environ:
+        solver_name=os.environ["SOLVER_NAME"]
 
-specfem2stream.parameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
+specfem2stream.parameters={"stations_file":os.environ['RUN_PATH']+'/stations', "solver_name":solver_name}
+#specfem2stream.parameters={"stations_file":os.environ['RUN_PATH']+'/stations'}
 #specfem2stream.controlParameters = { 'outputdest' : "./" ,'runId' : controlInput["metadata"]["runId"], 'username' : controlInput["metadata"]["username"] }
 
 waveplot.parameters = { 'filedestination' : '/OUTPUT_FILES/TRANSFORMED/PLOT/' }
