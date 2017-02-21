@@ -96,17 +96,6 @@ def template_kml_placemark(st,filename,lon,lat,z):
              </Placemark>
              ''' %(st,filename[0],filename[1],filename[2],filename[3],filename[4],filename[5],filename[6],filename[7],filename[8],lon,lat,z)
     return kml
-def globe_template_kml_placemark(st,filename,lon,lat,z):
-    kml = '''<Placemark>
-                <name>%s</name>
-                <styleUrl>#BStyle</styleUrl>
-                <description><![CDATA[Synthetics <h3>Displacement<br> <img class="imageStyle"  src="%s" width="420" /><img class="imageStyle"  src="%s" width="420" /><img class="imageStyle"  src="%s" width="420" />]]></description>
-                  <Point>
-                    <coordinates>%s,%s,%s</coordinates>
-                  </Point>
-             </Placemark>
-             ''' %(st,filename[0],filename[1],filename[2],lon,lat,z)
-    return kml
 
 def template_kml_close():
     kml='''</Folder>
@@ -192,11 +181,8 @@ class kmlGenerator_INGV(IterativePE):
                     fname=net+'.'+st+'.'+i+'.'+j+'.png'
                     filenames.append(fname)
             dict_stations[st]={'network':net,'latitude':lat,'longitude':lon,'depth':z,'buried':v,'png':filenames}
-            if "SOLVER_NAME" in os.environ and os.environ["SOLVER_NAME"]=="SPECFEM3D_GLOBE":
-                tmp_kml = tmp_kml + globe_template_kml_placemark(st, filenames, lon, lat, z)
-            else:
-                tmp_kml=tmp_kml+template_kml_placemark(st,filenames,lon,lat,z)
-
+            tmp_kml=tmp_kml+template_kml_placemark(st,filenames,lon,lat,z)
+    
         kml=template_kml_start('')+tmp_kml+template_epicenter(cmt,lone,late,'0')+template_kml_close()
 
         head,tail=os.path.split(stationsfile)
