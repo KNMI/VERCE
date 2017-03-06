@@ -75,7 +75,8 @@ Ext.define('CF.view.EventSearchForm', {
     margin: '4 10 0 0'
   }, {
     xtype: 'datefield',
-    // fieldLabel: 'Start Time', 
+    // fieldLabel: 'Start Time',
+    id: 'startTime',
     name: 'starttime',
     format: 'Y-m-d\\TH:i:s',
     value: "2013-01-01T00:00:00",
@@ -98,7 +99,8 @@ Ext.define('CF.view.EventSearchForm', {
     margin: '5 10 5 0'
   }, {
     xtype: 'datefield',
-    //	fieldLabel: 'End Time', 
+    //	fieldLabel: 'End Time',
+    id: 'endTime',
     name: 'endtime',
     format: 'Y-m-d\\TH:i:s',
     value: "2013-08-02T00:00:00",

@@ -319,7 +319,10 @@ Ext.define('CF.controller.Map', {
         // handle custom strings
         networks = networks.split(',');
       }
-      this.getStations(this, baseUrl + 'network=' + networks.join(',') + bbox, STXML_TYPE);
+	var searchStartDate=Ext.getCmp('startTime').getSubmitValue();
+	var searchEndDate=Ext.getCmp('endTime').getSubmitValue();
+      //this.getStations(this, baseUrl + 'network=' + networks.join(',') + bbox, STXML_TYPE);
+	this.getStations(this, baseUrl + 'starttime='+searchStartDate+'&endtime='+searchEndDate + '&network=' + networks.join(',') + bbox, STXML_TYPE);
     }
   },
   getStations: function(elem, purl, formatType) {
