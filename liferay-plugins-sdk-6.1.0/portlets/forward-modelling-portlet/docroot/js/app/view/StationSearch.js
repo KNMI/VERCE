@@ -1,14 +1,7 @@
 var networksStore = Ext.create('CF.store.Network', {});
 
-var stationProvidersStore = Ext.create('CF.store.Provider', {
-  data: [{
-    abbr: "ODC",
-    url: "/j2ep-1.0/odc"
-  }, {
-    abbr: "IRIS",
-    url: "/j2ep-1.0/iris"
-  }]
-});
+//stationProvidersStore data now depends on the type of solver to be selected. This will be updated once a user has selected a solver    
+var stationProvidersStore = Ext.create('CF.store.Provider', {});
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.MultiCombo', {
@@ -49,8 +42,7 @@ Ext.define('CF.view.StationSearchPanel', {
     xtype: 'combobox',
     fieldLabel: "Provider:",
     id:"station_catalog",
-    // store is going to be updated later when a user selects a type of solver    
-    //store: stationProvidersStore,
+    store: stationProvidersStore,
     displayField: 'abbr',
     valueField: 'url',
     queryMode: 'local',

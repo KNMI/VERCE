@@ -50,6 +50,33 @@ var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
 	  }, {
 	    abbr: "IRIS",
 	    url: "/j2ep-1.0/iris"
+	  },{
+		  abbr: "GFZ",
+		  url: "/j2ep-1.0/gfz"
+	  },{
+		  abbr: "RESIF",
+		  url: "/j2ep-1.0/resif"
+	  },{
+		  abbr: "ETHZ",
+		  url: "/j2ep-1.0/ethz"
+	  },{
+		  abbr: "BGR",
+		  url: "/j2ep-1.0/bgr"
+	  },{
+		  abbr: "NIEP",
+		  url: "/j2ep-1.0/niep"
+	  },{
+		  abbr: "KOERI",
+		  url: "/j2ep-1.0/koeri"
+	  },{
+		  abbr: "IPGP",
+		  url: "/j2ep-1.0/ipgp"
+	  },{
+		  abbr: "LMU",
+		  url: "/j2ep-1.0/lmu"
+	  },{
+		  abbr: "NOA",
+		  url: "/j2ep-1.0/noa"
 	  }]
 	});
 

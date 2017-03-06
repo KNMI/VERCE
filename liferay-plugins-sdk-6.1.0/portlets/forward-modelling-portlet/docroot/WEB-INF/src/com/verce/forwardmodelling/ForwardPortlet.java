@@ -943,7 +943,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   //filter selected stations for specfem3d_globe solver
 			   if(solverType.trim().equals("SPECFEM3D_GLOBE")) {
 				    stationFile=StationsFiltered.filterSelectedStations(stationFile,solverFile);  
-				    if (stationFile==null) throw new NullPointerException("[ForwardModellingPortlet.submitSolver] Error : StationFiltered File returned is null"); 
+				    if (stationFile==null) throw new NullPointerException("[ForwardModellingPortlet.submitSolver] Error : StationsFiltered File returned is null"); 
 			   } 
 			   
 			   //6. Upload files
