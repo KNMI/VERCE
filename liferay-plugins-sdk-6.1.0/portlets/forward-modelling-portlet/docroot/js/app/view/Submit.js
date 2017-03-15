@@ -4,7 +4,7 @@ Ext.define('CF.view.WorkflowCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.workflowcombo',
   fieldLabel: 'Workflow',
-  name: 'wfSelection',
+  name: 'wfSelection', 
   queryMode: 'local',
   width: 350,
   listWidth: 400,
@@ -28,7 +28,8 @@ Ext.define('CF.view.SubmitFormPanel', {
     xtype: 'workflowcombo',
     id: 'wfSelection',
     store: Ext.create('CF.store.ExportedWorkflow', {
-      data: simulationWorkflows,
+	data: simulationWorkflows
+ 
     })
   }, {
     xtype: 'textfield',
