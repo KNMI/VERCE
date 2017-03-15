@@ -939,7 +939,13 @@ public class ForwardPortlet extends MVCPortlet{
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
-	
+			
+			   //filter selected stations for specfem3d_globe solver
+			   if(solverType.trim().equals("SPECFEM3D_GLOBE")) {
+				    stationFile=StationsFiltered.filterSelectedStations(stationFile,solverFile);  
+				    if (stationFile==null) throw new NullPointerException("[ForwardModellingPortlet.submitSolver] Error : StationsFiltered File returned is null"); 
+			   } 
+			   
 			   //6. Upload files
 			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
 			   asm_service.placeUploadedFile(userId, eventFile.file, importedWfId, jobName, "1");
@@ -991,8 +997,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   {
 		   catchError(e, resourceResponse, "500", "[ForwardModellingPortlet.submitSolver] Exception catched!");
 	   }
-   }
-
+   } 
     class EventFile {
         public File file;
         public String url;
@@ -1421,7 +1426,8 @@ public class ForwardPortlet extends MVCPortlet{
 	    //	copy contents from existing war
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
-            ZipEntry e = entries.nextElement();
+        	//ZipEntry e = entries.nextElement(); //  replaced by below due to java.util.zip.ZipException: invalid entry compressed size 
+        	ZipEntry e =  new ZipEntry(entries.nextElement().getName()); 
             append.putNextEntry(e);
             if (!e.isDirectory()) {
                 copy(zipFile.getInputStream(e), append);
@@ -1555,25 +1561,24 @@ public class ForwardPortlet extends MVCPortlet{
 			throw e;
 		}
 	}
-
-   /*
-    * Sends the error through the response. Writes logMessage through the logs
-    * if e is not null prints the stackTrace through the logs
-    */
-   private void catchError(Exception e, ResourceResponse res, String errorCode, String logMessage)
-   {
-	   res.setContentType("text/html");
-	   System.out.println("[ForwardModellingPortlet.catchError] Preparing response...");
-	   try{
-		   res.getWriter().write("{success: false, msg:\""+logMessage+"\"}");	//Submit call expects json success parameter
-	   }catch(Exception e2)
+	/*
+	    * Sends the error through the response. Writes logMessage through the logs
+	    * if e is not null prints the stackTrace through the logs
+	    */
+	private void catchError(Exception e, ResourceResponse res, String errorCode, String logMessage)
 	   {
-		   System.out.println("[ForwardModellingPortlet.catchError] Could not write in response...");
-	   }
-	   res.setProperty(res.HTTP_STATUS_CODE, errorCode); 						//Ajax call expects status code
+		   res.setContentType("text/html");
+		   System.out.println("[ForwardModellingPortlet.catchError] Preparing response...");
+		   try{
+			   res.getWriter().write("{success: false, msg:\""+logMessage+"\"}");	//Submit call expects json success parameter
+		   }catch(Exception e2)
+		   {
+			   System.out.println("[ForwardModellingPortlet.catchError] Could not write in response...");
+		   }
+		   res.setProperty(res.HTTP_STATUS_CODE, errorCode); 						//Ajax call expects status code
 
-	   System.out.println(logMessage);
-       
-	   if(e!=null)		e.printStackTrace();
-   }
+		   System.out.println(logMessage);
+	       
+		   if(e!=null)		e.printStackTrace();
+	   }	
 }

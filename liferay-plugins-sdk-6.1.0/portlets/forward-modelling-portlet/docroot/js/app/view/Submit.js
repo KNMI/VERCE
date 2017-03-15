@@ -222,11 +222,11 @@ function createSubmitObject(submitName, multipleSubmits) {
     Ext.Msg.alert("Alert!", "You must select at least one event");
     return null;
   }
-  if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && selectedEvents.length > 1 )
+  /*if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && selectedEvents.length > 1 )
   {
 	  Ext.Msg.alert("Alert!", "You cannot select more than one event");
 	    return null;
-  }
+  }*/
   if (selectedEvents.length > GL_EVENTSLIMIT) {
     Ext.Msg.alert("Alert!", "You cannot select more than " + GL_EVENTSLIMIT + " events.");
     return null;
@@ -244,6 +244,11 @@ function createSubmitObject(submitName, multipleSubmits) {
   selectedEvents.each(function(item, ind, l) {
     events.push(item.get('eventId'));
   });
+  
+  var eventsDate = [];
+  selectedEvents.each(function(item, ind, l) {
+	  eventsDate.push(item.get('date'));
+  });
 
   var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
 
@@ -252,6 +257,7 @@ function createSubmitObject(submitName, multipleSubmits) {
       fields: Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data'),
       stations: stations,
       events: multipleSubmits ? [events[i]] : events,
+      eventsDate:eventsDate,		  
       runId: submitName + i + '_' + (new Date()).getTime(),
       user_name: userSN,
       user_id: userId,
