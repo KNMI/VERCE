@@ -28,7 +28,8 @@ Ext.define('CF.view.SubmitFormPanel', {
     xtype: 'workflowcombo',
     id: 'wfSelection',
     store: Ext.create('CF.store.ExportedWorkflow', {
-	data: simulationWorkflows
+    	id :'workflow_catalog',
+    	data: simulationWorkflows
  
     })
   }, {

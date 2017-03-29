@@ -1501,7 +1501,8 @@ public class ForwardPortlet extends MVCPortlet{
 	private void updateProvenanceRepository(JSONObject params) {
 		try{
 			//TODO: put the url in a properties file
-			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/workflow/insert");
+			//URL url = new URL("http://localhost:8080/j2ep-1.0/prov/workflow/insert");
+			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflow/insert");
 			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");

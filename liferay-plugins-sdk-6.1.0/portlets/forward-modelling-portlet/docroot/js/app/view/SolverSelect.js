@@ -316,6 +316,7 @@ Ext.define('CF.view.VelocityCombo', {
       Ext.getCmp('solver_but').setDisabled(false);
       updateEventAndStationCatalog();	
       clearSubmitForm(); 
+      updateSimulationWorkFlows();
     },
   }
 });
@@ -345,7 +346,32 @@ function clearSubmitForm()
 	Ext.getCmp('submitMessage').setValue('');
 	Ext.getCmp('checkboxNSubmit').setRawValue(false);
 }
-
+function updateSimulationWorkFlows()
+{
+  globeSimulationWorkFlows = [];
+  cartesianSimulationWorkFlows = [];
+  for(var i = 0; i < simulationWorkflows.length; i++) {
+    if(simulationWorkflows[i].workflowName.toLowerCase().includes("globe"))
+    {
+	globeSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }
+    else
+    {
+	 cartesianSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }    
+  } 
+  if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+  {
+	Ext.getStore('workflow_catalog').loadData(globeSimulationWorkFlows,false); 
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+  }
+  else 
+  {
+	Ext.getStore('workflow_catalog').loadData(cartesianSimulationWorkFlows,false);
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+	
+  }
+}
 Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',
   alias: 'widget.solverselectform',
