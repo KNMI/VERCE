@@ -939,13 +939,17 @@ public class ForwardPortlet extends MVCPortlet{
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
 			   publicPath = portalUrl + publicPath;
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
-			
+			 			  
 			   //filter selected stations for specfem3d_globe solver
 			   if(solverType.trim().equals("SPECFEM3D_GLOBE")) {
 				    stationFile=StationsFiltered.filterSelectedStations(stationFile,solverFile);  
 				    if (stationFile==null) throw new NullPointerException("[ForwardModellingPortlet.submitSolver] Error : StationsFiltered File returned is null"); 
-			   } 
+				
+				    eventFile.file=EventsFiltered.filterSelectedEvents(eventFile.file,solverFile);  
+				    if (eventFile.file==null) throw new NullPointerException("[ForwardModellingPortlet.submitSolver] Error : EventsFiltered File returned is null");
 			   
+			   } 
+			  
 			   //6. Upload files
 			   asm_service.placeUploadedFile(userId, stationFile, importedWfId,	jobName, "0");
 			   asm_service.placeUploadedFile(userId, eventFile.file, importedWfId, jobName, "1");
