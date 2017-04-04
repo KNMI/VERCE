@@ -67,7 +67,7 @@ class GeneralImporter():
           
                  
                 
-        print json.dumps(provenancebulk)        
+        print json.dumps(provenancebulk)
         filep = open("provout_inputgen","wb")
         filep.write(json.dumps(provenancebulk))
         file = open("jsonout_inputgen","wb")

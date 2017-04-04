@@ -71,7 +71,7 @@ Ext.define('CF.view.StationSearchPanel', {
               comboNetworks.push(net);
             });
             networksStore.add(comboNetworks);
-            if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+            if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE"  && Ext.getCmp('station_catalog').rawValue=="IRIS") 
         	{ 
             	combobox.up('panel').down('multicombo').setValue('II,IU');
         	}

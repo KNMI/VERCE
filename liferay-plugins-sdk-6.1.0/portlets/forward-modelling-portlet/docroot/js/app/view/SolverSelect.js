@@ -1,6 +1,6 @@
 var solverstore = Ext.create('CF.store.Solver', {});
 var meshesstore = Ext.create('CF.store.Mesh', {});
-var velocitystore = Ext.create('CF.store.Velocity', {});
+var velocitystore = Ext.create('CF.store.Velocity', {}); 
 var specfem3dGlobeEventProviders = Ext.create('CF.store.Provider', {
 	  data: [{
 	    "abbr": "GCMT",
@@ -114,6 +114,15 @@ Ext.define('CF.view.SolverCombo', {
         return false;
       }, 
     'change': function(combo, newValue, oldValue, eOpts) {
+    	// hide the option to submit a mesh  and velocity model if specfem3d_globe is selected
+    	if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE")   
+    	{
+    		Ext.get("submitMeshVelocityLinkButton").hide(); 
+    	}
+    	else
+    	{
+    		Ext.get("submitMeshVelocityLinkButton").show(); 
+    	}
       // inconsistent use of name and abbr
       var record = combo.store.findRecord('abbr', newValue);
 
@@ -274,6 +283,7 @@ Ext.define('CF.view.VelocityCombo', {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
+        Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
 
         combo.getStore().remove(customVelocityModel);
@@ -302,15 +312,18 @@ Ext.define('CF.view.VelocityCombo', {
 
       Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
       Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
+      Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(true);
       Ext.getCmp('solver_but').setDisabled(false);
-      updateEventAndStationCatalog();
+      updateEventAndStationCatalog();	
+      clearSubmitForm(); 
+      updateSimulationWorkFlows();
     },
   }
 });
 function updateEventAndStationCatalog()
 { 
 	Ext.getCmp('station_catalog').clearValue();
-	Ext.getCmp('station_catalog').up('panel').down('multicombo').setValue('*');
+	Ext.getCmp('station_catalog').up('panel').down('multicombo').clearValue();
 	if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
 	{
 		Ext.getCmp('event_catalog').value= 'GCMT'; 
@@ -323,11 +336,42 @@ function updateEventAndStationCatalog()
 		Ext.getCmp('event_catalog').value= 'INGV'; 
 		Ext.getCmp('event_catalog').bindStore(specfem3dCartesianEventProviders);
 		Ext.getCmp('station_catalog').bindStore(specfem3dCartesianStationProvidersStore);		
-		
+		Ext.getCmp('checkboxNSubmit').setRawValue(false);
 		}
 }
-
-
+function clearSubmitForm()
+{ 
+	Ext.getCmp('wfSelection').clearValue();
+	Ext.getCmp('submitName').setValue('');
+	Ext.getCmp('submitMessage').setValue('');
+	Ext.getCmp('checkboxNSubmit').setRawValue(false);
+}
+function updateSimulationWorkFlows()
+{
+  globeSimulationWorkFlows = [];
+  cartesianSimulationWorkFlows = [];
+  for(var i = 0; i < simulationWorkflows.length; i++) {
+    if(simulationWorkflows[i].workflowName.toLowerCase().includes("globe"))
+    {
+	globeSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }
+    else
+    {
+	 cartesianSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }    
+  } 
+  if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+  {
+	Ext.getStore('workflow_catalog').loadData(globeSimulationWorkFlows,false); 
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+  }
+  else 
+  {
+	Ext.getStore('workflow_catalog').loadData(cartesianSimulationWorkFlows,false);
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+	
+  }
+}
 Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',
   alias: 'widget.solverselectform',
@@ -544,6 +588,7 @@ Ext.define('CF.view.SolverSelectForm', {
     },
   }, {
     xtype: 'LinkButton',
+    id : 'submitMeshVelocityLinkButton',
     text: 'Submit a mesh and velocity model for review',
     handler: function(e) {
       e.stopEvent();
