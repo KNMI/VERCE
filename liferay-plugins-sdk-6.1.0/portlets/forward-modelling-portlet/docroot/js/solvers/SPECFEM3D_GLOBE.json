@@ -8,25 +8,61 @@
             "geo_maxLon" : 180,
             "values" : [ 
                 {
-                    "NPROC_XI" : 2
+                    "NPROC" : 24
                 }, 
                 {
-                    "NPROC_ETA" : 2
+                    "name" : "NPROC_XI",
+                    "value" : 2,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "NPROC_ETA",
+                    "value" : 2,
+                    "editable" : false
                 }, 
                 {
                     "RECORD_LENGTH_IN_MINUTES" : "10.0"
                 }, 
                 {
-                    "SIMULATION_TYPE" : 1.0
+                    "SIMULATION_TYPE" : 1
                 }, 
                 {
-                    "NCHUNKS" : 6
+                    "name" : "NCHUNKS",
+                    "value" : 6,
+                    "editable" : false
                 }, 
                 {
-                    "NEX_XI" : 64
+                    "name" : "NEX_XI",
+                    "value" : 64,
+                    "editable" : false
                 }, 
                 {
-                    "NEX_ETA" : 64
+                    "name" : "NEX_ETA",
+                    "value" : 64,
+                    "editable" : false
+                }, 
+                {
+                    "ABSORBING_CONDITIONS" : false
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
+                    "value" : 20,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
+                    "value" : 20,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "CENTER_LATITUDE_IN_DEGREES",
+                    "value" : 40,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "CENTER_LONGITUDE_IN_DEGREES",
+                    "value" : 25,
+                    "editable" : false
                 }
             ],
             "details" : "Globe",
@@ -39,31 +75,94 @@
             ],
             "geo_projection" : "std",
             "geo_minLat" : -90
+        }, 
+        {
+            "name" : "Bespoke",
+            "geo_minLon" : -20,
+            "geo_maxLon" : 70,
+            "values" : [ 
+                {
+                    "NPROC" : 24
+                }, 
+                {
+                    "name" : "NPROC_XI",
+                    "value" : 4,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NPROC_ETA",
+                    "value" : 4,
+                    "editable" : true
+                }, 
+                {
+                    "RECORD_LENGTH_IN_MINUTES" : "10.0"
+                }, 
+                {
+                    "SIMULATION_TYPE" : 1
+                }, 
+                {
+                    "name" : "NCHUNKS",
+                    "value" : 1,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "NEX_XI",
+                    "value" : 32,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NEX_ETA",
+                    "value" : 32,
+                    "editable" : true
+                }, 
+                {
+                    "ABSORBING_CONDITIONS" : true
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
+                    "value" : 90,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
+                    "value" : 90,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "CENTER_LATITUDE_IN_DEGREES",
+                    "value" : 40,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "CENTER_LONGITUDE_IN_DEGREES",
+                    "value" : 25,
+                    "editable" : true
+                }
+            ],
+            "details" : "Bespoke",
+            "geo_maxLat" : 85,
+            "velmod" : [ 
+                {
+                    "name" : "default",
+                    "details" : "Default"
+                }
+            ],
+            "geo_projection" : "std",
+            "geo_minLat" : -5
         }
     ],
     "success" : true,
     "fields" : [ 
         {
             "group" : "0 - Basic",
-            "name" : "NPROC_XI",
+            "name" : "NPROC",
             "req" : "true",
-            "editable" : true,
-            "value" : "2",
-            "minValue" : 1.0,
-            "step" : 1.0,
+            "editable" : false,
+            "value" : "24",
+            "minValue" : 1,
+            "step" : 1,
             "type" : "int",
-            "desc" : "Number of processors in xi direction for one chunk"
-        }, 
-        {
-            "group" : "0 - Basic",
-            "name" : "NPROC_ETA",
-            "req" : "true",
-            "editable" : true,
-            "value" : "2",
-            "minValue" : 1.0,
-            "step" : 1.0,
-            "type" : "int",
-            "desc" : "Number of processors in eta direction for one chunk"
+            "desc" : "Number of MPI processors"
         }, 
         {
             "group" : "0 - Basic",
@@ -71,7 +170,7 @@
             "req" : "true",
             "editable" : true,
             "value" : "10.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Record length in minutes"
         }, 
@@ -130,19 +229,19 @@
             "name" : "SIMULATION_TYPE",
             "req" : "true",
             "editable" : false,
-            "value" : 1.0,
+            "value" : 1,
             "type" : "option",
             "options" : [ 
                 [ 
-                    1.0, 
+                    1, 
                     "forward"
                 ], 
                 [ 
-                    2.0, 
+                    2, 
                     "adjoint"
                 ], 
                 [ 
-                    3.0, 
+                    3, 
                     "forward & adjoint"
                 ]
             ],
@@ -153,23 +252,23 @@
             "name" : "NOISE_TOMOGRAPHY",
             "req" : "false",
             "editable" : false,
-            "value" : 0.0,
+            "value" : 0,
             "type" : "option",
             "options" : [ 
                 [ 
-                    0.0, 
+                    0, 
                     "earthquake simulation"
                 ], 
                 [ 
-                    1.0, 
+                    1, 
                     "1"
                 ], 
                 [ 
-                    2.0, 
+                    2, 
                     "2"
                 ], 
                 [ 
-                    3.0, 
+                    3, 
                     "3"
                 ]
             ],
@@ -190,9 +289,11 @@
             "req" : "false",
             "editable" : false,
             "value" : "20",
-            "step" : 1.0,
-            "type" : "int",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+	    "minValue":1,
+	    "maxValue":90
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -200,9 +301,11 @@
             "req" : "false",
             "editable" : false,
             "value" : "20",
-            "step" : 1.0,
-            "type" : "int",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+	    "minValue":1,
+	    "maxValue":180
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -210,8 +313,8 @@
             "req" : "false",
             "editable" : false,
             "value" : "40",
-            "step" : 1.0,
-            "type" : "int",
+            "step" : 1,
+            "type" : "float",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
         }, 
         {
@@ -220,9 +323,9 @@
             "req" : "false",
             "editable" : false,
             "value" : "25",
-            "step" : 1.0,
-            "type" : "int",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"		
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -230,7 +333,7 @@
             "req" : "false",
             "editable" : false,
             "value" : "0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
         }, 
@@ -448,7 +551,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "50",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Number of timesteps between 2 consecutive snapshots"
         }, 
@@ -485,7 +588,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "-100.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Depth below the surface in kilometers, use MOVIE_TOP = -100.0 to make sure the surface is stored."
         }, 
@@ -495,7 +598,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "1000.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Depth below the surface in kilometers"
         }, 
@@ -505,7 +608,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "-90.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Latitute, degrees West"
         }, 
@@ -515,7 +618,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "90.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Latitute, degrees East"
         }, 
@@ -525,7 +628,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "90.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Latitute, degrees North"
         }, 
@@ -535,7 +638,7 @@
             "req" : "false",
             "editable" : true,
             "value" : "-90.0",
-            "step" : 1.0,
+            "step" : 1,
             "type" : "int",
             "desc" : "Latitute, degrees South"
         }, 
@@ -671,8 +774,8 @@
             "name" : "MEMORY_INSTALLED_PER_CORE_IN_GB",
             "req" : "false",
             "editable" : false,
-            "value" : 4.0,
-            "step" : 1.0,
+            "value" : 4,
+            "step" : 1,
             "type" : "int",
             "desc" : "When running on GPU machines, it is simpler to set PERCENT_OF_MEM_TO_USE_PER_CORE = 100.d0 and then set MEMORY_INSTALLED_PER_CORE_IN_GB to the amount of memory that you estimate is free (rather than installed) on the host of the GPU card while running your GPU job. For GPU runs on Titan at ORNL, use PERCENT_OF_MEM_TO_USE_PER_CORE = 100.d0 and MEMORY_INSTALLED_PER_CORE_IN_GB = 25.d0 and run your job with \"aprun -n$NPROC -N1 -S1 -j1\" (each host has 32 GB on Titan, each GPU has 6 GB, thus even if all the GPU arrays are duplicated on the host this leaves 32 - 6 = 26 GB free on the host; leaving 1 GB for the Linux system, we can safely use 100% of 25 GB"
         }, 
@@ -681,7 +784,7 @@
             "name" : "PERCENT_OF_MEM_TO_USE_PER_CORE",
             "req" : "false",
             "editable" : true,
-            "value" : 85.0,
+            "value" : 85,
             "step" : 1,
             "type" : "int",
             "desc" : "What percentage of this total do you allow us to use for arrays to undo attenuation, keeping in mind that you  need to leave some memory available for the GNU/Linux system to run  (a typical value is 85%; any value below is fine but the code will then save a lot of data to disk; values above, say 90% or 92%, can be OK on some systems but can make the adjoint code run out of memory on other systems, depending on how much memory per node the GNU/Linux system needs for itself; thus you can try a higher value and if the adjoint crashes then try again with a lower value)"
