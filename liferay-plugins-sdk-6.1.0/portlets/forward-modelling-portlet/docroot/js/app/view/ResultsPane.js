@@ -15,6 +15,9 @@ var seismoMetaStore = Ext.create('CF.store.SeismoMeta');
 var mimetypesStore = Ext.create('CF.store.Mimetype');
 
 // specifies the userhome of whom we are going to access the data from (for sharing purposes)
+
+
+
 owner = userSN
 var dn_regex=/file:\/\/?([\w-]|([\da-z\.-]+)\.([a-z\.]{2,6}))+/
 
@@ -27,8 +30,6 @@ function relPathToAbs (sRelPath) {
      }
   return sDir + sPath.substr(nStart);
 }
-
-
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.metaCombo', {
@@ -845,40 +846,41 @@ Ext.define('CF.view.metaCombo', {
 
 
 	var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
-	  htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
-	  for (var i = 0; i < url.length; i++) {
-	    url[i] = url[i].replace(dn_regex, IRODS_URL + "/home/" + owner + "/verce/")
+		  htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
+		  for (var i = 0; i < url.length; i++) {
+		    url[i] = relPathToAbs(url[i].replace(dn_regex, IRODS_URL)).replace("//","/")
 
 
-	    htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
-	    var id = url[i];
-	    var im = new Object()
-	    im.func = is_image
-	    im.func(id, function(val) {
-	      document.getElementById(val).innerHTML = "<img  width='80%' height='70%' src='" + val + "'/>"
-	    }, function(val) {
-	      document.getElementById(val).innerHTML = "<center><strong><a target='_blank'  href='" + val + "'>" + val.substring(val.lastIndexOf('/') + 1) + "</a></strong></center>"
-	    })
+		    htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
+		    var id = url[i];
+		    var im = new Object()
+		    im.func = is_image
+		    im.func(id, function(val) {
+		      document.getElementById(val).innerHTML = "<img  width='80%' height='70%' src='" + val + "'/>"
+		    }, function(val) {
+		      document.getElementById(val).innerHTML = "<center><strong><a target='_blank'  href='" + val + "'>" + val.substring(val.lastIndexOf('/') + 1) + "</a></strong></center>"
+		    })
 
-	  }
+		  }
 
-	  if (open) {
-	    Ext.create('Ext.window.Window', {
-	      title: 'Data File',
-	      height: 300,
-	      width: 500,
-	      layout: 'fit',
-	      items: [{
-	        overflowY: 'auto',
-	        overflowX: 'auto',
+		  if (open) {
+		    Ext.create('Ext.window.Window', {
+		      title: 'Data File',
+		      height: 300,
+		      width: 500,
+		      layout: 'fit',
+		      items: [{
+		        overflowY: 'auto',
+		        overflowX: 'auto',
 
-	        xtype: 'panel',
-	        html: htmlcontent
-	      }]
+		        xtype: 'panel',
+		        html: htmlcontent
+		      }]
 
-	    }).show();
-	  }
-	};
+		    }).show();
+		  }
+		};
+
 
 	Ext.define('CF.view.StreamValuesRangeSearch', {
 	  extend: 'Ext.form.Panel',
