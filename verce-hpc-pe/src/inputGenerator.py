@@ -48,14 +48,13 @@ class inputGenerator(SeismoPreprocessingActivity):
         with open (self.parameters["quakeml"], "r") as events:
             quakeml=events.read()
 
-        unicode_qml=quakeml.decode('utf-8')
-        data = unicode_qml.encode('ascii','ignore')
+        #unicode_qml=quakeml.decode('utf-8')
+        #data = unicode_qml.encode('ascii','ignore')
 
 ##
-
-        cat=readQuakeML(data)
+        cat=readQuakeML(quakeml)
         events = []
-        cat = obspy.readEvents(data)
+        #cat = obspy.readEvents(data)
 #Remove all events with no moment tensor.
         for event in cat:
             for fm in event.focal_mechanisms:
