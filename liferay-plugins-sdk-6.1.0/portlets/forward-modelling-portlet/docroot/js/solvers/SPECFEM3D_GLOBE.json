@@ -81,8 +81,10 @@
             "geo_minLon" : -20,
             "geo_maxLon" : 70,
             "values" : [ 
-                {
-                    "NPROC" : 24
+                { 
+		    "name" : "NPROC",
+		    "value" : 16,
+		    "editable" : true
                 }, 
                 {
                     "name" : "NPROC_XI",
@@ -120,12 +122,12 @@
                 }, 
                 {
                     "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
-                    "value" : 90,
+                    "value" : 45,
                     "editable" : true
                 }, 
                 {
                     "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
-                    "value" : 90,
+                    "value" : 45,
                     "editable" : true
                 }, 
                 {

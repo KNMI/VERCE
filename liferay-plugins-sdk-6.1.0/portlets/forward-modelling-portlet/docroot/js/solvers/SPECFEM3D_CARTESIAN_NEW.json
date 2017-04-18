@@ -1,5 +1,5 @@
 {
-    "_id" : "SPECFEM3D_CARTESIAN_202_DEV",
+    "_id" : "SPECFEM3D_CARTESIAN_NEW",
     "doc" : "https://github.com/geodynamics/specfem3d/raw/devel/doc/USER_MANUAL/manual_SPECFEM3D_Cartesian.pdf",
     "meshes" : [ 
         {
@@ -41,16 +41,6 @@
                 }, 
                 {
                     "name" : "f0_FOR_PML",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MIN",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MAX",
                     "value" : 0.0,
                     "editable" : false
                 }, 
@@ -118,16 +108,6 @@
                     "editable" : false
                 }, 
                 {
-                    "name" : "PML_WIDTH_MIN",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MAX",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
                     "name" : "ROTATE_PML_ACTIVATE",
                     "value" : false,
                     "editable" : false
@@ -183,16 +163,6 @@
                 }, 
                 {
                     "name" : "f0_FOR_PML",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MIN",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MAX",
                     "value" : 0.0,
                     "editable" : false
                 }, 
@@ -259,16 +229,6 @@
                     "editable" : false
                 }, 
                 {
-                    "name" : "PML_WIDTH_MIN",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MAX",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
                     "name" : "ROTATE_PML_ACTIVATE",
                     "value" : false,
                     "editable" : false
@@ -327,16 +287,6 @@
                 }, 
                 {
                     "name" : "f0_FOR_PML",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MIN",
-                    "value" : 0.0,
-                    "editable" : false
-                }, 
-                {
-                    "name" : "PML_WIDTH_MAX",
                     "value" : 0.0,
                     "editable" : false
                 }, 
@@ -469,12 +419,22 @@
             "type" : "bool"
         }, 
         {
+            "name" : "NTSTEP_BETWEEN_OUTPUT_INFO",
+            "desc" : "interval at which we output time step info and max of norm of displacement",
+            "value" : "500",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "int",
+            "step" : 100.0
+        }, 
+        {
             "name" : "NGNOD",
             "desc" : "number of nodes for 2D and 3D shape functions for hexahedral,we use either 8-node mesh elements (bricks) or 27-node elements.If you use our internal mesher, the only option is 8-node bricks (27-node elements are not supported)",
             "value" : "8",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "option",
             "options" : [ 
                 8.0, 
@@ -507,7 +467,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -516,20 +476,11 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
             "name" : "ATTENUATION",
-            "desc" : "see SPECFEM3D_CARTESIAN manual",
-            "value" : "false",
-            "req" : "false",
-            "editable" : true,
-            "group" : "3 - Attenuation",
-            "type" : "bool"
-        }, 
-        {
-            "name" : "FULL_ATTENUATION_SOLID",
             "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
@@ -543,7 +494,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -552,7 +503,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -561,7 +512,7 @@
             "value" : "./velocity/",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "text"
         }, 
         {
@@ -584,12 +535,51 @@
             "step" : 0.05
         }, 
         {
+            "name" : "MIN_ATTENUATION_PERIOD",
+            "desc" : "attenuation period range over which we try to mimic a constant Q factor",
+            "value" : "999999998",
+            "req" : "false",
+            "editable" : true,
+            "group" : "3 - Attenuation",
+            "type" : "float",
+            "step" : 1
+        }, 
+        {
+            "name" : "MAX_ATTENUATION_PERIOD",
+            "desc" : "attenuation period range over which we try to mimic a constant Q factor",
+            "value" : "999999999",
+            "req" : "false",
+            "editable" : true,
+            "group" : "3 - Attenuation",
+            "type" : "float",
+            "step" : 1
+        }, 
+        {
+            "name" : "COMPUTE_FREQ_BAND_AUTOMATIC",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
+            "value" : "true",
+            "req" : "false",
+            "editable" : true,
+            "group" : "3 - Attenuation",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "ATTENUATION_f0_REFERENCE",
+            "desc" : "reference frequency for target velocity values in the velocity model; set here to a typical value for regional seismology / regional models (dominant period of 3 seconds, i.e. frequency of 1/3 Hz)",
+            "value" : "0.33333",
+            "req" : "false",
+            "editable" : true,
+            "group" : "3 - Attenuation",
+            "type" : "float",
+            "step" : 0.01
+        }, 
+        {
             "name" : "PML_CONDITIONS",
             "desc" : "C-PML boundary conditions for a regional simulation",
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "4 - CPML absorbing condition",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
         }, 
         {
@@ -598,38 +588,18 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "4 - CPML absorbing condition",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
         }, 
         {
             "name" : "f0_FOR_PML",
             "desc" : "C-PML dominant frequency,see manual",
-            "value" : "12.7",
+            "value" : "0.05555",
             "req" : "false",
             "editable" : true,
-            "group" : "4 - CPML absorbing condition",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "float",
-            "step" : 0.1
-        }, 
-        {
-            "name" : "PML_WIDTH_MIN",
-            "desc" : "C-PML thickness min",
-            "value" : "10000.0",
-            "req" : "false",
-            "editable" : true,
-            "group" : "4 - CPML absorbing condition",
-            "type" : "float",
-            "step" : 1000.0
-        }, 
-        {
-            "name" : "PML_WIDTH_MAX",
-            "desc" : "C-PML thickness max",
-            "value" : "25000.0",
-            "req" : "false",
-            "editable" : true,
-            "group" : "4 - CPML absorbing condition",
-            "type" : "float",
-            "step" : 1000.0
+            "step" : 0.01
         }, 
         {
             "name" : "STACEY_ABSORBING_CONDITIONS",
@@ -637,16 +607,7 @@
             "value" : "true",
             "req" : "false",
             "editable" : true,
-            "group" : "0 - Basic",
-            "type" : "bool"
-        }, 
-        {
-            "name" : "STACEY_INSTEAD_OF_FREE_SURFACE",
-            "desc" : "Stacey absorbing top surface (defined in mesh as 'free_surface_file')",
-            "value" : "false",
-            "req" : "false",
-            "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
         }, 
         {
@@ -655,7 +616,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "7 - Visualisation",
             "type" : "bool"
         }, 
         {
@@ -664,7 +625,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "bool"
         }, 
         {
@@ -673,7 +634,7 @@
             "value" : 1.0,
             "req" : "false",
             "editable" : true,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "option",
             "options" : [ 
                 [ 
@@ -692,7 +653,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "bool"
         }, 
         {
@@ -701,7 +662,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "7 - Visualisation",
             "type" : "bool"
         }, 
         {
@@ -710,7 +671,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "bool"
         }, 
         {
@@ -719,7 +680,7 @@
             "value" : "200",
             "req" : "false",
             "editable" : true,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "int",
             "step" : 1.0
         }, 
@@ -729,7 +690,7 @@
             "value" : "1.0",
             "req" : "false",
             "editable" : true,
-            "group" : "5 - Movie",
+            "group" : "7 - Visualisation",
             "type" : "float",
             "step" : 0.1
         }, 
@@ -739,7 +700,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -748,46 +709,25 @@
             "value" : "./OUTPUT_FILES/DATABASES_MPI",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "text"
         }, 
         {
-            "name" : "NTSTEP_BETWEEN_OUTPUT_INFO",
-            "desc" : "interval at which we output time step info and max of norm of displacement",
-            "value" : "500",
+            "name" : "SEP_MODEL_DIRECTORY",
+            "desc" : "path to SEP model; if you are using a SEP model (oil-industry format)",
+            "value" : "./DATA/my_SEP_model/",
             "req" : "false",
-            "editable" : true,
-            "group" : "7 - Advanced",
-            "type" : "int",
-            "step" : 100.0
-        }, 
-        {
-            "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
-            "desc" : "interval in time steps for writing of seismograms",
-            "value" : "10000",
-            "req" : "false",
-            "editable" : true,
-            "group" : "7 - Advanced",
-            "type" : "int",
-            "step" : 1000.0
-        }, 
-        {
-            "name" : "NTSTEP_BETWEEN_READ_ADJSRC",
-            "desc" : "interval in time steps for reading adjoint traces,0 = read the whole adjoint sources at the same time",
-            "value" : "0",
-            "req" : "false",
-            "editable" : true,
-            "group" : "7 - Advanced",
-            "type" : "int",
-            "step" : 1.0
+            "editable" : false,
+            "group" : "9 - Advanced",
+            "type" : "text"
         }, 
         {
             "name" : "USE_FORCE_POINT_SOURCE",
-            "desc" : "# use a (tilted) FORCESOLUTION force point source (or several) instead of a CMTSOLUTION moment-tensor source. If this flag is turned on, the FORCESOLUTION file must be edited by precising:\n- the corresponding time-shift parameter,\n - the half duration parameter of the source,\n - the coordinates of the source,\n - the magnitude of the force source,\n - the components of a (non-unitary) direction vector for the force source in the E/N/Z_UP basis.\n The direction vector is made unitary internally in the code and thus only its direction matters here \n its norm is ignored and the norm of the force used is the factor force source times the source time function.",
+            "desc" : "use a (tilted) FORCESOLUTION force point source (or several) instead of a CMTSOLUTION moment-tensor source. If this flag is turned on, the FORCESOLUTION file must be edited by precising:\n- the corresponding time-shift parameter,\n - the half duration parameter of the source,\n - the coordinates of the source,\n - the magnitude of the force source,\n - the components of a (non-unitary) direction vector for the force source in the E/N/Z_UP basis.\n The direction vector is made unitary internally in the code and thus only its direction matters here \n its norm is ignored and the norm of the force used is the factor force source times the source time function.",
             "value" : "false",
             "req" : "false",
-            "editable" : false,
-            "group" : "6 - Point source",
+            "editable" : true,
+            "group" : "6 - Sources",
             "type" : "bool"
         }, 
         {
@@ -795,8 +735,35 @@
             "desc" : "set to true to use a Ricker source time function instead of the source time functions set by default to represent a (tilted) FORCESOLUTION force point source or a CMTSOLUTION moment-tensor source.",
             "value" : "false",
             "req" : "false",
+            "editable" : true,
+            "group" : "6 - Sources",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "USE_EXTERNAL_SOURCE_FILE",
+            "desc" : "Use an external source time function. If true then you must add a file with your source time function and the file name path relative to lauching directory at the end of CMTSOLUTION or FORCESOURCE file(with multiple sources, one file per source is required).",
+            "value" : "false",
+            "req" : "false",
             "editable" : false,
-            "group" : "6 - Point source",
+            "group" : "6 - Sources",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "USE_SOURCE_ENCODING",
+            "desc" : "(for acoustic simulations only) determines source encoding factor +/-1 depending on sign of moment tensor (see e.g. Krebs et al., 2009. Fast full-wavefield seismic inversion using encoded sources, Geophysics, 74 (6), WCC177-WCC188.)",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "6 - Sources",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "PRINT_SOURCE_TIME_FUNCTION",
+            "desc" : "print source time function",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "6 - Sources",
             "type" : "bool"
         }, 
         {
@@ -814,7 +781,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "4 - CPML absorbing condition",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
         }, 
         {
@@ -823,59 +790,27 @@
             "value" : "0.0",
             "req" : "false",
             "editable" : true,
-            "group" : "4 - CPML absorbing condition",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "float",
             "step" : 0.1
         }, 
         {
-            "name" : "PRINT_SOURCE_TIME_FUNCTION",
-            "desc" : "",
+            "name" : "BOTTOM_FREE_SURFACE",
+            "desc" : "set to .true. to make zmin free surface instead of absorbing condition",
             "value" : "false",
             "req" : "false",
             "editable" : true,
-            "group" : "7 - Advanced",
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
         }, 
         {
-            "name" : "COUPLE_WITH_EXTERNAL_CODE",
-            "desc" : "",
+            "name" : "STACEY_INSTEAD_OF_FREE_SURFACE",
+            "desc" : "Stacey absorbing top surface (defined in mesh as 'free_surface_file')",
             "value" : "false",
             "req" : "false",
-            "editable" : false,
-            "group" : "7 - Advanced",
+            "editable" : true,
+            "group" : "4 - Absorbing Boundary Conditions",
             "type" : "bool"
-        }, 
-        {
-            "name" : "EXTERNAL_CODE_TYPE",
-            "desc" : "1 = DSM, 2 = AxiSEM, 3 = FK",
-            "value" : 1.0,
-            "req" : "false",
-            "editable" : false,
-            "group" : "7 - Advanced",
-            "type" : "int",
-            "options" : [ 
-                [ 
-                    1.0, 
-                    "DSM"
-                ], 
-                [ 
-                    2.0, 
-                    "AxiSEM"
-                ], 
-                [ 
-                    3.0, 
-                    "FK"
-                ]
-            ]
-        }, 
-        {
-            "name" : "TRACTION_PATH",
-            "desc" : "",
-            "value" : "./DATA/DSM_tractions_for_specfem3D/",
-            "req" : "false",
-            "editable" : false,
-            "group" : "7 - Advanced",
-            "type" : "str"
         }, 
         {
             "name" : "ADIOS_ENABLED",
@@ -883,7 +818,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -892,7 +827,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -901,7 +836,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -910,7 +845,7 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
@@ -919,16 +854,211 @@
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
             "type" : "bool"
         }, 
         {
-            "name" : "MESH_A_CHUNK_OF_THE_EARTH",
-            "desc" : "",
+            "name" : "USE_LDDRK",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "INCREASE_CFL_FOR_LDDRK",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "RATIO_BY_WHICH_TO_INCREASE_IT",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
+            "value" : "1.4",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "float",
+            "step" : 0.1
+        }, 
+        {
+            "name" : "OUTPUT_ENERGY",
+            "desc" : "to plot energy curves, for instance to monitor how CPML absorbing layers behave; should be turned OFF in most cases because a bit expensive",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "NTSTEP_BETWEEN_OUTPUT_ENERGY",
+            "desc" : "every how many time steps we compute energy (which is a bit expensive to compute)",
+            "value" : "10",
+            "req" : "false",
+            "editable" : true,
+            "group" : "9 - Advanced",
+            "type" : "bool",
+            "type" : "int",
+            "step" : 1
+        }, 
+        {
+            "name" : "NUMBER_OF_SIMULTANEOUS_RUNS",
+            "desc" : " to run several calculations (several earthquakes) in an embarrassingly-parallel fashion from within the same run; this can be useful when using a very large supercomputer to compute many earthquakes in a catalog, in which case it can be better from a batch job submission point of view to start fewer and much larger jobs, each of them computing several earthquakes in parallel.",
+            "value" : "1",
+            "req" : "false",
+            "editable" : false,
+            "group" : "9 - Advanced",
+            "type" : "int",
+            "step" : 1
+        }, 
+        {
+            "name" : "BROADCAST_SAME_MESH_AND_MODEL",
+            "desc" : "set this option to .true. if the mesh and the model are the same for all simultaneous runs",
             "value" : "false",
             "req" : "false",
             "editable" : false,
-            "group" : "7 - Advanced",
+            "group" : "9 - Advanced",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
+            "desc" : "interval in time steps for writing of seismograms",
+            "value" : "10000",
+            "req" : "false",
+            "editable" : true,
+            "group" : "5 - Seismograms",
+            "type" : "int",
+            "step" : 1000.0
+        }, 
+        {
+            "name" : "SAVE_SEISMOGRAMS_DISPLACEMENT",
+            "desc" : "save displacement in forward runs",
+            "value" : "true",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_SEISMOGRAMS_VELOCITY",
+            "desc" : "save velocity in forward runs",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_SEISMOGRAMS_ACCELERATION",
+            "desc" : "save acceleration in forward runs",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_SEISMOGRAMS_PRESSURE",
+            "desc" : "save pressure in forward runs",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "USE_BINARY_FOR_SEISMOGRAMS",
+            "desc" : " save seismograms in binary or ASCII format (binary is smaller but may not be portable between machines)",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SU_FORMAT",
+            "desc" : "output seismograms in Seismic Unix format (binary with 240-byte-headers)",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "WRITE_SEISMOGRAMS_BY_MASTER",
+            "desc" : "decide if master process writes all the seismograms or if all processes do it in parallel",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_ALL_SEISMOS_IN_ONE_FILE",
+            "desc" : "save all seismograms in one large combined file instead of one file per seismogram",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "USE_TRICK_FOR_BETTER_PRESSURE",
+            "desc" : "use a trick to increase accuracy of pressure seismograms in fluid (acoustic) elements",
+            "value" : "false",
+            "req" : "false",
+            "editable" : false,
+            "group" : "5 - Seismograms",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "NTSTEP_BETWEEN_READ_ADJSRC",
+            "desc" : "interval in time steps for reading adjoint traces; 0 = read the whole adjoint sources at the same time",
+            "value" : "0",
+            "req" : "false",
+            "editable" : true,
+            "group" : "8 - Adjoint Kernel Options",
+            "type" : "int",
+            "step" : 1
+        }, 
+        {
+            "name" : "ANISOTROPIC_KL",
+            "desc" : "this parameter must be set to .true. to compute anisotropic kernels in crust and mantle (related to the 21 Cij in geographical coordinates). Default is false. to compute isotropic kernels (related to alpha and beta)",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "8 - Adjoint Kernel Options",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_TRANSVERSE_KL",
+            "desc" : " compute transverse isotropic kernels (alpha_v,alpha_h,beta_v,beta_h,eta,rho) rather than fully anisotropic kernels in case ANISOTROPIC_KL is set to true.",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "8 - Adjoint Kernel Options",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "APPROXIMATE_HESS_KL",
+            "desc" : "outputs approximate Hessian for preconditioning",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "8 - Adjoint Kernel Options",
+            "type" : "bool"
+        }, 
+        {
+            "name" : "SAVE_MOHO_MESH",
+            "desc" : "save Moho mesh and compute Moho boundary kernels",
+            "value" : "false",
+            "req" : "false",
+            "editable" : true,
+            "group" : "8 - Adjoint Kernel Options",
             "type" : "bool"
         }
     ]

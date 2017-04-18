@@ -7,7 +7,8 @@
   requires: [
     'Ext.grid.plugin.CellEditing',
     'Ext.form.field.Number',
-    'CF.view.Component'
+    'CF.view.Component', 
+    'CF.view.SolverSelect'
   ],
   border: false,
   columns: [{
@@ -25,8 +26,15 @@
           // prevent breaking focus on the field
           silent: true
         });
+	if(record.get('name')=='ANGULAR_WIDTH_XI_IN_DEGREES' || record.get('name')=='ANGULAR_WIDTH_ETA_IN_DEGREES' 
+	|| record.get('name')=='CENTER_LATITUDE_IN_DEGREES' || record.get('name')=='CENTER_LONGITUDE_IN_DEGREES')
+	{   
+ 		if(parseFloat(newValue) || newValue=="0")
+		{
+			updateBoundaryBox(record);
+		}
+	}    
       };
-
       if (record.get('type') === 'bool') {
         if (value === true || value === 'true' || value === 1 || value === '1' || value === 'on') {
           value = true;
@@ -67,7 +75,8 @@
           },
           minValue: record.get('minValue'),
           maxValue: record.get('maxValue'),
-          disabled: !record.get('editable')
+          disabled: !record.get('editable'),
+	  name:record.get('name')
         }
       } else if (record.get('type') === 'option') {
         var options = record.get('options');
@@ -114,3 +123,55 @@
     this.callParent(arguments);
   }
 });
+
+ function updateBoundaryBox(record)
+ {
+ 	// convert values to float	
+ 	var width_xi=parseFloat(document.getElementsByName("ANGULAR_WIDTH_XI_IN_DEGREES")[0].value);
+ 	var width_eta=parseFloat(document.getElementsByName("ANGULAR_WIDTH_ETA_IN_DEGREES")[0].value);
+ 	var centLat=parseFloat(document.getElementsByName("CENTER_LATITUDE_IN_DEGREES")[0].value);
+ 	var centLon=parseFloat(document.getElementsByName("CENTER_LONGITUDE_IN_DEGREES")[0].value);
+
+ 	// work out min/max values for latitude and longitude	
+ 	var minLon=centLon-width_eta;
+ 	var maxLon=centLon+width_eta;
+ 	var minLat=centLat-width_xi;
+ 	var maxLat=centLat+width_xi;
+
+ 	// check for any value that exceeds the min/max range (i.e. min/max range should be between -90 and 90 for latitude and between -180 and 180 for longitude)	
+ 	if(minLat < -90 || minLat > 90 || maxLat < -90 || maxLat > 90 )
+ 	{
+ 		alert('value exceeds latitude min/max range ');
+ 		//undo change
+ 		record.set('value', record.previousValues.value);
+ 		document.getElementsByName(record.get('name'))[0].value=record.get('value');
+ 		return;
+ 	}
+ 	if(minLon < -180 || minLon > 180 || maxLon < -180 || maxLon > 180 )
+ 	{
+ 		alert('value exceeds longitude min/max range ');
+ 		//undo change
+ 		 record.set('value', record.previousValues.value);
+ 		document.getElementsByName(record.get('name'))[0].value=record.get('value');
+ 		return;
+ 	}
+
+
+ 	var mesh=Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+ 	//update mesh values
+ 	updateMeshValues(mesh,minLon,maxLon,minLat,maxLat);
+
+ 	// create a boundary box
+ 	createBoundariesLayer(mesh);
+ }
+ function updateMeshValues(mesh,minLon,maxLon,minLat,maxLat)
+ {   
+ 	
+ 	mesh.data.geo_minLat=minLat;
+ 	mesh.data.geo_maxLat=maxLat;
+ 	mesh.data.geo_minLon=minLon;
+ 	mesh.data.geo_maxLon=maxLon;
+
+ 	return mesh;
+  
+ }
