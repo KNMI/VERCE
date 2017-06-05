@@ -7,7 +7,8 @@ var specfem3dGlobeEventProviders = Ext.create('CF.store.Provider', {
 	    "name": "Global Centroid Moment Tensor Catalog",
 	    "url": "/j2ep-1.0/gcmt",
 	  }]
-	});
+	}); 
+
 var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
 	data: [{
 	    "abbr": "INGV",
@@ -40,7 +41,8 @@ var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
 var specfem3dGlobeStationProvidersStore = Ext.create('CF.store.Provider', {
 	  data: [{
 	    abbr: "IRIS",
-	    url: "/j2ep-1.0/iris"
+	    url: "/j2ep-1.0/iris-redirect",
+	    extraParams: "&provider=iris"
 	  }]
 	});
 var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
@@ -795,7 +797,7 @@ function selectSolver(selectedSolver) {
 
   solverConfStore.setProxy({
     type: 'ajax',
-    url: '/j2ep-1.0/prov/solver/' + selectedSolver,
+    url: '/j2ep-1.0/prov/solver/' + selectedSolver, 
     extraParams: {
       'userId': userId
     },

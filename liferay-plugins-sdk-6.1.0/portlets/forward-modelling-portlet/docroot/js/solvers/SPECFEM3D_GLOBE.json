@@ -317,7 +317,9 @@
             "value" : "40",
             "step" : 1,
             "type" : "float",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+            "minValue":-90,
+	    	"maxValue":90
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -327,7 +329,9 @@
             "value" : "25",
             "step" : 1,
             "type" : "float",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"		
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"	,
+            "minValue":-180,
+	    	"maxValue":180	
         }, 
         {
             "group" : "2 - Simulation Area",

@@ -46,13 +46,15 @@ Ext.define('CF.view.StationSearchPanel', {
     displayField: 'abbr',
     valueField: 'url',
     queryMode: 'local',
-    listeners: {
+    listeners: { 
       change: function(combobox, value, display) {
         networksStore.removeAll();
         combobox.up('panel').down('multicombo').disable();
         Ext.Ajax.request({
           type: 'GET',
-          url: value + '/fdsnws/station/1/query?level=network',
+          url: value + '/fdsnws/station/1/query?level=network'
+		+(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && combobox.getSelectedRecord() && combobox.getSelectedRecord().data && combobox.getSelectedRecord().data["extraParams"] ? combobox.getSelectedRecord().data["extraParams"]:""),
+
           dataType: 'xml',
           disableCaching: false,
           success: function(response) {
@@ -71,14 +73,7 @@ Ext.define('CF.view.StationSearchPanel', {
               comboNetworks.push(net);
             });
             networksStore.add(comboNetworks);
-            if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE"  && Ext.getCmp('station_catalog').rawValue=="IRIS") 
-        	{ 
-            	combobox.up('panel').down('multicombo').setValue('II,IU');
-        	}
-            else
-            {
-            	combobox.up('panel').down('multicombo').setValue('*');
-            }
+            combobox.up('panel').down('multicombo').setValue('*');
             combobox.up('panel').down('multicombo').enable();
           },
           failure: function() {
