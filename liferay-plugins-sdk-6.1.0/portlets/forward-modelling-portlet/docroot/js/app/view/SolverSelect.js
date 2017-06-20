@@ -797,7 +797,7 @@ function selectSolver(selectedSolver) {
 
   solverConfStore.setProxy({
     type: 'ajax',
-    url: '/j2ep-1.0/prov/solver/' + selectedSolver, 
+    url: '/j2ep-1.0/prov/solver/' + selectedSolver,
     extraParams: {
       'userId': userId
     },

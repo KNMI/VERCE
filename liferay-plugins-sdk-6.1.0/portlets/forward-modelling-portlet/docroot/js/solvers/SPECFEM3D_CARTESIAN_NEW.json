@@ -939,25 +939,25 @@
             "desc" : "save displacement in forward runs",
             "value" : "true",
             "req" : "false",
-            "editable" : false,
+            "editable" : true,
             "group" : "5 - Seismograms",
             "type" : "bool"
         }, 
         {
             "name" : "SAVE_SEISMOGRAMS_VELOCITY",
             "desc" : "save velocity in forward runs",
-            "value" : "false",
+            "value" : "true",
             "req" : "false",
-            "editable" : false,
+            "editable" : true,
             "group" : "5 - Seismograms",
             "type" : "bool"
         }, 
         {
             "name" : "SAVE_SEISMOGRAMS_ACCELERATION",
             "desc" : "save acceleration in forward runs",
-            "value" : "false",
+            "value" : "true",
             "req" : "false",
-            "editable" : false,
+            "editable" : true,
             "group" : "5 - Seismograms",
             "type" : "bool"
         }, 
