@@ -56,7 +56,7 @@ def initial_full_search_request():
 
 if __name__ == "__main__":
     # the argument initial needs to be passed through to perform a full search
-    if sys.argv[0].lower()=="initial":
+    if sys.argv[1].lower()=="initial":
         initial_full_search_request()
     else:
         update_gcmt_event_file()
