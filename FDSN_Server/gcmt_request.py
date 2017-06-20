@@ -22,12 +22,12 @@ def request_gcmt_events(gcmt_urls):
 
 # this will perform a search request for the past months of the current year up to present month
 # a server restart is required to update the database file
-def update_gcmt_events():
+def update_gcmt_events(date):
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-    yy = str(datetime.datetime.today().year)[2:]
+    yy = str(date.year)[2:]
     # a list of successful past searches with results for present year
     past_searches=[name for name in os.listdir(config.QUAKEML_ROOT_DIR) for month in months if month+yy == name]
-    mm = datetime.datetime.today().month
+    mm = date.month
     gcmt_urls = {}
     for month in months:
         if(months.index(month)+1 <= mm):
@@ -55,12 +55,10 @@ def initial_full_search_request():
     request_gcmt_events(gcmt_urls)
 
 if __name__ == "__main__":
-    # the argument initial needs to be passed through to perform a full search request
+    # the keyword "initial" can be passed as an argument if we need to perform a full search request
     if len(sys.argv) >1 and sys.argv[1].lower()=="initial":
          initial_full_search_request()
     else:
-        update_gcmt_events()
-
-
-
+        date=datetime.date.today()
+        update_gcmt_events(date)
 
