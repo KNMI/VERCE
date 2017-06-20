@@ -118,14 +118,4 @@ if __name__ == "__main__":
         app.run(host="0.0.0.0", port=config.PORT)
     else:
         app.run(port=config.PORT)
-"""
-extra_dirs = ['directory/to/watch',]
-extra_files = extra_dirs[:]
-for extra_dir in extra_dirs:
-    for dirname, dirs, files in os.walk(extra_dir):
-        for filename in files:
-            filename = path.join(dirname, filename)
-            if path.isfile(filename):
-                extra_files.append(filename)
-app.run(extra_files=event_db.shelve)
-"""
+
