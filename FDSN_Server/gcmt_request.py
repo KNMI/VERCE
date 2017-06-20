@@ -22,7 +22,7 @@ def request_gcmt_events(gcmt_urls):
 
 # this will perform a search request for the past months of the current year up to present month
 # a server restart is required to update the database file
-def update_gcmt_event_file():
+def update_gcmt_events():
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     yy = str(datetime.datetime.today().year)[2:]
     # a list of successful past searches with results for present year
@@ -38,7 +38,7 @@ def update_gcmt_event_file():
     request_gcmt_events(gcmt_urls)
 
 
-#this will perform a full search request from Jan 1976 until Dec 2017
+#this will perform a full search request from Jan 1976 up to Dec 2017
 def initial_full_search_request():
     # set up a dictionary with a key referring to the name of the directory for which the output will be written to
     # and a value corresponding to the gcmt url where the events data are available at
@@ -55,11 +55,12 @@ def initial_full_search_request():
     request_gcmt_events(gcmt_urls)
 
 if __name__ == "__main__":
-    # the argument initial needs to be passed through to perform a full search
-    if sys.argv[1].lower()=="initial":
-        initial_full_search_request()
+    # the argument initial needs to be passed through to perform a full search request
+    if len(sys.argv) >1 and sys.argv[1].lower()=="initial":
+         initial_full_search_request()
     else:
-        update_gcmt_event_file()
+        update_gcmt_events()
+
 
 
 
