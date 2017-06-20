@@ -13,7 +13,7 @@ def request_gcmt_events(gcmt_urls):
         if request.status_code == 200:
             cat = readEvents(url)
             if len(cat) > 0:
-                directory="data/"+key
+                directory=config.QUAKEML_ROOT_DIR+key
                 if not os.path.exists(directory):
                     os.makedirs(directory)
                 for event in cat:
