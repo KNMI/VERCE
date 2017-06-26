@@ -35,6 +35,16 @@ def update_gcmt_events(date):
             if key not in past_searches:
                 gcmt_urls[key] = "http://www.ldeo.columbia.edu/~gcmt/projects/CMT/catalog/NEW_MONTHLY/20" + yy + "/" + key + ".ndk"
 
+    # if the search update to be perfomed within the first three months of the current year then double check past year search results
+    if (mm <= 3):
+        yy = str(date.year - 1)[2:]
+        past_searches = [name for name in os.listdir(config.QUAKEML_ROOT_DIR) for month in months if month + yy == name]
+        for month in months:
+            key = month + yy
+            if key not in past_searches:
+                gcmt_urls[
+                    key] = "http://www.ldeo.columbia.edu/~gcmt/projects/CMT/catalog/NEW_MONTHLY/20" + yy + "/" + key + ".ndk"
+
     request_gcmt_events(gcmt_urls)
 
 
@@ -61,4 +71,3 @@ if __name__ == "__main__":
     else:
         date=datetime.date.today()
         update_gcmt_events(date)
-
