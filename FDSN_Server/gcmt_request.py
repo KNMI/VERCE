@@ -48,14 +48,21 @@ def update_gcmt_events(date):
     request_gcmt_events(gcmt_urls)
 
 
-#this will perform a full search request from Jan 1976 up to Dec 2017
+#this will initiate a full search request from Jan 1976 up to present year
 def initial_full_search_request():
     # set up a dictionary with a key referring to the name of the directory for which the output will be written to
     # and a value corresponding to the gcmt url where the events data are available at
     gcmt_urls = {}
     gcmt_urls["jan76_dec05"] = "http://www.ldeo.columbia.edu/~gcmt/projects/CMT/catalog/jan76_dec05.ndk"
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-    years = ['06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17']
+    years = []
+    current_year = datetime.date.today().year
+    start_year=2006
+    while start_year <=current_year:
+        yy = str(start_year)[2:]
+        years.append(yy)
+        start_year+=1
+
     for year in years:
         for month in months:
             key = month + year
@@ -65,9 +72,10 @@ def initial_full_search_request():
     request_gcmt_events(gcmt_urls)
 
 if __name__ == "__main__":
-    # the keyword "initial" can be passed as an argument if we need to perform a full search request
+   # the keyword "initial" can be passed as an argument if we need to perform a full search request
     if len(sys.argv) >1 and sys.argv[1].lower()=="initial":
          initial_full_search_request()
     else:
         date=datetime.date.today()
         update_gcmt_events(date)
+    
