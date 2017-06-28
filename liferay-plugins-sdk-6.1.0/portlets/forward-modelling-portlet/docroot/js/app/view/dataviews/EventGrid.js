@@ -1,6 +1,6 @@
 function renderMomentTensor(value, p, record) {
   return Ext.String.format(
-    '<img src="/j2ep-1.0/odc/verce-scig-api/mt/components-image?mrr={0}&mtt={1}&mpp={2}&mrt={3}&mrp={4}&mtp={5}" width="20" height="20"/>',
+    '<img src="/verce-scig-api/mt/components-image?mrr={0}&mtt={1}&mpp={2}&mrt={3}&mrp={4}&mtp={5}" width="20" height="20"/>',
     encodeURIComponent(record.data.tensor_mrr),
     encodeURIComponent(record.data.tensor_mtt),
     encodeURIComponent(record.data.tensor_mpp),
