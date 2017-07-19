@@ -7,7 +7,8 @@ var specfem3dGlobeEventProviders = Ext.create('CF.store.Provider', {
 	    "name": "Global Centroid Moment Tensor Catalog",
 	    "url": "/j2ep-1.0/gcmt",
 	  }]
-	});
+	}); 
+
 var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
 	data: [{
 	    "abbr": "INGV",
@@ -40,7 +41,8 @@ var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
 var specfem3dGlobeStationProvidersStore = Ext.create('CF.store.Provider', {
 	  data: [{
 	    abbr: "IRIS",
-	    url: "/j2ep-1.0/iris"
+	    url: "/j2ep-1.0/iris-redirect",
+	    extraParams: "&provider=iris"
 	  }]
 	});
 var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
@@ -611,7 +613,7 @@ Ext.define('CF.view.SolverSelectForm', {
       solverConfStore.commitChanges();
       solverConfStore.save();
       var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
-      var wsSolverUrl = '/j2ep-1.0/odc/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
+      var wsSolverUrl = '/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
       postRequest(wsSolverUrl, "jsondata", jsonString); // makes a call to the WS that, the user receives a file back  
     }
   }]
@@ -795,7 +797,7 @@ function selectSolver(selectedSolver) {
 
   solverConfStore.setProxy({
     type: 'ajax',
-    url: '/j2ep-1.0/prov/solver/' + selectedSolver,
+    url: '/j2ep-1.0/prov/solver/' + selectedSolver, 
     extraParams: {
       'userId': userId
     },

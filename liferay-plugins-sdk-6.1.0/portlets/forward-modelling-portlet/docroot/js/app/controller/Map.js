@@ -59,82 +59,88 @@ var QuakeMLXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
         mrt = "",
         mtp = "";
       var valid = true;
+	try
+	{	
+	     //ID
+	      var eventId = event.getAttribute("publicID");
 
-      //ID
-      var eventId = event.getAttribute("publicID");
+	      // Description
+	      var descElem = event.getElementsByTagName("description")[0];
+	      if (descElem) desc = descElem.getElementsByTagName("text")[0].firstChild.data;
+	      else valid = false;
 
-      // Description
-      var descElem = event.getElementsByTagName("description")[0];
-      if (descElem) desc = descElem.getElementsByTagName("text")[0].firstChild.data;
-      else valid = false;
+	      // Origin
+	      var prefOrigin = event.getElementsByTagName("preferredOriginID")[0];
+	      var origins = event.getElementsByTagName("origin");
+	      if (prefOrigin) {
+		prefOrigin = prefOrigin.childNodes[0].nodeValue;
+		for (var o = 0; o < origins.length; o++) {
+		  origin = origins[o];
+		  if (origin.getAttribute("publicID") == prefOrigin) break;
+		}
+	      } else {
+		if (origins.length > 0) origin = origins[0];
+	      }
 
-      // Origin
-      var prefOrigin = event.getElementsByTagName("preferredOriginID")[0];
-      var origins = event.getElementsByTagName("origin");
-      if (prefOrigin) {
-        prefOrigin = prefOrigin.childNodes[0].nodeValue;
-        for (var o = 0; o < origins.length; o++) {
-          origin = origins[o];
-          if (origin.getAttribute("publicID") == prefOrigin) break;
+	      // Magnitude
+	      var prefMagnitude = event.getElementsByTagName("preferredMagnitudeID")[0];
+	      var magnitudes = event.getElementsByTagName("magnitude");
+	      if (prefMagnitude) {
+		prefMagnitude = prefMagnitude.childNodes[0].nodeValue;
+		for (var m = 0; m < origins.length; m++) {
+		  magnitude = magnitudes[m];
+		  if (magnitude.getAttribute("publicID") == prefMagnitude) break;
+		}
+	      } else {
+		if (magnitudes.length > 0) magnitude = magnitudes[0];
+	      }
+
+	      // Focal Mechanism
+	      var tensorElem = event.getElementsByTagName("tensor")[0];
+	      if (tensorElem) { 
+		  mrr = tensorElem.getElementsByTagName("Mrr")[0].getElementsByTagName("value")[0].firstChild.data;
+		  mtt = tensorElem.getElementsByTagName("Mtt")[0].getElementsByTagName("value")[0].firstChild.data;
+		  mpp = tensorElem.getElementsByTagName("Mpp")[0].getElementsByTagName("value")[0].firstChild.data;
+		  mrt = tensorElem.getElementsByTagName("Mrt")[0].getElementsByTagName("value")[0].firstChild.data;
+		  mrp = tensorElem.getElementsByTagName("Mrp")[0].getElementsByTagName("value")[0].firstChild.data;       
+		  mtp = tensorElem.getElementsByTagName("Mtp")[0].getElementsByTagName("value")[0].firstChild.data;
+		
+	      } else valid = false;
+
+	      // Time
+	      var timeElem = origin.getElementsByTagName("time")[0];
+	      if (timeElem) time = timeElem.getElementsByTagName("value")[0].firstChild.data;
+	      else valid = false;
+
+	      // Magnitude
+	      var magElem = magnitude.getElementsByTagName("mag")[0];
+	      if (magElem) mag = magElem.getElementsByTagName("value")[0].firstChild.data;
+	      else valid = false;
+
+	      // Depth
+	      var depthElem = origin.getElementsByTagName("depth")[0];
+	      if (depthElem) depth = depthElem.getElementsByTagName("value")[0].firstChild.data;
+	      else valid = false;
+
+	      // Longitude
+	      var longElem = origin.getElementsByTagName("longitude")[0];
+	      if (longElem) lon = longElem.getElementsByTagName("value")[0].firstChild.data;
+	      else valid = false;
+
+	      // Latitude
+	      var latElem = origin.getElementsByTagName("latitude")[0];
+	      if (latElem) lat = latElem.getElementsByTagName("value")[0].firstChild.data;
+	      else valid = false;
+
+	      //alert("id: "+eventId+", description: "+desc+", datetime: "+time+", magnitude: "+mag+", depth: "+depth+
+	      //	", longitude: "+lon+", latitude: "+lat+", tensor: "+mrr+", "+mtt+", "+mpp+", "+mrt+", "+mtp+". Valid event: "+valid);
+
+	      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+	}
+        catch (e) {  
+           valid = false;
         }
-      } else {
-        if (origins.length > 0) origin = origins[0];
-      }
-
-      // Magnitude
-      var prefMagnitude = event.getElementsByTagName("preferredMagnitudeID")[0];
-      var magnitudes = event.getElementsByTagName("magnitude");
-      if (prefMagnitude) {
-        prefMagnitude = prefMagnitude.childNodes[0].nodeValue;
-        for (var m = 0; m < origins.length; m++) {
-          magnitude = magnitudes[m];
-          if (magnitude.getAttribute("publicID") == prefMagnitude) break;
-        }
-      } else {
-        if (magnitudes.length > 0) magnitude = magnitudes[0];
-      }
-
-      // Focal Mechanism
-      var tensorElem = event.getElementsByTagName("tensor")[0];
-      if (tensorElem) {
-        mrr = tensorElem.getElementsByTagName("Mrr")[0].getElementsByTagName("value")[0].firstChild.data;
-        mtt = tensorElem.getElementsByTagName("Mtt")[0].getElementsByTagName("value")[0].firstChild.data;
-        mpp = tensorElem.getElementsByTagName("Mpp")[0].getElementsByTagName("value")[0].firstChild.data;
-        mrt = tensorElem.getElementsByTagName("Mrt")[0].getElementsByTagName("value")[0].firstChild.data;
-        mrp = tensorElem.getElementsByTagName("Mrp")[0].getElementsByTagName("value")[0].firstChild.data;
-        mtp = tensorElem.getElementsByTagName("Mtp")[0].getElementsByTagName("value")[0].firstChild.data;
-      } else valid = false;
-
-      // Time
-      var timeElem = origin.getElementsByTagName("time")[0];
-      if (timeElem) time = timeElem.getElementsByTagName("value")[0].firstChild.data;
-      else valid = false;
-
-      // Magnitude
-      var magElem = magnitude.getElementsByTagName("mag")[0];
-      if (magElem) mag = magElem.getElementsByTagName("value")[0].firstChild.data;
-      else valid = false;
-
-      // Depth
-      var depthElem = origin.getElementsByTagName("depth")[0];
-      if (depthElem) depth = depthElem.getElementsByTagName("value")[0].firstChild.data;
-      else valid = false;
-
-      // Longitude
-      var longElem = origin.getElementsByTagName("longitude")[0];
-      if (longElem) lon = longElem.getElementsByTagName("value")[0].firstChild.data;
-      else valid = false;
-
-      // Latitude
-      var latElem = origin.getElementsByTagName("latitude")[0];
-      if (latElem) lat = latElem.getElementsByTagName("value")[0].firstChild.data;
-      else valid = false;
-
-      //alert("id: "+eventId+", description: "+desc+", datetime: "+time+", magnitude: "+mag+", depth: "+depth+
-      //	", longitude: "+lon+", latitude: "+lat+", tensor: "+mrr+", "+mtt+", "+mpp+", "+mrt+", "+mtp+". Valid event: "+valid);
-
-      var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-      if (valid && lon >= mesh.get('geo_minLon') && lon <= mesh.get('geo_maxLon') && lat >= mesh.get('geo_minLat') && lat <= mesh.get('geo_maxLat')) {
+      if (valid && validate_geo_location(mesh,lon,lat)){// && lon >= mesh.get('geo_minLon') && lon <= mesh.get('geo_maxLon') && lat >= mesh.get('geo_minLat') && lat <= mesh.get('geo_maxLat')) {
         var attributes = {
           eventId: eventId,
           description: desc,
@@ -178,7 +184,7 @@ var StationXMLFormat = OpenLayers.Class(OpenLayers.Format.XML, {
       var latitude = latitudes[i].childNodes[0].nodeValue;
       var longitude = longitudes[i].childNodes[0].nodeValue;
       var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-      if (longitude >= mesh.get('geo_minLon') && longitude <= mesh.get('geo_maxLon') && latitude >= mesh.get('geo_minLat') && latitude <= mesh.get('geo_maxLat')) {
+      if (validate_geo_location(mesh,longitude,latitude)){ //(longitude >= mesh.get('geo_minLon') && longitude <= mesh.get('geo_maxLon') && latitude >= mesh.get('geo_minLat') && latitude <= mesh.get('geo_maxLat')) {
         var station = stations[i].getAttribute("code");
         stations[i].setAttribute("network", stations[i].parentNode.getAttribute("code"));
         var network = stations[i].getAttribute("network");
@@ -311,7 +317,8 @@ Ext.define('CF.controller.Map', {
   onStationSearch: function(button) {
     var form = button.up('form').getForm();
     if (form.isValid()) {
-      var baseUrl = button.up('form').down('combobox').getValue() + '/fdsnws/station/1/query?level=station&';
+      var provider=Ext.getCmp('station_catalog').findRecordByValue(Ext.getCmp('station_catalog').getValue());
+      var baseUrl = provider.get('url')  + '/fdsnws/station/1/query?level=station&';
       var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
       var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
       var networks = button.up('form').down('multicombo').getValue();
@@ -322,7 +329,8 @@ Ext.define('CF.controller.Map', {
 	var searchStartDate=Ext.getCmp('startTime').getSubmitValue();
 	var searchEndDate=Ext.getCmp('endTime').getSubmitValue();
       //this.getStations(this, baseUrl + 'network=' + networks.join(',') + bbox, STXML_TYPE);
-	this.getStations(this, baseUrl + 'starttime='+searchStartDate+'&endtime='+searchEndDate + '&network=' + networks.join(',') + bbox, STXML_TYPE);
+	var extraParams = provider.get('extraParams') != null  && Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" ? provider.get('extraParams') : "";
+	this.getStations(this, baseUrl + 'starttime='+searchStartDate+'&endtime='+searchEndDate + '&network=' + networks.join(',') + bbox + extraParams, STXML_TYPE);
     }
   },
   getStations: function(elem, purl, formatType) {
@@ -458,3 +466,22 @@ Ext.define('CF.controller.Map', {
     this.mapPanel.map.addPopup(popup);
   }
 });
+function validate_geo_location(mesh,lon,lat)
+{
+	if(Ext.getCmp('meshes').getValue()=="Bespoke" && mesh.computedMeshes && mesh.computedMeshes.length>1)
+	{
+		for(var i=0;i<mesh.computedMeshes.length;i++)
+		{
+			if(lon >= mesh.computedMeshes[i].minLon && lon <= mesh.computedMeshes[i].maxLon && lat >= mesh.computedMeshes[i].minLat && lat <= mesh.computedMeshes[i].maxLat)
+			{
+				return true;
+			}	
+		}
+	}
+	else
+	{
+		return lon >= mesh.get('geo_minLon') && lon <= mesh.get('geo_maxLon') && lat >= mesh.get('geo_minLat') && lat <= mesh.get('geo_maxLat');
+	}
+	return false;
+
+}

@@ -1,8 +1,0 @@
-2016-12-21 13:11:47+0000 [-] Log opened.
-2016-12-21 13:11:47+0000 [-] Server running....
-2016-12-21 13:11:51+0000 [-] "127.0.0.1" - - [21/Dec/2016:13:11:51 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 16269 "http://localhost:8080/liferay-portal-6.1.0/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
-2016-12-21 13:12:00+0000 [-] "127.0.0.1" - - [21/Dec/2016:13:12:00 +0000] "POST /solver/par-file/specfem3d_cartesian_202_dev HTTP/1.1" 200 5373 "http://localhost:8080/liferay-portal-6.1.0/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
-2016-12-21 13:12:03+0000 [-] Received SIGINT, shutting down.
-2016-12-21 13:12:03+0000 [twisted.web.server.Site] (TCP Port 8083 Closed)
-2016-12-21 13:12:03+0000 [-] Stopping factory <twisted.web.server.Site instance at 0x7fc48ea80320>
-2016-12-21 13:12:03+0000 [-] Main loop terminated.
