@@ -20,7 +20,7 @@ class specfemGlobeMesher(SeismoPreprocessingActivity):
         stderrdata=None
         userconf = json.load(open(self.parameters["solver_conf_file"]))
 
-        if self.parameters["mpi_invoke"] == 'mpiexec.hydra':
+        if self.parameters["mpi_invoke"] == 'mpiexec.hydra' or self.parameters["mpi_invoke"] == 'mpirun':
             stdoutdata, stderrdata = commandChain([["{}".format(
                 self.parameters["mpi_invoke"] + ' -np ' + str(self.parameters["NPROC"]) + " ./bin/xmeshfem3D",
             )]], os.environ.copy())

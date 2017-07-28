@@ -9,7 +9,6 @@ import copy
 ' Test command line usage: python genimporter_solver.py <modulename> <quakeml> <station> <user_conf>'
 ' scriptpath1="./resources/"+sys.argv[1]+".py '
 
-from specfemGlobeMesher import *
 from specfemGlobeRunSolverMov import *
 import os
 import sys
@@ -33,12 +32,13 @@ class GLobeGeneralImporter():
     
     def runit(self):
         inputgen = json.load(open(self.input[1]))
-        solver_conf = self.input[2]
-        mpi_invoker = self.input[3]
-        eventIndex=self.input[4]
+        output_mesher = json.load(open(self.input[2]))
+        solver_conf = self.input[3]
+        mpi_invoker = self.input[4]
+        eventIndex=self.input[5]
         mpi_par_mov=""
         try:
-            mpi_par_mov=self.input[5]
+            mpi_par_mov=self.input[6]
         except:
             None
         '1- Data dict'
@@ -65,37 +65,17 @@ class GLobeGeneralImporter():
         
         for x in fields:
             parameters.update({x["name"]:x["value"]})
-            
-        
+
+        parameters.update({"DT": os.environ["DT"].lstrip()})
         parameters.update({"mesh":confdict["mesh"]})
         parameters.update({"velocity_model":confdict["velocity_model"]})
 
         ' Instantiate the PE and run it'
 
-
-        provenancebulk=[]
-        'merges streams'
-         
-        input_streams=[]
-        input_streams.append(inputgen["streams"][int(eventIndex)])
-        data={"streams":input_streams};
-        print "MOVIE_PARAMS_DDD: "+str(mpi_par_mov)
-        proc = specfemGlobeMesher(name='specfemGlobeMesher',input=data,params=parameters,vercejson=verce,stdoutredirect=False,caller=self,mapping="mpi");
-        output_gen=proc.process()
-        #provenancebulk.append(output_gen["metadata"])
-
-        #provenancebulk=[]
-
-        output_gen["streams"].append(inputgen["streams"][int(eventIndex)])
-        file = open("jsonout_run_mesher","wb")
-        file.write(json.dumps(copy.deepcopy(output_gen)))
-        filep = open("provout_mesher-"+runid+"_"+str(eventIndex),"wb")
-        filep.write(json.dumps(output_gen["metadata"]))
-        filep.flush()
-        shutil.copy("provout_mesher-"+runid+"_"+str(eventIndex), os.environ["PROV_PATH"]+"/")
+        print ("MOVIE_PARAMS_DDD: "+str(mpi_par_mov))
         
         parameters.update({'mag':inputgen["metadata"]["streams"][int(eventIndex)]["content"][0]["magnitude"],"mpi_par_mov":mpi_par_mov})
-        proc = specfemGlobeRunSolverMov(name='specfemGlobeRunSolverMov',input=output_gen,params=parameters,vercejson=verce,stdoutredirect=False,caller=self,mapping="mpi");
+        proc = specfemGlobeRunSolverMov(name='specfemGlobeRunSolverMov',input=output_mesher,params=parameters,vercejson=verce,stdoutredirect=False,caller=self,mapping="mpi");
         outputspecfem=proc.process()
         #provenancebulk.append(outputspecfem["metadata"])
         

@@ -10,15 +10,19 @@ class specfemGlobeCompiler(SeismoPreprocessingActivity):
      def compute(self):
         stdoutdata=None
         stderrdata=None
-        stdoutdata, stderrdata = commandChain([["{};{};{};{};{};{};{};{}".format(
+        stdoutdata, stderrdata = commandChain([["{};{};{};{};{};{};{};{};{};{};{};{}".format(
             "cd $RUN_PATH/specfem",
             "cp " + self.parameters["par_file"] + " DATA",
             "cp " + self.parameters["cmt_solution"] + " DATA",
             "cp " + self.parameters["stations"] + " DATA",
-            "./configure FC=ifort CC=icc CXX=icpc MPIFC=mpiifort",
+            self.parameters["configure"],
+            "make clean",
+            "make create_header_file",
+            "./bin/xcreate_header_file",
             "make clean",
             "make meshfem3D",
-            "make specfem3D"
+            "make specfem3D",
+            "make xcreate_movie_AVS_DX"
             )]], os.environ.copy())
 
         self.addOutput(os.getcwd() + "/OUTPUT_FILES/values_from_mesher.h",

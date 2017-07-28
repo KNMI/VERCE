@@ -26,6 +26,11 @@ class GeneralImporter():
         par_file = self.input[2]
         cmt_solution = self.input[3]
         stations = self.input[4]
+        compiler=self.input[5]
+        if compiler=="GNU":
+            configure="./configure FC=gfortran CC=gcc MPIFC=mpif90"
+        if compiler=="Intel":
+            configure="./configure FC=ifort CC=icc CXX=icpc MPIFC=mpiifort"
         '1- Data dict'
 
         ' The last item produced by the inputGenerator PE contains the location of the needed input files. '
@@ -41,7 +46,7 @@ class GeneralImporter():
         verce.update({"runId": jsonout["metadata"]["runId"]});
         verce.update({"outputid": str(uuid.uuid1())});
 
-        parameters = {"par_file":par_file, "cmt_solution":cmt_solution,"stations": stations};
+        parameters = {"par_file":par_file, "cmt_solution":cmt_solution,"stations": stations, "configure" : configure };
 
         # Configuring and compiling specfem source code using Intel ifort compiler
         proc = specfemGlobeCompiler(name='specfemGlobeCompiler', input=data, params=parameters, vercejson=verce, stdoutredirect=False, caller=self);
