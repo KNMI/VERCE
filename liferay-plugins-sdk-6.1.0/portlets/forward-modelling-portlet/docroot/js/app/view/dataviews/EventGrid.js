@@ -37,7 +37,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
       selectionchange: function(t, s) {
         if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
         else Ext.getCmp('checkboxNSubmit').setDisabled(true);
-        Ext.getCmp('eventSelColumn').setText(s.length + "/" + CF.app.getController('Map').getStore('Event').getTotalCount());
+        Ext.getCmp('eventSelColumn').setText(s.length + "/" + CF.app.getController('Map').getStore('Event').data.length);
       }
     }
   },
@@ -49,7 +49,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
     menuDisabled: true,
     sortable: false,
     xtype: 'gx_symbolizercolumn',
-    width: 40
+    width: 60
   }, {
     header: 'Desc',
     dataIndex: 'description',
