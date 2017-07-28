@@ -8,17 +8,19 @@
             "geo_maxLon" : 180,
             "values" : [ 
                 {
-                    "NPROC" : 24
+                    "name" : "NPROC",
+                    "value" : 24,
+                    "editable" : true
                 }, 
                 {
                     "name" : "NPROC_XI",
                     "value" : 2,
-                    "editable" : false
+                    "editable" : true
                 }, 
                 {
                     "name" : "NPROC_ETA",
                     "value" : 2,
-                    "editable" : false
+                    "editable" : true
                 }, 
                 {
                     "RECORD_LENGTH_IN_MINUTES" : "10.0"
@@ -29,17 +31,17 @@
                 {
                     "name" : "NCHUNKS",
                     "value" : 6,
-                    "editable" : false
+                    "editable" : true
                 }, 
                 {
                     "name" : "NEX_XI",
                     "value" : 64,
-                    "editable" : false
+                    "editable" : true
                 }, 
                 {
                     "name" : "NEX_ETA",
                     "value" : 64,
-                    "editable" : false
+                    "editable" : true
                 }, 
                 {
                     "ABSORBING_CONDITIONS" : false
@@ -78,13 +80,11 @@
         }, 
         {
             "name" : "Bespoke",
-            "geo_minLon" : -20,
-            "geo_maxLon" : 70,
             "values" : [ 
                 { 
-		    "name" : "NPROC",
-		    "value" : 16,
-		    "editable" : true
+            "name" : "NPROC",
+            "value" : 16,
+            "editable" : true
                 }, 
                 {
                     "name" : "NPROC_XI",
@@ -122,27 +122,26 @@
                 }, 
                 {
                     "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
-                    "value" : 45,
+                    "value" : 35,
                     "editable" : true
                 }, 
                 {
                     "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
-                    "value" : 45,
+                    "value" : 30,
                     "editable" : true
                 }, 
                 {
                     "name" : "CENTER_LATITUDE_IN_DEGREES",
-                    "value" : 40,
+                    "value" : 45,
                     "editable" : true
                 }, 
                 {
                     "name" : "CENTER_LONGITUDE_IN_DEGREES",
-                    "value" : 25,
+                    "value" : 10,
                     "editable" : true
                 }
             ],
             "details" : "Bespoke",
-            "geo_maxLat" : 85,
             "velmod" : [ 
                 {
                     "name" : "default",
@@ -150,7 +149,16 @@
                 }
             ],
             "geo_projection" : "std",
-            "geo_minLat" : -5
+            "geo_minLon" : -7,
+            "geo_maxLon" : 70,
+            "geo_maxLat" : 85,
+            "geo_minLat" : -20,
+            "polygon":{
+                "lower_left" : [-7.43,30],
+                "lower_right" : [27.43,30],
+                "upper_right" : [40.19,60],
+                "upper_left" : [-20.19,60]
+            }
         }
     ],
     "success" : true,
@@ -294,8 +302,8 @@
             "step" : 1,
             "type" : "float",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
-	    "minValue":1,
-	    "maxValue":90
+        "minValue":1,
+        "maxValue":180
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -306,8 +314,8 @@
             "step" : 1,
             "type" : "float",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
-	    "minValue":1,
-	    "maxValue":180
+        "minValue":1,
+        "maxValue":90
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -319,7 +327,7 @@
             "type" : "float",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
             "minValue":-90,
-	    	"maxValue":90
+            "maxValue":90
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -329,9 +337,9 @@
             "value" : "25",
             "step" : 1,
             "type" : "float",
-            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"	,
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"   ,
             "minValue":-180,
-	    	"maxValue":180	
+            "maxValue":180  
         }, 
         {
             "group" : "2 - Simulation Area",
@@ -667,17 +675,7 @@
             "step" : 1000,
             "type" : "int",
             "desc" : "Frames will be stored at MOVIE_START + i * NSTEP_BETWEEN_FRAMES, where i=(0,1,2..) while i * NSTEP_BETWEEN_FRAMES <= MOVIE_STOP"
-        }, 
-        {
-            "group" : "6 - Sources",
-            "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
-            "req" : "false",
-            "editable" : true,
-            "value" : "5000000",
-            "step" : 1000,
-            "type" : "int",
-            "desc" : "This parameter specifies the interval at which synthetic seismograms are written in the LOCAL_PATH directory. The seismograms can be created in three different formats by setting the parameters OUTPUT_SEISMOS_ASCII_TEXT, OUTPUT_SEISMOS_SAC_ALPHANUM and OUTPUT_SEI-SMOS_SAC_BINARY. One can choose any combination of these parameters (details on the formats follow in the description of each parameter).  SAC (http://www.iris.edu/software/sac/) is a signal-processing software package.  If a run crashes, you may still find usable (but shorter than requested) seismograms in this directory.  On a fast machine set NTSTEP_BETWEEN_OUTPUT_SEISMOS to a relatively high value to avoid writing to the seismograms too often. This feature is not used at the time of meshing"
-        }, 
+        },         
         {
             "group" : "6 - Sources",
             "name" : "NTSTEP_BETWEEN_READ_ADJSRC",
@@ -688,6 +686,25 @@
             "type" : "int",
             "desc" : "The number of adjoint sources read in each time for an adjoint simulation"
         }, 
+        {
+            "group" : "6 - Sources",
+            "name" : "PRINT_SOURCE_TIME_FUNCTION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Turn this flag on to print information about the source time function in the file OUTPUT_FILES/plot_source_time_function.txt. This feature is not used at the time of meshing."
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
+            "req" : "false",
+            "editable" : true,
+            "value" : "5000000",
+            "step" : 1000,
+            "type" : "int",
+            "desc" : "This parameter specifies the interval at which synthetic seismograms are written in the LOCAL_PATH directory. The seismograms can be created in three different formats by setting the parameters OUTPUT_SEISMOS_ASCII_TEXT, OUTPUT_SEISMOS_SAC_ALPHANUM and OUTPUT_SEI-SMOS_SAC_BINARY. One can choose any combination of these parameters (details on the formats follow in the description of each parameter).  SAC (http://www.iris.edu/software/sac/) is a signal-processing software package.  If a run crashes, you may still find usable (but shorter than requested) seismograms in this directory.  On a fast machine set NTSTEP_BETWEEN_OUTPUT_SEISMOS to a relatively high value to avoid writing to the seismograms too often. This feature is not used at the time of meshing"
+        },  
         {
             "group" : "7 - Seismometers",
             "name" : "OUTPUT_SEISMOS_FORMAT",
@@ -747,16 +764,7 @@
             "value" : "true",
             "type" : "bool",
             "desc" : "This flag accommodates stations with instruments that are buried, i.e., the solver will calculate seismograms at the burial depth specified in the STATIONS file.  This feature is not used at the time of meshing."
-        }, 
-        {
-            "group" : "7 - Seismometers",
-            "name" : "PRINT_SOURCE_TIME_FUNCTION",
-            "req" : "false",
-            "editable" : true,
-            "value" : "false",
-            "type" : "bool",
-            "desc" : "Turn this flag on to print information about the source time function in the file OUTPUT_FILES/plot_source_time_function.txt. This feature is not used at the time of meshing."
-        }, 
+        },        
         {
             "group" : "8 - Advanced",
             "name" : "PARTIAL_PHYS_DISPERSION_ONLY",
