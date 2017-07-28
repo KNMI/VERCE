@@ -31,14 +31,13 @@ Ext.define('CF.view.Map', {
     var controller = CF.app.getController('Map');
     var items = [];
 
-    var layers = [];
-
+    var layers = []; 
     // OpenLayers object creating
     var wms = new OpenLayers.Layer.WMS(
       "World Base Layer (KNMI)",
       "http://geoservices.knmi.nl/cgi-bin/worldmaps.cgi?", {
         layers: 'world_raster'
-      }
+      },{wrapDateLine: true}      
     );
 
     var hwms =
@@ -209,7 +208,11 @@ Ext.define('CF.view.Map', {
     this.map.addLayers(layers)
 
     var map = this.map;
-
+    // overiding adjustZoom  method to allow zooming out further to the whole world 
+    // Openlayers 2.13 had a change which prevented the map from zooming out if the base layer is set to wrapDateLine
+    /*map.adjustZoom = function(zoom) {
+    return zoom
+    };*/
     var dragpan = new OpenLayers.Control.DragPan({
       autoActivate: true,
       title: "Pan the map by dragging."
@@ -290,11 +293,15 @@ Ext.define('CF.view.Map', {
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
             stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             stationGrid.getView().focusRow(idx, 100);
+            selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            Ext.getCmp('stationSelColumn').setText(selectedStations+1 + "/" + controller.getStore('Station').data.length);
           } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
             eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             eventGrid.getView().focusRow(idx, 100);
+            selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            Ext.getCmp('eventSelColumn').setText(selectedEvents+1 + "/" + controller.getStore('Event').data.length);
           }
         },
         onUnselect: function(feature) {
@@ -303,11 +310,15 @@ Ext.define('CF.view.Map', {
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
             stationGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             stationGrid.getView().focusRow(idx, 100);
+            selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            Ext.getCmp('stationSelColumn').setText(selectedStations <= 0 ? 0 :selectedStations-1 + "/" + controller.getStore('Station').data.length);
           } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
             eventGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             eventGrid.getView().focusRow(idx, 100);
+            selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            Ext.getCmp('eventSelColumn').setText(selectedEvents <= 0 ? 0 :selectedEvents-1 + "/" + controller.getStore('Event').data.length);
           }
         },
       }),

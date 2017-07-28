@@ -158,6 +158,10 @@ var meshes_combo_has_changed = false;
 
 Ext.define('CF.view.MeshesCombo', {
   extend: 'Ext.form.field.ComboBox',
+  refs: [{
+      ref: 'CF.view.dataviews.Conf',
+      selector: 'stationgrid'
+    }],
   alias: 'widget.meshescombo',
   fieldLabel: 'Meshes',
   name: 'meshes',
@@ -220,9 +224,15 @@ Ext.define('CF.view.MeshesCombo', {
           Ext.getCmp('mesh_doc_button').setDisabled(false);
         }
       }
-
-      createBoundariesLayer(mesh);
-
+      if(combo.getValue()=="Bespoke")
+        {  
+          controller = CF.app.getController('Map');
+          controller.createPolygonLayer(mesh,false);
+        }
+      else
+      {
+          createBoundariesLayer(mesh);
+      }
       //Update the solver values
       updateSolverValues(mesh.get('values'));
 
@@ -231,11 +241,15 @@ Ext.define('CF.view.MeshesCombo', {
   }
 });
 
+
 var createBoundariesLayer = function(mesh) {
   var controller = CF.app.getController('Map');
   if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
     controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
   }
+  if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") { 
+    controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
+    } 
   var layers = [];
   var boxes = new OpenLayers.Layer.Boxes("Boxes");
   var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
@@ -249,7 +263,7 @@ var createBoundariesLayer = function(mesh) {
 
   var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
   var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
-  controller.mapPanel.map.setCenter([centLon, centLat]);
+  controller.mapPanel.map.setCenter([centLon, centLat]);  
   controller.mapPanel.map.zoomToExtent(bounds);
 };
 
@@ -798,6 +812,7 @@ function selectSolver(selectedSolver) {
   solverConfStore.setProxy({
     type: 'ajax',
     url: '/j2ep-1.0/prov/solver/' + selectedSolver, 
+  //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver+'.json',
     extraParams: {
       'userId': userId
     },
@@ -814,6 +829,7 @@ function selectSolver(selectedSolver) {
   meshesstore.setProxy({
     type: 'ajax',
     url: '/j2ep-1.0/prov/solver/' + selectedSolver,
+    //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver+'.json',
     extraParams: {
       'userId': userId
     },
@@ -844,6 +860,12 @@ function postRequest(path, paramName, paramValue) {
 //Clear map, clear velocityCombo and disable tabs for stations and events
 function clearMap() {
   var controller = CF.app.getController('Map');
+  if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
+      controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]); 
+    } 
+    if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") { 
+     controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
+    } 
   controller.getStore('Event').removeAll();
   controller.getStore('Station').removeAll();
   controller.hideEventInfo();
