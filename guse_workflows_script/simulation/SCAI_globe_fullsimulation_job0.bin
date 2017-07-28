@@ -1,0 +1,136 @@
+ #!/bin/bash
+export USER=$(whoami)
+
+echo "--------- profile LOAD" 1>&2
+echo "--------- profile LOAD"
+source /etc/profile
+echo "--------- modules.sh LOAD" 1>&2
+echo "--------- modules.sh LOAD" 
+source /etc/profile.d/modules.sh
+
+#load required modules
+module load tools/python/2.7.9 intel/studio/2015.1.133 tools/ffmpeg
+
+unzip vercepes
+unzip specfem
+########################## INPUT PREPARATION ############################################
+
+echo "producing input files..."
+
+python verce-hpc-pe/src/bulk_inputgen.py quakeml stations solverconf
+export RUN_PATH=$(pwd)
+RUN_BASE=$(basename "$PWD")
+SIMULATION_PATHS=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen content path)
+export RUN_ID=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen metadata runId)
+VELOCITY=$(python verce-hpc-pe/src/PEDataExtractor.py solverconf root velocity_model)
+echo $RUN_ID
+mkdir -p $HOME/$RUN_ID
+export WORK=$HOME/$RUN_ID
+PROV="provfold"$(cat control)
+MODEL="modelfold"$(cat control)
+mkdir -p $HOME/$PROV
+export PROV_PATH=$HOME/$PROV
+export DISPLAY=localhost:38.0
+HOSTN=draco-ext.scai.fraunhofer.de
+SOURCE_BASE=""
+export MODEL_PATH=$HOME/$MODEL
+
+echo "update provenance inputgen..."
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ provloc $RUN_PATH/provout_inputgen
+
+echo "--- file copy for runtime metadata messaging -- "
+TIME=$(date +%s)
+cp $RUN_PATH/provout_inputgen $PROV_PATH/provout_inputgen$RUN_ID$TIME
+
+############################### COMPILATION  ##################################################
+
+echo "configuration and compilation of specfem3d_globe"
+INPUTS=$RUN_PATH/$RUN_ID/$RUN_ID\"_0\"/DATA/
+# configure and compile specfem3d_globe source code using Inter ifort compiler
+python $RUN_PATH/verce-hpc-pe/src/run_specfemGlobe_compile.py $RUN_PATH/jsonout_inputgen $INPUTS/Par_file $INPUTS/CMTSOLUTION $INPUTS/STATIONS
+
+# set up a directory structure to run the mesher and solver from the working directory 
+python $RUN_PATH/verce-hpc-pe/src/run_specfemGlobe_setup.py $RUN_PATH/jsonout_inputgen
+ 
+############################### SIMULATIONS cycles through events  ######################
+echo  -------------------------------------------------------
+echo " mesher and solver generation..."
+MYMPIEXEC_CMD_PAR_MOV="-np $(($PBS_NUM_NODES * 4)) -perhost 4 -f $PBS_NODEFILE"
+echo $MYMPIEXEC_CMD_PAR_MOV
+echo  -------------------------------------------------------
+
+COUNTER=0
+arr=(`echo $SIMULATION_PATHS`);
+
+for i in "${arr[@]}"
+do
+   :
+pwd
+############################ PREPARE SIMULATION PARTITION in WORK ######################
+export JSON_OUT=$WORK/$i/..
+mkdir -p $WORK/$i/../
+cp -r $RUN_PATH/DATABASES_MPI $WORK/$i/../
+cp -r $RUN_PATH/OUTPUT_FILES/  $WORK/$i/../ 
+cp -r $RUN_PATH/DATA $WORK/$i/../
+cp -r $RUN_PATH/bin $WORK/$i/../
+cp -r $i/ $WORK/$i/../
+
+# create STATIONS_FILTERED file for compatibility with the cartesian output for postproc_graph_kml
+cp $WORK/$i/STATIONS $WORK/$i/STATIONS_FILTERED 
+echo $WORK/$i -------------------------------------------------------
+cd $WORK/$i/../
+
+python $RUN_PATH/verce-hpc-pe/src/bulk_run_specfemGlobe_movie.py $RUN_PATH/jsonout_inputgen $RUN_PATH/solverconf mpiexec.hydra $COUNTER "$MYMPIEXEC_CMD_PAR_MOV"  
+
+echo "database generation and simulation... complete"
+echo "see results in directory: OUTPUT_FILES/" 
+
+export EVENT_PATH=$(pwd)
+echo "update provenance simulation..."
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ provloc $EVENT_PATH/provout_run_specfem
+echo "--- file copy for runtime metadata messaging -- " 
+#######################    POSTPROCESSING    ################################## 
+
+echo "generation of seed and plot files..."
+
+export INPUT_FILE=$JSON_OUT/jsonout_run_specfem
+export SOLVER_NAME=$(python $RUN_PATH/verce-hpc-pe/src/PEDataExtractor.py $RUN_PATH/solverconf root solver)
+cd $RUN_PATH/verce-hpc-pe/src/
+
+mpiexec.hydra python -m dispel4py.new.processor mpi test.hpc.forwardsim.postproc_graph
+
+echo "generation of kmz file..."
+
+# read the value of DT from output_mesher.txt and then append it to the Par_file to maintain compatibility with the cartesian output for kmlGenerator_INGV
+declare -r TAB="`echo -e "\t"`"
+echo "#DT value obtained from output_mesher.txt\n" >> $EVENT_PATH/DATA/Par_file
+echo "DT ${TAB}${TAB}${TAB}${TAB}=" `grep "the time step of the solver will be DT" $EVENT_PATH/OUTPUT_FILES/output_mesher.txt | cut -d = -f 2 ` >> $EVENT_PATH/DATA/Par_file
+
+python -m dispel4py.new.processor simple test.hpc.forwardsim.postproc_graph_kml
+
+let COUNTER=COUNTER+1
+############################# HOUSE KEEPING #################################### 
+
+rm -rf $EVENT_PATH/OUTPUT_FILES/DATABASES_MPI
+
+echo "--- Cleanup of modelfold subdirectories ---"
+chmod -R u+w $HOME/$MODEL
+rm -R -- $HOME/$MODEL/specfem/*/
+
+# remove references to data models
+find  $EVENT_PATH/DATA -type l -delete
+
+echo "---Set Transfer and Cleanup folders ---"
+
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ dataloc $i/
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ dataloc $EVENT_PATH/OUTPUT_FILES/
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ dataloc $EVENT_PATH/DATA/
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ dataloc $HOME/$MODEL/
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ cleanloc $EVENT_PATH/
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ cleanloc $HOME/$PROV
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ cleanloc $HOME/$MODEL
+done
+############################# END OF SIMULATIONS #################################### 
+python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ hostname $HOSTN
+echo "--- terminates PROV job -- "
+touch $PROV_PATH/exitf
