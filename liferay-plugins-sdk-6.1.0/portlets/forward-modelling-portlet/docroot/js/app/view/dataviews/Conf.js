@@ -153,7 +153,8 @@ function updateBoundaries(record)
   // work out min/max values for latitude and longitude
   values=computeMinMaxValues(polygon,);
 	//update mesh values
-	var mesh=Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());		
+	var mesh= {data:{polygon:{}}};
+  
 	mesh.data.polygon=polygon; 
   mesh.data.geo_minLat=values[0];
   mesh.data.geo_maxLat=values[1];
@@ -289,7 +290,7 @@ function rhumbDestinationPoint(lat, lon, bearing, distance) {
 
     // check for some daft bugger going past the pole, normalise latitude if so
     if (Math.abs(φ2) > Math.PI/2) φ2 = φ2>0 ? Math.PI-φ2 : -Math.PI-φ2;
-
+-15
     var Δψ = Math.log(Math.tan(φ2/2+Math.PI/4)/Math.tan(φ1/2+Math.PI/4));
     var q = Math.abs(Δψ) > 10e-12 ? Δφ / Δψ : Math.cos(φ1); // E-W course becomes ill-conditioned with 0/0 
     

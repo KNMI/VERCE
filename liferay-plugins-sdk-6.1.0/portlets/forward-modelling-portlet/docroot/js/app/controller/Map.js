@@ -491,12 +491,12 @@
     layers = []; 
     styleMap={ styleMap: new OpenLayers.StyleMap({"default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({fillColor: "none"}))})};
     polygon_layer = new OpenLayers.Layer.Vector("Polygon Layer", styleMap);
-    polygon= mesh.get('polygon');  
+    polygon= mesh.data.polygon;  
     bounds = new OpenLayers.Bounds();      
-    bounds.bottom=mesh.get('geo_minLat');
-    bounds.left=mesh.get('geo_minLon');
-    bounds.right=mesh.get('geo_maxLon');
-    bounds.top=mesh.get('geo_maxLat');
+    bounds.bottom=mesh.data.geo_minLat;
+    bounds.left=mesh.data.geo_minLon;
+    bounds.right=mesh.data.geo_maxLon;
+    bounds.top=mesh.data.geo_maxLat;
     if(isAcrossEquator)
     {
         linearRing= new OpenLayers.Geometry.LinearRing([new OpenLayers.Geometry.Point(polygon.lower_left[0],polygon.lower_left[1]), new OpenLayers.Geometry.Point(polygon.lower_right[0],polygon.lower_right[1]),
