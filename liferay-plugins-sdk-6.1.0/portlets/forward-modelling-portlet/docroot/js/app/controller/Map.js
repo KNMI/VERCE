@@ -11,6 +11,7 @@
 
   evisfeature = null;
   svisfeature = null;
+  var bespoke_mesh=null;
 
   var PointsListFormat = OpenLayers.Class(OpenLayers.Format.Text, {
     read: function(response) {
@@ -312,8 +313,8 @@
       if (form.isValid()) {
         var provider = Ext.getCmp('event_catalog').findRecordByValue(Ext.getCmp('event_catalog').getValue());
         var baseUrl = provider.get('url') + '/fdsnws/event/1/query?';
-        var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-        var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
+        var mesh = (Ext.getCmp('meshes').getValue()=="Bespoke") ? bespoke_mesh : Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+        var bbox = "&maxlat=" + mesh.data.geo_maxLat + "&minlon=" + mesh.data.geo_minLon + "&maxlon=" + mesh.data.geo_maxLon + "&minlat=" + mesh.data.geo_minLat;
         var formValues = form.getValues();
         var formValuesString = "";
         for (key in formValues) {
@@ -331,8 +332,8 @@
       if (form.isValid()) {
         var provider=Ext.getCmp('station_catalog').findRecordByValue(Ext.getCmp('station_catalog').getValue());
         var baseUrl = provider.get('url')  + '/fdsnws/station/1/query?level=station&';
-        var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-        var bbox = "&maxlat=" + mesh.get('geo_maxLat') + "&minlon=" + mesh.get('geo_minLon') + "&maxlon=" + mesh.get('geo_maxLon') + "&minlat=" + mesh.get('geo_minLat');
+        var mesh = (Ext.getCmp('meshes').getValue()=="Bespoke") ? bespoke_mesh : Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
+        var bbox = "&maxlat=" + mesh.data.geo_maxLat + "&minlon=" + mesh.data.geo_minLon + "&maxlon=" + mesh.data.geo_maxLon + "&minlat=" + mesh.data.geo_minLat;
         var networks = button.up('form').down('multicombo').getValue();
         if (typeof networks === 'string') {
           // handle custom strings
@@ -497,6 +498,7 @@
     bounds.left=mesh.data.geo_minLon;
     bounds.right=mesh.data.geo_maxLon;
     bounds.top=mesh.data.geo_maxLat;
+    bespoke_mesh=mesh;
     if(isAcrossEquator)
     {
         linearRing= new OpenLayers.Geometry.LinearRing([new OpenLayers.Geometry.Point(polygon.lower_left[0],polygon.lower_left[1]), new OpenLayers.Geometry.Point(polygon.lower_right[0],polygon.lower_right[1]),

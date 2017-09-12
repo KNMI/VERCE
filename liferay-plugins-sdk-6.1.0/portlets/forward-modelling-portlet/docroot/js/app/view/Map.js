@@ -293,14 +293,22 @@ Ext.define('CF.view.Map', {
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
             stationGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             stationGrid.getView().focusRow(idx, 100);
-            selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            selectedStations=0;
+            if(Ext.getCmp('stationSelColumn').text && Ext.getCmp('stationSelColumn').text.includes("/"))
+            {
+            	selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            }
             Ext.getCmp('stationSelColumn').setText(selectedStations+1 + "/" + controller.getStore('Station').data.length);
           } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
             eventGrid.getSelectionModel().select(idx, true /* keep existing selections */ , true /* suppress select event */ );
             eventGrid.getView().focusRow(idx, 100);
-            selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            selectedEvents=0;
+            if(Ext.getCmp('eventSelColumn').text && Ext.getCmp('eventSelColumn').text.includes("/"))
+            {
+            	selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            }
             Ext.getCmp('eventSelColumn').setText(selectedEvents+1 + "/" + controller.getStore('Event').data.length);
           }
         },
@@ -309,15 +317,23 @@ Ext.define('CF.view.Map', {
             var stationGrid = controller.getStationGrid();
             var idx = stationGrid.store.findExact('network.station', feature.data.network + '.' + feature.data.station);
             stationGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
-            stationGrid.getView().focusRow(idx, 100);
-            selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            stationGrid.getView().focusRow(idx, 100);            
+            selectedStations=0;
+            if(Ext.getCmp('stationSelColumn').text && Ext.getCmp('stationSelColumn').text.includes("/"))
+            {
+            	selectedStations=parseInt(Ext.getCmp('stationSelColumn').text.split("/")[0]);
+            }
             Ext.getCmp('stationSelColumn').setText(selectedStations <= 0 ? 0 :selectedStations-1 + "/" + controller.getStore('Station').data.length);
           } else if (feature.data.eventId != null) {
             var eventGrid = controller.getEventGrid();
             var idx = eventGrid.store.findExact('eventId', feature.data.eventId);
             eventGrid.getSelectionModel().deselect(idx, true /* keep existing selections */ );
             eventGrid.getView().focusRow(idx, 100);
-            selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            selectedEvents=0;
+            if(Ext.getCmp('eventSelColumn').text && Ext.getCmp('eventSelColumn').text.includes("/"))
+            {
+            	selectedEvents=parseInt(Ext.getCmp('eventSelColumn').text.split("/")[0]);
+            }
             Ext.getCmp('eventSelColumn').setText(selectedEvents <= 0 ? 0 :selectedEvents-1 + "/" + controller.getStore('Event').data.length);
           }
         },

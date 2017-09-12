@@ -225,9 +225,18 @@ Ext.define('CF.view.MeshesCombo', {
         }
       }
       if(combo.getValue()=="Bespoke")
-        {  
-          controller = CF.app.getController('Map');
-          controller.createPolygonLayer(mesh,false);
+        {
+    	  controller = CF.app.getController('Map');  
+    	  if(reuse_mesh)
+          {   
+    		isAcrossEquator = parseInt(reuse_mesh.geo_minLat) < 0 && parseInt(reuse_mesh.geo_maxLat) > 0;
+  	        controller.createPolygonLayer(reuse_mesh,isAcrossEquator);
+  	        reuse_mesh=null;
+          }
+    	  else
+    	  {
+    		  controller.createPolygonLayer(mesh,false);
+    	  }
         }
       else
       {
