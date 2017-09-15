@@ -42,15 +42,16 @@ def create_image(filename, cent_lat, cent_lon, eta_deg, xi_deg,mesh):
                       'PGV, m/s',
                       224,'w','k')
 
+
     else:
-        ax1 = regional_subplot(lons, lats, vxs, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vx, m/s', 221,'k','w')
-        ax2 = regional_subplot(lons, lats, vys, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vy, m/s', 222,'k','w')
-        ax3 = regional_subplot(lons, lats, vzs, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vz, m/s', 223,'k','w')
-        ax4 = regional_subplot(lons, lats, pgv, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, 'hot', 0, 'PGV, m/s',
-                      224,'w','k')
+        ax1 = regional_subplot(lons, lats, vxs, extreme, cent_lat, cent_lon, minlon, maxlon, minlat, maxlat, parallels,
+                               meridians, 'seismic',(-1 * extreme), 'Vx, m/s', 221, 'k', 'w')
+        ax2 = regional_subplot(lons, lats, vys, extreme, cent_lat, cent_lon, minlon, maxlon, minlat, maxlat, parallels,
+                               meridians, 'seismic',(-1 * extreme), 'Vy, m/s', 222, 'k', 'w')
+        ax3 = regional_subplot(lons, lats, vzs, extreme, cent_lat, cent_lon, minlon, maxlon, minlat, maxlat, parallels,
+                               meridians, 'seismic',(-1 * extreme), 'Vz, m/s', 223, 'k', 'w')
+        ax4 = regional_subplot(lons, lats, pgv, extreme, cent_lat, cent_lon, minlon, maxlon, minlat, maxlat, parallels,
+                               meridians, 'hot', 0, 'PGV, m/s',224, 'w', 'k')
 
     fig.add_subplot(ax1, ax2, ax3, ax4)
     fig.suptitle(filename)
@@ -58,6 +59,34 @@ def create_image(filename, cent_lat, cent_lon, eta_deg, xi_deg,mesh):
     plt.close(fig)
     gc.collect()
 
+
+def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, min_lon, max_lon, min_lat, max_lat, parallels, meridians, cmap, vmin, title,
+            plot_number, coastline_color, background_color):
+
+    ax = plt.subplot(plot_number)
+    ax.set_axis_bgcolor(background_color)
+
+    ETA_m = haversine_distance((min_lat, cent_lon), (max_lat, cent_lon), True)
+    XI_m = haversine_distance((min_lat, min_lon), (max_lat, max_lon),True)
+    map = Basemap(height=ETA_m, width=XI_m,
+            resolution='l', area_thresh=1000., projection='omerc', \
+            lon_0=cent_lon, lat_0=cent_lat, lon_2=cent_lon, lat_2=min_lat, lon_1=cent_lon, lat_1=max_lat)
+    map.drawcoastlines(color=coastline_color)
+
+    # labels = [left,right,top,bottom]
+    map.drawparallels(parallels, labels=[True, False, False, False])
+    map.drawmeridians(meridians, labels=[False, False, False, True])
+
+    cs = map.contourf(lons, lats, data, levels=numpy.linspace((-1 * extreme), extreme, 101), cmap=cmap,
+                      vmin=vmin, vmax=extreme, extend='both', latlon=True)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="2%", pad=0.05)
+    plt.colorbar(cs, cax=cax, ticks=[-1 * extreme, 0, extreme], extend='both')
+    ax.set_title(title)
+
+    return ax
+
+"""
 def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, cmap, vmin, title,
             plot_number, coastline_color, background_color):
 
@@ -68,14 +97,13 @@ def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, eta_deg, xi_
     min_lon=cent_lon - (xi_deg / 2)
     max_lon = cent_lon + (xi_deg / 2)
 
+    ETA_m = haversine_distance((min_lat, cent_lon), (max_lat, cent_lon), True)
     if cent_lat >= 0:
         # Northern Hemisphere
         XI_m = haversine_distance((min_lat, min_lon), (max_lat, max_lon),True)
-        ETA_m = haversine_distance((min_lat, cent_lon), (max_lat, cent_lon),True)
     elif cent_lat < 0:
         # Southern Hemisphere
         XI_m = haversine_distance((max_lat, min_lon), (max_lat, max_lon), True)
-        ETA_m = haversine_distance((min_lat, cent_lon), (max_lat, cent_lon), True)
 
     if max_lat/numpy.abs(max_lat)!=min_lat/numpy.abs(min_lat):
         # at the equator
@@ -98,7 +126,7 @@ def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, eta_deg, xi_
     ax.set_title(title)
 
     return ax
-
+"""
 def globe_subplot(lons, lats, data, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, cmap, vmin, title,
             plot_number, coastline_color, background_color):
 
@@ -244,5 +272,6 @@ if __name__ == '__main__':
     Files = list({name.split(".")[0] for name in os.listdir(options.filespath) if "gmt_movie" in name})
     print Files
     create_movie(Files,options.videoname, options.mesh, float(options.centlat), float(options.centlon), float(options.eta_deg), float(options.xi_deg),framerate=0.5)
+
 
 

@@ -191,52 +191,45 @@ function buildPolyon(vertices)
 }
 // returns a list of vertices for building an instance of a polygon shape
 function workoutVertices(centLat, centLon, width_eta, width_xi)
-{ 
-	
-	if((Math.abs(centLat)+width_eta/2) >= 90)
-	{
-		width_eta=width_eta-0.001;
-	}
-	//find the min and max values for latitude of the given point
-	minLat=centLat-width_eta/2;
-	maxLat=centLat+width_eta/2; 
-	minLon=centLon-width_xi/2;
-	maxLon=centLon+width_xi/2; 
-
-	// calculate the width of eta in km
-	eta=rhumbDistance(minLat, centLon, maxLat, centLon);
-
+{  
+	eta_km=width_eta*111.699;
+	xi_km=width_xi*111.699; 
+  
 	// find top and bottom mid points
-	btm_mid_pt=rhumbDestinationPoint(centLat, centLon, 180, eta/2);
-	top_mid_pt=rhumbDestinationPoint(centLat, centLon, 0, eta/2);
+	top_mid_pt=rhumbDestinationPoint(centLat, centLon, 0, eta_km/2);
+	btm_mid_pt=rhumbDestinationPoint(centLat, centLon, 180, eta_km/2);
 	
-	// work out the width in km of both top and bottom sides
-	btm_side_xi=rhumbDistance(btm_mid_pt[0], minLon, btm_mid_pt[0], maxLon);
-	top_side_xi=rhumbDistance(top_mid_pt[0], minLon, top_mid_pt[0], maxLon);
-
-	var eq_xi=0;
 	var mid_left=[];
-	var mid_right=[];	 
+	var mid_right=[];
+	
 	// if across the equator then find the mid left and right points
-	isAcrossEquator=minLat<0 && maxLat>0;//maxLat/Math.abs(maxLat)!=minLat/Math.abs(minLat);
+	isAcrossEquator=minLat<0 && maxLat>0;
 	if(isAcrossEquator)
-	{
-		// each degree of latitude at the equator is approximately 110.567 km
-		mid_left=rhumbDestinationPoint(0, centLon, 270, (width_xi*110.567)/2); 
-		mid_right=rhumbDestinationPoint(0, centLon, 90, (width_xi*110.567)/2);
-		// compute the width at the middle
-		eq_xi=rhumbDistance(btm_mid_pt[0], centLon-width_xi/2, btm_mid_pt[0], centLon+width_xi/2);
-	}	
-	//define xi as a maximum width in kilometers of top, middle and bottom sides 
-	xi=Math.max(Math.max(Math.abs(btm_side_xi),Math.abs(top_side_xi)), Math.abs(eq_xi));	
-
+	{ 
+		// find left and right mid points
+		mid_left=rhumbDestinationPoint(0, centLon, 270, xi_km/2); 
+	    mid_right=rhumbDestinationPoint(0, centLon, 90, xi_km/2);
+	}   
 	// identify corner points
-	lower_left=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 270, xi/2);
-	lower_right=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 90, xi/2);
-	upper_left=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 270, xi/2);
-	upper_right=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 90, xi/2);
-
-	return {"isAcrossEquator":isAcrossEquator, "vertices":[lower_left, lower_right, mid_right, upper_right, upper_left, mid_left]};
+	lower_left=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 270, xi_km/2);
+	lower_right=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 90, xi_km/2);
+	upper_left=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 270, xi_km/2);
+	upper_right=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 90, xi_km/2);
+	
+	dist_top_km_360= 360*111.320*Math.cos(toRadians(top_mid_pt[0]));
+	dist_btm_km_360= 360*111.320*Math.cos(toRadians(btm_mid_pt[0]));
+	  
+	if(dist_top_km_360 < xi_km)
+	{ 
+	  upper_left=[top_mid_pt[0],0];
+	  upper_right=[top_mid_pt[0],360];
+	}
+	if(dist_btm_km_360 < xi_km)
+	{ 
+	  lower_left=[btm_mid_pt[0],0];
+	  lower_right=[btm_mid_pt[0],360];
+	}     
+	return {"isAcrossEquator":isAcrossEquator, "vertices":[lower_left, lower_right, mid_right, upper_right, upper_left, mid_left]}; 
 }  
 function normaliseAngle(angle)
 {
@@ -290,7 +283,6 @@ function rhumbDestinationPoint(lat, lon, bearing, distance) {
 
     // check for some daft bugger going past the pole, normalise latitude if so
     if (Math.abs(φ2) > Math.PI/2) φ2 = φ2>0 ? Math.PI-φ2 : -Math.PI-φ2;
--15
     var Δψ = Math.log(Math.tan(φ2/2+Math.PI/4)/Math.tan(φ1/2+Math.PI/4));
     var q = Math.abs(Δψ) > 10e-12 ? Δφ / Δψ : Math.cos(φ1); // E-W course becomes ill-conditioned with 0/0 
     
