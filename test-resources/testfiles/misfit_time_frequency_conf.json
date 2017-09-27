@@ -1,0 +1,86 @@
+{	"username":"aspinuso",
+	"runId":"concrete-misfit",
+	"readJSONstgin": [
+     {
+      "input": {
+        "data_dir": "./",
+        "synt_dir": "./",
+        "events": "../../quakeml",
+        "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+        "stations_dir": "./stationxml/",
+        "output_dir": "./output/",
+        "data_stagein_from": [
+          "file://wn1//home/aspinuso/concrete_misfit_preproc2/output/"
+         ],
+        "stationxml_stagein_from": [
+          "file://dir-vm6.epcc.ed.ac.uk//home/aspinuso/concrete_misfit_preproc2/./stationxml/"
+          
+        ]
+        }
+        }
+    ],
+    "streamProducer": [{
+        "input": {
+            "quakeml": "../../quakeml",
+            "stationxml": "./stationxml/",
+            "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+            "synthetics": ["./IV.SGG.HXZ.synthetic.seed",
+                           "./IV.SGG.HXT.synthetic.seed",
+                           "./IV.SGG.HXR.synthetic.seed"],
+            "data": ["./IV.SGG.BHZ.observed.seed",
+                     "./IV.SGG.BHT.observed.seed",
+                     "./IV.SGG.BHR.observed.seed"],
+            
+            "output_folder": "./output/",
+            "parameters": {
+            	"misfit_type": "time_frequency",
+                "min_period": 0.5,
+                "max_period": 10.0,
+                "wavelet_parameter": 6.0
+            }
+            
+        }
+    },
+    {
+        "input": {
+            "quakeml": "../../quakeml",
+            "stationxml": "./stationxml/",
+            "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+            "synthetics": ["./IV.SAMA.HXZ.synthetic.seed",
+                           "./IV.SAMA.HXT.synthetic.seed",
+                           "./IV.SAMA.HXR.synthetic.seed"],
+            "data": ["./IV.SAMA.BHZ.observed.seed",
+                     "./IV.SAMA.BHT.observed.seed",
+                     "./IV.SAMA.BHR.observed.seed"],
+            "misfit_type": "time_frequency",
+            "output_folder": "./output/output_time_frequency",
+            "parameters": {
+                "min_period": 0.5,
+                "max_period": 10.0,
+                "wavelet_parameter": 6.0
+            }
+            
+        }
+    },
+    {
+        "input": {
+            "quakeml": "../../quakeml",
+            "stationxml": "./stationxml/",
+            "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+            "synthetics": ["./IV.VAGA.HXZ.synthetic.seed",
+                           "./IV.VAGA.HXT.synthetic.seed",
+                           "./IV.VAGA.HXR.synthetic.seed"],
+            "data": ["./IV.VAGA.BHZ.observed.seed",
+                     "./IV.VAGA.BHT.observed.seed",
+                     "./IV.VAGA.BHR.observed.seed"],
+            "misfit_type": "time_frequency",
+            "output_folder": "./output/output_time_frequency",
+            "parameters": {
+                "min_period": 0.5,
+                "max_period": 10.0,
+                "wavelet_parameter": 6.0
+            }
+            
+        }
+    }]
+}

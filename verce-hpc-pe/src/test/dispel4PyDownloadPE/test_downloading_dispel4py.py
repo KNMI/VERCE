@@ -97,7 +97,7 @@ def download_data(data):
     restrictions = Restrictions(
         # Get data for a whole year.
         starttime=obspy.UTCDateTime(data['ORIGIN_TIME'])-300,
-        endtime=obspy.UTCDateTime(data['ORIGIN_TIME'])+float(data['DT'])*data['NSTEP']+300,
+        endtime=obspy.UTCDateTime(data['ORIGIN_TIME'])+float(data['DT'])*int(data['NSTEP'])+300,
         # Considering the enormous amount of data associated with continuous
         # requests, you might want to limit the data based on SEED identifiers.
         # If the location code is specified, the location priority list is not
@@ -161,9 +161,18 @@ graph.connect(downloadPE, 'output', watcher_xml, "input")
 graph.connect(watcher, 'output', chain, "input")
 graph.connect(watcher_xml, 'output', xmlr, "input")
 
-injectProv(graph,SeismoPE)
-graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'])
+#injectProv(graph,SeismoPE)
+#graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'])
 
+#Store via service
+ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
 
-#InitiateNewRun(graph,ProvenanceRecorderToFile,provImpClass=SeismoPE,input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=os.environ['RUN_ID'],w3c_prov=False)
+#Store to local path
+ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
+
+#Size of the provenance bulk before sent to storage or sensor
+ProvenancePE.BULK_SIZE=20
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
+
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=os.environ['RUN_ID'],w3c_prov=False)
 

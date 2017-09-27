@@ -1,0 +1,27 @@
+m_tp: -7948930000000000
+
+m_tt: 807540000000000
+
+depth_in_km: 10.7
+
+_event_id: smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261
+
+m_rr: -15668450000000000
+
+magnitude: 4.8
+
+longitude: 13.5757
+
+path: /home/hpc/pr45lo/di68gex/db9d9ad0-0882-4d89-9db7-2464e253bfce/k01403877285706/k01403877285706_0/DATA
+
+latitude: 41.7142
+
+origin_time: 2013-02-16T21:16:09.290000Z
+
+m_rp: -367120000000000.06
+
+m_pp: 14860909999999998
+
+m_rt: 1855400000000000
+
+description: FROSINONE

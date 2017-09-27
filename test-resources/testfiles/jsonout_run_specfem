@@ -1,0 +1,64 @@
+{
+  "pid": "1290",
+  "error": "\/bin\/sh: xdecompose_mesh: command not found\n",
+  "streams": [
+    
+    {
+      "TriggeredByProcessIterationID": "decomposeMeshorfeus-as-1290-7a23818c-d448-11e3-b769-10ddb1b266f3",
+      "data": "S'../test-resources/specfem3dseismogram/'\np0\n.",
+      "id": "orfeus-as-1290-7a25a0fd-d448-11e3-9c6e-10ddb1b266f3"
+    }
+  ],
+  "class": "eu.admire.seismo.metadata.Verce",
+  "metadata": {
+    "username": "aspinuso",
+    "errors": "\/bin\/sh: xdecompose_mesh: command not found\n",
+    "derivationIds": [
+      {
+        "DerivedFromDatasetID": "orfeus-as-1274-79dc938c-d448-11e3-9150-10ddb1b266f3",
+        "TriggeredByProcessIterationID": "inputGeneratororfeus-as-1274-79933c00-d448-11e3-b957-10ddb1b266f3"
+      }
+    ],
+    "parameters": [
+      {
+        "val": "solverconf",
+        "key": "solver_conf_file"
+      },
+      {
+        "val": "Abruzzo",
+        "key": "mesh"
+      },
+      {
+        "val": "4",
+        "key": "nproc"
+      }
+    ],
+    "instanceId": "Invoker-instance-orfeus-as",
+    "iterationIndex": null,
+    "pid": "1290",
+    "site": "orfeus-as",
+    "stateful": false,
+    "endTime": "2014-05-05 11:29:10.326611",
+    "streams": [
+      {
+        "content": [
+          
+        ],
+        "annotations": [
+          
+        ],
+        "location": "",
+        "id": "orfeus-as-1290-7a25a0fd-d448-11e3-9c6e-10ddb1b266f3",
+        "format": ""
+      }
+    ],
+    "runId": "stami5",
+    "startTime": "2014-05-05 11:29:10.313224",
+    "_id": "decomposeMeshorfeus-as-1290-7a23818c-d448-11e3-b769-10ddb1b266f3",
+    "type": "lineage",
+    "annotations": [
+      
+    ],
+    "name": "decomposeMesh"
+  }
+}

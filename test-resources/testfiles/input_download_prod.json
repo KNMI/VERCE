@@ -1,0 +1,32 @@
+{
+  "user_name": "aspinuso",
+  "downloadPE": [
+    {
+      "input": {
+        "channel_priorities": [
+          "BH[E,N,Z]",
+          "EH[E,N,Z]"
+        ],
+        "minlatitude": 41.1,
+        "minimum_interstation_distance_in_m": 100,
+        "minlongitude": 12.04,
+        "ORIGIN_TIME": "2016-08-26T04:28:25.890000",
+        "NSTEP": "60000",
+        "DT": "5e-3",
+        "mseed_path": ".\/mseed",
+        "maxlongitude": 14.45,
+        "maxlatitude": 42.9,
+        "location_priorities": [
+          "",
+          "00",
+          "10"
+        ],
+        "stationxml_path": ".\/stationxml"
+      }
+    }
+  ],
+  "nproc": 64,
+  "user_id": "11401",
+  "runId": "download_amatrice0_1472243362636_1472257572595",
+  "simulationRunId": "simulation_amatrice0_1472243362636"
+}
