@@ -1,38 +1,20 @@
-{	"username":"ddf",
-	"runid":"dasda",
-	"data": [
-     {
-      "input": {
-        "data_dir": "./data/",
-        "synt_dir": "./synth/",
-        "events": "../../quakeml",
-        "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
-        "stations_dir": "./stationxml/",
-        "output_dir": "./output/",
-                "network": [
-                    "IV",
-                    "IV"
-                ],
-                "station": [
-                    "CERA",
-                    "CAFR"
-                ]
-            }
-        }
-    ],
-    "mother_PE": [{
+{   "username":"ddf",
+    "runid":"dasda",
+    "streamProducer": [{
         "input": {
-            "quakeml": "../test-resources/misfit-data/event.xml",
-            "stationxml": "../test-resources/misfit-data/IV.CAFR.xml",
-            "synthetics": ["../test-resources/misfit-data/IV.CAFR.FXR.synth",
-                           "../test-resources/misfit-data/IV.CAFR.FXT.synth",
-                           "../test-resources/misfit-data/IV.CAFR.FXZ.synth"],
-            "data": ["../test-resources/misfit-data/IV.CAFR.HHR.data",
-                     "../test-resources/misfit-data/IV.CAFR.HHT.data",
-                     "../test-resources/misfit-data/IV.CAFR.HHZ.data"],
-            "misfit_type": "time_frequency",
-            "output_folder": "./output/output_time_frequency",
+        "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+            "quakeml": "../../test-resources/misfit-data/event.xml",
+            "stationxml": "../../test-resources/misfit-data/stations/IV.CAFR.xml",
+            "synthetics": ["../../test-resources/misfit-data/output/IV.CAFR.HXR.synthetic.seed",
+                           "../../test-resources/misfit-data/output/IV.CAFR.HXT.synthetic.seed",
+                           "../../test-resources/misfit-data/output/IV.CAFR.HXZ.synthetic.seed"],
+            "data": ["../../test-resources/misfit-data/output/IV.CAFR.HHR.observed.seed",
+                     "../../test-resources/misfit-data/output/IV.CAFR.HHT.observed.seed",
+                     "../../test-resources/misfit-data/output/IV.CAFR.HHZ.observed.seed"],
+            
+            "output_folder": "../../test-resources/misfit-data/output/",
             "parameters": {
+            "misfit_type": "time_frequency",
                 "min_period": 0.5,
                 "max_period": 10.0,
                 "wavelet_parameter": 6.0
@@ -41,3 +23,4 @@
         }
     }]
 }
+
