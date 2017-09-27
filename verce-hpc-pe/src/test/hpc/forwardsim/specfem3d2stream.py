@@ -33,8 +33,8 @@ class Specfem3d2Stream(IterativePE):
         
         try:
             #assuming that the information are in the filename following the usual convention
-            tr.stats['network']=tail.split('.')[1]
-            tr.stats['station']=tail.split('.')[0]
+            tr.stats['network']=tail.split('.')[0]
+            tr.stats['station']=tail.split('.')[1]
             tr.stats['channel']=tail.split('.')[2]
 
             # the convention for specfem3d_globe requires the following changes:
