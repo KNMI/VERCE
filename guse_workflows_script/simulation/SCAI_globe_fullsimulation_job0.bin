@@ -9,81 +9,23 @@ echo "--------- modules.sh LOAD"
 source /etc/profile.d/modules.sh
 
 #load required modules
-module load tools/python/2.7.9 intel/studio/2015.1.133 apps/specfem3d/2.0.2 tools/ffmpeg
+module load tools/python/2.7.9 intel/studio/2015.1.133 tools/ffmpeg
 
 unzip vercepes
-
+unzip specfem
 ########################## INPUT PREPARATION ############################################
+
 echo "producing input files..."
+
 python verce-hpc-pe/src/bulk_inputgen.py quakeml stations solverconf
-# paths set up
 export RUN_PATH=$(pwd)
 RUN_BASE=$(basename "$PWD")
 SIMULATION_PATHS=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen content path)
-RUN_ID=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen metadata runId)
+export RUN_ID=$(python verce-hpc-pe/src/PEDataExtractor.py jsonout_inputgen metadata runId)
 VELOCITY=$(python verce-hpc-pe/src/PEDataExtractor.py solverconf root velocity_model)
 echo $RUN_ID
 mkdir -p $HOME/$RUN_ID
 export WORK=$HOME/$RUN_ID
-
-# sets up directory structure in the current working directory
-mkdir -p $RUN_PATH/DATA
-mkdir -p $RUN_PATH/DATABASES_MPI
-mkdir -p $RUN_PATH/OUTPUT_FILES
-mkdir -p $RUN_PATH/bin
-
-rm -rf $RUN_PATH/bin/*
-rm -rf $RUN_PATH/DATABASES_MPI/*
-rm -rf $RUN_PATH/OUTPUT_FILES/*
-rm -rf $RUN_PATH/DATA/*
-# copy input files 
-cp $RUN_PATH/$RUN_ID/$RUN_ID"_0"/DATA/* DATA 
-############################### COMPILATION  ##################################################
-echo "configuration and compilation of specfem3d_globe"
-echo "copying input files for compilation"
-cp $RUN_PATH/DATA/* $RUN_PATH/specfem/DATA
-cd specfem
-mkdir -p DATABASES_MPI
-mkdir -p OUTPUT_FILES
-
-rm -rf DATABASES_MPI/*
-rm -rf OUTPUT_FILES/*
-
-echo "running the configure script: FC=ifort CC=icc CXX=icpc MPIFC=mpiifort"
-./configure FC=ifort CC=icc CXX=icpc MPIFC=mpiifort
-if [[ $? -ne 0 ]]; then exit 1; fi
-echo "configure finished running"
-make clean
-
-echo "starting mesher compilation"
-make meshfem3D
-#checks exit code
-if [[ $? -ne 0 ]]; then exit 1; fi
-echo "mesher compilation done"
-
-echo "starting solver compilation"
-make specfem3D
-#checks exit code
-if [[ $? -ne 0 ]]; then exit 1; fi
-echo "solver compilation done"
-
-# backup of constants setup
-cp setup/* $RUN_PATH/OUTPUT_FILES/
-cp OUTPUT_FILES/values_from_mesher.h $RUN_PATH/OUTPUT_FILES/values_from_mesher.h.compilation
-
-
-# copy executables 
-cp bin/* $RUN_PATH/bin/ 
-
-# links data directories needed to run this simulation with s362ani
-cd $RUN_PATH
-cd DATA/
-ln -s $RUN_PATH/specfem/DATA/crust2.0
-ln -s $RUN_PATH/specfem/DATA/s362ani
-ln -s $RUN_PATH/specfem/DATA/QRFSI12
-ln -s $RUN_PATH/specfem/DATA/topo_bathy
-cd ..
-########################################################################################
 PROV="provfold"$(cat control)
 MODEL="modelfold"$(cat control)
 mkdir -p $HOME/$PROV
@@ -100,10 +42,20 @@ echo "--- file copy for runtime metadata messaging -- "
 TIME=$(date +%s)
 cp $RUN_PATH/provout_inputgen $PROV_PATH/provout_inputgen$RUN_ID$TIME
 
+############################### COMPILATION  ##################################################
+
+echo "configuration and compilation of specfem3d_globe"
+INPUTS=$RUN_PATH/$RUN_ID/$RUN_ID\"_0\"/DATA/
+# configure and compile specfem3d_globe source code using Inter ifort compiler
+python $RUN_PATH/verce-hpc-pe/src/run_specfemGlobe_compile.py $RUN_PATH/jsonout_inputgen $INPUTS/Par_file $INPUTS/CMTSOLUTION $INPUTS/STATIONS
+
+# set up a directory structure to run the mesher and solver from the working directory 
+python $RUN_PATH/verce-hpc-pe/src/run_specfemGlobe_setup.py $RUN_PATH/jsonout_inputgen
+ 
 ############################### SIMULATIONS cycles through events  ######################
 echo  -------------------------------------------------------
 echo " mesher and solver generation..."
-export MYMPIEXEC_CMD_PAR_MOV="-np $(($PBS_NUM_NODES * 4)) -perhost 4 -f $PBS_NODEFILE"
+MYMPIEXEC_CMD_PAR_MOV="-np $(($PBS_NUM_NODES * 4)) -perhost 4 -f $PBS_NODEFILE"
 echo $MYMPIEXEC_CMD_PAR_MOV
 echo  -------------------------------------------------------
 
@@ -114,50 +66,59 @@ for i in "${arr[@]}"
 do
    :
 pwd
-
 ############################ PREPARE SIMULATION PARTITION in WORK ######################
-mkdir -p $WORK/$i/../OUTPUT_FILES
-mkdir -p $WORK/$i/../DATABASES_MPI
-mkdir -p $WORK/$i/../specfem
-mkdir -p $WORK/$i/../bin
 export JSON_OUT=$WORK/$i/..
+mkdir -p $WORK/$i/../
 cp -r $RUN_PATH/DATABASES_MPI $WORK/$i/../
-cp  $RUN_PATH/OUTPUT_FILES/*  $WORK/$i/../OUTPUT_FILES 
-cp -r $RUN_PATH/specfem $WORK/$i/../
+cp -r $RUN_PATH/OUTPUT_FILES/  $WORK/$i/../ 
 cp -r $RUN_PATH/DATA $WORK/$i/../
-
-#create STATIONS_FILTERED file for compatibility with the cartesian output for postproc_graph_kml
-cp $WORK/$i/STATIONS $WORK/$i/STATIONS_FILTERED
-cp $RUN_PATH/bin/* $WORK/$i/../bin
+cp -r $RUN_PATH/bin $WORK/$i/../
 cp -r $i/ $WORK/$i/../
+
+# create STATIONS_FILTERED file for compatibility with the cartesian output for postproc_graph_kml
+cp $WORK/$i/STATIONS $WORK/$i/STATIONS_FILTERED 
 echo $WORK/$i -------------------------------------------------------
 cd $WORK/$i/../
 
 python $RUN_PATH/verce-hpc-pe/src/bulk_run_specfemGlobe_movie.py $RUN_PATH/jsonout_inputgen $RUN_PATH/solverconf mpiexec.hydra $COUNTER "$MYMPIEXEC_CMD_PAR_MOV"  
-#if [[ $? -ne 0 ]]; then exit 1; fi
+
 echo "database generation and simulation... complete"
-echo "see results in directory: OUTPUT_FILES/"
-
-
-
+echo "see results in directory: OUTPUT_FILES/" 
 
 export EVENT_PATH=$(pwd)
 echo "update provenance simulation..."
 python $RUN_PATH/verce-hpc-pe/src/transferMetadataProducer.py $RUN_PATH/solverconf $SOURCE_BASE/ provloc $EVENT_PATH/provout_run_specfem
 echo "--- file copy for runtime metadata messaging -- " 
 #######################    POSTPROCESSING    ################################## 
+
 echo "generation of seed and plot files..."
-cp $RUN_PATH/jsonout_run_specfem $JSON_OUT
+
 export INPUT_FILE=$JSON_OUT/jsonout_run_specfem
+export SOLVER_NAME=$(python $RUN_PATH/verce-hpc-pe/src/PEDataExtractor.py $RUN_PATH/solverconf root solver)
 cd $RUN_PATH/verce-hpc-pe/src/
+
 mpiexec.hydra python -m dispel4py.new.processor mpi test.hpc.forwardsim.postproc_graph
-#python -m dispel4py.new.processor multi test.hpc.forwardsim.postproc_graph -n 50
+
 echo "generation of kmz file..."
+
+# read the value of DT from output_mesher.txt and then append it to the Par_file to maintain compatibility with the cartesian output for kmlGenerator_INGV
+declare -r TAB="`echo -e "\t"`"
+echo "#DT value obtained from output_mesher.txt\n" >> $EVENT_PATH/DATA/Par_file
+echo "DT ${TAB}${TAB}${TAB}${TAB}=" `grep "the time step of the solver will be DT" $EVENT_PATH/OUTPUT_FILES/output_mesher.txt | cut -d = -f 2 ` >> $EVENT_PATH/DATA/Par_file
+
 python -m dispel4py.new.processor simple test.hpc.forwardsim.postproc_graph_kml
 
 let COUNTER=COUNTER+1
-
 ############################# HOUSE KEEPING #################################### 
+
+rm -rf $EVENT_PATH/OUTPUT_FILES/DATABASES_MPI
+
+echo "--- Cleanup of modelfold subdirectories ---"
+chmod -R u+w $HOME/$MODEL
+rm -R -- $HOME/$MODEL/specfem/*/
+
+# remove references to data models
+find  $EVENT_PATH/DATA -type l -delete
 
 echo "---Set Transfer and Cleanup folders ---"
 

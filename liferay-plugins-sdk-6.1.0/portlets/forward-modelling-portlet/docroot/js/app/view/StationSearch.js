@@ -1,14 +1,7 @@
 var networksStore = Ext.create('CF.store.Network', {});
 
-var stationProvidersStore = Ext.create('CF.store.Provider', {
-  data: [{
-    abbr: "ODC",
-    url: "/j2ep-1.0/odc"
-  }, {
-    abbr: "IRIS",
-    url: "/j2ep-1.0/iris"
-  }]
-});
+//stationProvidersStore data now depends on the type of solver to be selected. This will be updated once a user has selected a solver    
+var stationProvidersStore = Ext.create('CF.store.Provider', {});
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.MultiCombo', {
@@ -48,17 +41,20 @@ Ext.define('CF.view.StationSearchPanel', {
   items: [{
     xtype: 'combobox',
     fieldLabel: "Provider:",
+    id:"station_catalog",
     store: stationProvidersStore,
     displayField: 'abbr',
     valueField: 'url',
     queryMode: 'local',
-    listeners: {
+    listeners: { 
       change: function(combobox, value, display) {
         networksStore.removeAll();
         combobox.up('panel').down('multicombo').disable();
         Ext.Ajax.request({
           type: 'GET',
-          url: value + '/fdsnws/station/1/query?level=network',
+          url: value + '/fdsnws/station/1/query?level=network'
+		+(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && combobox.getSelectedRecord() && combobox.getSelectedRecord().data && combobox.getSelectedRecord().data["extraParams"] ? combobox.getSelectedRecord().data["extraParams"]:""),
+
           dataType: 'xml',
           disableCaching: false,
           success: function(response) {

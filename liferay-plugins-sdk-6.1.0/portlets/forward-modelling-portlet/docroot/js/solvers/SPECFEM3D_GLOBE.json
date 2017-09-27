@@ -1,0 +1,1008 @@
+{
+    "doc" : "https://github.com/geodynamics/specfem3d_globe/raw/master/doc/USER_MANUAL/manual_SPECFEM3D_GLOBE.pdf",
+    "_id" : "SPECFEM3D_GLOBE",
+    "meshes" : [ 
+        {
+            "name" : "Globe",
+            "geo_minLon" : -180,
+            "geo_maxLon" : 180,
+            "values" : [ 
+                {
+                    "name" : "NPROC",
+                    "value" : 24,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NPROC_XI",
+                    "value" : 2,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NPROC_ETA",
+                    "value" : 2,
+                    "editable" : true
+                }, 
+                {
+                    "RECORD_LENGTH_IN_MINUTES" : "10.0"
+                }, 
+                {
+                    "SIMULATION_TYPE" : 1
+                }, 
+                {
+                    "name" : "NCHUNKS",
+                    "value" : 6,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NEX_XI",
+                    "value" : 64,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NEX_ETA",
+                    "value" : 64,
+                    "editable" : true
+                }, 
+                {
+                    "ABSORBING_CONDITIONS" : false
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
+                    "value" : 20,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
+                    "value" : 20,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "CENTER_LATITUDE_IN_DEGREES",
+                    "value" : 40,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "CENTER_LONGITUDE_IN_DEGREES",
+                    "value" : 25,
+                    "editable" : false
+                }
+            ],
+            "details" : "Globe",
+            "geo_maxLat" : 90,
+            "velmod" : [ 
+                {
+                    "name" : "default",
+                    "details" : "Default"
+                }
+            ],
+            "geo_projection" : "std",
+            "geo_minLat" : -90
+        }, 
+        {
+            "name" : "Bespoke",
+            "values" : [ 
+                { 
+            "name" : "NPROC",
+            "value" : 16,
+            "editable" : true
+                }, 
+                {
+                    "name" : "NPROC_XI",
+                    "value" : 4,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NPROC_ETA",
+                    "value" : 4,
+                    "editable" : true
+                }, 
+                {
+                    "RECORD_LENGTH_IN_MINUTES" : "10.0"
+                }, 
+                {
+                    "SIMULATION_TYPE" : 1
+                }, 
+                {
+                    "name" : "NCHUNKS",
+                    "value" : 1,
+                    "editable" : false
+                }, 
+                {
+                    "name" : "NEX_XI",
+                    "value" : 32,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "NEX_ETA",
+                    "value" : 32,
+                    "editable" : true
+                }, 
+                {
+                    "ABSORBING_CONDITIONS" : true
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
+                    "value" : 35,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
+                    "value" : 30,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "CENTER_LATITUDE_IN_DEGREES",
+                    "value" : 45,
+                    "editable" : true
+                }, 
+                {
+                    "name" : "CENTER_LONGITUDE_IN_DEGREES",
+                    "value" : 10,
+                    "editable" : true
+                }
+            ],
+            "details" : "Bespoke",
+            "velmod" : [ 
+                {
+                    "name" : "default",
+                    "details" : "Default"
+                }
+            ],
+            "geo_projection" : "std",
+            "geo_minLon" : -7,
+            "geo_maxLon" : 70,
+            "geo_maxLat" : 85,
+            "geo_minLat" : -20,
+            "polygon":{
+                "lower_left" : [-7.43,30],
+                "lower_right" : [27.43,30],
+                "upper_right" : [40.19,60],
+                "upper_left" : [-20.19,60]
+            }
+        }
+    ],
+    "success" : true,
+    "fields" : [ 
+        {
+            "group" : "0 - Basic",
+            "name" : "NPROC",
+            "req" : "true",
+            "editable" : false,
+            "value" : "24",
+            "minValue" : 1,
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Number of MPI processors"
+        }, 
+        {
+            "group" : "0 - Basic",
+            "name" : "RECORD_LENGTH_IN_MINUTES",
+            "req" : "true",
+            "editable" : true,
+            "value" : "10.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Record length in minutes"
+        }, 
+        {
+            "group" : "0 - Basic",
+            "name" : "MODEL",
+            "req" : "true",
+            "editable" : true,
+            "value" : "1D_isotropic_prem",
+            "type" : "option",
+            "options" : [ 
+                "1D_isotropic_prem", 
+                "1D_transversely_isotropic_prem", 
+                "1D_iasp91", 
+                "1D_1066a", 
+                " 1D_ak135f_no_mud", 
+                "1D_ref", 
+                "1D_ref_iso", 
+                "1D_jp3d,1D_sea99", 
+                "1D_isotropic_prem_onecrust", 
+                "1D_transversely_isotropic_prem_onecrust", 
+                "1D_iasp91_onecrust", 
+                " 1D_1066a_onecrust", 
+                "1D_ak135f_no_mud_onecrust", 
+                "transversely_isotropic_prem_plus_3D_crust_2.0", 
+                "3D_anisotropic", 
+                "3D_attenuation", 
+                "s20rts", 
+                "s40rts", 
+                "s362ani", 
+                "s362iso", 
+                "s362wmani", 
+                "s362ani_prem", 
+                "s362ani_3DQ", 
+                "s362iso_3DQ", 
+                "s29ea", 
+                "s29ea", 
+                "sea99_jp3d1994", 
+                "sea99", 
+                "jp3d1994", 
+                "heterogen,full_sh"
+            ],
+            "desc" : "The used model. See the manual for various options."
+        }, 
+        {
+            "group" : "0 - Basic",
+            "name" : "GPU_MODE",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "set .true. for GPU support"
+        }, 
+        {
+            "group" : "1 - Inverse problem",
+            "name" : "SIMULATION_TYPE",
+            "req" : "true",
+            "editable" : false,
+            "value" : 1,
+            "type" : "option",
+            "options" : [ 
+                [ 
+                    1, 
+                    "forward"
+                ], 
+                [ 
+                    2, 
+                    "adjoint"
+                ], 
+                [ 
+                    3, 
+                    "forward & adjoint"
+                ]
+            ],
+            "desc" : "forward or adjoint simulation, 1 = forward, 2 = adjoint, 3 = both simultaneously"
+        }, 
+        {
+            "group" : "1 - Inverse problem",
+            "name" : "NOISE_TOMOGRAPHY",
+            "req" : "false",
+            "editable" : false,
+            "value" : 0,
+            "type" : "option",
+            "options" : [ 
+                [ 
+                    0, 
+                    "earthquake simulation"
+                ], 
+                [ 
+                    1, 
+                    "1"
+                ], 
+                [ 
+                    2, 
+                    "2"
+                ], 
+                [ 
+                    3, 
+                    "3"
+                ]
+            ],
+            "desc" : "noise tomography simulation, 0 = earthquake simulation, 1/2/3 = three steps in noise simulation"
+        }, 
+        {
+            "group" : "1 - Inverse problem",
+            "name" : "SAVE_FORWARD",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "save forward wavefield"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ANGULAR_WIDTH_XI_IN_DEGREES",
+            "req" : "false",
+            "editable" : false,
+            "value" : "20",
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+        "minValue":1,
+        "maxValue":180
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ANGULAR_WIDTH_ETA_IN_DEGREES",
+            "req" : "false",
+            "editable" : false,
+            "value" : "20",
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+        "minValue":1,
+        "maxValue":90
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "CENTER_LATITUDE_IN_DEGREES",
+            "req" : "false",
+            "editable" : false,
+            "value" : "40",
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)",
+            "minValue":-90,
+            "maxValue":90
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "CENTER_LONGITUDE_IN_DEGREES",
+            "req" : "false",
+            "editable" : false,
+            "value" : "25",
+            "step" : 1,
+            "type" : "float",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"   ,
+            "minValue":-180,
+            "maxValue":180  
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "GAMMA_ROTATION_AZIMUTH",
+            "req" : "false",
+            "editable" : false,
+            "value" : "0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "OCEANS",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ELLIPTICITY",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "TOPOGRAPHY",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "GRAVITY",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ROTATION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ATTENUATION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "parameter describing the Earth model"
+        }, 
+        {
+            "group" : "2 - Simulation Area",
+            "name" : "ABSORBING_CONDITIONS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "absorbing boundary conditions for a regional simulation"
+        }, 
+        {
+            "group" : "3 - Mesh Parameters",
+            "name" : "NCHUNKS",
+            "req" : "true",
+            "editable" : false,
+            "value" : "6",
+            "type" : "option",
+            "options" : [ 
+                1, 
+                2, 
+                3, 
+                6
+            ],
+            "desc" : "number of chunks"
+        }, 
+        {
+            "group" : "3 - Mesh Parameters",
+            "name" : "NEX_XI",
+            "req" : "true",
+            "editable" : false,
+            "value" : "64",
+            "step" : 8,
+            "type" : "int",
+            "desc" : "The number of elements at the surface along the xi side of the first chunk (must be multiple of 16 and 8 * multiple of NPROC_XI)."
+        }, 
+        {
+            "group" : "3 - Mesh Parameters",
+            "name" : "NEX_ETA",
+            "req" : "true",
+            "editable" : false,
+            "value" : "64",
+            "step" : 8,
+            "type" : "int",
+            "desc" : "The number of elements at the surface along the eta side of the first chunk (must be multiple of 16 and 8 * multiple of NPROC_ETA)."
+        }, 
+        {
+            "group" : "3 - Mesh Parameters",
+            "name" : "NPROC_XI",
+            "req" : "true",
+            "editable" : false,
+            "value" : "2",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "The number of MPI processors along the xi side of the first chunk"
+        }, 
+        {
+            "group" : "3 - Mesh Parameters",
+            "name" : "NPROC_ETA",
+            "req" : "true",
+            "editable" : false,
+            "value" : "2",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "The number of MPI processors along the eta side of the first chunk"
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "READ_ADJSRC_ASDF",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Use ASDF format for reading the adjoint sources"
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "ANISOTROPIC_KL",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "This parameter must be set to true to compute anisotropic kernels in crust and mantle. The default is false to compute isotropic kernels (related to alpha and beta)"
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "SAVE_TRANSVERSE_KL_ONLY",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Output only transverse isotropic kernels (alpha_v,alpha_h,beta_v,beta_h,eta,rho) rather than fully anisotropic kernels when ANISOTROPIC_KL above is set to .true."
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "APPROXIMATE_HESS_KL",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Output approximate Hessian in crust mantle region."
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "USE_FULL_TISO_MANTLE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Forces transverse isotropy for all mantle elements"
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "SAVE_SOURCE_MASK",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Outputs kernel mask to zero out source region to remove large values near the sources in the sensitivity kernels"
+        }, 
+        {
+            "group" : "4 - Adjoint Kernel Options",
+            "name" : "SAVE_REGULAR_KL",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Outputs kernels on a regular grid instead of on the GLL mesh points"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_SURFACE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Saves velocity snapshot files only for surfaces"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_VOLUME",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Saves the entire volumetric velocity snapshot files "
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_COARSE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "Saves movie only at corners of elements."
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "NTSTEP_BETWEEN_FRAMES",
+            "req" : "false",
+            "editable" : true,
+            "value" : "50",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Number of timesteps between 2 consecutive snapshots"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "HDUR_MOVIE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "0",
+            "step" : 0.1,
+            "type" : "float",
+            "desc" : "Half duration for snapshot files"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_VOLUME_TYPE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "2",
+            "type" : "option",
+            "options" : [ 
+                1, 
+                2, 
+                3, 
+                4, 
+                5, 
+                6
+            ],
+            "desc" : "Movie_volume_type: 1=strain, 2=time integral of strain, 3=\\mu*time integral of strain, type 4 saves the trace and deviatoric stress in the whole volume, 5=displacement, 6=velocity"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_TOP_KM",
+            "req" : "false",
+            "editable" : true,
+            "value" : "-100.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Depth below the surface in kilometers, use MOVIE_TOP = -100.0 to make sure the surface is stored."
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_BOTTOM_KM",
+            "req" : "false",
+            "editable" : true,
+            "value" : "1000.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Depth below the surface in kilometers"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_WEST_DEG",
+            "req" : "false",
+            "editable" : true,
+            "value" : "-90.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Latitute, degrees West"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_EAST_DEG",
+            "req" : "false",
+            "editable" : true,
+            "value" : "90.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Latitute, degrees East"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_NORTH_DEG",
+            "req" : "false",
+            "editable" : true,
+            "value" : "90.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Latitute, degrees North"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_SOUTH_DEG",
+            "req" : "false",
+            "editable" : true,
+            "value" : "-90.0",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Latitute, degrees South"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_START",
+            "req" : "false",
+            "editable" : true,
+            "value" : "0",
+            "step" : 1000,
+            "type" : "int",
+            "desc" : "Frames will be stored at MOVIE_START + i * NSTEP_BETWEEN_FRAMES, where i=(0,1,2..) while i * NSTEP_BETWEEN_FRAMES <= MOVIE_STOP"
+        }, 
+        {
+            "group" : "5 - Movie",
+            "name" : "MOVIE_STOP",
+            "req" : "false",
+            "editable" : true,
+            "value" : "40000",
+            "step" : 1000,
+            "type" : "int",
+            "desc" : "Frames will be stored at MOVIE_START + i * NSTEP_BETWEEN_FRAMES, where i=(0,1,2..) while i * NSTEP_BETWEEN_FRAMES <= MOVIE_STOP"
+        },         
+        {
+            "group" : "6 - Sources",
+            "name" : "NTSTEP_BETWEEN_READ_ADJSRC",
+            "req" : "false",
+            "editable" : true,
+            "value" : "1000",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "The number of adjoint sources read in each time for an adjoint simulation"
+        }, 
+        {
+            "group" : "6 - Sources",
+            "name" : "PRINT_SOURCE_TIME_FUNCTION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Turn this flag on to print information about the source time function in the file OUTPUT_FILES/plot_source_time_function.txt. This feature is not used at the time of meshing."
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
+            "req" : "false",
+            "editable" : true,
+            "value" : "5000000",
+            "step" : 1000,
+            "type" : "int",
+            "desc" : "This parameter specifies the interval at which synthetic seismograms are written in the LOCAL_PATH directory. The seismograms can be created in three different formats by setting the parameters OUTPUT_SEISMOS_ASCII_TEXT, OUTPUT_SEISMOS_SAC_ALPHANUM and OUTPUT_SEI-SMOS_SAC_BINARY. One can choose any combination of these parameters (details on the formats follow in the description of each parameter).  SAC (http://www.iris.edu/software/sac/) is a signal-processing software package.  If a run crashes, you may still find usable (but shorter than requested) seismograms in this directory.  On a fast machine set NTSTEP_BETWEEN_OUTPUT_SEISMOS to a relatively high value to avoid writing to the seismograms too often. This feature is not used at the time of meshing"
+        },  
+        {
+            "group" : "7 - Seismometers",
+            "name" : "OUTPUT_SEISMOS_FORMAT",
+            "req" : "false",
+            "editable" : true,
+            "value" : "ASCII",
+            "type" : "option",
+            "options" : [ 
+                "ASCII", 
+                "SAC_ALPHANUM", 
+                "SAC_BINARY", 
+                "ASDF"
+            ],
+            "desc" : "Output format for the seismograms"
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "ROTATE_SEISMOGRAMS_RT",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Rotate seismograms to Radial-Transverse-Z or use default North-East-Z reference frame"
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "WRITE_SEISMOGRAMS_BY_MASTER",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Decide if master process writes all the seismograms or if all processes do it in parallel"
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "SAVE_ALL_SEISMOS_IN_ONE_FILE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Saves all seismograms in one large combined file instead of one file per seismogram"
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "USE_BINARY_FOR_LARGE_FILE",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Set this flag to true if you want to use binary instead of ASCII for that large file (not used if SAVE_ALL_SEISMOS_IN _ONE_FILE = false)"
+        }, 
+        {
+            "group" : "7 - Seismometers",
+            "name" : "RECEIVERS_CAN_BE_BURIED",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "This flag accommodates stations with instruments that are buried, i.e., the solver will calculate seismograms at the burial depth specified in the STATIONS file.  This feature is not used at the time of meshing."
+        },        
+        {
+            "group" : "8 - Advanced",
+            "name" : "PARTIAL_PHYS_DISPERSION_ONLY",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "PARTIAL_PHYS_DISPERSION_ONLY or UNDO_ATTENUATION To undo attenuation for sensitivity kernel calculations or forward runs with SAVE_FORWARD use one (and only one) of the two flags below. UNDO_ATTENUATION is much better (it is exact) and is simpler to use but it requires a significant amount of disk space for temporary storage"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "UNDO_ATTENUATION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "PARTIAL_PHYS_DISPERSION_ONLY or UNDO_ATTENUATION To undo attenuation for sensitivity kernel calculations or forward runs with SAVE_FORWARD use one (and only one) of the two flags below. UNDO_ATTENUATION is much better (it is exact) and is simpler to use but it requires a significant amount of disk space for temporary storage"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "MEMORY_INSTALLED_PER_CORE_IN_GB",
+            "req" : "false",
+            "editable" : false,
+            "value" : 4,
+            "step" : 1,
+            "type" : "int",
+            "desc" : "When running on GPU machines, it is simpler to set PERCENT_OF_MEM_TO_USE_PER_CORE = 100.d0 and then set MEMORY_INSTALLED_PER_CORE_IN_GB to the amount of memory that you estimate is free (rather than installed) on the host of the GPU card while running your GPU job. For GPU runs on Titan at ORNL, use PERCENT_OF_MEM_TO_USE_PER_CORE = 100.d0 and MEMORY_INSTALLED_PER_CORE_IN_GB = 25.d0 and run your job with \"aprun -n$NPROC -N1 -S1 -j1\" (each host has 32 GB on Titan, each GPU has 6 GB, thus even if all the GPU arrays are duplicated on the host this leaves 32 - 6 = 26 GB free on the host; leaving 1 GB for the Linux system, we can safely use 100% of 25 GB"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "PERCENT_OF_MEM_TO_USE_PER_CORE",
+            "req" : "false",
+            "editable" : true,
+            "value" : 85,
+            "step" : 1,
+            "type" : "int",
+            "desc" : "What percentage of this total do you allow us to use for arrays to undo attenuation, keeping in mind that you  need to leave some memory available for the GNU/Linux system to run  (a typical value is 85%; any value below is fine but the code will then save a lot of data to disk; values above, say 90% or 92%, can be OK on some systems but can make the adjoint code run out of memory on other systems, depending on how much memory per node the GNU/Linux system needs for itself; thus you can try a higher value and if the adjoint crashes then try again with a lower value)"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "EXACT_MASS_MATRIX_FOR_ROTATION",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Three mass matrices instead of one are needed to handle rotation very accurately; otherwise rotation is handled slightly less accurately (but still reasonably well); set to .true. if you are interested in precise effects related to rotation; \n set to .false. if you are solving very large inverse problems at high frequency and also undoing attenuation exactly using the UNDO_ATTENUATION flag above, in which case saving as much memory as possible can be a good idea. \n You can also safely set it to .false. if you are not in a period range in which rotation matters, e.g. if you are targetting very short-period body waves. if in doubt, set to .true. \n Set it to .true. if you have ABSORBING_CONDITIONS above, because in that case the code will use the three mass matrices anyway and thus there is no additional cost. This flag is of course unused if ROTATION above is set to .false."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "USE_LDDRK",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Use this for LDDRK high-order time scheme instead of Newmark"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "INCREASE_CFL_FOR_LDDRK",
+            "req" : "false",
+            "editable" : true,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "The maximum CFL of LDDRK is significantly higher than that of the Newmark scheme, in a ratio that is theoretically 1.327 / 0.697 = 1.15 / 0.604 = 1.903 for a solid with Poisson's ratio = 0.25 and for a fluid (see the manual of the 2D code, SPECFEM2D, Tables 4.1 and 4.2, and that ratio does not depend on whether we are in 2D or in 3D). However in practice a ratio of about 1.5 to 1.7 is often safer (for instance for models with a large range of Poisson's ratio values). Since the code computes the time step using the Newmark scheme, for LDDRK we will simply multiply that time step by this ratio when LDDRK is on and when flag INCREASE_CFL_FOR_LDDRK is true."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "RATIO_BY_WHICH_TO_INCREASE_IT",
+            "req" : "false",
+            "editable" : true,
+            "value" : "1.5",
+            "step" : 0.1,
+            "type" : "int",
+            "desc" : "The maximum CFL of LDDRK is significantly higher than that of the Newmark scheme, in a ratio that is theoretically 1.327 / 0.697 = 1.15 / 0.604 = 1.903 for a solid with Poisson's ratio = 0.25 and for a fluid (see the manual of the 2D code, SPECFEM2D, Tables 4.1 and 4.2, and that ratio does not depend on whether we are in 2D or in 3D). However in practice a ratio of about 1.5 to 1.7 is often safer (for instance for models with a large range of Poisson's ratio values). Since the code computes the time step using the Newmark scheme, for LDDRK we will simply multiply that time step by this ratio when LDDRK is on and when flag INCREASE_CFL_FOR_LDDRK is true."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "SAVE_MESH_FILES",
+            "req" : "false",
+            "editable" : true,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Set this flag to true to save AVS (http://www.avs.com), OpenDX (http://www.opendx.org), or ParaView (http:www.paraview.org) mesh files for subsequent viewing.  Turning the flag on generates large (distributed) files in the LOCAL_PATH directory. See Section 8.1 for a discussion of mesh viewing features."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "NUMBER_OF_RUNS",
+            "req" : "false",
+            "editable" : true,
+            "value" : "1",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "On machines with a run-time limit,  for instance for a batch/queue system,  a simulation may need to be completed in stages.  This option allows you to select the number of stages in which the simulation will be completed (1, 2 or 3).  Choose 1 for a run without restart files.  This feature is not used at the time of meshing but is required for the solver.  At the end of the first or second stage of a multi-stage simulation, large files are written to the file system to save the current state of the simulation.  This state is read back from the file system at the beginning of the next stage of the multi-stage run. Reading and writing the states can be very time consuming depending on the nature of the network and the file system (in this case writing to the local file system, i.e., the disk on a node, is preferable)."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "NUMBER_OF_THIS_RUN",
+            "req" : "false",
+            "editable" : true,
+            "value" : "1",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "If you choose to perform the run in stages, you need to tell the solver what stage run to perform. This feature is not used at the time of meshing but is required for the solver"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "NUMBER_OF_SIMULTANEOUS_RUNS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "1",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Adds the ability to run several calculations (several earthquakes) in an embarrassingly-parallel fashion from within the same run; this can be useful when using a very large supercomputer to compute many earthquakes in a catalog, in which case it can be better from a batch job submission point of view to start fewer and much larger jobs, each of them computing several earthquakes in parallel."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "BROADCAST_SAME_MESH_AND_MODEL",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "If we perform simultaneous runs in parallel, if only the source and receivers vary between these runs but not the mesh nor the model (velocity and density) then we can also read the mesh and model files from a single run in the beginning and broadcast them to all the others; for a large number of simultaneous runs for instance when solving inverse problems iteratively this can DRASTICALLY reduce I/Os to disk in the solver (by a factor equal to NUMBER_OF_SIMULTANEOUS_RUNS), and reducing I/Os is crucial in the case of huge runs. Thus, always set this option to .true. if the mesh and the model are the same for all simultaneous runs."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "USE_FAILSAFE_MECHANISM",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "If one or a few of simultaneous runs fail, kill all the runs or let the others finish using a fail-safe mechanism (in most cases, should be set to false)."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "GPU_RUNTIME",
+            "req" : "false",
+            "editable" : false,
+            "value" : "1",
+            "step" : 1,
+            "type" : "int",
+            "desc" : "Only used if GPU_MODE = .true."
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "GPU_PLATFORM",
+            "req" : "false",
+            "editable" : false,
+            "value" : "NVIDIA",
+            "desc" : ""
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "GPU_DEVICE",
+            "req" : "Tesla",
+            "editable" : false,
+            "value" : "Tesla",
+            "desc" : ""
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_ENABLED",
+            "req" : "false",
+            "editable" : false,
+            "value" : "false",
+            "type" : "bool",
+            "desc" : "Set to true to use the ADIOS library for I/Os"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_FORWARD_ARRAYS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_MPI_ARRAYS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_ARRAYS_SOLVER",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_SOLVER_MESHFILES",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_AVS_DX",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_KERNELS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_MODELS",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }, 
+        {
+            "group" : "8 - Advanced",
+            "name" : "ADIOS_FOR_UNDO_ATTENUATION",
+            "req" : "false",
+            "editable" : false,
+            "value" : "true",
+            "type" : "bool",
+            "desc" : "see SPECFEM3D_Globe manual"
+        }
+    ]
+}

@@ -1,6 +1,6 @@
+var reuse_mesh=null;
 var handleDownloadLogfiles = function(grid, rowIndex, colIndex) {
-  var rec = grid.getStore().getAt(rowIndex);
-
+var rec = grid.getStore().getAt(rowIndex);
   window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
 };
 
@@ -142,7 +142,12 @@ var handleReuse = function(grid, rowIndex, colIndex) {
     }
 
     self.up('viewport > #viewport_tabpanel').setActiveTab('simulationtab');
-
+ 
+    // Reuse bespoke type meshes
+    if(solver_conf.bespoke_mesh_boundaries)
+    {
+    	reuse_mesh = {data: solver_conf.bespoke_mesh_boundaries};
+    }
     // reuse velocity when velocity model store finishes loading
     var velocityCombo = Ext.getCmp('velocity');
     velocityCombo.store.addListener('refresh', function() {

@@ -1,10 +1,9 @@
 var runId = new Array();
-
 Ext.define('CF.view.WorkflowCombo', {
   extend: 'Ext.form.field.ComboBox',
   alias: 'widget.workflowcombo',
   fieldLabel: 'Workflow',
-  name: 'wfSelection',
+  name: 'wfSelection', 
   queryMode: 'local',
   width: 350,
   listWidth: 400,
@@ -28,7 +27,9 @@ Ext.define('CF.view.SubmitFormPanel', {
     xtype: 'workflowcombo',
     id: 'wfSelection',
     store: Ext.create('CF.store.ExportedWorkflow', {
-      data: simulationWorkflows,
+      id :'workflow_catalog',
+      data: simulationWorkflows
+ 
     })
   }, {
     xtype: 'textfield',
@@ -113,10 +114,9 @@ Ext.define('CF.view.SubmitFormPanel', {
         var workflowId = wfModel.get('workflowId');
         var ownerId = wfModel.get('ownerId');
         var workflowName = wfModel.get('workflowName');
-
-        var r = solverConfStore.findRecord("name", "NPROC");
+        var r = solverConfStore.findRecord("name", "NPROC"); 
         var nProc = r.get("value");
-
+       
         Ext.Ajax.request({
           url: submitSolverURL,
           params: {
@@ -223,6 +223,11 @@ function createSubmitObject(submitName, multipleSubmits) {
     Ext.Msg.alert("Alert!", "You must select at least one event");
     return null;
   }
+  /*if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE" && selectedEvents.length > 1 )
+  {
+    Ext.Msg.alert("Alert!", "You cannot select more than one event");
+      return null;
+  }*/
   if (selectedEvents.length > GL_EVENTSLIMIT) {
     Ext.Msg.alert("Alert!", "You cannot select more than " + GL_EVENTSLIMIT + " events.");
     return null;
@@ -240,14 +245,19 @@ function createSubmitObject(submitName, multipleSubmits) {
   selectedEvents.each(function(item, ind, l) {
     events.push(item.get('eventId'));
   });
+  
+  var eventsDate = [];
+  selectedEvents.each(function(item, ind, l) {
+    eventsDate.push(item.get('date'));
+  });
 
-  var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
-
+  var mesh = Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue()); 
   for (i = 0; i < numberOfSubmits; i++) {
     results[i] = {
       fields: Ext.pluck(CF.app.getController('Map').getStore('SolverConf').data.items, 'data'),
       stations: stations,
       events: multipleSubmits ? [events[i]] : events,
+      eventsDate:eventsDate,      
       runId: submitName + i + '_' + (new Date()).getTime(),
       user_name: userSN,
       user_id: userId,
@@ -258,14 +268,21 @@ function createSubmitObject(submitName, multipleSubmits) {
       mesh: mesh.get('name'),
       velocity_model: Ext.getCmp('velocity').getValue(),
       custom_mesh: mesh.get('custom'),
+      custom_velocity_model: Ext.getCmp('velocity').findRecordByValue(Ext.getCmp('velocity').getValue()).get('custom'),
       custom_mesh_boundaries: mesh.get('custom') ? {
         minlon: mesh.get('geo_minLon'),
         minlat: mesh.get('geo_minLat'),
         maxlon: mesh.get('geo_maxLon'),
         maxlat: mesh.get('geo_maxLat')
       } : null,
-      custom_velocity_model: Ext.getCmp('velocity').findRecordByValue(Ext.getCmp('velocity').getValue()).get('custom')
-    };
+      bespoke_mesh_boundaries: mesh.get('name')=="Bespoke" ? {
+        geo_minLon: bespoke_mesh.data.geo_minLon,
+        geo_maxLon: bespoke_mesh.data.geo_maxLon,
+        geo_maxLat: bespoke_mesh.data.geo_maxLat,
+        geo_minLat: bespoke_mesh.data.geo_minLat,
+        polygon:bespoke_mesh.data.polygon
+      } : null
+    }
   }
   return results;
 }

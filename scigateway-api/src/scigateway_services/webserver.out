@@ -1,0 +1,397 @@
+2017-04-13 15:01:55+0100 [-] Log opened.
+2017-04-13 15:01:55+0100 [-] Server running....
+2017-04-13 15:01:59+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:01:59 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15998 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:02:30+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:02:30 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14976 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:15:50+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:15:50+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:15:50+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f47cb9ca710>
+2017-04-13 15:15:50+0100 [-] Main loop terminated.
+2017-04-13 15:15:54+0100 [-] Log opened.
+2017-04-13 15:15:54+0100 [-] Server running....
+2017-04-13 15:29:29+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:29:29+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:29:29+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fb292042ef0>
+2017-04-13 15:29:29+0100 [-] Main loop terminated.
+2017-04-13 15:29:33+0100 [-] Log opened.
+2017-04-13 15:29:33+0100 [-] Server running....
+2017-04-13 15:29:39+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 113, in render_POST
+	    gen = InputFileGenerator()
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/wfs_input_generator/input_file_generator.py", line 38, in __init__
+	    self.config = AttribDict()
+	exceptions.NameError: global name 'AttribDict' is not defined
+	
+2017-04-13 15:29:39+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:29:38 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 500 5394 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:30:06+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:30:06+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:30:06+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f065c16d710>
+2017-04-13 15:30:06+0100 [-] Main loop terminated.
+2017-04-13 15:30:08+0100 [-] Log opened.
+2017-04-13 15:30:08+0100 [-] Server running....
+2017-04-13 15:30:12+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:30:12 +0000] "GET /solver/par-file/specfem3d_globe HTTP/1.1" 405 264 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:30:19+0100 [_GenericHTTPChannelProtocol,1,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 121, in render_POST
+	    par_file = gen.write(format=self.path.upper(), output_dir=outputdir)
+	exceptions.TypeError: write() got an unexpected keyword argument 'output_dir'
+	
+2017-04-13 15:30:20+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:30:19 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 500 4735 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:30:28+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:30:28+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:30:28+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f5e710ca758>
+2017-04-13 15:30:28+0100 [-] Main loop terminated.
+2017-04-13 15:30:36+0100 [-] Log opened.
+2017-04-13 15:30:36+0100 [-] Server running....
+2017-04-13 15:30:39+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 121, in render_POST
+	    par_file = gen.write(format=self.path.upper(), output_dir=outputdir)
+	exceptions.TypeError: write() got an unexpected keyword argument 'output_dir'
+	
+2017-04-13 15:30:39+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:30:38 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 500 4735 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:32:32+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:32:32+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:32:32+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f159297e710>
+2017-04-13 15:32:32+0100 [-] Main loop terminated.
+2017-04-13 15:32:36+0100 [-] Log opened.
+2017-04-13 15:32:36+0100 [-] Server running....
+2017-04-13 15:32:52+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 121, in render_POST
+	    par_file = gen.write(format=self.path.upper(), output_dir=outputdir)
+	exceptions.TypeError: write() got an unexpected keyword argument 'output_dir'
+	
+2017-04-13 15:32:52+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:32:52 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 500 4735 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:33:16+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:33:16+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:33:16+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f3373d1d710>
+2017-04-13 15:33:16+0100 [-] Main loop terminated.
+2017-04-13 15:33:17+0100 [-] Log opened.
+2017-04-13 15:33:17+0100 [-] Server running....
+2017-04-13 15:33:25+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:33:25 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15997 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:40:40+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:40:40+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:40:40+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fd82503d710>
+2017-04-13 15:40:40+0100 [-] Main loop terminated.
+2017-04-13 15:41:51+0100 [-] Log opened.
+2017-04-13 15:41:51+0100 [-] Server running....
+2017-04-13 15:42:38+0100 [-] "127.0.0.1" - - [13/Apr/2017:14:42:37 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15998 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-13 15:42:44+0100 [-] Received SIGINT, shutting down.
+2017-04-13 15:42:44+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-13 15:42:44+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f3f6e55a758>
+2017-04-13 15:42:44+0100 [-] Main loop terminated.
+2017-04-18 13:06:46+0100 [-] Log opened.
+2017-04-18 13:06:46+0100 [-] Server running....
+2017-04-18 13:07:34+0100 [-] Received SIGINT, shutting down.
+2017-04-18 13:07:34+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 13:07:34+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fbd8c1416c8>
+2017-04-18 13:07:34+0100 [-] Main loop terminated.
+2017-04-18 13:07:50+0100 [-] Log opened.
+2017-04-18 13:07:50+0100 [-] Server running....
+2017-04-18 13:08:07+0100 [-] "127.0.0.1" - - [18/Apr/2017:12:08:06 +0000] "GET /solver/par-file/specfem3d_globe HTTP/1.1" 405 264 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 13:08:11+0100 [-] "127.0.0.1" - - [18/Apr/2017:12:08:10 +0000] "GET /solver/par-file/specfem3d_globe HTTP/1.1" 405 264 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 13:08:25+0100 [-] Received SIGINT, shutting down.
+2017-04-18 13:08:25+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 13:08:25+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f8eea836710>
+2017-04-18 13:08:25+0100 [-] Main loop terminated.
+2017-04-18 13:08:33+0100 [-] Log opened.
+2017-04-18 13:08:33+0100 [-] Server running....
+2017-04-18 13:09:24+0100 [-] Received SIGINT, shutting down.
+2017-04-18 13:09:24+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 13:09:24+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fca45c20ea8>
+2017-04-18 13:09:24+0100 [-] Main loop terminated.
+2017-04-18 13:09:39+0100 [-] Log opened.
+2017-04-18 13:09:39+0100 [-] Server running....
+2017-04-18 13:09:43+0100 [-] "127.0.0.1" - - [18/Apr/2017:12:09:42 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15996 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 13:11:57+0100 [-] Received SIGINT, shutting down.
+2017-04-18 13:11:57+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 13:11:57+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f83fc2496c8>
+2017-04-18 13:11:57+0100 [-] Main loop terminated.
+2017-04-18 13:11:59+0100 [-] Log opened.
+2017-04-18 13:11:59+0100 [-] Server running....
+2017-04-18 13:12:02+0100 [-] "127.0.0.1" - - [18/Apr/2017:12:12:02 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15996 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:08:19+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:08:19+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:08:19+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f5a21815710>
+2017-04-18 14:08:19+0100 [-] Main loop terminated.
+2017-04-18 14:11:54+0100 [-] Log opened.
+2017-04-18 14:11:54+0100 [-] Server running....
+2017-04-18 14:12:11+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 118, in render_POST
+	    gen.add_configuration({x["name"]: self.strToBool(x["value"])})
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/wfs_input_generator/input_file_generator.py", line 47, in add_configuration
+	    self.config.__dict__.update(config)
+	exceptions.AttributeError: 'InputFileGenerator' object has no attribute 'config'
+	
+2017-04-18 14:12:11+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:12:11 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 500 5421 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:16:32+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:16:32+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:16:32+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7ff0579a46c8>
+2017-04-18 14:16:32+0100 [-] Main loop terminated.
+2017-04-18 14:16:41+0100 [-] Log opened.
+2017-04-18 14:16:41+0100 [-] Server running....
+2017-04-18 14:16:47+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 118, in render_POST
+	    gen.add_configuration({x["name"]: self.strToBool(x["value"])})
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/wfs_input_generator/input_file_generator.py", line 49, in add_configuration
+	    self.config.__dict__.update(config)
+	exceptions.AttributeError: 'list' object has no attribute '__dict__'
+	
+2017-04-18 14:16:47+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:16:47 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 500 5397 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:17:02+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:17:02+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:17:02+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f6dc34d16c8>
+2017-04-18 14:17:02+0100 [-] Main loop terminated.
+2017-04-18 14:17:05+0100 [-] Log opened.
+2017-04-18 14:17:05+0100 [-] Server running....
+2017-04-18 14:17:09+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 113, in render_POST
+	    gen = InputFileGenerator()
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/wfs_input_generator/input_file_generator.py", line 25, in __init__
+	    self.config = __dict__
+	exceptions.NameError: global name '__dict__' is not defined
+	
+2017-04-18 14:17:09+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:17:09 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 500 5386 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:17:15+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:17:15+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:17:15+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f74bdc0f710>
+2017-04-18 14:17:15+0100 [-] Main loop terminated.
+2017-04-18 14:17:26+0100 [-] Log opened.
+2017-04-18 14:17:26+0100 [-] Server running....
+2017-04-18 14:17:31+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 118, in render_POST
+	    gen.add_configuration({x["name"]: self.strToBool(x["value"])})
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/wfs_input_generator/input_file_generator.py", line 49, in add_configuration
+	    self.config.__dict__.update(config)
+	exceptions.AttributeError: 'dictproxy' object has no attribute 'update'
+	
+2017-04-18 14:17:31+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:17:31 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 500 5403 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:18:49+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:18:49+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:18:49+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f1cc5c47710>
+2017-04-18 14:18:49+0100 [-] Main loop terminated.
+2017-04-18 14:19:04+0100 [-] Log opened.
+2017-04-18 14:19:04+0100 [-] Server running....
+2017-04-18 14:19:15+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:19:14 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14976 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:25:36+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:25:36+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:25:36+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f36a09e9710>
+2017-04-18 14:25:36+0100 [-] Main loop terminated.
+2017-04-18 14:38:45+0100 [-] Log opened.
+2017-04-18 14:38:45+0100 [-] Server running....
+2017-04-18 14:38:51+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Unhandled Error
+	Traceback (most recent call last):
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1439, in dataReceived
+	    finishCallback(data[contentLength:])
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1708, in _finishRequestBody
+	    self.allContentReceived()
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 1781, in allContentReceived
+	    req.requestReceived(command, path, version)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/http.py", line 768, in requestReceived
+	    self.process()
+	--- <exception caught here> ---
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 183, in process
+	    self.render(resrc)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/server.py", line 234, in render
+	    body = resrc.render(self)
+	  File "/usr/local/lib/python2.7/dist-packages/Twisted-16.2.0-py2.7-linux-x86_64.egg/twisted/web/resource.py", line 250, in render
+	    return m(request)
+	  File "/home/rsaleh/Desktop/test/scigateway-api/src/scigateway-services/webserver.py", line 118, in render_POST
+	    gen.add_configuration({x["name"]: self.strToBool(x["value"])})
+	exceptions.AttributeError: 'InputFileGenerator' object has no attribute 'add_configuration'
+	
+2017-04-18 14:38:51+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:38:51 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 500 4710 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:39:33+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:39:33+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:39:33+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f063442c7e8>
+2017-04-18 14:39:33+0100 [-] Main loop terminated.
+2017-04-18 14:39:34+0100 [-] Log opened.
+2017-04-18 14:39:34+0100 [-] Server running....
+2017-04-18 14:39:39+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:39:38 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14976 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:41:31+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:41:31+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:41:31+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f48173fa758>
+2017-04-18 14:41:31+0100 [-] Main loop terminated.
+2017-04-18 14:41:33+0100 [-] Log opened.
+2017-04-18 14:41:33+0100 [-] Server running....
+2017-04-18 14:41:37+0100 [-] "127.0.0.1" - - [18/Apr/2017:13:41:37 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14976 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 14:41:44+0100 [-] Received SIGINT, shutting down.
+2017-04-18 14:41:44+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 14:41:44+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f2e3d78d710>
+2017-04-18 14:41:44+0100 [-] Main loop terminated.
+2017-04-18 15:21:10+0100 [-] Log opened.
+2017-04-18 15:21:10+0100 [-] Server running....
+2017-04-18 15:21:11+0100 [-] Received SIGINT, shutting down.
+2017-04-18 15:21:11+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 15:21:11+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fc76d01c710>
+2017-04-18 15:21:11+0100 [-] Main loop terminated.
+2017-04-18 15:23:39+0100 [-] Log opened.
+2017-04-18 15:23:39+0100 [-] Server running....
+2017-04-18 15:23:50+0100 [-] Backend TkAgg is interactive backend. Turning interactive mode on.
+2017-04-18 15:24:58+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Received SIGINT, shutting down.
+2017-04-18 15:25:18+0100 [-] "127.0.0.1" - - [18/Apr/2017:14:23:50 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14976 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
+2017-04-18 15:25:18+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 15:25:18+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f35c2572e60>
+2017-04-18 15:25:18+0100 [-] Main loop terminated.
+2017-04-18 15:26:20+0100 [-] Log opened.
+2017-04-18 15:26:20+0100 [-] Server running....
+2017-04-18 15:26:25+0100 [-] Backend TkAgg is interactive backend. Turning interactive mode on.
+2017-04-18 15:42:14+0100 [_GenericHTTPChannelProtocol,0,127.0.0.1] Received SIGINT, shutting down.
+2017-04-18 15:42:26+0100 [-] Log opened.
+2017-04-18 15:42:26+0100 [-] Server running....
+2017-04-18 15:42:27+0100 [-] Received SIGINT, shutting down.
+2017-04-18 15:42:27+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 15:42:27+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7ff835828758>
+2017-04-18 15:42:27+0100 [-] Main loop terminated.
+2017-04-18 15:43:00+0100 [-] Log opened.
+2017-04-18 15:43:00+0100 [-] Server running....
+2017-04-18 15:43:02+0100 [-] Received SIGINT, shutting down.
+2017-04-18 15:43:02+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-04-18 15:43:02+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7fc12399a710>
+2017-04-18 15:43:02+0100 [-] Main loop terminated.
+2017-06-28 12:56:28+0100 [-] Log opened.
+2017-06-28 12:56:28+0100 [-] Server running....
+2017-06-28 12:56:40+0100 [-] "127.0.0.1" - - [28/Jun/2017:11:56:40 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14975 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 13:02:45+0100 [-] "127.0.0.1" - - [28/Jun/2017:12:02:45 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14975 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 13:09:01+0100 [-] "127.0.0.1" - - [28/Jun/2017:12:09:01 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14975 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 13:09:19+0100 [-] "127.0.0.1" - - [28/Jun/2017:12:09:19 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14975 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 13:25:23+0100 [-] Received SIGINT, shutting down.
+2017-06-28 13:25:23+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-06-28 13:25:23+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7f4933ab0d40>
+2017-06-28 13:25:23+0100 [-] Main loop terminated.
+2017-06-28 14:34:18+0100 [-] Log opened.
+2017-06-28 14:34:18+0100 [-] Server running....
+2017-06-28 14:35:02+0100 [-] "127.0.0.1" - - [28/Jun/2017:13:35:01 +0000] "POST /solver/par-file/specfem3d_cartesian_new HTTP/1.1" 200 14975 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 14:38:39+0100 [-] "127.0.0.1" - - [28/Jun/2017:13:38:38 +0000] "POST /solver/par-file/specfem3d_cartesian_202_dev HTTP/1.1" 200 5549 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 14:38:48+0100 [-] "127.0.0.1" - - [28/Jun/2017:13:38:48 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15998 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 14:49:31+0100 [-] "127.0.0.1" - - [28/Jun/2017:13:49:30 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15998 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 14:53:59+0100 [-] "127.0.0.1" - - [28/Jun/2017:13:53:58 +0000] "POST /solver/par-file/specfem3d_globe HTTP/1.1" 200 15998 "http://localhost:8080/web/guest/forward-modelling?p_p_id=forwardmodelling_WAR_forwardmodellingportlet&p_p_lifecycle=0&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_forwardmodelling_WAR_forwardmodellingportlet_jspPage=%2Fhtml%2Fmapgui.jsp" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
+2017-06-28 15:21:45+0100 [-] Received SIGINT, shutting down.
+2017-06-28 15:21:45+0100 [twisted.web.server.Site] (TCP Port 8083 Closed)
+2017-06-28 15:21:45+0100 [-] Stopping factory <twisted.web.server.Site instance at 0x7ff3f34c8320>
+2017-06-28 15:21:45+0100 [-] Main loop terminated.

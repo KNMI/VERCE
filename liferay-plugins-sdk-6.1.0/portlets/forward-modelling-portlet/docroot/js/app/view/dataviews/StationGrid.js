@@ -28,7 +28,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
       selectionchange: function(t, s) {
         if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
         else Ext.getCmp('checkboxNSubmit').setDisabled(true);
-        Ext.getCmp('stationSelColumn').setText(s.length + "/" + CF.app.getController('Map').getStore('Station').getTotalCount());
+        Ext.getCmp('stationSelColumn').setText(s.length + "/" + CF.app.getController('Map').getStore('Station').data.length);
       }
     }
   },
@@ -39,7 +39,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
     menuDisabled: true,
     sortable: false,
     xtype: 'gx_symbolizercolumn',
-    width: 45
+    width: 60
   }, {
     header: 'Station',
     dataIndex: 'station',

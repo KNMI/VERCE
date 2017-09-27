@@ -18,10 +18,10 @@ class specfemGenerateDatabase(SeismoPreprocessingActivity):
         
         stdoutdata=None
         stderrdata=None
-        
-        if self.parameters["mpi_invoke"]=='mpiexec':
+
+        if self.parameters["mpi_invoke"] == 'mpiexec.hydra' or self.parameters["mpi_invoke"] == 'mpirun':
             stdoutdata, stderrdata = commandChain([["{}".format(
-                                                    self.parameters["mpi_invoke"]+' -n '+self.parameters["NPROC"]+" xgenerate_databases",
+                                                    self.parameters["mpi_invoke"]+' -np '+str(self.parameters["NPROC"])+" xgenerate_databases",
                                                     )]],os.environ.copy())
         else:    
             stdoutdata, stderrdata = commandChain([["{}".format(

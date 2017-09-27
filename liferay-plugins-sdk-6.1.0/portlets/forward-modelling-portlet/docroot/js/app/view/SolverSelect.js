@@ -1,6 +1,86 @@
 var solverstore = Ext.create('CF.store.Solver', {});
 var meshesstore = Ext.create('CF.store.Mesh', {});
-var velocitystore = Ext.create('CF.store.Velocity', {});
+var velocitystore = Ext.create('CF.store.Velocity', {}); 
+var specfem3dGlobeEventProviders = Ext.create('CF.store.Provider', {
+	  data: [{
+	    "abbr": "GCMT",
+	    "name": "Global Centroid Moment Tensor Catalog",
+	    "url": "/j2ep-1.0/gcmt",
+	  }]
+	}); 
+
+var specfem3dCartesianEventProviders = Ext.create('CF.store.Provider', {
+	data: [{
+	    "abbr": "INGV",
+	    "name": "Istituto Nazionale di Geofisica e Vulcanologia",
+	    "url": "/j2ep-1.0/ingv",
+	    "extraParams": "&user=verce_" + userSN,
+	  }, {
+	    "abbr": "GCMT",
+	    "name": "Global Centroid Moment Tensor Catalog",
+	    "url": "/j2ep-1.0/gcmt",
+	  }, {
+	    "abbr": "NCEDC",
+	    "name": "Northern California Earthquake Data Center",
+	    "url": "/j2ep-1.0/ncedc",
+	    "extraParams": "&includemechanisms=true"
+	    // "http://service.ncedc.org/fdsnws/event/1/query?minmag=7&maxmag=9&includemechanisms=true",
+	  }, {
+	    "abbr": "USGS",
+	    "name": "United States Geological Service",
+	    "url": "/j2ep-1.0/usgs",
+	    "extraParams": "&format=xml&producttype=moment-tensor"
+	    // "http://earthquake.usgs.gov/fdsnws/event/1/query?format=xml&starttime=2014-01-01&endtime=2014-01-02&minmagnitude=5&producttype=moment-tensor",
+	  }, {
+	    "abbr": "ISC",
+	    "name": "International Seismological Centre",
+	    "url": "/j2ep-1.0/isc",
+	    // http://isc-mirror.iris.washington.edu/fdsnws/event/1/query?starttime=2011-01-07T14:00:00&endtime=2011-02-07&minlatitude=15&maxlatitude=40&minlongitude=-170&maxlongitude=170&minmagnitude=5&includeallmagnitudes=true&orderby=magnitude
+	  }]
+	});
+var specfem3dGlobeStationProvidersStore = Ext.create('CF.store.Provider', {
+	  data: [{
+	    abbr: "IRIS",
+	    url: "/j2ep-1.0/iris-redirect",
+	    extraParams: "&provider=iris"
+	  }]
+	});
+var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
+	  data: [{
+	    abbr: "ODC",
+	    url: "/j2ep-1.0/odc"
+	  }, {
+	    abbr: "IRIS",
+	    url: "/j2ep-1.0/iris"
+	  },{
+		  abbr: "GFZ",
+		  url: "/j2ep-1.0/gfz"
+	  },{
+		  abbr: "RESIF",
+		  url: "/j2ep-1.0/resif"
+	  },{
+		  abbr: "ETHZ",
+		  url: "/j2ep-1.0/ethz"
+	  },{
+		  abbr: "BGR",
+		  url: "/j2ep-1.0/bgr"
+	  },{
+		  abbr: "NIEP",
+		  url: "/j2ep-1.0/niep"
+	  },{
+		  abbr: "KOERI",
+		  url: "/j2ep-1.0/koeri"
+	  },{
+		  abbr: "IPGP",
+		  url: "/j2ep-1.0/ipgp"
+	  },{
+		  abbr: "LMU",
+		  url: "/j2ep-1.0/lmu"
+	  },{
+		  abbr: "NOA",
+		  url: "/j2ep-1.0/noa"
+	  }]
+	});
 
 // ComboBox with multiple selection enabled
 Ext.define('CF.view.SolverCombo', {
@@ -20,20 +100,31 @@ Ext.define('CF.view.SolverCombo', {
   listeners: {
     scope: this,
     'beforeselect': function(combo, record, index) {
-      // Note: findRecordByValue returns object or false
-      if (Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue())) {
-        Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
-          function(btn) {
-            if (btn === 'no') {
-              return false;
-            }
-          });
-      } else {
-        selectSolver(record.get('abbr'));
-        return true;
-      }
-    },
+        // Note: findRecordByValue returns object or false
+        if (Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue())) {
+            Ext.Msg.confirm('Alert!', 'You will lose the introduced data for ' + combo.getValue() + ', do you want to continue?',
+              function(btn) {
+                if (btn == 'yes') { 
+                    combo.setValue(record.get('abbr'));
+                    return true;
+                }                
+              });
+        } else {
+          selectSolver(record.get('abbr'));
+          return true;
+        }
+        return false;
+      }, 
     'change': function(combo, newValue, oldValue, eOpts) {
+    	// hide the option to submit a mesh  and velocity model if specfem3d_globe is selected
+    	if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE")   
+    	{
+    		Ext.get("submitMeshVelocityLinkButton").hide(); 
+    	}
+    	else
+    	{
+    		Ext.get("submitMeshVelocityLinkButton").show(); 
+    	}
       // inconsistent use of name and abbr
       var record = combo.store.findRecord('abbr', newValue);
 
@@ -67,6 +158,10 @@ var meshes_combo_has_changed = false;
 
 Ext.define('CF.view.MeshesCombo', {
   extend: 'Ext.form.field.ComboBox',
+  refs: [{
+      ref: 'CF.view.dataviews.Conf',
+      selector: 'stationgrid'
+    }],
   alias: 'widget.meshescombo',
   fieldLabel: 'Meshes',
   name: 'meshes',
@@ -129,9 +224,24 @@ Ext.define('CF.view.MeshesCombo', {
           Ext.getCmp('mesh_doc_button').setDisabled(false);
         }
       }
-
-      createBoundariesLayer(mesh);
-
+      if(combo.getValue()=="Bespoke")
+        {
+    	  controller = CF.app.getController('Map');  
+    	  if(reuse_mesh)
+          {   
+    		isAcrossEquator = parseInt(reuse_mesh.geo_minLat) < 0 && parseInt(reuse_mesh.geo_maxLat) > 0;
+  	        controller.createPolygonLayer(reuse_mesh,isAcrossEquator);
+  	        reuse_mesh=null;
+          }
+    	  else
+    	  {
+    		  controller.createPolygonLayer(mesh,false);
+    	  }
+        }
+      else
+      {
+          createBoundariesLayer(mesh);
+      }
       //Update the solver values
       updateSolverValues(mesh.get('values'));
 
@@ -140,11 +250,15 @@ Ext.define('CF.view.MeshesCombo', {
   }
 });
 
+
 var createBoundariesLayer = function(mesh) {
   var controller = CF.app.getController('Map');
   if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
     controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
   }
+  if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") { 
+    controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
+    } 
   var layers = [];
   var boxes = new OpenLayers.Layer.Boxes("Boxes");
   var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
@@ -158,7 +272,7 @@ var createBoundariesLayer = function(mesh) {
 
   var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
   var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
-  controller.mapPanel.map.setCenter([centLon, centLat]);
+  controller.mapPanel.map.setCenter([centLon, centLat]);  
   controller.mapPanel.map.zoomToExtent(bounds);
 };
 
@@ -194,6 +308,7 @@ Ext.define('CF.view.VelocityCombo', {
         Ext.getCmp('velocitymodel_doc_button').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
         Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
+        Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(true);
         Ext.getCmp('solver_but').setDisabled(true);
 
         combo.getStore().remove(customVelocityModel);
@@ -222,11 +337,66 @@ Ext.define('CF.view.VelocityCombo', {
 
       Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(false);
       Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(false);
+      Ext.getCmp('tabpanel_principal').down('#submit').setDisabled(true);
       Ext.getCmp('solver_but').setDisabled(false);
+      updateEventAndStationCatalog();	
+      clearSubmitForm(); 
+      updateSimulationWorkFlows();
     },
   }
 });
-
+function updateEventAndStationCatalog()
+{ 
+	Ext.getCmp('station_catalog').clearValue();
+	Ext.getCmp('station_catalog').up('panel').down('multicombo').clearValue();
+	if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+	{
+		Ext.getCmp('event_catalog').value= 'GCMT'; 
+		Ext.getCmp('event_catalog').bindStore(specfem3dGlobeEventProviders);
+		Ext.getCmp('station_catalog').bindStore(specfem3dGlobeStationProvidersStore);   
+		
+	}
+	else
+		{
+		Ext.getCmp('event_catalog').value= 'INGV'; 
+		Ext.getCmp('event_catalog').bindStore(specfem3dCartesianEventProviders);
+		Ext.getCmp('station_catalog').bindStore(specfem3dCartesianStationProvidersStore);		
+		Ext.getCmp('checkboxNSubmit').setRawValue(false);
+		}
+}
+function clearSubmitForm()
+{ 
+	Ext.getCmp('wfSelection').clearValue();
+	Ext.getCmp('submitName').setValue('');
+	Ext.getCmp('submitMessage').setValue('');
+	Ext.getCmp('checkboxNSubmit').setRawValue(false);
+}
+function updateSimulationWorkFlows()
+{
+  globeSimulationWorkFlows = [];
+  cartesianSimulationWorkFlows = [];
+  for(var i = 0; i < simulationWorkflows.length; i++) {
+    if(simulationWorkflows[i].workflowName.toLowerCase().includes("globe"))
+    {
+	globeSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }
+    else
+    {
+	 cartesianSimulationWorkFlows.push(simulationWorkflows[i]); 
+    }    
+  } 
+  if(Ext.getCmp('solvertype').getValue() == "SPECFEM3D_GLOBE") 
+  {
+	Ext.getStore('workflow_catalog').loadData(globeSimulationWorkFlows,false); 
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+  }
+  else 
+  {
+	Ext.getStore('workflow_catalog').loadData(cartesianSimulationWorkFlows,false);
+	Ext.getCmp('wfSelection').setValue(Ext.getStore('workflow_catalog').first());
+	
+  }
+}
 Ext.define('CF.view.SolverSelectForm', {
   extend: 'Ext.form.Panel',
   alias: 'widget.solverselectform',
@@ -443,6 +613,7 @@ Ext.define('CF.view.SolverSelectForm', {
     },
   }, {
     xtype: 'LinkButton',
+    id : 'submitMeshVelocityLinkButton',
     text: 'Submit a mesh and velocity model for review',
     handler: function(e) {
       e.stopEvent();
@@ -465,7 +636,7 @@ Ext.define('CF.view.SolverSelectForm', {
       solverConfStore.commitChanges();
       solverConfStore.save();
       var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
-      var wsSolverUrl = '/j2ep-1.0/odc/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
+      var wsSolverUrl = '/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
       postRequest(wsSolverUrl, "jsondata", jsonString); // makes a call to the WS that, the user receives a file back  
     }
   }]
@@ -649,7 +820,8 @@ function selectSolver(selectedSolver) {
 
   solverConfStore.setProxy({
     type: 'ajax',
-    url: '/j2ep-1.0/prov/solver/' + selectedSolver,
+    url: '/j2ep-1.0/prov/solver/' + selectedSolver, 
+  //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver+'.json',
     extraParams: {
       'userId': userId
     },
@@ -666,6 +838,7 @@ function selectSolver(selectedSolver) {
   meshesstore.setProxy({
     type: 'ajax',
     url: '/j2ep-1.0/prov/solver/' + selectedSolver,
+    //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver+'.json',
     extraParams: {
       'userId': userId
     },
@@ -696,6 +869,12 @@ function postRequest(path, paramName, paramValue) {
 //Clear map, clear velocityCombo and disable tabs for stations and events
 function clearMap() {
   var controller = CF.app.getController('Map');
+  if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
+      controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]); 
+    } 
+    if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") { 
+     controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
+    } 
   controller.getStore('Event').removeAll();
   controller.getStore('Station').removeAll();
   controller.hideEventInfo();
