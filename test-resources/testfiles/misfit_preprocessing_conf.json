@@ -1,0 +1,78 @@
+{ "runId":"concrete_misfit_preproc2",
+  "username": "aspinuso",
+  "nproc": 64,
+  "readDataPE": [
+     {
+      "input": {
+        "data_dir": "./data",
+        "synt_dir": "./synth",
+        "events": "../../quakeml",
+        "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+        "stations_dir": "./stationxml",
+        "output_dir": "./output",
+                "network": [
+                    "IV",
+                    "IV",
+					"IV"                    
+                ],
+                "station": [
+                    
+                    "SGG",
+                    "SAMA",
+                    "VAGA"
+                  
+                ]
+            }
+        }
+        ],
+  "readJSONstgin": [
+    {
+      "input": {
+        "data_dir": "./data/",
+        "synt_dir": "./synth/",
+        "events": "../../quakeml",
+        "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+        "stations_dir": "./stationxml/",
+        "output_dir": "./output/",
+        
+        "syn_stagein_from": [
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SGG.HXZ.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SGG.HXN.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SGG.HXE.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SAMA.HXZ.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SAMA.HXN.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.SAMA.HXE.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.VAGA.HXZ.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.VAGA.HXN.seedv",
+          "file://i19r01a05//gpfs/work/pr45lo/di68gex/Frosinone_newprov01431770884984/home/hpc/pr45lo/di68gex/d763eb89-122a-446e-b8ae-4469bed0e2fb/Frosinone_newprov01431770884984/Frosinone_newprov01431770884984_0/OUTPUT_FILES/TRANSFORMED/SEED/IV.VAGA.HXE.seedv"
+        ],
+        "raw_stagein_from": [
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SGG..BHN.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SGG..BHZ.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SGG..BHE.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SAMA..BHZ.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SAMA..BHN.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.SAMA..BHE.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.VAGA..BHZ.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.VAGA..BHN.mseed",
+          "file://wn1//home/aspinuso/test_download2/mseed/IV.VAGA..BHE.mseed"
+        ],
+        "stationxml_stagein_from": [
+          "file://wn1//home/aspinuso/test_download2/stationxml/IV.SGG.xml",
+          "file://wn1//home/aspinuso/test_download2/stationxml/IV.SAMA.xml",
+          "file://wn1//home/aspinuso/test_download2/stationxml/IV.VAGA.xml"
+        ],
+        "network": [
+          "IV",
+          "IV",
+          "IV"
+        ],
+        "station": [
+          "SGG",
+          "SAMA",
+          "VAGA"
+        ]
+      }
+    }
+  ]
+}

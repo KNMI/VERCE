@@ -1,0 +1,33 @@
+
+{
+   "_id":"norditalia01401024941867",
+   "username":"aspinuso",
+   "workflowId":"173",
+   "description":"nitalia 512c movie",
+   "startTime":"2014-05-25T13:35+0000",
+   "system_id":"norditalia01401024941867_2014-05-25-133509",
+   "workflowName":"specfem-PRACE-LRZ-testq-max512cores_2014-05-22-185540",
+   "input":[
+      {
+         "url":"/documents/10180/11604/stations_povelocity01399984135689",
+         "mime-type":"application/xml",
+         "name":"stations"
+      },
+      {
+         "url":"/documents/10180/11604/events_povelocity01400801708113",
+         "mime-type":"application/xml",
+         "name":"quakeml"
+      },
+      {
+         "url":"http://portal.verce.eu/documents/10180/11644/SPECFEM3D_CARTESIAN_21447_norditalia01401024941867.json",
+         "mime-type":"application/json",
+         "name":"solverconf"
+      },
+      {
+         "url":"http://portal.verce.eu/documents/10180/11630/norditalia01401024941867.zip",
+         "mime-type":"application/zip",
+         "name":"vercepes"
+      }
+   ],
+   "type":"workflow_run"
+}
