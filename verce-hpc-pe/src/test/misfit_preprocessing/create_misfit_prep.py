@@ -34,6 +34,7 @@ class ReadDataPE(GenericPE):
         event_id = params['event_id']
         stations_dir = os.environ['STAGED_DATA']+'/'+params['stations_dir']
         output_dir = os.environ['STAGED_DATA']+'/'+params['output_dir']
+        self.log(params)
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -103,6 +104,7 @@ class StoreStreamChannel(ConsumerPE):
     def __init__(self, tag):
         ConsumerPE.__init__(self)
         self.tag = tag
+        self._add_output('output')
 
     def _process(self, data):
         filelist = {}
@@ -123,6 +125,7 @@ class PlotStream(ConsumerPE):
     def __init__(self, tag):
         ConsumerPE.__init__(self)
         self.tag = tag
+        self._add_output('output_real')
 
     def _process(self, data):
         stream, metadata = data
@@ -192,9 +195,15 @@ else:
     
     
 
-injectProv(graph,SeismoPE)
-graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'])
+ProvenancePE.BULK_SIZE=20
+ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
 
-    
-#InitiateNewRun(graph,ProvenanceRecorderToFileBulk,provImpClass=SeismoPE,input=[{'ff':'1','blah':'3'}],username=os.environ['USER_NAME'],workflowId="173",description="description",system_id="xxxx",workflowName="misfit_preprocessing",runId=os.environ['RUN_ID'],w3c_prov=False)
-#display(graph)
+
+
+#for lcoal test with full provenance generation and upload to local repository
+#Store via service
+#ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
+#rid='PREPROCESS_VERCE_'+getUniqueId()
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=rid,w3c_prov=False)
+

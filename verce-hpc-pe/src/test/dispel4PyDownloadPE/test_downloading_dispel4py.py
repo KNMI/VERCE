@@ -164,8 +164,6 @@ graph.connect(watcher_xml, 'output', xmlr, "input")
 #injectProv(graph,SeismoPE)
 #graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'])
 
-#Store via service
-ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
 
 #Store to local path
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
@@ -174,5 +172,9 @@ ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 ProvenancePE.BULK_SIZE=20
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
 
-#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=os.environ['RUN_ID'],w3c_prov=False)
+#for lcoal test with full provenance generation and upload to local repository
+#Store via service
+#ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
+#rid='DOWNLOAD_VERCE_'+getUniqueId()
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=rid,w3c_prov=False)
 
