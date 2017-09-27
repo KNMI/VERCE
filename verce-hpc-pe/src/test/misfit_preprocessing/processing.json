@@ -26,7 +26,7 @@
             "type": "plot_stream",
             "parameters": {
                 "source":"remove_response",
-                "output_dir": "../test-resources/misfit-data/output",
+                "output_dir": "../../test-resources/misfit-data/output",
                 "tag": "observed-waveform"
             }
         },
@@ -74,7 +74,7 @@
             "type": "plot_stream",
             "parameters": {
                 "source":"taper",
-                "output_dir": "../test-resources/misfit-data/output",
+                "output_dir": "../../test-resources/misfit-data/output",
                 "tag": "synthetic-waveform"
             }
         },
@@ -82,7 +82,7 @@
             "type": "store_stream",
             "parameters": {
                 "source":"taper",
-                "output_dir": "../test-resources/misfit-data/output",
+                "output_dir": "../../test-resources/misfit-data/output",
                 "tag": "synthetic-waveform"
             }
         },

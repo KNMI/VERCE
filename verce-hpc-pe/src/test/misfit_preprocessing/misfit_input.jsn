@@ -1,12 +1,13 @@
 {
-    "data": [
+    "readDataPE": [
         {
             "input": {
-                "data_dir": "../test-resources/misfit-data/data",
-                "synt_dir": "../test-resources/misfit-data/synth",
-                "events_dir": "../test-resources/misfit-data/events",
-                "stations_dir": "../test-resources/misfit-data/stations",
-                "output_dir" : "../test-resources/misfit-data/output",
+                "data_dir": "../../test-resources/misfit-data/data",
+                "synt_dir": "../../test-resources/misfit-data/synth",
+                "events": "../../test-resources/misfit-data/quakeml",
+                "event_id": "smi:webservices.rm.ingv.it/fdsnws/event/1/query?eventId=1744261",
+                "stations_dir": "../../test-resources/misfit-data/stations",
+                "output_dir" : "../../test-resources/misfit-data/output",
                 "network": [
                     "IV",
                     "IV"
