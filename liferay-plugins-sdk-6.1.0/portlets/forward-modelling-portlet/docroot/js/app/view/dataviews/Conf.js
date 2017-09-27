@@ -30,7 +30,7 @@
 	{   
  		if(parseFloat(newValue) || newValue=="0")
 		{
-			updateBoundaryBox(record);
+			updateBoundaries(record);
 		}
 	}    
       };
@@ -122,157 +122,172 @@
     this.callParent(arguments);
   }
 });
-
-function updateBoundaryBox(record)
+function updateBoundaries(record)
 {
 	// convert values to float	
 	var width_xi=parseFloat(document.getElementsByName("ANGULAR_WIDTH_XI_IN_DEGREES")[0].value);
 	var width_eta=parseFloat(document.getElementsByName("ANGULAR_WIDTH_ETA_IN_DEGREES")[0].value);
 	var centLat=parseFloat(document.getElementsByName("CENTER_LATITUDE_IN_DEGREES")[0].value);
 	var centLon=parseFloat(document.getElementsByName("CENTER_LONGITUDE_IN_DEGREES")[0].value);
+	 	
+	minLat=centLat-width_eta/2;
+  maxLat=centLat+width_eta/2; 
+ 	// check if it crosses polar regions
+ 	if(minLat < -90 || minLat > 90 || maxLat < -90 || maxLat > 90 )
+ 	{
+ 		 Ext.MessageBox.alert('WARNING!', 'map projection does not support going across polar regions', function(){ 
+     }); 
+ 		//undo change
+ 		record.set('value', record.previousValues.value);
+ 		document.getElementsByName(record.get('name'))[0].value=record.get('value');
+ 		return;
+ 	}
 
-	// work out min/max values for latitude and longitude	
-	var minLon=centLon-width_eta;
-	var maxLon=centLon+width_eta;
-	var minLat=centLat-width_xi;
-	var maxLat=centLat+width_xi;
+	// determine polygon vertices	
+	polygonProps=workoutVertices(centLat, centLon, width_eta, width_xi);
 
-	// reshuffle values
-	
-	minLat=Math.min(minLat,maxLat);
-	maxLat=Math.max(minLat,maxLat);
-	minLon=Math.min(minLon,maxLon);
-	maxLon=Math.max(minLon,maxLon); 
+  // build a polgon instance
+  polygon = buildPolyon(polygonProps.vertices); 
 
-	//updateMeshValues(mesh,minLon,maxLon,minLat,maxLat)
-	var mesh=Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());	
-	mesh.data.geo_minLat=minLat;
-	mesh.data.geo_maxLat=maxLat;
-	mesh.data.geo_minLon=minLon;
-	mesh.data.geo_maxLon=maxLon;
 
-	var meshes=computeMeshValues(minLat, maxLat, minLon,maxLon);
-	if(Ext.getCmp('meshes').getValue()=="Bespoke")
-	{
-		 mesh.computedMeshes=meshes; 
-	}
-	createBoxesLayer(meshes,centLat,centLon,minLat, maxLat, minLon,maxLon);
+  // work out min/max values for latitude and longitude
+  values=computeMinMaxValues(polygon,);
+	//update mesh values
+	var mesh= {data:{polygon:{}}};
+  
+	mesh.data.polygon=polygon; 
+  mesh.data.geo_minLat=values[0];
+  mesh.data.geo_maxLat=values[1];
+  mesh.data.geo_minLon=values[2];
+  mesh.data.geo_maxLon=values[3];  
 
-} 
-function computeMeshValues(minLat, maxLat, minLon,maxLon)
-{ 
-	
-
-	if((minLat < -90)&&(minLon < -180))
-	{	
-		box1={"minLat":-90,"maxLat":maxLat,"minLon":-180,"maxLon":maxLon}; 
-		box2={"minLat":-90,"maxLat":maxLat,"minLon":(180-(-180-minLon)),"maxLon":180}; 
-		 
-		return [box1,box2];
-	}
-	else if((minLat < -90)&&(maxLon > 180))
-	{	
-		box1={"minLat":-90,"maxLat":maxLat,"minLon":minLon,"maxLon":180};
-		box2={"minLat":-90,"maxLat":maxLat,"minLon":-180,"maxLon":(-180+(maxLon-180))};   
-
-		return [box1,box2];	 
-	}
-	else if((maxLat > 90) && (minLon < -180))
-	{  
-		box1={"minLat":minLat,"maxLat":90,"minLon":-180,"maxLon":maxLon}; 
-		box2={"minLat":minLat,"maxLat":90,"minLon":(180-(-180-minLon)),"maxLon":180};
- 
-		return [box1,box2]; 
-	}
-	else if((maxLat > 90) && (maxLon > 180))
-	{  
-		box1={"minLat":minLat,"maxLat":90,"minLon":minLon,"maxLon":180};
-		box2={"minLat":minLat,"maxLat":90,"minLon":-180,"maxLon":(-180+(maxLon-180))}; 
-
-		return [box1,box2];
-	}
-	else if(minLon < -180)
-	{ 
-		box1={"minLat":minLat,"maxLat":maxLat,"minLon":-180,"maxLon":maxLon};
-		box2={"minLat":minLat,"maxLat":maxLat,"minLon":(180-(-180-minLon)),"maxLon":180};
-
-		return [box1,box2];
-	}
-	else if(maxLon > 180 )
-	{ 
-		box1={"minLat":minLat,"maxLat":maxLat,"minLon":minLon,"maxLon":180};
-		box2={"minLat":minLat,"maxLat":maxLat,"minLon":-180,"maxLon":(-180+(maxLon-180))};  
-
-		return [box1,box2];
-	}	
-	else if(minLat < -90)
-	{
-		return [{"minLat":-90,"maxLat":maxLat,"minLon":minLon,"maxLon":maxLon}];  
- 
-	}
-	else if(maxLat > 90)
-	{
-		return[{"minLat":minLat,"maxLat":90,"minLon":minLon,"maxLon":maxLon}]; 
- 
-	}
-	else
-	{
-		return [{"minLat":minLat,"maxLat":maxLat,"minLon":minLon,"maxLon":maxLon}]; 
-	}
+ 	// create polygons
+ 	var controller = CF.app.getController('Map');  
+	controller.createPolygonLayer(mesh,polygonProps.isAcrossEquator);
 }
+// returns min/max values for lat & lon in degrees 
+function computeMinMaxValues(polygon,isAcrossEquator)
+{  
+  minLat=Math.min(polygon.lower_left[1],polygon.lower_right[1]);
+  minLon=isAcrossEquator ? Math.min(polygon.mid_left[0],Math.min(polygon.lower_left[0],polygon.upper_left[0]))
+                         : Math.min(polygon.lower_left[0],polygon.upper_left[0]);
+  maxLon=isAcrossEquator ? Math.max(polygon.mid_right[0],Math.max(polygon.lower_right[0],polygon.upper_right[0]))
+                         : Math.max(polygon.lower_right[0],polygon.upper_right[0]);
+  maxLat=Math.max(polygon.upper_left[1],polygon.upper_right[1]);
 
-function createBoxesLayer(meshes,centLat,centLon,minLat, maxLat, minLon,maxLon) {
-	  var controller = CF.app.getController('Map');
-	  if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
-		controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
-	  }  
-	  Ext.getStore('Event').removeAll();
-	  Ext.getStore('Station').removeAll();
-	  var layers = [];
-	  var boxes = new OpenLayers.Layer.Boxes("Boxes");
-
-
-	meshes.forEach( function (mesh,centLat,centLon)
-	{
-	  var coord = [mesh.minLon, mesh.minLat, mesh.maxLon, mesh.maxLat];
-	  bounds = OpenLayers.Bounds.fromArray(coord);
-	  box = new OpenLayers.Marker.Box(bounds);
-	  box.setBorder("black"); 
-	  boxes.addMarker(box);
-	  layers.push(boxes);
-	});
-	  controller.mapPanel.map.addLayers(layers);
-	 
-	 if (meshes.length ==1)
-	{
-	  controller.mapPanel.map.setCenter([centLon,centLat]);
-	  controller.mapPanel.map.zoomToExtent(bounds);
-	}
-	// adjusting the lat/lon values for min, max and central when there is more than one box to be shown on the map
-	else
-	{ 
-		min_lat=minLat
-		min_lon=minLon
-		max_lat=maxLat
-		max_lon=maxLon
-		cent_lat=centLat
-		cent_lon=centLon 
-		if(minLat<-90)
-		{
-			min_lat=-90  
-		}
-		if(maxLat>90)
-		{ 
-			max_lat=90 
-		}
-		if(minLon<-180 || maxLon>180)
-		{ 
-			min_lon=-180 
-			max_lon=180
-			cent_lon=0
-		}
+	return [minLat,maxLat,minLon,maxLon];
+}
+function buildPolyon(vertices)
+{  
+	lower_left=vertices[0];
+	lower_right=vertices[1];
+	mid_right=vertices[2];
+	upper_right=vertices[3];
+	upper_left=vertices[4];
+	mid_left=vertices[5];
+ 
+	return {"lower_left":[lower_left[1],lower_left[0]],"lower_right":[lower_right[1],lower_right[0]],"mid_right":[mid_right[1],mid_right[0]],
+				  "upper_right":[upper_right[1],upper_right[0]],"upper_left":[upper_left[1],upper_left[0]],"mid_left":[mid_left[1],mid_left[0]]}; 
+}
+// returns a list of vertices for building an instance of a polygon shape
+function workoutVertices(centLat, centLon, width_eta, width_xi)
+{  
+	eta_km=width_eta*111.699;
+	xi_km=width_xi*111.699; 
+  
+	// find top and bottom mid points
+	top_mid_pt=rhumbDestinationPoint(centLat, centLon, 0, eta_km/2);
+	btm_mid_pt=rhumbDestinationPoint(centLat, centLon, 180, eta_km/2);
 	
-	  controller.mapPanel.map.setCenter([cent_lon,cent_lat]);
-	  controller.mapPanel.map.zoomToExtent(new OpenLayers.Bounds.fromArray([min_lon,min_lat,max_lon,max_lat]));
+	var mid_left=[];
+	var mid_right=[];
+	
+	// if across the equator then find the mid left and right points
+	isAcrossEquator=minLat<0 && maxLat>0;
+	if(isAcrossEquator)
+	{ 
+		// find left and right mid points
+		mid_left=rhumbDestinationPoint(0, centLon, 270, xi_km/2); 
+	    mid_right=rhumbDestinationPoint(0, centLon, 90, xi_km/2);
+	}   
+	// identify corner points
+	lower_left=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 270, xi_km/2);
+	lower_right=rhumbDestinationPoint(btm_mid_pt[0], btm_mid_pt[1], 90, xi_km/2);
+	upper_left=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 270, xi_km/2);
+	upper_right=rhumbDestinationPoint(top_mid_pt[0], top_mid_pt[1], 90, xi_km/2);
+	
+	dist_top_km_360= 360*111.320*Math.cos(toRadians(top_mid_pt[0]));
+	dist_btm_km_360= 360*111.320*Math.cos(toRadians(btm_mid_pt[0]));
+	  
+	if(dist_top_km_360 < xi_km)
+	{ 
+	  upper_left=[top_mid_pt[0],0];
+	  upper_right=[top_mid_pt[0],360];
 	}
+	if(dist_btm_km_360 < xi_km)
+	{ 
+	  lower_left=[btm_mid_pt[0],0];
+	  lower_right=[btm_mid_pt[0],360];
+	}     
+	return {"isAcrossEquator":isAcrossEquator, "vertices":[lower_left, lower_right, mid_right, upper_right, upper_left, mid_left]}; 
+}  
+function normaliseAngle(angle)
+{
+	if(angle<=180 && angle >=-180)
+		return angle;
+	 
+    return angle%360; 
+}
+function toRadians(degrees)
+{
+	radians= degrees * (Math.PI/180);
+	return radians;
+	
+}
+function toDegrees(radians)
+{
+	degrees= radians * (180/Math.PI);
+	return degrees;
+} 
+// returns the distance in kilometers between two points
+// (http://www.movable-type.co.uk/scripts/latlong.html)
+function rhumbDistance(lat1, lon1, lat2, lon2){     	
+	var R = 6371; // radius in km
+    var φ1 = toRadians(lat1), φ2 = toRadians(lat2);
+    var Δφ = φ2 - φ1;
+    var Δλ = toRadians(Math.abs(lon2-lon1));
+    // if dLon over 180° take shorter rhumb line across the anti-meridian:
+    if (Math.abs(Δλ) > Math.PI) Δλ = Δλ>0 ? -(2*Math.PI-Δλ) : (2*Math.PI+Δλ);
+
+    // on Mercator projection, longitude distances shrink by latitude; q is the 'stretch factor'
+    // q becomes ill-conditioned along E-W line (0/0); use empirical tolerance to avoid it
+    var Δψ = Math.log(Math.tan(φ2/2+Math.PI/4)/Math.tan(φ1/2+Math.PI/4));
+    var q = Math.abs(Δψ) > 10e-12 ? Δφ/Δψ : Math.cos(φ1);
+
+    // distance is pythagoras on 'stretched' Mercator projection
+    var δ = Math.sqrt(Δφ*Δφ + q*q*Δλ*Δλ); // angular distance in radians
+    var dist = δ * R;
+
+    return dist;
+}
+//returns the destination point reachable along a rhumb line from a given point with bearing in degrees and a distance in kilometers
+// (http://www.movable-type.co.uk/scripts/latlong.html)
+function rhumbDestinationPoint(lat, lon, bearing, distance) {
+	radius = 6371;// radius in km
+    var δ = Number(distance) / radius; // angular distance in radians
+    var φ1 = toRadians(lat), λ1 = toRadians(lon);
+    var θ = toRadians(bearing);
+
+    var Δφ = δ * Math.cos(θ);
+    var φ2 = φ1 + Δφ;
+
+    // check for some daft bugger going past the pole, normalise latitude if so
+    if (Math.abs(φ2) > Math.PI/2) φ2 = φ2>0 ? Math.PI-φ2 : -Math.PI-φ2;
+    var Δψ = Math.log(Math.tan(φ2/2+Math.PI/4)/Math.tan(φ1/2+Math.PI/4));
+    var q = Math.abs(Δψ) > 10e-12 ? Δφ / Δψ : Math.cos(φ1); // E-W course becomes ill-conditioned with 0/0 
+    
+    var Δλ = δ*Math.sin(θ)/q;
+    var λ2 = λ1 + Δλ;
+ 
+    return [toDegrees(φ2), normaliseAngle(toDegrees(λ2))]; // (toDegrees(λ2)+540)%360-180];//normalise to −180..+180°
 }

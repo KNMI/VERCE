@@ -27,7 +27,10 @@ def getMeshArea(minlatitude, maxlatitude, minlongitude, maxlongitude):
         elif float(maxlatitude) > 90 and float(maxlongitude) > 180:
             return [MeshArea(minlatitude, 90, minlongitude, 180),
                     MeshArea(minlatitude, 90, -180, (-180 + (float(maxlongitude) - 180)))]
-
+        
+        elif float(minlongitude) < -180 and float(maxlongitude) > 180:
+            return  [MeshArea(minlatitude, maxlatitude, -180, 180)]
+        
         elif float(minlongitude) < -180:
             return  [MeshArea(minlatitude, maxlatitude, -180, maxlongitude),
                      MeshArea(minlatitude, maxlatitude, (180 - (-180 - float(minlongitude))), 180)]

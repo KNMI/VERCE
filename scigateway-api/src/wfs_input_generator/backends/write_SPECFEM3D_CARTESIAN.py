@@ -417,11 +417,10 @@ DEFAULT_CONFIGURATION = {
 }
 
 
-def write(config, events, stations):
+def write(config):
     """
-    Writes input files for SPECFEM3D GLOBE EPOS version.
+    Writes a Par_file for SPECFEM3D_CARTESIAN version.
     """
-    output_files = {}
 
     def fbool(value):
         """
@@ -444,80 +443,4 @@ def write(config, events, stations):
 
     par_file = par_file_template.format(**config).strip()
 
-    # The template for the CMTSOLUTION file.
-    CMT_SOLUTION_template = (
-        "PDE {time_year} {time_month} {time_day} {time_hh} {time_mm} "
-        "{time_ss:.2f} {event_latitude:.5f} {event_longitude:.5f} "
-        "{event_depth:.5f} {event_mag:.1f} {event_mag:.1f} {event_name}\n"
-        "event name:      0000000\n"
-        "time shift:       0.0000\n"
-        "half duration:    {half_duration:.4f}\n"
-        "latitude:       {event_latitude:.5f}\n"
-        "longitude:      {event_longitude:.5f}\n"
-        "depth:{event_depth: 17.5f}\n"
-        "Mrr:         {mrr:.6g}\n"
-        "Mtt:         {mtt:.6g}\n"
-        "Mpp:         {mpp:.6g}\n"
-        "Mrt:         {mrt:.6g}\n"
-        "Mrp:         {mrp:.6g}\n"
-        "Mtp:         {mtp:.6g}")
-
-    # Create the event file.
-    if len(events) != 1:
-        msg = ("The SPECFEM backend can currently only deal with a single "
-               "event.")
-        raise NotImplementedError(msg)
-    event = events[0]
-
-    # Calculate the moment magnitude
-    M_0 = 1.0 / math.sqrt(2.0) * math.sqrt(
-        event["m_rr"] ** 2 +
-        event["m_tt"] ** 2 +
-        event["m_pp"] ** 2)
-    magnitude = 2.0 / 3.0 * math.log10(M_0) - 6.0
-
-    lat, lng = (event["latitude"], event["longitude"])
-    m_rr, m_tt, m_pp, m_rt, m_rp, m_tp = (
-        event["m_rr"], event["m_tt"], event["m_pp"], event["m_rt"],
-        event["m_rp"], event["m_tp"])
-
-    CMT_SOLUTION_file = CMT_SOLUTION_template.format(
-        time_year=event["origin_time"].year,
-        time_month=event["origin_time"].month,
-        time_day=event["origin_time"].day,
-        time_hh=event["origin_time"].hour,
-        time_mm=event["origin_time"].minute,
-        time_ss=event["origin_time"].second +
-        event["origin_time"].microsecond / 1E6,
-        event_mag=magnitude,
-        event_name=str(event["origin_time"]) + "_" + ("%.1f" % magnitude),
-        event_latitude=float(lat),
-        event_longitude=float(lng),
-        event_depth=float(event["depth_in_km"]),
-        half_duration=0.0,
-        # Convert to dyne * cm.
-        mtt=m_tt * 1E7,
-        mpp=m_pp * 1E7,
-        mrr=m_rr * 1E7,
-        mtp=m_tp * 1E7,
-        mrt=m_rt * 1E7,
-        mrp=m_rp * 1E7)
-
-    station_parts = []
-    for station in stations:
-        station_parts.append(
-            "{station:s} {network:s} {latitude:.5f} "
-            "{longitude:.5f} {elev:.1f} {buried:.1f}".format(
-                network=station["id"].split(".")[0],
-                station=station["id"].split(".")[1],
-                latitude=station["latitude"],
-                longitude=station["longitude"],
-                elev=station["elevation_in_m"],
-                buried=station["local_depth_in_m"]))
-
-    # Put the files int he output directory.
-    output_files["Par_file"] = par_file
-    output_files["CMTSOLUTION"] = CMT_SOLUTION_file
-    output_files["STATIONS"] = "\n".join(station_parts)
-
-    return output_files
+    return par_file
