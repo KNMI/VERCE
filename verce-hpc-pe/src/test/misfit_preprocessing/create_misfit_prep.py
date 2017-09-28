@@ -205,5 +205,5 @@ injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlPara
 #Store via service
 #ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
 #rid='PREPROCESS_VERCE_'+getUniqueId()
-#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="download",runId=rid,w3c_prov=False)
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="preprocessing",runId=rid,w3c_prov=False)
 

@@ -1,0 +1,32 @@
+{ "simulationRunId": "simulation_CHILE-ARGENTINA0_1506345338526",
+  "runId": "download_CHILE-ARGENTINA0_1506345338526_<suffix set at submission time>",
+  
+  "username": "aspinuso",
+  "mseed_path": ".\/mseed",
+  "stationxml_path": ".\/stationxml",
+  "downloadPE": [
+    {
+      "input": {
+        "minimum_interstation_distance_in_m": 100,
+        "channel_priorities": [
+          "BH[E,N,Z]",
+          "EH[E,N,Z]"
+        ],
+        "location_priorities": [
+          "",
+          "00",
+          "10"
+        ],
+        "mseed_path": "./mseed",
+        "stationxml_path": "./stationxml",
+        "DT": "1e-3",
+        "NSTEP": 6000,
+        "ORIGIN_TIME": "2016-11-04T16:20:49.900000Z",
+        "minlatitude": -39.120328,
+        "maxlatitude": -31.885757,
+        "minlongitude": -76.086899,
+        "maxlongitude": -69.512103
+      }
+    }
+  ]
+}

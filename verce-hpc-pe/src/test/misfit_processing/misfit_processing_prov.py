@@ -78,7 +78,7 @@ class StreamProducer(GenericPE):
         for comp in components:
             
             
-            dic = self.extractItemMetadata(data_st.select(component=comp))
+            dic = self.extractItemMetadata(data_st.select(component=comp),None)
             raw_data={}
             
             if len(dic)>0:
@@ -89,7 +89,7 @@ class StreamProducer(GenericPE):
                 self.error=self.error+' Problem extracting raw data for comp '+str(comp)+'and station: '+str(data_st)
                 
                 
-            dic = self.extractItemMetadata(synth_st.select(component=comp))
+            dic = self.extractItemMetadata(synth_st.select(component=comp),None)
             syn_data={}
             if len(dic)>0:
                 for key in dic[0]:
@@ -288,13 +288,13 @@ class MatchComponents(GenericPE):
         key = (station_id, image_type)
         self.data[key][component] = image_string
         if len(self.data[key]) != 3:
-             
+            self.update_prov_state(key,image_string,metadata={'component':component,'station_id': station_id,'component_number':len(self.data[key])},ignore_inputs=False, dep=[key])
             return
 
         value = self.data[key]
         del self.data[key]
          
-        self.write('output',[station_id, image_type, value, output_folder],metadata={'station_id': station_id})
+        self.write('output',[station_id, image_type, value, output_folder],metadata={'station_id': station_id},dep=[key])
 
          
 
@@ -464,11 +464,16 @@ graph.connect(window_tapering_PE, "output", misfit_PE, "input")
 graph.connect(misfit_PE, "image", match_PE, "input")
 graph.connect(match_PE, "output", merge_images_PE, "input")
 
+ 
 
+ProvenancePE.BULK_SIZE=20
+ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 injectProv(graph,SeismoPE)
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
 
 
-#injectProv(graph,SeismoPE)
-#InitiateNewRun(graph,ProvenanceRecorderToServiceBulk,provImpClass=SeismoPE,input=[{'ff':'1','blah':'3'}],username="aspinuso",workflowId="173",description="description",system_id="xxxx",workflowName="misfit_postprocessing",runId="misfit_post_xx_stateful2",w3c_prov=False)
-#display(graph)
+#for lcoal test with full provenance generation and upload to local repository
+#Store via service
+#ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
+#rid='MISFIT_VERCE_'+getUniqueId()
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode='service',input=[{'test':'1','blah':'3'}],username="aspinuso",workflowId="173",description="test",system_id="xxxx",workflowName="misfit",runId=rid,w3c_prov=False)
