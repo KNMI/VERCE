@@ -466,7 +466,7 @@ graph.connect(match_PE, "output", merge_images_PE, "input")
 
 
 injectProv(graph,SeismoPE)
-graph=attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'])
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
 
 
 #injectProv(graph,SeismoPE)

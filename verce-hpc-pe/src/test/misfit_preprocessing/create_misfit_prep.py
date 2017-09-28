@@ -197,7 +197,7 @@ else:
 
 ProvenancePE.BULK_SIZE=20
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
-injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
 
 
 
