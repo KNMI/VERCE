@@ -1,10 +1,12 @@
-{
-"simulationRunId": "simulation_abruzzo00_1506529014997",
-"runId": "download_abruzzo00_1506529014997_<suffix set at submission time>",
-"nproc": 64,
-"downloadPE": [
-{
-"input": {
+{ "simulationRunId": "simulation_CHILE-ARGENTINA0_1506345338526",
+  "runId": "download_CHILE-ARGENTINA0_1506345338526_<suffix set at submission time>",
+  
+  "username": "aspinuso",
+  "mseed_path": ".\/mseed",
+  "stationxml_path": ".\/stationxml",
+  "downloadPE": [
+    {
+      "input": {
 "minimum_interstation_distance_in_m": 100,
 "channel_priorities": [
 "BH[E,N,Z]",
@@ -24,7 +26,7 @@
 "maxlatitude": 42.9,
 "minlongitude": 12.04,
 "maxlongitude": 14.45
-}
-}
-]
+      }
+    }
+  ]
 }
