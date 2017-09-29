@@ -67,7 +67,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units})
+                ],metadata={'output_units':self.output_units,'prov:type':'observed-waveform'})
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -75,7 +75,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units})
+                ],metadata={'output_units':self.output_units,'prov:type':'synthetic-waveform'})
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
