@@ -35,7 +35,7 @@ Ext.define('CF.view.Map', {
     // OpenLayers object creating
     var wms = new OpenLayers.Layer.WMS(
       "World Base Layer (KNMI)",
-      "http://geoservices.knmi.nl/cgi-bin/worldmaps.cgi?", {
+      "https://geoservices.knmi.nl/cgi-bin/worldmaps.cgi?", {
         layers: 'world_raster'
       },{wrapDateLine: true}      
     );
@@ -43,7 +43,7 @@ Ext.define('CF.view.Map', {
     var hwms =
       new OpenLayers.Layer.WMS(
         "Hazard Map WMS (EFEHR)",
-        "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&", {
+        "/ethz-mapserv/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&", {
           layers: 'hmap469',
           transparent: 'true',
         }, {
@@ -56,7 +56,7 @@ Ext.define('CF.view.Map', {
     var vecwms =
       new OpenLayers.Layer.WMS(
         "Borders (EFEHR)",
-        "http://gemmsrvr.ethz.ch/cgi-bin/mapserv?map=/var/www/mapfile/worldvector.map&", {
+        "/ethz-mapserv/mapserv?map=/var/www/mapfile/worldvector.map&", {
           layers: 'wv_country_ol',
           transparent: 'true',
         }, {
@@ -68,7 +68,7 @@ Ext.define('CF.view.Map', {
     var geowms =
       new OpenLayers.Layer.WMS(
         "Geology (OneGeology) ",
-        "http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology",
+        "https://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology",
          {layers: 'Europe_GISEurope_1500K_BedrockAge',        
           transparent: 'true'
         }, {
@@ -79,7 +79,7 @@ Ext.define('CF.view.Map', {
     var faultswms =
       new OpenLayers.Layer.WMS(
         "Faults (OneGeology)",
-        " http://mapdmzrec.brgm.fr/cgi-bin/mapserv?map=/carto/ogg/mapFiles/GISEurope_Bedrock_and_Structural_Geology.map&", {
+        " /brgm-mapserver/mapserv?map=/carto/ogg/mapFiles/GISEurope_Bedrock_and_Structural_Geology.map&", {
           layers: 'Europe_GISEurope_1500K_Faults',
           transparent: 'true'
         }, {
@@ -403,7 +403,7 @@ Ext.define('CF.view.Map', {
                     xtype: "gx_legendimage",
 
 
-                    url: 'http://gemmsrvr.ethz.ch/cgi-bin/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&FORMAT=image%2Fpng&SRS=EPSG%3A4326&VISIBILITY=true&LAYER=hmap469',
+                    url: '/ethz-mapserv/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&TRANSPARENT=true&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&STYLES=&FORMAT=image%2Fpng&SRS=EPSG%3A4326&VISIBILITY=true&LAYER=hmap469',
 
                     padding: 5
                   }]
@@ -449,7 +449,7 @@ Ext.define('CF.view.Map', {
                   autoScroll: true,
                   items: [{
                     xtype: "gx_legendimage",
-                    url: "http://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=Europe_GISEurope_1500K_BedrockAge&format=image/png&STYLE=default",
+                    url: "https://mapsref.brgm.fr/wxs/1GG/GISEurope_Bedrock_and_Structural_Geology?version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=Europe_GISEurope_1500K_BedrockAge&format=image/png&STYLE=default",
                     padding: 5
                   }]
                 })]
