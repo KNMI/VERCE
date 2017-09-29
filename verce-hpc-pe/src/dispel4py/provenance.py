@@ -1369,7 +1369,6 @@ def profile_prov_run(
                          "source":source,
                          "update":update
                          }
-    newrun.parameters=clean_empty(newrun.parameters)
     _graph = WorkflowGraph()
     provrec = None
 
