@@ -50,6 +50,12 @@ OUTPUT_METADATA = 'provenance'
 # def write(self, name, data, **kwargs):
 #    self._write(name, data)
 
+def clean_empty(d):
+    if not isinstance(d, (dict, list)):
+        return d
+    if isinstance(d, list):
+        return [v for v in (clean_empty(v) for v in d) if v]
+    return {k: v for k, v in ((k, clean_empty(v)) for k, v in d.items()) if v}
 
 def total_size(o, handlers={}, verbose=False):
     """ Returns the approximate memory footprint an object and all of its contents.
@@ -1326,7 +1332,7 @@ def profile_prov_run(
         graph,
         provRecorderClass=None,
         provImpClass=ProvenancePE,
-        input=[],
+        input=None,
         username=None,
         workflowId=None,
         description="",
@@ -1338,10 +1344,11 @@ def profile_prov_run(
         clustersRecorders={},
         feedbackPEs=[],
         save_mode='file',
-        skip_rules={}
+        skip_rules={},
+        update=False
         ):
 
-    if username is None or workflowId is None or workflowName is None:
+    if not update and (username is None or workflowId is None or workflowName is None):
         raise Exception("Missing values")
     if runId is None:
         runId = getUniqueId()
@@ -1359,8 +1366,10 @@ def profile_prov_run(
                          "runId": runId,
                          "mapping": sys.argv[1],
                          "skip_rules":skip_rules,
-                         "source":source
+                         "source":source,
+                         "update":update
                          }
+    newrun.parameters=clean_empty(newrun.parameters)
     _graph = WorkflowGraph()
     provrec = None
 
@@ -1535,7 +1544,7 @@ class NewWorkflowRun(ProvenancePE):
 
     def makeRunMetdataBundle(
             self,
-            input=[],
+            input=None,
             username=None,
             workflowId=None,
             description="",
@@ -1544,10 +1553,11 @@ class NewWorkflowRun(ProvenancePE):
             w3c=False,
             runId=None,
             modules=None,
-            source=None):
+            source=None,
+            update=False):
 
         bundle = {}
-        if username is None or workflowId is None or workflowName is None:
+        if not update and (username is None or workflowId is None or workflowName is None):
             raise Exception("Missing values")
         else:
             if runId is None:
@@ -1567,6 +1577,7 @@ class NewWorkflowRun(ProvenancePE):
             bundle["type"] = "workflow_run"
             bundle["modules"] = modules
             bundle["source"] = source
+            bundle=clean_empty(bundle)
 
         return bundle
 
@@ -1575,14 +1586,15 @@ class NewWorkflowRun(ProvenancePE):
 
         bundle = self.makeRunMetdataBundle(
             username=self.parameters["username"],
-            input=self.parameters["input"],
-            workflowId=self.parameters["workflowId"],
-            description=self.parameters["description"],
-            system_id=self.parameters["system_id"],
-            workflowName=self.parameters["workflowName"],
+            input=self.parameters["input"] if 'input' in self.parameters else None,
+            workflowId=self.parameters["workflowId"] if 'workflowId' in self.parameters else None,
+            description=self.parameters["description"] if 'description' in self.parameters else None,
+            system_id=self.parameters["system_id"] if 'system_id' in self.parameters else None,
+            workflowName=self.parameters["workflowName"] if 'workflowName' in self.parameters else None,
             runId=self.parameters["runId"],
             modules=sorted(["%s==%s" % (i.key, i.version) for i in pip.get_installed_distributions()]),
-            source=self.parameters["source"])
+            source=self.parameters["source"] if 'source' in self.parameters else None,
+            update=self.parameters["update"])
             
         self.log("STORING WORKFLOW RUN METADATA")
 

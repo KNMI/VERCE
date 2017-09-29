@@ -219,6 +219,8 @@ ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 #Size of the provenance bulk before sent to storage or sensor
 ProvenancePE.BULK_SIZE=20
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
+# to activate with the migration to the new provenance API
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_FILE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
 
 #for lcoal test with full provenance generation and upload to local repository
 #Store via service
