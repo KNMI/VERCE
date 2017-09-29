@@ -469,6 +469,8 @@ graph.connect(match_PE, "output", merge_images_PE, "input")
 ProvenancePE.BULK_SIZE=20
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID']})
+# to activate with the migration to the new provenance API
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_FILE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
 
 
 
