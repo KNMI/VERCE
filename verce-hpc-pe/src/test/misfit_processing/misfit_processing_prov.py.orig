@@ -464,14 +464,19 @@ graph.connect(window_tapering_PE, "output", misfit_PE, "input")
 graph.connect(misfit_PE, "image", match_PE, "input")
 graph.connect(match_PE, "output", merge_images_PE, "input")
 
-
+ 
 
 ProvenancePE.BULK_SIZE=20
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
+<<<<<<< HEAD
+injectProv(graph,SeismoPE)
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
+=======
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID']})
 # to activate with the migration to the new provenance API
 #profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_FILE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
 
+>>>>>>> ee87dccffd7981f470dfb17e72001747bbd3b539
 
 
 #for lcoal test with full provenance generation and upload to local repository
