@@ -251,8 +251,8 @@ def filter_bandpass(stream, min_frequency, max_frequency, corners, zerophase):
 def plot_stream(stream,output_dir,source,tag):
     try:
         stats = stream[0].stats
-        filename = source+"-%s.%s.%s.png" % (
-                                     stats['network'], stats['station'], tag)
+        filename = source+"-%s.%s.%s.%s.png" % (
+                                     stats['network'], stats['station'],stats['channel'], tag)
         
         
         path = os.environ['STAGED_DATA']+'/'+output_dir
