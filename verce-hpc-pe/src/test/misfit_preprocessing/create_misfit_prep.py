@@ -67,7 +67,8 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'prov:type':'observed-waveform'})
+                ],metadata={'output_units':self.output_units,'station' : station, 
+                            'eventId' : event_id, 'prov:type':'observed-pipeline'})
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -75,7 +76,8 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'prov:type':'synthetic-waveform'})
+                ],metadata={'output_units':self.output_units,'station' : station, 
+                            'eventId' : event_id,'prov:type':'synthetic-pipeline'})
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
@@ -198,7 +200,7 @@ else:
 ProvenancePE.BULK_SIZE=20
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
-# to activate with the migration of the new provenance API
+# to activate with the migration to the new provenance API
 #profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
 
 
@@ -207,5 +209,5 @@ injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlPar
 #Store via service
 #ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
 #rid='PREPROCESS_VERCE_'+getUniqueId()
-#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId="PREPROCESS_VERCE_orfeus-as-32860-be1d6de8-a472-11e7-96b8-f45c89acf865",update=True,description="overide511",w3c_prov=False)
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId=rid,update=True,description="overide511",w3c_prov=False)
 
