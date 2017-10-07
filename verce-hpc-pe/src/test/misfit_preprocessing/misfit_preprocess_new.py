@@ -264,7 +264,7 @@ def plot_stream(stream,output_dir,source,tag):
         
         dest=os.path.join(path, filename)
         stream.plot(outfile=dest)
-        prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag,'source':source,'station':stats['station']}}
+        prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag,'source':source}}
         return stream, prov
     except:
         traceback.print_exc()
@@ -273,8 +273,8 @@ def plot_stream(stream,output_dir,source,tag):
 def store_stream(stream,output_dir,source,tag):
     
     stats = stream[0].stats
-    filename = source+"-%s.%s.%s.%s.seed" % (
-            stats['network'], stats['station'], stats['channel'], tag)
+    filename = source+"-%s.%s.%s.seed" % (
+            stats['network'], stats['station'], tag)
     
     path = os.environ['STAGED_DATA']+'/'+output_dir
     

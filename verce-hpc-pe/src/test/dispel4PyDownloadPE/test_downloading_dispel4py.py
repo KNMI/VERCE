@@ -70,8 +70,8 @@ def stationxml_reader(data):
 
 def plot_stream(stream,output_dir,source,tag):
     stats = stream[0].stats
-    filename = source+"-%s.%s.%s.png" % (
-                                 stats['network'], stats['station'], tag)
+    filename = source+"-%s.%s.%s.%s.png" % (
+                                 stats['network'], stats['station'],stats['channel'], tag)
     
     
     path = os.environ['STAGED_DATA']+'/'+output_dir

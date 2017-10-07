@@ -30,6 +30,7 @@
                 "tag": "observed-waveform"
             }
         },
+        
         {
             "type": "filter_lowpass",
             "parameters": {
