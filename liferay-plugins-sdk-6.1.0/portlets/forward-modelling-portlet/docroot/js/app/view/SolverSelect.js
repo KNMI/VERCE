@@ -429,7 +429,7 @@ Ext.define('CF.view.SolverSelectForm', {
       tabIndex: 99,
       disabled: true,
       handler: function() {
-        window.open(Ext.getCmp('solvertype').store.findRecord('abbr', Ext.getCmp('solvertype').getValue()).get('doc'), '_self');
+        window.open(Ext.getCmp('solvertype').store.findRecord('abbr', Ext.getCmp('solvertype').getValue()).get('doc'), '_blank');
       }
     }],
     layout: {
