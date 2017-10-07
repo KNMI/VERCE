@@ -1042,7 +1042,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   
 	   resourceResponse.setContentType("application/zip");
 	   resourceResponse.setProperty("Content-Disposition", "attachment; filename=\"logs.zip\"");
-
+	   
 	   try{
 		   asm_service.getWorkflowOutputs(userId, wfId, resourceResponse);
 	   }
@@ -1195,8 +1195,7 @@ public class ForwardPortlet extends MVCPortlet{
    		try {
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
-
-			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/solver/" + solverName);
+	   		URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1236,7 +1235,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
 	   		String velocityModelName = ParamUtil.getString(resourceRequest, "velocityModelName");
 
-			URL url = new URL("http://localhost:8080/j2ep-1.0/prov/solver/" + solverName);
+			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
