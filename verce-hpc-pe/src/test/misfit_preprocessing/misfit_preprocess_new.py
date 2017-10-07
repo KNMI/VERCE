@@ -251,10 +251,9 @@ def filter_bandpass(stream, min_frequency, max_frequency, corners, zerophase):
 def plot_stream(stream,output_dir,source,tag):
     try:
         stats = stream[0].stats
-        filename = source+"-%s.%s.%s.%s.png" % (
-                                     stats['network'], stats['station'],stats['channel'], tag)
-        
-        
+        filename = source+"-%s.%s.%s.png" % (stats['network'], stats['station'], tag)
+    
+    
         path = os.environ['STAGED_DATA']+'/'+output_dir
         
         if not os.path.exists(path):
@@ -263,73 +262,13 @@ def plot_stream(stream,output_dir,source,tag):
             except:
                 pass
         
-        name=str(stats.network) + "." + stats.station + "." + stats.channel
-            
-        t0=719164.
-    #    self.outputdest=self.outputdest+"/"+name+".png"
-        #self.log("FFF:"+self.outputdest)
-        if mdt.date2num(stream[0].stats.starttime) > t0:
-            date="Date: " + str(stream[0].stats.starttime.date)
-        else:
-            date=""
-        fig = plt.figure()
-        fig.set_size_inches(12,6)
-        fig.suptitle(name)
-        plt.figtext(0.1, 0.95,date)
-
-        ax = fig.add_subplot(len(stream),1,1)
-        for i in xrange (len(stream)):
-
-            plt.subplot(len(stream),1,i+1,sharex=ax)
-            t0=719163.
-            t2=mdt.date2num(stream[i].stats.endtime)
-            t1=mdt.date2num(stream[i].stats.starttime)
-            #print t1,t2,stream[i].stats.npts,(t2-t1)/stream[i].stats.npts
-            t=np.linspace(0,stream[i].stats.npts*stream[i].stats.delta,
-            stream[i].stats.npts)
-            #print stream[i].stats
-            #print stream[0].stats.starttime.datetime
-            #t=np.linspace(mdt.date2num(stream[i].stats.starttime) ,
-            #mdt.date2num(stream[i].stats.endtime) ,
-            #stream[i].stats.npts)
-            
-            plt.plot(t, stream[i].data,color='gray')
-            
-            #ax.set_xlim(mdt.date2num(stream[0].stats.starttime), mdt.date2num(stream[-1].stats.endtime))
-            ax.set_xlim(0,stream[i].stats.npts*stream[i].stats.delta)
-
-            #ax.xaxis.set_major_formatter(mdt.DateFormatter('%I:%M %p'))
-            #ax.format_xstream = mdt.DateFormatter('%I:%M %p')
-
-
         dest=os.path.join(path, filename)
-        fig1 = plt.gcf()
-         
-        plt.draw()
-        
-        fig1.savefig(dest)
-
-        __file = open(dest)
-
-        plt.close(fig1)
-        fig1.clf()
-        plt.close(fig1)
-        #del t, stream[i].data
-        gc.collect()
-
-
-
-        
-        #stream.plot(outfile=dest)
+        stream.plot(outfile=dest)
         prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag,'source':source,'station':stats['station']}}
-        
+        return stream, prov
     except:
         traceback.print_exc()
-        #None
-
-
-     
-    return stream, prov
+   
 
 def store_stream(stream,output_dir,source,tag):
     

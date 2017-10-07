@@ -3,15 +3,11 @@ from dispel4py.workflow_graph import WorkflowGraph
 from dispel4py.seismo.seismo import *
 import obspy
 from obspy.core import read
-import numpy as np
 import os
 import sys
 import pickle
 import xml.etree.ElementTree as ET
 from dispel4py.base import create_iterative_chain, ConsumerPE, IterativePE
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdt
-import gc 
 
 
 
@@ -73,65 +69,21 @@ def stationxml_reader(data):
     return {'_d4p_prov':prov,'_d4p_data':data}
 
 def plot_stream(stream,output_dir,source,tag):
-    try:
-        stats = stream[0].stats
-        filename = source+"-%s.%s.%s.png" % (
+    stats = stream[0].stats
+    filename = source+"-%s.%s.%s.png" % (
                                  stats['network'], stats['station'], tag)
-        path = os.environ['STAGED_DATA']+'/'+output_dir
     
-        if not os.path.exists(path):
-                try:
-                    os.makedirs(path)
-                except:
-                    pass
-            
-        name=str(stats.network) + "." + stats.station + "." + stats.channel
-            
-        t0=719164.
-        if mdt.date2num(stream[0].stats.starttime) > t0:
-            date="Date: " + str(stream[0].stats.starttime.date)
-        else:
-            date=""
-        fig = plt.figure()
-        fig.set_size_inches(12,6)
-        fig.suptitle(name)
-        plt.figtext(0.1, 0.95,date)
-
-        ax = fig.add_subplot(len(stream),1,1)
-        
-        for i in xrange (len(stream)):
-
-            plt.subplot(len(stream),1,i+1,sharex=ax)
-            t0=719163.
-            t2=mdt.date2num(stream[i].stats.endtime)
-            t1=mdt.date2num(stream[i].stats.starttime)
-            t=np.linspace(0,stream[i].stats.npts*stream[i].stats.delta,
-            stream[i].stats.npts)
-            plt.plot(t, stream[i].data,color='gray')
-            
-            ax.set_xlim(0,stream[i].stats.npts*stream[i].stats.delta)
-
-            
-
-        dest=os.path.join(path, filename)
-        fig1 = plt.gcf()
-         
-        plt.draw()
-        
-        fig1.savefig(dest)
-
-        __file = open(dest)
-
-        plt.close(fig1)
-        fig1.clf()
-        plt.close(fig1)
-        #del t, stream[i].data
-        gc.collect()
-    except:
-        traceback.print_exc()
-        #None
     
-    prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag,'source':source,'station':stats['station']}}
+    path = os.environ['STAGED_DATA']+'/'+output_dir
+    
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path)
+        except:
+            pass
+    dest=os.path.join(path, filename)
+    stream.plot(outfile=dest)
+    prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag}}
     return {'_d4p_prov':prov,'_d4p_data':stream}
     
 # Rectangular domain containing parts of southern Germany.
@@ -219,8 +171,6 @@ ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
 #Size of the provenance bulk before sent to storage or sensor
 ProvenancePE.BULK_SIZE=20
 injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
-# to activate with the migration to the new provenance API
-#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_FILE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
 
 #for lcoal test with full provenance generation and upload to local repository
 #Store via service
