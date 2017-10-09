@@ -117,6 +117,29 @@
                 "zerophase": false,
                 "corners": 3
             }
+        },
+        {
+            "type": "taper",
+            "parameters": {
+                "taper_type": "hann",
+                "max_percentage": 0.05
+            }
+        },
+        {
+            "type": "plot_stream",
+            "parameters": {
+                "source":"taper",
+                "output_dir": "../../test-resources/misfit-data/output",
+                "tag": "synthetic-waveform"
+            }
+        },
+        {
+            "type": "store_stream",
+            "parameters": {
+                "source":"taper",
+                "output_dir": "../../test-resources/misfit-data/output",
+                "tag": "synthetic-waveform"
+            }
         }
     ]
 }

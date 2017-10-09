@@ -248,10 +248,10 @@ def filter_bandpass(stream, min_frequency, max_frequency, corners, zerophase):
     return stream
 
 
-def plot_stream(stream,output_dir,source,tag):
+def plot_stream(stream,output_dir,source,tag,seq_idx=0):
     try:
         stats = stream[0].stats
-        filename = source+"-%s.%s.%s.png" % (stats['network'], stats['station'], tag)
+        filename = source+"-%s.%s.%s.%s.png" % (stats['network'], stats['station'],tag,seq_idx)
     
     
         path = os.environ['STAGED_DATA']+'/'+output_dir
@@ -270,11 +270,11 @@ def plot_stream(stream,output_dir,source,tag):
         traceback.print_exc()
    
 
-def store_stream(stream,output_dir,source,tag):
+def store_stream(stream,output_dir,source,tag,seq_idx=0):
     
     stats = stream[0].stats
-    filename = source+"-%s.%s.%s.seed" % (
-            stats['network'], stats['station'], tag)
+    filename = source+"-%s.%s.%s.%s.seed" % (
+            stats['network'], stats['station'], tag,seq_idx)
     
     path = os.environ['STAGED_DATA']+'/'+output_dir
     
