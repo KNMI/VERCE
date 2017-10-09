@@ -15,13 +15,6 @@
                 "output_dir": "../../test-resources/misfit-data/output",
                 "tag": "observed-waveform"
             }
-        },{
-            "type": "store_stream",
-            "parameters": {
-                "source":"remove_response",
-                "output_dir": "../../test-resources/misfit-data/output",
-                "tag": "observed-waveform"
-            }
         }
         
     ],
