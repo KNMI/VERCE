@@ -34,7 +34,6 @@ class ReadDataPE(GenericPE):
         event_id = params['event_id']
         stations_dir = os.environ['STAGED_DATA']+'/'+params['stations_dir']
         output_dir = os.environ['STAGED_DATA']+'/'+params['output_dir']
-        self.log(params)
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -85,6 +84,7 @@ class RotationPE(IterativePE):
         self.tag = tag
 
     def _process(self, data):
+         
         stream, metadata = data
         output_dir = metadata['output_dir']
         stations = metadata['station']
@@ -162,9 +162,19 @@ class MisfitPreprocessingFunctionPE(IterativePE):
 
 def create_processing_chain(proc):
     processes = []
+    plotSeqIdx=0
+    storeSeqIdx=0
     for p in proc:
         fn_name = p['type']
         params = p['parameters']
+        if fn_name=='plot_stream':
+            params.update({'seq_idx':plotSeqIdx})
+            plotSeqIdx=plotSeqIdx+1
+
+        if fn_name=='store_stream':
+            params.update({'seq_idx':storeSeqIdx})
+            storeSeqIdx=storeSeqIdx+1
+         
         print 'adding %s(%s)' % (fn_name, params)
         fn = getattr(mf, fn_name)
         processes.append((fn, params))
