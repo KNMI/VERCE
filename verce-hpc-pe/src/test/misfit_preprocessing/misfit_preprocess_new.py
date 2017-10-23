@@ -47,10 +47,11 @@ def get_synthetics(synts, event_time):
 
     # The start time of the synthetics might not be absolute. Grant a tolerance
     # of 10 seconds.
-    if -10.0 <= st[0].stats.starttime.timestamp <= 0.0:
-        for tr in st:
-            offset = tr.stats.starttime - obspy.UTCDateTime(0)
-            tr.stats.starttime = event_time + offset
+	if st and st[0] and  st[0].stats and  st[0].stats.starttime and  st[0].stats.starttime.timestamp:
+	    if -10.0 <= st[0].stats.starttime.timestamp <= 0.0:
+		for tr in st:
+		    offset = tr.stats.starttime - obspy.UTCDateTime(0)
+		    tr.stats.starttime = event_time + offset
 
     return st
 

@@ -937,7 +937,7 @@ public class ForwardPortlet extends MVCPortlet{
 			   FileUtil.write(solverFile, jsonContent);
 			   String fileName = solverType+"_"+runIds[i]+".json";
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
-			   publicPath = portalUrl + publicPath;
+			   publicPath = new String(portalUrl + publicPath);
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
 			 			  
 			   //filter selected stations for specfem3d_globe solver
