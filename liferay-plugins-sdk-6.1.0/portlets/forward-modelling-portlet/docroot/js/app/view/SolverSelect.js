@@ -52,7 +52,10 @@ var specfem3dCartesianStationProvidersStore = Ext.create('CF.store.Provider', {
 	  }, {
 	    abbr: "IRIS",
 	    url: "/j2ep-1.0/iris"
-	  },{
+	  }, {
+		    abbr: "INGV",
+		    url: "/j2ep-1.0/ingv"
+	  }, {
 		  abbr: "GFZ",
 		  url: "/j2ep-1.0/gfz"
 	  },{
@@ -426,7 +429,7 @@ Ext.define('CF.view.SolverSelectForm', {
       tabIndex: 99,
       disabled: true,
       handler: function() {
-        window.open(Ext.getCmp('solvertype').store.findRecord('abbr', Ext.getCmp('solvertype').getValue()).get('doc'), '_self');
+        window.open(Ext.getCmp('solvertype').store.findRecord('abbr', Ext.getCmp('solvertype').getValue()).get('doc'), '_blank');
       }
     }],
     layout: {

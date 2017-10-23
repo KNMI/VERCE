@@ -149,15 +149,15 @@
                 }
             ],
             "geo_projection" : "std",
-            "geo_minLon" : -7,
-            "geo_maxLon" : 70,
-            "geo_maxLat" : 85,
-            "geo_minLat" : -20,
+            "geo_minLon" : -25,
+            "geo_maxLon" : 45,
+            "geo_maxLat" : 60,
+            "geo_minLat" : 30,
             "polygon":{
-                "lower_left" : [-7.43,30],
-                "lower_right" : [27.43,30],
-                "upper_right" : [40.19,60],
-                "upper_left" : [-20.19,60]
+                "lower_left" : [-10,30],
+                "lower_right" : [30,30],
+                "upper_right" : [45,60],
+                "upper_left" : [-25,60]
             }
         }
     ],

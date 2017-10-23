@@ -21,10 +21,7 @@
 	var userId = '<%=user.getUserId() %>';
 	var deleteWorkflowURL = "/j2ep-1.0/prov/workflow/delete/"
 	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
-    var IRODS_URL_GSI = "gsiftp://verce-irods.scai.fraunhofer.de/"
-    var RADIAL= "/results-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf"	      	                    
-	var iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'   
-	var RADIAL='/forward-modelling-portlet/html/d3js.jsp?minidx=0&maxidx=10&level=prospective&groupby=actedOnBehalfOf'	      	                    
+    var IRODS_URL_GSI = "gsiftp://verce-irods.scai.fraunhofer.de/"       	                    
 	var PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
 	var deleteWorkflowDataURL = "/j2ep-1.0/irods/irodsweb/services/delete.php"
 	

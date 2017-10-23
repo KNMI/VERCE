@@ -839,7 +839,7 @@
         }, 
         {
             "name" : "ROTATE_PML_ACTIVATE",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : true,
@@ -848,7 +848,7 @@
         }, 
         {
             "name" : "ROTATE_PML_ANGLE",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "0.0",
             "req" : "false",
             "editable" : true,
@@ -876,7 +876,7 @@
         }, 
         {
             "name" : "ADIOS_ENABLED",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : false,
@@ -885,7 +885,7 @@
         }, 
         {
             "name" : "ADIOS_FOR_DATABASES",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : false,
@@ -894,7 +894,7 @@
         }, 
         {
             "name" : "ADIOS_FOR_MESH",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : false,
@@ -903,7 +903,7 @@
         }, 
         {
             "name" : "ADIOS_FOR_FORWARD_ARRAYS",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : false,
@@ -912,7 +912,7 @@
         }, 
         {
             "name" : "ADIOS_FOR_KERNELS",
-            "desc" : "",
+            "desc" : "see SPECFEM3D_CARTESIAN manual",
             "value" : "false",
             "req" : "false",
             "editable" : false,

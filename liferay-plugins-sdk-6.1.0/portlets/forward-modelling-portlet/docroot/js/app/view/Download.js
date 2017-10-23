@@ -50,13 +50,60 @@ var getDownloadJSON = function(runId, callback) {
       params.description = Ext.getCmp('download_description').getValue();
 
       config.downloadPE[0].input.ORIGIN_TIME = events[0].startTime;
-      config.downloadPE[0].input.DT = Ext.Array.findBy(solver_conf.fields, function(field) {
-        return field.name == 'DT';
-      }).value;
-      config.downloadPE[0].input.NSTEP = Ext.Array.findBy(solver_conf.fields, function(field) {
-        return field.name == 'NSTEP';
-      }).value;
+      config.downloadPE[0].input.solverType=solver_conf.solver;
 
+	  networkSet = new Set();
+	  stationSet = new Set(); 
+      networks="";
+	  stations="";
+	  solver_conf.stations.forEach(function(code)
+	  {
+		  networkSet.add(code.split(".")[0])
+		  stationSet.add(code.split(".")[1])
+	  });   
+	  networkSet.forEach(function(net)
+      {
+		  networks+=net+",";
+	  });
+	  stationSet.forEach(function(sta)
+      {
+		  stations+=sta+",";
+	  }); 
+	  stations = stations.slice(0, -1);
+	  networks = networks.slice(0, -1);
+	  config.downloadPE[0].input.networks=networks;
+	  config.downloadPE[0].input.stations=stations;
+	  
+      if(solver_conf.solver == "SPECFEM3D_CARTESIAN"){
+	      config.downloadPE[0].input.DT = Ext.Array.findBy(solver_conf.fields, function(field) {
+	        return field.name == 'DT';
+	      }).value;
+	      config.downloadPE[0].input.NSTEP = Ext.Array.findBy(solver_conf.fields, function(field) {
+	        return field.name == 'NSTEP';
+	      }).value;
+      }
+      else
+    	  {
+    	  config.downloadPE[0].input.RECORD_LENGTH_IN_MINUTES =record_length_in_mins=Ext.Array.findBy(solver_conf.fields, function(field) {
+	        return field.name == 'RECORD_LENGTH_IN_MINUTES';
+	      }).value;
+    	  config.downloadPE[0].input.latitude =record_length_in_mins=Ext.Array.findBy(solver_conf.fields, function(field) {
+  	        return field.name == 'CENTER_LATITUDE_IN_DEGREES';
+  	      }).value;
+    	  config.downloadPE[0].input.longitude =record_length_in_mins=Ext.Array.findBy(solver_conf.fields, function(field) {
+  	        return field.name == 'CENTER_LONGITUDE_IN_DEGREES';
+  	      }).value;
+    	  width_eta =record_length_in_mins=Ext.Array.findBy(solver_conf.fields, function(field) {
+  	        return field.name == 'ANGULAR_WIDTH_ETA_IN_DEGREES';
+  	      }).value;
+    	  width_xi =record_length_in_mins=Ext.Array.findBy(solver_conf.fields, function(field) {
+  	        return field.name == 'ANGULAR_WIDTH_XI_IN_DEGREES';
+  	      }).value;
+    	  radius=Math.sqrt(Math.pow(width_xi/2,2)+Math.pow(width_eta/2,2));
+    	  config.downloadPE[0].input.minradius=0;
+    	  config.downloadPE[0].input.maxradius=radius;    	  	 
+    	  }
+      
       if (solver_conf.custom_mesh) {
         config.downloadPE[0].input.minlatitude = solver_conf.custom_mesh_boundaries.minlat;
         config.downloadPE[0].input.maxlatitude = solver_conf.custom_mesh_boundaries.maxlat;
@@ -65,7 +112,8 @@ var getDownloadJSON = function(runId, callback) {
 
         Ext.getCmp('download_submit_summary').setValue(JSON.stringify(config.downloadPE[0], null, 4));
         Ext.getCmp('download_submit_button').enable();
-      } else {
+      }      
+      else {
         // get the meshes for the solver
         var solver_url = '/j2ep-1.0/prov/solver/' + solver_conf.solver;
 
@@ -79,7 +127,13 @@ var getDownloadJSON = function(runId, callback) {
           config.downloadPE[0].input.maxlatitude = mesh.geo_maxLat;
           config.downloadPE[0].input.minlongitude = mesh.geo_minLon;
           config.downloadPE[0].input.maxlongitude = mesh.geo_maxLon;
-
+          if(solver_conf.bespoke_mesh_boundaries)
+          {
+    	  	config.downloadPE[0].input.minlatitude = solver_conf.bespoke_mesh_boundaries.geo_minLat;
+            config.downloadPE[0].input.maxlatitude = solver_conf.bespoke_mesh_boundaries.geo_maxLat;
+            config.downloadPE[0].input.minlongitude = solver_conf.bespoke_mesh_boundaries.geo_minLon;
+            config.downloadPE[0].input.maxlongitude = solver_conf.bespoke_mesh_boundaries.geo_maxLon;
+    	  }          
           callback(null, config, params);
         });
       }
@@ -169,7 +223,7 @@ Ext.define('CF.view.SimulationSelection', {
           rootProperty: 'list'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=PE_extractMesh',
+          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=kmlGenerator_INGV',
         },
         reader: {
           rootProperty: 'runIds',

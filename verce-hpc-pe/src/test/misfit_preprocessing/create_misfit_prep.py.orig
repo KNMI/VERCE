@@ -34,6 +34,7 @@ class ReadDataPE(GenericPE):
         event_id = params['event_id']
         stations_dir = os.environ['STAGED_DATA']+'/'+params['stations_dir']
         output_dir = os.environ['STAGED_DATA']+'/'+params['output_dir']
+        self.log(params)
         fe = 'v'
         if self.output_units == 'velocity':
             fe = 'v'
@@ -66,8 +67,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'station' : station, 
-                            'eventId' : event_id, 'prov:type':'observed-pipeline'})
+                ],metadata={'output_units':self.output_units,'prov:type':'observed-waveform'})
             self.write(
                 'output_synt', [synt, {
                     'station' : sta, 
@@ -75,8 +75,7 @@ class ReadDataPE(GenericPE):
                     'stationxml' : sxml, 
                     'quakeml' : quakeml, 
                     'output_dir' : output_dir }
-                ],metadata={'output_units':self.output_units,'station' : station, 
-                            'eventId' : event_id,'prov:type':'synthetic-pipeline'})
+                ],metadata={'output_units':self.output_units,'prov:type':'synthetic-waveform'})
 
 class RotationPE(IterativePE):
     def __init__(self, tag):
@@ -84,7 +83,6 @@ class RotationPE(IterativePE):
         self.tag = tag
 
     def _process(self, data):
-         
         stream, metadata = data
         output_dir = metadata['output_dir']
         stations = metadata['station']
@@ -162,19 +160,9 @@ class MisfitPreprocessingFunctionPE(IterativePE):
 
 def create_processing_chain(proc):
     processes = []
-    plotSeqIdx=0
-    storeSeqIdx=0
     for p in proc:
         fn_name = p['type']
         params = p['parameters']
-        if fn_name=='plot_stream':
-            params.update({'seq_idx':plotSeqIdx})
-            plotSeqIdx=plotSeqIdx+1
-
-        if fn_name=='store_stream':
-            params.update({'seq_idx':storeSeqIdx})
-            storeSeqIdx=storeSeqIdx+1
-         
         print 'adding %s(%s)' % (fn_name, params)
         fn = getattr(mf, fn_name)
         processes.append((fn, params))
@@ -209,9 +197,13 @@ else:
 
 ProvenancePE.BULK_SIZE=20
 ProvenancePE.PROV_PATH=os.environ['PROV_PATH']
-injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
-# to activate with the migration to the new provenance API
+<<<<<<< HEAD
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['STAGED_DATA']})
+=======
+injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlParameters={'username':os.environ['USER_NAME'],'runId':os.environ['RUN_ID'],'outputdest':os.environ['EVENT_PATH']})
+# to activate with the migration of the new provenance API
 #profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],update=True,w3c_prov=False)
+>>>>>>> ee87dccffd7981f470dfb17e72001747bbd3b539
 
 
 
@@ -219,5 +211,5 @@ injectProv(graph, (SeismoPE,), save_mode=ProvenancePE.SAVE_MODE_FILE ,controlPar
 #Store via service
 #ProvenancePE.REPOS_URL='http://127.0.0.1:8082/workflow/insert'
 #rid='PREPROCESS_VERCE_'+getUniqueId()
-#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId=rid,update=True,description="overide511",w3c_prov=False)
+#profile_prov_run(graph,None,provImpClass=(SeismoPE,),save_mode=ProvenancePE.SAVE_MODE_SERVICE,username=os.environ['USER_NAME'],runId="PREPROCESS_VERCE_orfeus-as-32860-be1d6de8-a472-11e7-96b8-f45c89acf865",update=True,description="overide511",w3c_prov=False)
 

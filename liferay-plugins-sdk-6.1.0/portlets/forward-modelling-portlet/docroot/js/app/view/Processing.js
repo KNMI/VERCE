@@ -1118,7 +1118,7 @@ Ext.define('CF.view.DataSetup', {
     store: {
       proxy: {
         extraParams: {
-          activities: "specfemRunSolverMov"
+          activities: "kmlGenerator_INGV"
         }
       }
     }

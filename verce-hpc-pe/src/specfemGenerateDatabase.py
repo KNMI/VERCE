@@ -28,7 +28,7 @@ class specfemGenerateDatabase(SeismoPreprocessingActivity):
                                                     self.parameters["mpi_invoke"]+" xgenerate_databases",
                                                     )]],os.environ.copy())
         
-        self.addOutput(os.getcwd()+"/OUTPUT_FILES/output_mesher.txt",location="file://"+socket.gethostname()+"/"+os.getcwd()+"/OUTPUT_FILES/output_mesher.txt",format="text/plain",metadata={'file':'output_mesher.txt'},control={"con:immediateAccess":"true"})
+        self.addOutput(os.getcwd()+"/OUTPUT_FILES/output_generate_databases.txt",location="file://"+socket.gethostname()+"/"+os.getcwd()+"/OUTPUT_FILES/output_generate_databases.txt",format="text/plain",metadata={'file':'output_generate_databases.txt'},control={"con:immediateAccess":"true"})
         self.error+=str(stderrdata)
         
 
@@ -38,6 +38,7 @@ class specfemGenerateDatabase(SeismoPreprocessingActivity):
 if __name__ == "__main__":
     proc=specfemGenerateDatabase("specfemGenerateDatabase")
     proc.process();
+
 
 
 
