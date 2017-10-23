@@ -1,8 +1,6 @@
 
 delete Ext.tip.Tip.prototype.minWidth;
-
-
-var iDROP='http://iren-web.renci.org/idrop-release/idrop.jnlp'   
+  
 var activityStore = Ext.create('RS.store.Activity');
 
 var artifactStore = Ext.create('RS.store.Artifact');
@@ -733,26 +731,7 @@ Ext.define('RS.view.ActivityMonitor', {
          window.open(PROV_SERVICE_BASEURL + 'workflow/export/' + encodeURIComponent(currentRun)+'?'+'all=True', 'Download')
           
      	}
-    },
-    {
-        tooltip: "Manage Files and Permissions with iDROP",
-        text: 'iDrop',
-  	    id: 'idrop',
-        handler: function() {
-         window.open(iDROP, 'Download')
-          
-        }
-      },
-      {
-        tooltip: "Radial Provenance Analysis",
-        text: 'Radial',
-  	    id: 'Radial',
-        handler: function() {
-         window.open(RADIAL+'&runId='+currentRun,'_blank')
-          
-        }
-      }
-    
+    }
     ]
   },
 
