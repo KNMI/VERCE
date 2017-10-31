@@ -504,7 +504,7 @@ Ext.define('CF.model.MisfitStation', {
             {name: 'raw_stagein_from',     type: 'array'},
             */
   ]
-});
+}); 
 
 function updateSimulationStation(newStore) {
   var stationGrid = Ext.getCmp("commonStations").getSelectionModel().deselectAll();
@@ -704,7 +704,7 @@ Ext.define('CF.store.RunId', {
     }
   }
 });
-
+var selectedRunId ="";
 Ext.define('CF.view.RunId', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.runid',
@@ -746,7 +746,7 @@ Ext.define('CF.view.RunId', {
   listeners: {
     rowclick: function(searchgrid, record, e) {
       var me = this;
-
+      
       var st = new Ext.create("CF.store.Entity");
       st.getProxy().extraParams = this.rowExtraParams;
       st.getProxy().extraParams.runId = record.get('_id');
@@ -756,7 +756,10 @@ Ext.define('CF.view.RunId', {
 
 
         if (me.id == 'simulation_runs') {
-          updateSimulationStation(newStore);
+        	Ext.getCmp("commonStations").getStore().removeAll();
+            updateSimulationStation(newStore); 
+            selectedRunId=record.get('_id').replace("simulation","download");
+            Ext.getCmp("raw_data_download_runs").getView().refresh(); 
         } else {
           updateRawStation(newStore);
         }
@@ -1106,7 +1109,7 @@ Ext.define('CF.view.DataSetup', {
   items: [{
     xtype: 'runid',
     region: 'center',
-    id: 'simulation_runs',
+    id: 'simulation_runs', 
     height: '30%',
     width: '50%',
     title: 'Simulation runs',
@@ -1125,7 +1128,7 @@ Ext.define('CF.view.DataSetup', {
   }, {
     xtype: 'runid',
     region: 'east',
-    id: 'raw_data_download_runs',
+    id: 'raw_data_download_runs', 
     height: '30%',
     width: '50%',
     title: 'raw-data download runs',
@@ -1140,13 +1143,24 @@ Ext.define('CF.view.DataSetup', {
           activities: "downloadPE"
         }
       }
-    }
+    },viewConfig: {
+	    markDirty: false,
+	    getRowClass: function(record, index) {
+	      if (selectedRunId=="" || record.get("_id").includes(selectedRunId)) {
+	        return "";
+	      } else {
+	        // TODO hack: added x-grid-row because it was missing after click simulation, click download, click simulation
+	        return "x-grid-row-body-hidden";
+	      }
+	    }
+	  }
+
   }, {
     xtype: 'station_grid',
     region: 'south',
     height: '70%',
-  }]
-});
+  }], 
+  });
 
 Ext.define('CF.view.Processing', {
   extend: 'Ext.panel.Panel',
@@ -1361,3 +1375,4 @@ Ext.define('CF.view.Processing', {
     }
   }],
 });
+
