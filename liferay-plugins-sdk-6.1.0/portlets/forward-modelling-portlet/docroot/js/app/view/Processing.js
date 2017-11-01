@@ -62,6 +62,19 @@ Ext.define('pe_params', {
   fields: ['param', 'value', 'description']
 });
 
+Ext.define('pe_output_unit', {
+	  extend: 'Ext.data.Model',
+	  fields: ['output_unit']
+	});
+var output_unit_cartesian = Ext.create('Ext.data.Store', {
+	 model: 'pe_output_unit',
+    data: [["velocity"], ["displacement"], ["acceleration"]]
+  });
+var output_unit_globe = Ext.create('Ext.data.Store', {
+    model: 'pe_output_unit',
+    data: [["displacement"]]
+  });
+
 //drop: function (
 Ext.define('CF.view.ProcessingGrid', {
   extend: 'Ext.grid.Panel',
@@ -91,7 +104,11 @@ Ext.define('CF.view.ProcessingGrid', {
   tbar: [{
     xtype: "combo",
     itemId: "output_combo",
-    store: ["velocity", "displacement", "acceleration"],
+    id: "output_combo",
+    editable: false,
+    store: output_unit_cartesian,
+    queryMode: 'local',
+    displayField: 'output_unit',
     fieldLabel: 'output unit',
     value: "velocity"
   }, {
@@ -756,6 +773,17 @@ Ext.define('CF.view.RunId', {
 
 
         if (me.id == 'simulation_runs') {
+        	 if(record.get('workflowName').includes("GLOBE"))
+             {	               
+                 Ext.getCmp('output_combo').value= 'displacement';
+                 Ext.getCmp('output_combo').bindStore(output_unit_globe);
+   	          
+             }
+             else
+             {  
+                 Ext.getCmp('output_combo').value= 'velocity';
+                 Ext.getCmp('output_combo').bindStore(output_unit_cartesian);
+             }
         	Ext.getCmp("commonStations").getStore().removeAll();
             updateSimulationStation(newStore); 
             selectedRunId=record.get('_id').replace("simulation","download");
