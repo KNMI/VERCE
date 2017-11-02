@@ -1137,7 +1137,10 @@ Ext.define('CF.view.DataSetup', {
   items: [{
     xtype: 'runid',
     region: 'center',
-    id: 'simulation_runs', 
+    id: 'simulation_runs',
+    selModel: { 
+        pruneRemoved: false
+    },    
     height: '30%',
     width: '50%',
     title: 'Simulation runs',
@@ -1156,7 +1159,10 @@ Ext.define('CF.view.DataSetup', {
   }, {
     xtype: 'runid',
     region: 'east',
-    id: 'raw_data_download_runs', 
+    id: 'raw_data_download_runs',
+    selModel: { 
+        pruneRemoved: false
+    },
     height: '30%',
     width: '50%',
     title: 'raw-data download runs',
