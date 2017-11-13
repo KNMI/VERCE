@@ -98,7 +98,7 @@ def download_data(data):
         stations = data['stations'];
 
     if solverType == "SPECFEM3D_GLOBE":
-        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (int(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
+        endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + (float(data['RECORD_LENGTH_IN_MINUTES']) * 60) + 300
     else:
         endtime = obspy.UTCDateTime(data['ORIGIN_TIME']) + float(data['DT']) * int(data['NSTEP']) + 300
     print solverType
