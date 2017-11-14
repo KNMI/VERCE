@@ -367,7 +367,9 @@ Ext.define('CF.view.WfGrid', {
   },
 
   loadMask: true,
-
+  selModel: { 
+      pruneRemoved: false
+  }, 
   columns: [{
     text: 'Name',
     flex: 1,

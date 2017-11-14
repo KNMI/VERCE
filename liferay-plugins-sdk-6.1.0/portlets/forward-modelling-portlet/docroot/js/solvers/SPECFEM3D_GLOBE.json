@@ -696,7 +696,7 @@
             "desc" : "Turn this flag on to print information about the source time function in the file OUTPUT_FILES/plot_source_time_function.txt. This feature is not used at the time of meshing."
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "NTSTEP_BETWEEN_OUTPUT_SEISMOS",
             "req" : "false",
             "editable" : true,
@@ -706,7 +706,7 @@
             "desc" : "This parameter specifies the interval at which synthetic seismograms are written in the LOCAL_PATH directory. The seismograms can be created in three different formats by setting the parameters OUTPUT_SEISMOS_ASCII_TEXT, OUTPUT_SEISMOS_SAC_ALPHANUM and OUTPUT_SEI-SMOS_SAC_BINARY. One can choose any combination of these parameters (details on the formats follow in the description of each parameter).  SAC (http://www.iris.edu/software/sac/) is a signal-processing software package.  If a run crashes, you may still find usable (but shorter than requested) seismograms in this directory.  On a fast machine set NTSTEP_BETWEEN_OUTPUT_SEISMOS to a relatively high value to avoid writing to the seismograms too often. This feature is not used at the time of meshing"
         },  
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "OUTPUT_SEISMOS_FORMAT",
             "req" : "false",
             "editable" : true,
@@ -721,7 +721,7 @@
             "desc" : "Output format for the seismograms"
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "ROTATE_SEISMOGRAMS_RT",
             "req" : "false",
             "editable" : true,
@@ -730,7 +730,7 @@
             "desc" : "Rotate seismograms to Radial-Transverse-Z or use default North-East-Z reference frame"
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "WRITE_SEISMOGRAMS_BY_MASTER",
             "req" : "false",
             "editable" : false,
@@ -739,7 +739,7 @@
             "desc" : "Decide if master process writes all the seismograms or if all processes do it in parallel"
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "SAVE_ALL_SEISMOS_IN_ONE_FILE",
             "req" : "false",
             "editable" : true,
@@ -748,7 +748,7 @@
             "desc" : "Saves all seismograms in one large combined file instead of one file per seismogram"
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "USE_BINARY_FOR_LARGE_FILE",
             "req" : "false",
             "editable" : true,
@@ -757,7 +757,7 @@
             "desc" : "Set this flag to true if you want to use binary instead of ASCII for that large file (not used if SAVE_ALL_SEISMOS_IN _ONE_FILE = false)"
         }, 
         {
-            "group" : "7 - Seismometers",
+            "group" : "7 - Seismograms",
             "name" : "RECEIVERS_CAN_BE_BURIED",
             "req" : "false",
             "editable" : true,
