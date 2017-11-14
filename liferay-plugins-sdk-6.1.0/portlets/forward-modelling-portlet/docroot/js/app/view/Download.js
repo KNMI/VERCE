@@ -115,7 +115,7 @@ var getDownloadJSON = function(runId, callback) {
       }      
       else {
         // get the meshes for the solver
-        var solver_url = '/j2ep-1.0/prov/solver/' + solver_conf.solver;
+        var solver_url = '/verce-scig-api/solver/' + solver_conf.solver;
 
         getMeshData(solver_url, solver_conf.mesh, function(err, mesh) {
           if (err != null) {

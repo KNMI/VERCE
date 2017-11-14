@@ -1195,7 +1195,7 @@ public class ForwardPortlet extends MVCPortlet{
    		try {
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
-	   		URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/solver/" + solverName);
+	   		URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1235,7 +1235,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
 	   		String velocityModelName = ParamUtil.getString(resourceRequest, "velocityModelName");
 
-			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/solver/" + solverName);
+			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
