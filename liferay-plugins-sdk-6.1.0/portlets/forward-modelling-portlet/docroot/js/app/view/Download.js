@@ -307,8 +307,7 @@ Ext.define('CF.view.Download', {
       items: [{
         xtype: 'textarea',
         id: 'download_submit_summary',
-        disabled: true,
-        disabledCls: '',
+        readOnly: true,
         flex: 1,
       }, {
         xtype: 'fieldset',

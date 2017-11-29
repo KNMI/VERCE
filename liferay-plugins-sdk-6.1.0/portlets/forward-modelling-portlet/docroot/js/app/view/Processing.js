@@ -350,8 +350,7 @@ Ext.define('CF.view.ProcessingGrid', {
 
           var msg = this.up("panel").getJson();
           var str = JSON.stringify(msg, null, 2);
-          console.log(str);
-          alert(str);
+          Ext.MessageBox.alert('JSON', '<pre>' + str + '</pre>');
         }
       }]
     }
@@ -1059,8 +1058,7 @@ Ext.define('CF.view.StationGrid', {
       handler: function() {
         var msg = this.up("grid").getJson();
         var str = JSON.stringify(msg, null, 2);
-        console.log(str);
-        alert(str);
+        Ext.MessageBox.alert('JSON', '<pre>' + str + '</pre>');
       }
     }]
   }],
@@ -1251,8 +1249,7 @@ Ext.define('CF.view.Processing', {
           xtype: 'textarea',
           id: 'processing_submit_stations',
           fieldLabel: 'Selected stations',
-          disabled: true,
-          disabledCls: '',
+          readOnly: true,
           width: '100%',
           height: '50%',
           value: 'QWEQWEQWE',
@@ -1261,8 +1258,7 @@ Ext.define('CF.view.Processing', {
           xtype: 'textarea',
           id: 'processing_submit_pes',
           fieldLabel: 'PE pipeline',
-          disabled: true,
-          disabledCls: '',
+          readOnly: true,
           width: '100%',
           height: '50%',
           value: 'ASDASDASD',
@@ -1409,4 +1405,3 @@ Ext.define('CF.view.Processing', {
     }
   }],
 });
-
