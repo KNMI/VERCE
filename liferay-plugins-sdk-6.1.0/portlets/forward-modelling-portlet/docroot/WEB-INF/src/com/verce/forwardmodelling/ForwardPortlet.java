@@ -937,8 +937,8 @@ public class ForwardPortlet extends MVCPortlet{
 			   FileUtil.write(solverFile, jsonContent);
 			   String fileName = solverType+"_"+runIds[i]+".json";
 			   String publicPath = addFileToDL(solverFile, fileName, groupId, userSN, Constants.SOLVER_TYPE);
-			   publicPath = new String(portalUrl + publicPath);
-			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+publicPath);
+			   String solverPath = portalUrl + publicPath;
+			   System.out.println("[ForwardModellingPortlet.submitSolver] Solver file created in the document library by "+userSN+", accessible in: "+solverPath);
 			 			  
 			   //filter selected stations for specfem3d_globe solver
 			   if(solverType.trim().equals("SPECFEM3D_GLOBE")) {
@@ -991,7 +991,7 @@ public class ForwardPortlet extends MVCPortlet{
 
 			   
 			   //10. Add run info in the Provenance Repository
-			   saveSimulationProvenance(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, eventFile.url, publicPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
+			   saveSimulationProvenance(userSN, runIds[i], submitMessage, workflowName, workflowId, importedWfId, stPublicPath, eventFile.url, solverPath, zipPublicPath, stFileType, job0bin, job0binModified, resourceBean.getType(), resourceBean.getGrid(), resourceBean.getResource(), resourceBean.getQueue());
 				   
 			   System.out.println("[ForwardModellingPortlet.submitSolver] Submission finished: "+userSN+", "+runIds[i]+", "+submitMessage+", "+workflowId+", "+importedWfId);
 		   }
