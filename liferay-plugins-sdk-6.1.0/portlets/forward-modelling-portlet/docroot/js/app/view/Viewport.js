@@ -3,183 +3,209 @@
  * @extends Ext.Viewport
  */
 
+userSN="aspinuso"
+deleteWorkflowURL="portalurl/"
+var networks = [{
+        "abbr": "G",
+        "name": "GEOSCOPE"
+    }, {
+        "abbr": "AU",
+        "name": "Geoscience Australia"
+    }, {
+        "abbr": "AZ",
+        "name": "ANZA Regional Network"
+    }, {
+        "abbr": "BK",
+        "name": "Berkeley Digital Seismograph Network"
+    }
+
+];
+
+
+
 Ext.define('CF.view.Viewport', {
-  extend: 'Ext.Viewport',
-  layout: 'fit',
-  requires: [
-    'Ext.layout.container.Border',
-    'Ext.resizer.Splitter',
-    'CF.view.Commons',
-    'CF.view.Map',
-    'CF.view.SolverSelect',
-    'CF.view.dataviews.SolverConf',
-    'CF.view.EventsTabPanel',
-    'CF.view.dataviews.EventGrid',
-    'CF.view.StationsTabPanel',
-    'CF.view.dataviews.StationGrid',
-    'CF.view.Submit',
-    'CF.view.Control',
-    'CF.view.ResultsPane',
-    'CF.view.Misfit',
-    'CF.view.Simulation',
-    'CF.view.Download',
-    'CF.view.Processing'
-  ],
+    extend: 'Ext.Viewport',
+    layout: 'fit',
 
-  id: 'viewport',
-  items: [{
-    xtype: 'tabpanel',
-    id: 'viewport_tabpanel',
-    border: false,
-    layout: 'border',
-    defaults: {
-      split: true
-    },
-    items: [{
-      xtype: 'simulation_panel',
-      title: 'Simulation',
-      id: 'simulationtab',
-      border: false,
-    }, {
-      xtype: 'download_panel',
-      title: 'Download',
-      id: 'downloadtab',
-      border: false,
-    }, {
-      xtype: 'processing_panel',
-      title: 'Processing',
-      id: 'processingtab',
-      border: false,
-    }, {
-      xtype: 'misfit_panel',
-      title: 'Misfit',
-      id: 'misfittab',
-      border: false,
-    }, {
-      xtype: 'panel', // Earthquake & Station & Common
-      id: 'resultstab',
-      title: 'Results',
-      region: 'center',
-      border: false,
-      autoScroll: true,
-      layout: {
-        type: 'border',
-        padding: 5
-      },
-      defaults: {
-        split: true
-      },
-      items: [{
-        xtype: 'activitymonitor',
-        region: 'west',
-        border: false,
-        autoScroll: true,
-      }, {
-        xtype: 'panel',
-        layout: 'border',
-        region: 'center',
-        border: false,
-        autoScroll: true,
-        items: [{
-          xtype: 'provenancegraphsviewer'
-        }, {
-          xtype: 'artifactview'
-        }]
-      }]
-    }]
+    requires: [
+        'Ext.layout.container.Border',
+        'Ext.resizer.Splitter',
+        'CF.view.ResultsPane'
+         
+    ],
 
-  }],
+    initComponent: function () {
+        var me = this;
+
+        Ext.apply(me, {  id: 'viewport',
+            items: [{
+                xtype: 'tabpanel',
+                border: 'false',
+                layout: 'border',
+                defaults: {
+                    split: true
+                },
+
+                items: [
+                
+                {
+			                        xtype: 'panel',	// Earthquake & Station & Common
+			                        title: 'Results',
+			                        region: 'center',
+			                        border: false,
+			                         split: true,
+			                      autoScroll:true,
+			                        layout: {
+ 									           type: 'border',
+									            padding: 5
+ 									       },
+ 								       defaults: {
+ 								           split: true
+ 								       },
+			                        items: [	 
+			                        Ext.create('CF.view.ActivityMonitor'),
+			                       
+            							         
+			                        			
+					                        { 
+          									  region: 'center',
+      								    	  layout: 'border',
+      								   		  border: false,
+      								   		  autoScroll:true,
+    								   	 	  items: [
+    								   	 			  
+			   		                     			Ext.create('CF.view.provenanceGraphsViewer')
+			   		                     			 
+			   		                     			,
+			   		                     			Ext.create('CF.view.ArtifactView')
+			   		                     			]
+			   		                     	},
+			   		                     	
+			   		                     	Ext.create("Ext.Window",{
+    title : 'User',
+    id:'username_win',
+    width : 350,
+    height: 150,
+    modal:true,
+    items : [{
+          xtype: 'textfield',
+          fieldLabel: 'Username: ',
+          labelAlign: 'right',
+          name: 'username',
+          anchor: '80%',
+          id: 'userSN',
+          allowBlank: false,
+          margin: '10 10 10 0'
+        }
+    ],
+    buttons: [{
+    text: 'Go!',
+    handler: function() {
+      userSN=Ext.getCmp('userSN').getValue();
+      Ext.getCmp("activitymonitor").setTitle(userSN+' - Run activity monitor')
+      Ext.getCmp('username_win').close();
+      Ext.create('CF.view.WorkFlowSelectionWindow').show()
+      if (!workflowStore.isLoaded()) {
+          workflowStore.getProxy().api.read = PROV_SERVICE_BASEURL + 'workflowexecutions?usernames=' + userSN;
+
+          workflowStore.load();
+
+
+          }
+      if (!termStore.isLoaded()) {
+          termStore.getProxy().api.read = PROV_SERVICE_BASEURL + '/terms?usernames='+userSN+'&aggregationLevel=username',
+
+          termStore.load();
+          
+
+          }
+    }}]
+}).show()			                        	
+			                               
+			                              ]
+			                    }
+			                    
+            ]
+          
+          }]
+          
+        });
+
+        me.callParent(arguments);
+    }
 });
+
 
 selectedFile = "";
 
-function updateSubmitOverview() {
-  $("div#submit_overview div#solver").html(Ext.getCmp('solvertype').getValue());
-  $("div#submit_overview div#mesh").html(Ext.getCmp('meshes').getValue());
-  $("div#submit_overview div#velmodel").html(Ext.getCmp('velocity').getValue());
-
-  var sEventUrl = gl_eventUrl;
-  if (sEventUrl.indexOf('documents') < 0) sEventUrl = portalUrl + sEventUrl;
-  var linkToUrl = "<a href='" + sEventUrl + "' target='_blank'>" + sEventUrl + "</a>";
-  $("div#submit_overview div#eurl").html(linkToUrl);
-  var sStationUrl = gl_stationUrl;
-  if (sStationUrl.indexOf('documents') < 0) sStationUrl = portalUrl + sStationUrl;
-  linkToUrl = "<a href='" + sStationUrl + "' target='_blank'>" + sStationUrl + "</a>";
-  $("div#submit_overview div#surl").html(linkToUrl);
-
-  var selectedStations = Ext.getCmp('stationgrid').getSelectionModel().selected;
-  var sStations = "";
-  selectedStations.each(function(item, ind, l) {
-    if (ind > 0) sStations += ', ';
-    sStations += '"' + item.get('network') + '.' + item.get('station') + '"';
-  });
-  $("div#submit_overview div#ssel").html(sStations);
-
-  var selectedEvents = Ext.getCmp('eventgrid').getSelectionModel().selected;
-  var sEvents = "";
-  selectedEvents.each(function(item, ind, l) {
-    if (ind > 0) sEvents += ', ';
-    sEvents += '"' + item.get('eventId') + '"';
-  });
-  $("div#submit_overview div#esel").html(sEvents);
-
-}
-
 function fileSelection(filetype) {
-  Ext.Ajax.request({
-    url: getFileListURL,
-    params: {
-      userSN: userSN, //user screen name, it is populated in html/init.jsp
-      filetype: filetype
-    },
-    success: function(response) {
-      showFileSelector(response.responseText, filetype);
-    }
-  });
+	Ext.Ajax.request({
+		url: getListURL,
+		params: {
+			userSN: userSN,
+			filetype: filetype
+		},
+		success: function(response){
+			showPopup(response.responseText, filetype);	        
+		}
+	});
 }
+function showPopup(htmlFileList, filetype)
+{
+	var filelist = Ext.widget('panel', {
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        border: false,
+        bodyPadding: 10,
+        html: htmlFileList,
+        buttons: [{
+            text: 'Cancel',
+            handler: function() {
+            	selectedFile = "";
+                this.up('window').hide();
+            }
+        }, {
+            text: 'Select',
+            handler: function() {
+            	parseSelectedFile(this.up('window'), filetype);
+            }
+        }]
+    });
 
-function showFileSelector(htmlFileList, filetype) {
-  win = Ext.widget('window', {
-    title: 'Select existing file',
-    closeAction: 'hide',
-    width: 300,
-    height: 350,
-    layout: 'fit',
-    modal: true,
-    autoScroll: true,
-    resizable: false,
-    html: htmlFileList,
-    buttons: [{
-      text: 'Cancel',
-      handler: function() {
-        selectedFile = "";
-        this.up('window').hide();
-      }
-    }, {
-      text: 'Select',
-      handler: function() {
-        parseSelectedFile(this.up('window'), filetype);
-      }
-    }]
-  });
-  win.show();
+    win = Ext.widget('window', {
+        title: 'Select existing file',
+        closeAction: 'hide',
+        width: 300,
+        height: 350,
+        layout: 'fit',
+        resizable: true,
+        modal: true,
+        items: filelist
+    });
+    win.show();
 }
+function parseSelectedFile(win, filetype)
+{
+	if(selectedFile==="")
+	{
+		Ext.Msg.alert("Alert!", "Please, select a file by clicking on it");
+	}
+	else
+	{
+		if(filetype===EVENT_TYPE) 	getEvents(ctrl, selectedFile, new QuakeMLXMLFormat());
+		if(filetype===STXML_TYPE) 	getStations(ctrl, selectedFile, new StationXMLFormat());
+		if(filetype===STPOINTS_TYPE) 	getStations(ctrl, selectedFile, new PointsListFormat());
+		selectedFile = "";
+		win.hide();
+	}
+}
+function selectFile(e)
+{
+	$("li").css('background-color', '');
+	selectedFile = e.getAttribute('filePath');
+	$(e).css('background-color', '#CED9E7');
+}
+  
 
-function parseSelectedFile(win, filetype) {
-  var controller = CF.app.getController('Map');
-  if (selectedFile === "") {
-    Ext.Msg.alert("Alert!", "Please, select a file by clicking on it");
-  } else {
-    if (filetype === EVENT_TYPE) controller.getEvents(controller, selectedFile);
-    if (filetype === STXML_TYPE || filetype === STPOINTS_TYPE)
-      controller.getStations(controller, selectedFile, filetype);
-    selectedFile = "";
-    win.hide();
-  }
-}
-
-function selectFile(e) {
-  $("li").css('background-color', '');
-  selectedFile = e.getAttribute('filePath');
-  $(e).css('background-color', '#CED9E7');
-}
