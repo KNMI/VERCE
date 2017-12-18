@@ -356,8 +356,7 @@ Ext.define('CF.view.Misfit', {
         xtype: 'textarea',
         title: 'Configuration Summary',
         id: 'misfit_submit_summary',
-        disabled: true,
-        disabledCls: '',
+        readOnly: true,
         flex: 2,
       }, {
         xtype: 'fieldset',
