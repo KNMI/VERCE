@@ -1,4 +1,3 @@
-
 delete Ext.tip.Tip.prototype.minWidth;
   
 var activityStore = Ext.create('RS.store.Activity');
@@ -1370,7 +1369,7 @@ var renderWorkflowInput = function(value, p, record) {
     '<strong><a href="{1}" target="_blank">Get W3C-PROV Document</a><br/><br/>' +
     '<strong><a href="javascript: openRun(\'{4}\')">Refresh Current</a><br/>',
     record.data.name,
-    record.data.url,
+    record.data.url.replace("&format=w3c-prov-xml", ""),
     record.data.mimetype,
     wfid,
     currentRun
@@ -1383,7 +1382,7 @@ else
     '<strong>url: <a href="{1}" target="_blank">Open</a><br/>' +
     '<strong>mime-type: </strong>{2}<br/> ',
     record.data.name,
-    record.data.url,
+    record.data.url.replace("&format=w3c-prov-xml", ""),
     record.data.mimetype
   );
 };
@@ -1517,10 +1516,10 @@ Ext.define('RS.view.ArtifactView', {
             var locations = location.split(",");
 
             for (var i = 0; i < locations.length; i++) {
-              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(dn_regex, IRODS_URL_GSI + "~/verce/"+currentRun+"/") + " ./ <br/>";
+              htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + locations[i].replace(dn_regex, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
             }
           } else {
-            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(dn_regex, IRODS_URL_GSI + "~/verce/"+currentRun+"/") + " ./ <br/>";
+            htmlcontent += "globus-url-copy -cred $X509_USER_PROXY " + location.replace(dn_regex, IRODS_URL_GSI + "~/verce/") + " ./ <br/>";
           }
         });
 		
