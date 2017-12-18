@@ -20,12 +20,11 @@ var getMisfitJSON = function(runId, callback) {
       method: "GET",
       url: "/j2ep-1.0/prov/entities/values-range",
       params: {
-        "activity": "StoreStream",
-        "mime-type": "application/octet-stream",
-        "keys": "prov:type",
+        "format": "application/octet-stream",
+        "terms": "prov:type",
         "minvalues": "observed-waveform",
         "maxvalues": "observed-waveform",
-        "runId": runId,
+        "generatedBy": runId,
         "start": 0,
         "limit": 1000
       },
@@ -36,12 +35,12 @@ var getMisfitJSON = function(runId, callback) {
           method: "GET",
           url: "/j2ep-1.0/prov/entities/values-range",
           params: {
-            "activity": "StoreStream",
-            "mime-type": "application/octet-stream",
-            "keys": "prov:type",
+             
+            "format": "application/octet-stream",
+            "terms": "prov:type",
             "minvalues": "synthetic-waveform",
             "maxvalues": "synthetic-waveform",
-            "runId": runId,
+            "generatedBy": runId,
             "start": 0,
             "limit": 1000
           },
@@ -145,7 +144,7 @@ var getMisfitJSON = function(runId, callback) {
                 params.input = Ext.encode([
                   prov_workflow.simulation_workflow,
                   prov_workflow.download_workflow, {
-                    'url': '/j2ep-1.0/prov/workflow/export/' + runId + '?all=true&format=w3c-prov-xml',
+                    'url': '/j2ep-1.0/prov/workflowexecutions/' + runId + '/export?all=true&format=w3c-prov-xml',
                     'mime-type': 'application/octet-stream',
                     'prov:type': 'wfrun',
                     'name': 'processing_workflow',
@@ -249,12 +248,12 @@ Ext.define('CF.view.PreprocessingSelection', {
     this.store = Ext.create('CF.store.ProvWorkflow', {
       proxy: {
         type: 'ajax',
-        url: "/j2ep-1.0/prov/workflow",
+        url: "/j2ep-1.0/prov/workflowexecutions",
         reader: {
           rootProperty: 'list'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=StreamMapper,readJSONstgin,StoreStreamChannel',
+          read: PROV_SERVICE_BASEURL + 'workflowexecutions?usernames=' + userSN + '&activities=StreamMapper,readJSONstgin,StoreStreamChannel',
         },
         reader: {
           rootProperty: 'runIds',
