@@ -1517,7 +1517,7 @@ public class ForwardPortlet extends MVCPortlet{
             // String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
 			
 			con.setDoOutput(true);
-            // String data = new JSONObject().put("prov", params).toString();
+            //params.put("prov", "<json>");
             String data = params.toString();
             System.out.println(data);
             con.setRequestProperty("Content-Length", Integer.toString(data.length()));
