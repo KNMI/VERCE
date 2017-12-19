@@ -159,7 +159,7 @@ public class ForwardPortlet extends MVCPortlet{
 
             HttpServletRequest servletRequest = PortalUtil.getHttpServletRequest(req);
 
-            String url = PortalUtil.getPortalURL(servletRequest) + "/j2ep-1.0/prov/workflow/user/"+username+"?start="+offset+"&limit="+limit;
+            String url = PortalUtil.getPortalURL(servletRequest) + "/j2ep-1.0/prov/workflowexecutions?"+"usernames="+username+"&start="+offset+"&limit="+limit;
             System.out.println("Fetching provenance workflows from " + url);
 
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -1505,7 +1505,7 @@ public class ForwardPortlet extends MVCPortlet{
 		try{
 			//TODO: put the url in a properties file
 			//URL url = new URL("http://localhost:8080/j2ep-1.0/prov/workflow/insert");
-			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflow/insert");
+			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflowexecutions/insert");
 			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
