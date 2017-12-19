@@ -41,10 +41,14 @@ var getDownloadJSON = function(runId, callback) {
       }
 
       params.input = Ext.encode([{
-        'url': '/j2ep-1.0/prov/workflow/export/' + runId + '?all=true&format=w3c-prov-xml',
+        
+        'url': PROV_SERVICE_BASEURL+'workflowexecutions/'+runId + '/export?all=true&format=w3c-prov-xml',
         'mime-type': 'application/octet-stream',
         'prov:type': 'wfrun',
         'name': 'simulation_workflow',
+        'formats': 'application/octet-stream',
+        'prov:type': 'simulation_workflow'
+        
       }]);
 
       params.description = Ext.getCmp('download_description').getValue();
@@ -218,12 +222,12 @@ Ext.define('CF.view.SimulationSelection', {
     this.store = Ext.create('CF.store.ProvWorkflow', {
       proxy: {
         type: 'ajax',
-        url: "/j2ep-1.0/prov/workflow",
+        url: PROV_SERVICE_BASEURL + "workflowexecutions",
         reader: {
-          rootProperty: 'list'
+          rootProperty: 'runIds'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflow?username=' + userSN + '&activities=kmlGenerator_INGV',
+          read: PROV_SERVICE_BASEURL + 'workflowexecutions?usernames=' + userSN + '&associatedWith=kmlGenerator_INGV',
         },
         reader: {
           rootProperty: 'runIds',
