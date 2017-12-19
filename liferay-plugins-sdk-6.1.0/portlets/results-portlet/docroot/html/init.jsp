@@ -19,7 +19,7 @@
 	var localResourcesPath = '<%=request.getContextPath()%>';
 	var userSN = '<%=user.getScreenName() %>';
 	var userId = '<%=user.getUserId() %>';
-	var deleteWorkflowURL = "/j2ep-1.0/prov/workflow/delete/"
+	var deleteWorkflowURL = "/j2ep-1.0/prov/workflowexecutions/delete/"
 	var IRODS_URL = "/irods-cloud-backend/download?path=/verce/home/"+userSN+"/verce"
     var IRODS_URL_GSI = "gsiftp://verce-irods.scai.fraunhofer.de/"       	                    
 	var PROV_SERVICE_BASEURL="/j2ep-1.0/prov/"
