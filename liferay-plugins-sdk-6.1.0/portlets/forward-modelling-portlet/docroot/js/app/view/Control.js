@@ -269,7 +269,7 @@ var handleDeleteInstance = function(grid, rowIndex, colIndex) {
             grid.getStore().load();
 
             Ext.Ajax.request({ //delete from provenance
-              url: PROV_SERVICE_BASEURL + "workflow/delete/" + rec.get('name'),
+              url: PROV_SERVICE_BASEURL + "workflowexecutions/" + rec.get('name')+"/delete",
               method: 'POST',
               waitTitle: 'Deleting from provenance',
               waitMsg: 'Sending data...',
