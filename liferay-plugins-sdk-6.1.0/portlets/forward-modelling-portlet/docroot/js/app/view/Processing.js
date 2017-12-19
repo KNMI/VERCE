@@ -708,7 +708,7 @@ Ext.define('CF.store.RunId', {
 
   proxy: {
     type: 'ajax',
-    url: '/j2ep-1.0/prov/workflow',
+    url: '/j2ep-1.0/prov/workflowexecutions/',
 
     extraParams: {
       username: userSN,
@@ -765,7 +765,7 @@ Ext.define('CF.view.RunId', {
       
       var st = new Ext.create("CF.store.Entity");
       st.getProxy().extraParams = this.rowExtraParams;
-      st.getProxy().extraParams.runId = record.get('_id');
+      st.getProxy().extraParams.generatedBy = record.get('_id');
 
 
       st.on('load', function(newStore, records, successful, eOpts) {
@@ -901,8 +901,8 @@ Ext.define('CF.store.Entity', {
     url: '/j2ep-1.0/prov/data?format=application/octet-stream',
     //url:'entities.json',
     extraParams: {
-      runId: '',
-      keys: "",
+      associatedWith: '',
+      terms: "",
       maxvalues: "",
       minvalues: ""
     },
@@ -1143,14 +1143,14 @@ Ext.define('CF.view.DataSetup', {
     width: '50%',
     title: 'Simulation runs',
     rowExtraParams: {
-      "mime-type": "application/octet-stream",
+      "format": "application/octet-stream",
       start: 0,
       limit: 99999
     },
     store: {
       proxy: {
         extraParams: {
-          activities: "kmlGenerator_INGV"
+          associatedWith: "kmlGenerator_INGV"
         }
       }
     }
@@ -1165,14 +1165,14 @@ Ext.define('CF.view.DataSetup', {
     width: '50%',
     title: 'raw-data download runs',
     rowExtraParams: {
-      activities: "PE_waveform_reader",
+      associatedWith: "PE_waveform_reader",
       start: 0,
       limit: 99999
     },
     store: {
       proxy: {
         extraParams: {
-          activities: "downloadPE"
+          associatedWith: "downloadPE"
         }
       }
     },viewConfig: {
@@ -1343,12 +1343,12 @@ Ext.define('CF.view.Processing', {
               wfConfig.runId = runId;
 
               params.input = Ext.encode([{
-                'url': PROV_SERVICE_BASEURL + 'workflowexecutions' + simulation_runId + '/export?all=true&format=w3c-prov-xml',
+                'url': PROV_SERVICE_BASEURL + 'workflowexecutions/' + simulation_runId + '/export?all=true&format=w3c-prov-xml',
                 'mime-type': 'application/octet-stream',
                 'prov:type': 'wfrun',
                 'name': 'simulation_workflow',
               }, {
-                'url': PROV_SERVICE_BASEURL + 'workflowexecutions' + download_runId + '/export?all=true&format=w3c-prov-xml',
+                'url': PROV_SERVICE_BASEURL + 'workflowexecutions/' + download_runId + '/export?all=true&format=w3c-prov-xml',
                 'mime-type': 'application/octet-stream',
                 'prov:type': 'wfrun',
                 'name': 'download_workflow',
