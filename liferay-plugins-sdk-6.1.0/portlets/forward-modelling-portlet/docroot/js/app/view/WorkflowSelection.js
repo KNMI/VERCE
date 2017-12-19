@@ -5,6 +5,7 @@ var handleReuseResults = function(grid, rowIndex, colIndex) {
 
   Ext.getCmp('viewport').setLoading(true);
   // number of asynchronous calls remaining
+  
   var numRemaining = 3;
   alert(rec.get('runId'))
   Ext.Ajax.request({
