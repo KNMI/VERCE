@@ -60,9 +60,9 @@ var getMisfitJSON = function(runId, callback) {
                 var stations = JSON.parse(response.responseText);
 
                 // "file://wn1//home/aspinuso/concrete_misfit_preproc2/output/"
-                var data_path = observed.entities[0].location.replace(/[^.\/]*.[^.\/]*.[^.\/]*.observed.seed$/, "");
+                var data_path = observed["@graph"][0].location.replace(/[^.\/]*.[^.\/]*.[^.\/]*.observed.seed$/, "");
                 // "file://wn1//home/aspinuso/concrete_misfit_preproc2/stationxml/"
-                var station_path = stations.entities[0].location[0].replace(/[^.\/]*.[^.\/]*.xml$/, "");
+                var station_path = stations["@graph"][0].location[0].replace(/[^.\/]*.[^.\/]*.xml$/, "");
 
                 var misfitConfStore = Ext.getCmp('misfit_conf').getStore();
                 var parameters = {};
@@ -72,8 +72,8 @@ var getMisfitJSON = function(runId, callback) {
                 parameters.misfit_type = Ext.getCmp('misfit_type').getRawValue();
 
                 var streamProducers = {};
-                for (var ii = 0; ii < stations.entities.length; ++ii) {
-                  var station = stations.entities[ii];
+                for (var ii = 0; ii < stations["@graph"].length; ++ii) {
+                  var station = stations["@graph"][ii];
                   var station_file = station.location[0].replace(station_path, "");
                   var resultStation = {
                     "input": {
@@ -96,15 +96,15 @@ var getMisfitJSON = function(runId, callback) {
                 }
 
                 // Add synthetics
-                for (var ii = 0; ii < synthetics.entities.length; ++ii) {
-                  var network_dot_name_dot_channel = synthetics.entities[ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).synthetic.seed$/, "$1");
+                for (var ii = 0; ii < synthetics["@graph"].length; ++ii) {
+                  var network_dot_name_dot_channel = synthetics["@graph"][ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).synthetic.seed$/, "$1");
                   var network_dot_name = network_dot_name_dot_channel.split(".").slice(0, -1).join(".");
                   streamProducers[network_dot_name].input.synthetics.push(network_dot_name_dot_channel + ".synthetic.seed");
                 }
 
                 // Add observations
-                for (var ii = 0; ii < observed.entities.length; ++ii) {
-                  var network_dot_name_dot_channel = observed.entities[ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).observed.seed$/, "$1");
+                for (var ii = 0; ii < observed["@graph"].length; ++ii) {
+                  var network_dot_name_dot_channel = observed["@graph"][ii].location.replace(/.*\/([^.\/]*.[^.\/]*.[^.\/]*).observed.seed$/, "$1");
                   var network_dot_name = network_dot_name_dot_channel.split(".").slice(0, -1).join(".");
                   streamProducers[network_dot_name].input.data.push(network_dot_name_dot_channel + ".observed.seed");
                 }
@@ -253,7 +253,7 @@ Ext.define('CF.view.PreprocessingSelection', {
           rootProperty: 'runIds'
         },
         api: {
-          read: PROV_SERVICE_BASEURL + 'workflowexecutions?usernames=' + userSN + '&associatedWith=StreamMapper,readJSONstgin,StoreStreamChannel',
+          read: PROV_SERVICE_BASEURL + 'workflowexecutions?usernames=' + userSN + '&associatedWith=StoreStreamChannel',
         },
         reader: {
           rootProperty: 'runIds',
