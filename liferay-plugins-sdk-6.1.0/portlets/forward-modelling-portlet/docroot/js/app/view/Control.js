@@ -12,9 +12,9 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
 
   activityStore.setProxy({
     type: 'ajax',
-    url: PROV_SERVICE_BASEURL + 'activities/' + encodeURIComponent(record.get("name")),
+    url: PROV_SERVICE_BASEURL + 'workflowexecutions/' + encodeURIComponent(record.get("name"))+'showactivity',
     reader: {
-      rootProperty: 'activities',
+      rootProperty: '@graph',
       totalProperty: 'totalCount'
     },
     simpleSortMode: true
@@ -62,7 +62,7 @@ var getSolverConf = function(solverconf, callback) {
 }
 
 var getWorkflowAndSolverConf = function(runId, callback) {
-  var url = "/j2ep-1.0/prov/workflow/" + encodeURIComponent(runId);
+  var url = PROV_SERVICE_BASEURL+"workflowexecutions/" + encodeURIComponent(runId);
 
   Ext.Ajax.request({
     url: url,

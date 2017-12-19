@@ -469,7 +469,7 @@ Ext.define('CF.view.WorkflowOpenByRunID', {
           url: PROV_SERVICE_BASEURL + '/workflowexecutions/'+encodeURIComponent(form.findField("runId").getValue(false).trim())+'/showactivity',
           
           reader: {
-            rootProperty: 'graph',
+            rootProperty: 'runIds',
             totalProperty: 'totalCount'
           },
           simpleSortMode: true

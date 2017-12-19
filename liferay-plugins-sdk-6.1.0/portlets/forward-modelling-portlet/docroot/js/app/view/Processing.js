@@ -898,7 +898,7 @@ Ext.define('CF.store.Entity', {
   model: 'CF.model.Entity',
   proxy: {
     type: 'ajax',
-    url: '/j2ep-1.0/prov/entities/values-range?mime-type=application/octet-stream',
+    url: '/j2ep-1.0/prov/data?format=application/octet-stream',
     //url:'entities.json',
     extraParams: {
       runId: '',
@@ -908,7 +908,7 @@ Ext.define('CF.store.Entity', {
     },
     reader: {
       type: 'json',
-      rootProperty: 'entities',
+      rootProperty: '@graph',
       totalProperty: 'totalCount'
     }
   }
@@ -1343,12 +1343,12 @@ Ext.define('CF.view.Processing', {
               wfConfig.runId = runId;
 
               params.input = Ext.encode([{
-                'url': '/j2ep-1.0/prov/workflow/export/' + simulation_runId + '?all=true&format=w3c-prov-xml',
+                'url': PROV_SERVICE_BASEURL + 'workflowexecutions' + simulation_runId + '/export?all=true&format=w3c-prov-xml',
                 'mime-type': 'application/octet-stream',
                 'prov:type': 'wfrun',
                 'name': 'simulation_workflow',
               }, {
-                'url': '/j2ep-1.0/prov/workflow/export/' + download_runId + '?all=true&format=w3c-prov-xml',
+                'url': PROV_SERVICE_BASEURL + 'workflowexecutions' + download_runId + '/export?all=true&format=w3c-prov-xml',
                 'mime-type': 'application/octet-stream',
                 'prov:type': 'wfrun',
                 'name': 'download_workflow',
