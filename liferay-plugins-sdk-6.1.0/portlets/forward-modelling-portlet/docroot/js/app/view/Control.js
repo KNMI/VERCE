@@ -12,7 +12,7 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
 
   activityStore.setProxy({
     type: 'ajax',
-    url: PROV_SERVICE_BASEURL + 'workflowexecutions/' + encodeURIComponent(record.get("name"))+'showactivity',
+    url: PROV_SERVICE_BASEURL + 'workflowexecutions/' + encodeURIComponent(record.get("name"))+'/showactivity',
     reader: {
       rootProperty: '@graph',
       totalProperty: 'totalCount'
