@@ -708,10 +708,10 @@ Ext.define('CF.store.RunId', {
 
   proxy: {
     type: 'ajax',
-    url: '/j2ep-1.0/prov/workflowexecutions/',
+    url: '/j2ep-1.0/prov/workflowexecutions',
 
     extraParams: {
-      username: userSN,
+      usernames: userSN,
     },
     reader: {
       type: 'json',
