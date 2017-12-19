@@ -5,7 +5,7 @@ var handleReuseResults = function(grid, rowIndex, colIndex) {
 
   Ext.getCmp('viewport').setLoading(true);
   // number of asynchronous calls remaining
-  
+
   var numRemaining = 3;
   alert(rec.get('runId'))
   Ext.Ajax.request({
@@ -246,7 +246,7 @@ Ext.define('CF.view.WorkflowSelection', {
           messagebox = Ext.Msg.confirm('Remove Run', 'Are you sure?', function(button) {
             if (button == 'yes') {
               var tempx = tempStore.getProxy();
-              tempx.api.destroy = PROV_SERVICE_BASEURL + "workflowexecutions/" + xx.get("runId")+"/delete;
+              tempx.api.destroy = PROV_SERVICE_BASEURL + "workflowexecutions/" + xx.get("runId")+"/delete";
 
               tempStore.remove(xx);
 
