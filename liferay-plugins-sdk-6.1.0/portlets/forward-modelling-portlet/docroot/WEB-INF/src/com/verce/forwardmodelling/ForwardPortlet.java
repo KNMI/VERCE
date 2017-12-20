@@ -115,6 +115,10 @@ import com.verce.forwardmodelling.Constants;
 
 import org.json.*;
 
+import org.apache.http.client.entity.UrlEncodedFormEntity; 
+import org.apache.http.message.BasicNameValuePair;
+
+
 public class ForwardPortlet extends MVCPortlet{
 	
 	ASMService asm_service = null;
@@ -1477,6 +1481,7 @@ public class ForwardPortlet extends MVCPortlet{
         JSONObject params = new JSONObject();
         params.put("username", userSN)
               .put("_id", runId)
+              .put("runId", runId)
               .put("type", runType)
               .put("prov:type", "simulation")
               .put("description", submitMessage)
@@ -1500,31 +1505,31 @@ public class ForwardPortlet extends MVCPortlet{
 
         updateProvenanceRepository(params);
     }
-		
-	private void updateProvenanceRepository(JSONObject params) {
-		try{
-			//TODO: put the url in a properties file
-			//URL url = new URL("http://localhost:8080/j2ep-1.0/prov/workflow/insert");
-			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflowexecutions/insert");
-			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-type", "application/json; charset=UTF-8");
-			con.setRequestProperty("Accept", "application/json");
-
-			// System.out.println("[updateProvenanceRepository] Params: "+params.toString());
-            // String urlParameters = "prov="+URLEncoder.encode("asd", "UTF-8");
-            // String urlParameters = "prov="+URLEncoder.encode(params.toString(), "ISO-8859-1");
-			
-			con.setDoOutput(true);
-            //params.put("prov", "<json>");
-            String data = params.toString();
-            System.out.println(data);
-            con.setRequestProperty("Content-Length", Integer.toString(data.length()));
-            // con.getOutputStream().write(data.getBytes("UTF-8"));
-            con.getOutputStream().write(data.getBytes("UTF-8"));
-
-            InputStream inputStream;
+    private void updateProvenanceRepository(JSONObject params) 
+    {
+    	
+    	String strUrl="https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflowexecutions/insert";
+    	String data = params.toString(); 
+    	ArrayList<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>(); 
+    	pairs.add(new BasicNameValuePair("prov", data)); 
+    	 
+    	HttpURLConnection con = null; 
+    	UrlEncodedFormEntity p_entity; 
+    	try 
+    	{ 
+    		p_entity = new UrlEncodedFormEntity(pairs, "utf-8"); 
+    		URL url = new URL(strUrl); 
+    		con = (HttpURLConnection) url.openConnection(); 
+    	   
+    		con.setDoOutput(true); 
+    		con.addRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");  
+			con.setRequestProperty("Accept", "application/json");	 
+		 
+    		OutputStream os = con.getOutputStream(); 
+    		p_entity.writeTo(os); 
+    		os.flush(); 
+		 
+    		InputStream inputStream;
 			if(con.getResponseCode()!=200) {
 				System.out.println("[ForwardModellingPortlet.updateProvenanceRepository] Error: " + con.getResponseCode() + ": " + con.getResponseMessage());
                 inputStream = con.getErrorStream();
