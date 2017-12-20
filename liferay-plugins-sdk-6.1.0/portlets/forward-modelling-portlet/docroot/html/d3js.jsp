@@ -152,6 +152,37 @@ var link = svg.append("g").selectAll(".link"), node = svg.append("g").selectAll(
 d3.json(PROV_SERVICE_BASEURL + "workflow/summaries?"+qstring, function(error, classes) {
   if (error) throw error;
 
+if (RAD_MODE=='data') 
+  {
+   nodes = cluster.nodes(packageHierarchyData(classes,RAD_GB));
+  
+   links = packageConnlistData(nodes);
+   //console.log(nodes)
+   link = link
+      .data(bundle(links))
+    .enter().append("path")
+      .each(function(d) {  d.source = d[0], d.target = d[d.length - 1];})
+      .attr("class", "link")
+      .attr("d", line)
+      .attr("stroke", 'rgb(0,0,150)');
+      
+      
+      
+       node = node
+      .data(nodes.filter(function(n) { return !n.children; }))
+    .enter().append("text")
+      .attr("class", "node")
+      .attr("dy", ".31em")
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
+      .style("fill", function(d) { return usrclmap[d.name.username]})
+      .style("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .text(function(d) { return d.key; })
+      .on("mouseover", mouseovered)
+      .on("mouseout", mouseouted);
+
+   
+   }
+   else
     
   if (RAD_MODE=='vrange') 
   {
@@ -197,7 +228,7 @@ d3.json(PROV_SERVICE_BASEURL + "workflow/summaries?"+qstring, function(error, cl
       .attr("class", "link")
       .attr("d", line)
       .attr("stroke", function(d) { var size=bundlesmap[d.source.name.instanceId+"_"+d.target.name.instanceId]
-      								console.log(d.source.name.instanceId+" "+size) 
+      								//console.log(d.source.name.instanceId+" "+size) 
       								if (size<100)
       									return 'rgb(255,0,0)'
 									if (size>=100 && size<500)
@@ -226,13 +257,13 @@ d3.json(PROV_SERVICE_BASEURL + "workflow/summaries?"+qstring, function(error, cl
       .attr("class", "link")
       .attr("d", line)
       .attr("stroke", function(d) { var size=bundlesmap[d.source.name.iterationId+"_"+d.target.name.iterationId]
-      								console.log(d.source.name.iterationId+" "+size) 
+      								//console.log(d.source.name.iterationId+" "+size) 
       						/*		if (size<100)
       									return 'rgb('+0+','+Math.trunc(256-size*256/maxval)+','+0+')'
 									if (size>=100 && size<1000)
 										return 'rgb('+Math.trunc(256-256/maxval)+','+0+','+0+')'	
 									if (size>=1000)
-										{console.log(size)	
+										{//console.log(size)	
 										return 'rgb('+0+','+0+','+Math.trunc(size*256/maxval)+')'	
 										}
 									});*/
@@ -264,7 +295,7 @@ d3.json(PROV_SERVICE_BASEURL + "workflow/summaries?"+qstring, function(error, cl
       .attr("class", "link")
       .attr("d", line)
       .attr("stroke", function(d) { var size=bundlesmap[d.source.name.actedOnBehalfOf+"_"+d.target.name.actedOnBehalfOf]
-      								console.log(d.source.name.actedOnBehalfOf+" "+size) 
+      								//console.log(d.source.name.actedOnBehalfOf+" "+size) 
       								if (size<100)
       									return 'rgb(255,0,0)'
 									if (size>=100 && size<500)
@@ -338,7 +369,10 @@ function mouseouted(d) {
 d3.select(self.frameElement).style("height", diameter + "px");
 
 // Lazily construct the basic hierarchy from PE names.
-function packageHierarchyPE(classes,gb) {
+
+
+
+function packageHierarchyData(classes,gb) {
  var map = {};
  var parent
  //console.log(gb)
@@ -348,7 +382,7 @@ function packageHierarchyPE(classes,gb) {
 	//if(!d.name.worker) d.name.worker="login";
 	
     if (!map[d.name[gb]])
-    	{console.log(d.name[gb])
+    	{//console.log(d.name[gb])
     	 parent = {name: { name: d.name[gb]}, children: []};
     	 parent.parent=root
     	 parent.parent.children.push(parent)
@@ -359,7 +393,38 @@ function packageHierarchyPE(classes,gb) {
     //console.log(root) 
   	node.parent= map[d.name[gb]]
     node.parent.children.push(node)
-    node.key=d.name.run.substring(0,45)
+    node.key=d.name.id.substring(0,45)
+    
+   
+ });
+
+ //console.log(root)
+ return root
+}
+
+
+function packageHierarchyPE(classes,gb) {
+ var map = {};
+ var parent
+ //console.log(gb)
+ var root = {name: 'process', children: []};
+ classes.forEach(function(d) {
+//    find(d.name, d);
+	//if(!d.name.worker) d.name.worker="login";
+	
+    if (!map[d.name[gb]])
+    	{//console.log(d.name[gb])
+    	 parent = {name: { name: d.name[gb]}, children: []};
+    	 parent.parent=root
+    	 parent.parent.children.push(parent)
+    	 map[d.name[gb]]=parent
+    	}
+    
+    var node = d
+    //console.log(root) 
+  	node.parent= map[d.name[gb]]
+    node.parent.children.push(node)
+    node.key=d.name.runId.substring(0,45)
     
    
  });
@@ -379,7 +444,7 @@ function packageHierarchyInstances(classes,gb) {
 	//if(!d.name.worker) d.name.worker="login";
 	
     if (!map[d.name[gb]])
-    	{console.log(d.name[gb])
+    	{//console.log(d.name[gb])
     	 parent = {name: { name: d.name[gb]}, children: []};
     	 parent.parent=root
     	 parent.parent.children.push(parent)
@@ -473,18 +538,18 @@ function packageConnlistPEs(nodes) {
 
   // Compute a map from name to node.
   nodes.forEach(function(d) {
-    map[d.name.run] = d;
+    map[d.name.runId] = d;
   });
 
   // For each import, construct a link from the source to target node.
   
   nodes.forEach(function(d) {
-    console.log(map[d.name.run].connlist) 
+    //console.log(map[d.name.run].connlist) 
     if (d.connlist) d.connlist.forEach(function(i) { 
     
       if (map[i]!=undefined){
-      	  console.log(map[d.name.run].name.run+" "+map[i])
-	      connlist.push({source: map[d.name.run], target: map[i]});
+      	  //console.log(map[d.name.run].name.run+" "+map[i])
+	      connlist.push({source: map[d.name.runId], target: map[i]});
 	      }
     });
   });
@@ -492,6 +557,32 @@ function packageConnlistPEs(nodes) {
   return connlist;
 }
 
+
+
+function packageConnlistData(nodes) {
+  var map = {},
+      connlist = [];
+
+  // Compute a map from name to node.
+  nodes.forEach(function(d) {
+    map[d.name.id] = d;
+  });
+
+  // For each import, construct a link from the source to target node.
+  
+  nodes.forEach(function(d) {
+    //console.log(map[d.name.id].connlist) 
+    if (d.connlist) d.connlist.forEach(function(i) { 
+    //console.log(d.connlist) 
+      if (map[i.id]!=undefined){
+      	  console.log(map[d.name.id].name.id+" "+map[i.id].name.id)
+	      connlist.push({source: map[d.name.id], target: map[i.id]});
+	      }
+    });
+  });
+
+  return connlist;
+}
 
 
 function packageConnlistInstances(nodes) {
@@ -507,10 +598,10 @@ function packageConnlistInstances(nodes) {
   
   nodes.forEach(function(d) {
     if (d.connlist) d.connlist.forEach(function(i) { 
-      
+      if (map[i._id.instanceId]){
       connlist.push({source: map[d.name.instanceId], target: map[i._id.instanceId]});
       bundlesmap[d.name.instanceId+"_"+i._id.instanceId]=i.size
-      if (i.size>maxval) maxval=i.size
+      if (i.size>maxval) maxval=i.size}
     });
   });
 
@@ -621,6 +712,7 @@ function reload(par,sel){
   	
   	url=updateURLParameter(url,'minidx',document.forms[0].minidx.value)
   	url=updateURLParameter(url,'maxidx',document.forms[0].maxidx.value)
+  	url=updateURLParameter(url,'starttime',document.forms[0].starttime.value)
   	window.location=url
   
   	}
@@ -683,6 +775,8 @@ function reload(par,sel){
   <input type="number" name="minidx" min="0" value="<%= request.getParameter("minidx") %>">
   maxidx
   <input type="number" name="maxidx" min="1" value="<%= request.getParameter("maxidx") %>">
+   start-time
+  <input type="string" name="starttime"  value="<%= request.getParameter("starttime") %>">
   
   <input type="button" name="setrange" value="change range" onclick="reload('','setrange')" />
 <% 
