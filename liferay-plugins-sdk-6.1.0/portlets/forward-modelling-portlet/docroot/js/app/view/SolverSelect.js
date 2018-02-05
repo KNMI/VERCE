@@ -806,8 +806,8 @@ function selectSolver(selectedSolver) {
 
     solverConfStore.setProxy({
         type: 'ajax',
-        //url: '/verce-scig-api/solver/' + selectedSolver, 
-        url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver + '.json',
+        url: '/verce-scig-api/solver/' + selectedSolver, 
+        //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver + '.json',
         extraParams: {
             'userId': userId
         },
@@ -823,8 +823,8 @@ function selectSolver(selectedSolver) {
     meshescombo.store.removeAll();
     meshesstore.setProxy({
         type: 'ajax',
-        //url: '/verce-scig-api/solver/' + selectedSolver,
-        url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver + '.json',
+        url: '/verce-scig-api/solver/' + selectedSolver,
+        //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver + '.json',
         extraParams: {
             'userId': userId
         },
