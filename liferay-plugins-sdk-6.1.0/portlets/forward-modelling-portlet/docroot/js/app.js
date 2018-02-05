@@ -17,10 +17,10 @@ sys.parameters({
 // {repulsion:-10, stiffness:100, friction:1.0,gravity:true, dt:0.015}
 
 Ext.Ajax.disableCaching = true;
-
-Ext.Date.now = function() {
+Ext.enableAriaButtons=false;
+/*Ext.Date.now = function() {
   return "";
-}
+}*/
 
 Ext.Loader.setConfig({
   enabled: true,

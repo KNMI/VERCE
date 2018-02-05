@@ -205,7 +205,7 @@ var doSubmitMisfitWorkflow = function(config, params, callback) {
 Ext.define('CF.view.PreprocessingSelection', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.preprocessing_selection',
-
+  title: 'Processing runs',
   columns: [{
     text: 'Name',
     flex: 1,

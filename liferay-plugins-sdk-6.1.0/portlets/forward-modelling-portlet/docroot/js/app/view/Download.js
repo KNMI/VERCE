@@ -179,7 +179,7 @@ var doSubmitDownloadWorkflow = function(config, params, callback) {
 Ext.define('CF.view.SimulationSelection', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.simulation_selection',
-
+  title: 'Simulation runs',
   columns: [{
     text: 'Name',
     flex: 1,

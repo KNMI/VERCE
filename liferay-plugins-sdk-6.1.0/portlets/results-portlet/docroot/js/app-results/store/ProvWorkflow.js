@@ -38,7 +38,7 @@ Ext.define('RS.store.ProvWorkflow', {
     },
 
     reader: {
-      root: 'runIds',
+      rootProperty: 'runIds',
       totalProperty: 'totalCount'
     },
     simpleSortMode: true
