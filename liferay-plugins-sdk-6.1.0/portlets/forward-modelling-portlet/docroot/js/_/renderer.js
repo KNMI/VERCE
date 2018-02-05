@@ -141,7 +141,7 @@
             _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
             selected = nearest = dragged = particleSystem.nearest(_mouseP);
 
-            if (dragged.node !== null) dragged.node.fixed = true
+            if (dragged && dragged.node) dragged.node.fixed = true
 
             $(canvas).bind('mousemove', handler.dragged)
             $(window).bind('mouseup', handler.dropped)
