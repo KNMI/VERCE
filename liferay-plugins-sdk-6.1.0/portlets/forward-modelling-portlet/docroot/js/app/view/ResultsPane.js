@@ -910,7 +910,7 @@ var is_image = function(url, callback, errorcallback) {
 var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/[\w-]+/,"/intermediate-nas/")
     htmlcontent = "<br/><center><strong>Link to data files or data images preview....</strong></center><br/>"
     for (var i = 0; i < url.length; i++) {
-        url[i] = url[i].replace(dn_regex, IRODS_URL + "/home/" + owner + "/verce/")
+        url[i] = url[i].replace(dn_regex, IRODS_URL).replace(new RegExp(/([\/\/]|\.\/)+/, 'g'),"\/");
 
 
         htmlcontent = htmlcontent + "<center><div id='" + url[i] + "'><img   src='" + localResourcesPath + "/img/loading.gif'/></div></center><br/>"
