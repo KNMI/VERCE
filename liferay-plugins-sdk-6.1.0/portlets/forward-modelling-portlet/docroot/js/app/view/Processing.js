@@ -749,8 +749,7 @@ Ext.define('CF.store.RunId', {
             //totalProperty: 'totalCount'
         }
     }
-});
-var selectedRunId = "";
+}); 
 Ext.define('CF.view.RunId', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.runid',
@@ -811,9 +810,8 @@ Ext.define('CF.view.RunId', {
                         Ext.getCmp('output_combo').bindStore(output_unit_cartesian);
                     }
                     Ext.getCmp("commonStations").getStore().removeAll();
-                    updateSimulationStation(newStore);
-                    selectedRunId = record.get('_id').replace("simulation", "download");
-                    Ext.getCmp("raw_data_download_runs").getView().refresh();
+                    updateSimulationStation(newStore); 
+                    update_download_runs(record.get('_id')); 
                 } else {
                     updateRawStation(newStore);
                 }
@@ -829,6 +827,50 @@ Ext.define('CF.view.RunId', {
     },
 
 });
+function update_download_runs(simulation_runId)
+{     
+    getWorkflowAndSolverConf(simulation_runId, function(err, workflowProv, solverconf_json) {
+        if(err != null)
+        {
+            Ext.Msg.alert("Error!", err);
+            return;
+        }
+        if(!solverconf_json['eventsDate'] || !solverconf_json['eventsDate'][0])
+        {
+            Ext.Msg.alert("Error!", "Event date not found in the solver config file");
+            return;
+        } 
+        // get event date       
+        event_date=solverconf_json['eventsDate'][0];   
+
+        // define the time range +/- 5 mins from event origin time
+        min_value=update_date_time_in_mins(event_date,-5);
+        max_value=update_date_time_in_mins(event_date,5);
+
+        // set required params
+        raw_data_grid = Ext.getCmp('raw_data_download_runs');
+        raw_data_grid.getStore().getProxy().setExtraParams({
+            usernames: userSN,
+            terms: 'starttime,endtime',
+            minvalues: min_value + ',' + event_date,
+            maxvalues: event_date + ',' + max_value,
+            mode: 'OR'
+        }); 
+        // reload store       
+        raw_data_grid.getStore().load(); 
+
+    });   
+    
+}
+function update_date_time_in_mins(event_date, mins)
+{
+    event_dateTime = new Date(event_date);
+    time_span = mins*60*1000; // convert to  milliseconds
+    event_dateTime.setTime(event_dateTime.getTime() + time_span); // update the time
+
+    return event_dateTime.toISOString();
+
+}
 
 Ext.define('CF.model.EntityParameters', {
     extend: 'Ext.data.Model',
@@ -1203,7 +1245,9 @@ Ext.define('CF.view.DataSetup', {
         viewConfig: {
             markDirty: false,
             getRowClass: function(record, index) {
-                if (selectedRunId == "" || record.get("_id").includes(selectedRunId)) {
+                // Only show the download runs since the query was defined in terms of time range (+/- 5 mins from the event origin_time) 
+                // and the returned result may likely include other runs
+                if (record.get("_id").startsWith("download_")) {    
                     return "";
                 } else {
                     // TODO hack: added x-grid-row because it was missing after click simulation, click download, click simulation
@@ -1356,8 +1400,8 @@ Ext.define('CF.view.Processing', {
 
                         var simulation_runId = tabPanel.up().down('#simulation_runs').getSelectionModel().getSelection()[0].get('_id');
                         var download_runId = tabPanel.up().down('#raw_data_download_runs').getSelectionModel().getSelection()[0].get('_id');
-                        var runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();;
-
+                        var runId = 'processing_' + simulation_runId.replace(/^simulation_/, '') + '_' + (new Date()).getTime();
+                        
                         getWorkflowAndSolverConf(simulation_runId, function(err, workflowProv, solverconf_json) {
                             if (err != null) {
                                 Ext.Msg.alert("Run missing", "Run missing from provenance, please try again with a different run.");
