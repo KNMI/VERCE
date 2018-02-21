@@ -1,4 +1,4 @@
-Ext.define('CF.store.TermStore', {
+Ext.define('RS.store.TermStore', {
     extend: 'Ext.data.Store',
     requires: [
 
@@ -7,7 +7,7 @@ Ext.define('CF.store.TermStore', {
 
     ],
 
-    model: 'CF.model.Terms',
+    model: 'RS.model.Terms',
     alias: 'store.termstore',
     storeId: 'termstore',
     sorters: [{

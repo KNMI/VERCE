@@ -55,38 +55,12 @@ Ext.define('CF.view.Viewport', {
       title: 'Misfit',
       id: 'misfittab',
       border: false,
-    }, {
-      xtype: 'panel', // Earthquake & Station & Common
-      id: 'resultstab',
-      title: 'Results',
-      region: 'center',
-      border: false,
-      autoScroll: true,
-      layout: {
-        type: 'border',
-        padding: 5
-      },
-      defaults: {
-        split: true
-      },
-      items: [{
-        xtype: 'activitymonitor',
-        region: 'west',
-        border: false,
-        autoScroll: true,
-      }, {
-        xtype: 'panel',
-        layout: 'border',
-        region: 'center',
-        border: false,
-        autoScroll: true,
-        items: [{
-          xtype: 'provenancegraphsviewer'
-        }, {
-          xtype: 'artifactview'
-        }]
+    },{
+        xtype: 'results_panel',
+        title: 'Results',
+        id: 'resultstab',
+        border: false,     
       }]
-    }]
 
   }],
 });
