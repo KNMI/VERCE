@@ -42,7 +42,7 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
 
 var getSolverConf = function(solverconf, callback) {
     Ext.Ajax.request({
-        url: solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
+        url: solverconf.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'),
         success: function(response, config) {
             var solver_conf = JSON.parse(response.responseText);
             if (solver_conf === null) {
@@ -186,7 +186,7 @@ var handleReuse = function(grid, rowIndex, colIndex) {
             });
 
             // reuse events
-            CF.app.getController('Map').getEvents(CF.app.getController('Map'), prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/'));
+            CF.app.getController('Map').getEvents(CF.app.getController('Map'), prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'));
 
             var stationFileType = prov_workflow.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
             var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
@@ -215,7 +215,7 @@ var handleReuse = function(grid, rowIndex, colIndex) {
             });
 
             // reuse stations
-            CF.app.getController('Map').getStations(CF.app.getController('Map'), prov_workflow.stations.url.replace(/http:\/\/[^\/]*\//, '/'), stationFileType);
+            CF.app.getController('Map').getStations(CF.app.getController('Map'), prov_workflow.stations.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'), stationFileType);
 
             // Only set old workflow if it's still available
             if (prov_workflow.workflowId != null) {
