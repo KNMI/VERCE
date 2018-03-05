@@ -8,6 +8,12 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/theme/default/style.css" />
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/custom.css" />
     <style>
+        .x-form-text-default { 
+            background-color: transparent;  
+        }
+        .x-form-trigger-default { 
+            background-color: transparent;
+        }
         #search-results a {
             color: #385F95;
             font: bold 11px tahoma, arial, helvetica, sans-serif;
