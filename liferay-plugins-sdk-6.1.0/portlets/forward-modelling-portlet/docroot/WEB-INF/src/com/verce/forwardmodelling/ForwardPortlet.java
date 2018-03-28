@@ -263,9 +263,10 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
 
                 String status = wf.getStatusbean().getStatus();
-
+                
                 // only fetch status for runs that are not already stopped
-                if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING")) {
+                if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING") && !status.equals("INIT")) {
+                	//System.out.println("Workflow Name "+ wf.getWorkflowName() + " Workflow Status "+ status);
 	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
 
                     HashMap<String,String> statuses = new HashMap();
