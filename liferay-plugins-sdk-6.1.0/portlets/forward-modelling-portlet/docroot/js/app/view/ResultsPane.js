@@ -931,6 +931,7 @@ var viewData = function(url, open) { //var loc=url.replace = function(/file:\/\/
             height: 300,
             width: 500,
             layout: 'fit',
+             alwaysOnTop: true,
             items: [{
                 overflowY: 'auto',
                 overflowX: 'auto',
@@ -1421,6 +1422,7 @@ var renderStream = function(value, p, record) {
     );
 };
 
+
 var renderStreamSingle = function(value, p, record) {
     var location = '</br>'
 
@@ -1501,7 +1503,7 @@ Ext.define('CF.view.SingleArtifactView', {
     disableSelection: true,
     hideHeaders: true,
     split: true,
-    trackOver: true,
+    trackMouseOver: false,
     autoScroll: true,
 
     // TODO replace, unsupported as of ExtJS 5
@@ -1517,8 +1519,19 @@ Ext.define('CF.view.SingleArtifactView', {
         dataIndex: 'ID',
         field: 'ID',
         flex: 3,
-        renderer: renderStream
-    }]
+        renderer: renderStreamSingle
+    }],
+    listeners:{
+        cellmousedown: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts )
+        {
+            if(e.target.innerHTML=="Open" && e.target.href)
+            {
+                url=record.data.location.split(",");
+                viewData(url,true);
+
+            }
+        }
+    }
 });
 
 Ext.define('CF.view.WorkflowInputView', {
@@ -1557,12 +1570,10 @@ Ext.define('CF.view.ArtifactView', {
     store: artifactStore,
     disableSelection: true,
     hideHeaders: true,
-    split: true,
-    collapsible: true,
+    split: true, 
     title: 'Data products',
-    trackOver: true,
+    trackMouseOver: false,
     autoScroll: true,
-    collapsible: true,
     // TODO replace, unsupported as of ExtJS 5
     // verticalScroller: {
     //   xtype: 'paginggridscroller'
@@ -1659,6 +1670,17 @@ Ext.define('CF.view.ArtifactView', {
                 this.window.show();
             }
         }]
+    },
+    listeners:{
+        cellmousedown: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts )
+        {
+            if(e.target.innerHTML=="Open" && e.target.href)
+            {
+                url=record.data.location.split(",");
+                viewData(url,true);
+
+            }
+        }
     }
 });
 
