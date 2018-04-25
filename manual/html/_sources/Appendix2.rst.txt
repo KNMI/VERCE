@@ -1,0 +1,317 @@
+Appendix 2 – SPECFEM3D\_GLOBE’s Flags
+=====================================
+
+The input parameters for the code of SPECFEM3D\_GLOBE are briefly
+described below. For a detailed description please consult the
+SPECFEM3D\_GLOBE manual.
+
+A2.1 Group 0 - Basic 
+~~~~~~~~~~~~~~~~~~~~~
+
+|image0|
+
+**Figure A2.1:** Parameter form for ‘Group 0 - Basic’.
+
+**NPROC** is the number of processors that the simulation will run on.
+This is essentially dependent upon the high-performance computer and
+workflow you intend to submit your job to.
+
+**RECORD\_LENGTH\_IN\_MINUTES** is the time in minutes you want to run
+the simulation for.
+
+**MODEL** is the velocity model to be used in the simulation. There is a
+range of models pre-loaded into the solver SPECFEM3D\_GLOBE. (See the
+code’s manual for all the available options).
+
+**GPU\_MODE** allows SPECFEM to be run on high performance computers
+that use graphical processing units (GPUs) rather than the more
+conventional CPU (central processing unit). All the workflows currently
+available on the VERCE platform use CPUs, so you should always leave
+this box unchecked.
+
+A2.2 Group 1 – Inverse Problem 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|image1|
+
+**Figure A2.2:** Parameter form for ‘Group 1 – Inverse Problem’.
+
+**SIMULATION\_TYPE** is set to ‘\ *forward*\ ’ by default to model the
+wave-field from an earthquake.
+
+**NOISE\_TOMOGRAPHY** is set to ‘\ *earthquake simulation*\ ’ by default
+as the noise tomography applications of SPECFEM are not currently
+supported within the VERCE platform.
+
+**SAVE\_FORWARD** is selected if the last step of the wave-field is to
+be saved. This enables to back reconstruct the seismic wave-field, but
+requires a large amount of storage space and it is not yet supported by
+the VERCE platform.
+
+A2.3 Group 2 – Simulation Area 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|image2|
+
+**Figure A2.3:** Parameter form for ‘Group 2 – Simulation Area’.
+
+**ANGULAR\_WIDTH\_XI\_IN\_DEGREES** is the width of one side of the
+chunk in degrees.
+
+**ANGULAR\_WIDTH\_ETA\_IN\_DEGREES** is the width of the second side of
+the chunk in degrees.
+
+**CENTER\_LATITUDE\_IN\_DEGREES** is the latitude of centre of the chunk
+in degrees.
+
+**CENTER\_LONGITUDE\_IN\_DEGREES** is the longitude of centre of the
+chunk in degrees.
+
+**GAMMA\_ROTATION\_AZIMUTH** defines the rotation angle of the chunk
+about its centre measured counter clockwise from due North in degrees.
+
+**OCEANS** can be selected if the effect of the oceans on seismic wave
+propagation should be incorporated based upon the approximate treatment
+discussed in Komatitsch and Tromp (2002).
+
+**ELLIPTICITY** can be selected if the mesh should make the Earth model
+elliptical in shape according to Clairaut’s equation.
+
+**TOPOGRAPHY** can be selected if topography and bathymetry should be
+incorporated based upon model ETOPO4.
+
+**GRAVITY** can be selected if self-gravitation should be incorporated
+in the Cowling approximation.
+
+**ROTATION** can be selected if the Coriolis effect should be
+incorporated. Turning this feature on is relatively cheap numerically.
+
+**ATTENUATION** can be selected if attenuation should be incorporated.
+
+**ABSORBING\_CONDITIONS** is selected only for regional simulations.
+
+A2.4 Group 3 – Mesh Parameters 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|image3|
+
+**Figure A2.4:** Parameter form for ‘Group 3 – Mesh Parameters’.
+
+**NCHUNKS** is the number of chunks.
+
+**NEX\_XI** is the number of elements at the surface along the xi side
+of a chunk.
+
+**NEX\_ETA** is the number of elements at the surface along the eta side
+of a chunk.
+
+**NPROC\_XI** is the number of MPI processors along the xi side of a
+chunk.
+
+**NPROC\_ETA** is the number of MPI processors along the eta side of a
+chunk.
+
+A2.5 Group 4 – Adjoint Kernel Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|image4|
+
+**Figure A2.5:** Parameter form for ‘Group 4 – Adjoint Kernel
+Options’.
+
+**READ\_ADJSRC\_ASDF** can be selected to use ASDF format for reading
+the adjoint sources.
+
+**ANISOTROPIC\_KL** can be used to compute anisotropic kernels in crust
+and mantle.
+
+**SAVE\_TRANSVERSE\_KL\_ONLY** can be used to output only transverse
+isotropic kernels rather than fully anisotropic kernels when
+**ANISOTROPIC\_KL** above is selected.
+
+**APPROXIMATE\_HESS\_KL** can be used to output approximate Hessian in
+crust mantle region.
+
+**USE\_FULL\_TISO\_MANTLE** can be used to force transverse isotropy for
+all mantle elements.
+
+**SAVE\_SOURCE\_MASK** can be used to output kernel mask to zero out
+source region to remove large values near the sources in the sensitivity
+kernels.
+
+**SAVE\_REGULAR\_KL** can be used to output kernels on a regular grid
+instead of on the GLL mesh points.
+
+A2.6 Group 5 - Movie
+~~~~~~~~~~~~~~~~~~~~
+
++------------+------------+
+| |image5|   | |image6|   |
++------------+------------+
+
+.. centered:: **Figure A2.6:** Parameter form for ‘Group 5 - Movie’.
+
+**MOVIE\_SURFACE** creates a movie of seismic wave propagation on the
+Earth’s surface.
+
+**MOVIE\_VOLUME** creates a movie of seismic wave propagation in the
+Earth’s interior.
+
+**MOVIE\_COARSE** saves movie only at corners of elements.
+
+**NTSTEP\_BETWEEN\_FRAMES** determines the number of timesteps between
+two movie frames.
+
+**HDUR\_MOVIE** determines the half duration of the source time function
+for the movie simulations.
+
+**MOVIE\_VOLUME\_TYPE** allows you to select movie volume type option
+where 1=strain, 2=time integral of strain, 3=µ\*time integral of strain,
+4= saves the trace and deviatoric stress in the whole volume,
+5=displacement, 6=velocity.
+
+**MOVIE\_TOP\_KM/MOVIE\_BOTTOM\_KM** defines depth below the surface in
+kilometres.
+
+**MOVIE\_WEST\_DEG** refers to longitude, degrees West.
+
+**MOVIE\_EAST\_DEG** refers to longitude, degrees East.
+
+**MOVIE\_NORTH\_DEG** refers to latitude, degrees North.
+
+**MOVIE\_SOUTH\_DEG** refers to latitude, degrees South.
+
+**MOVIE\_START** denotes movie start time.
+
+**MOVIE\_STOP** denotes movie end time.
+
+A2.7 Group 6 - Sources
+~~~~~~~~~~~~~~~~~~~~~~
+
+|image7|
+
+**Figure A2.7:** Parameter form for ‘Group 6 - Sources’.
+
+**NTSTEP\_BETWEEN\_READ\_ADJSRC** refers to the number of adjoint
+sources read in each time for an adjoint simulation.
+
+**PRINT\_SOURCE\_TIME\_FUNCTION** prints information about the source
+time function in the file
+OUTPUT\_FILES/plot\_source\_time\_function.txt.
+
+A2.8 Group 7 - Seismograms 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|image8|
+
+**Figure A2.8:** Parameter form for ‘Group 7 - Seismograms’.
+
+**NTSTEP\_BETWEEN\_OUTPUT\_SEISMOS** specifies the interval at which
+synthetic seismograms are written in the LOCAL\_PATH directory.
+
+**OUTPUT\_SEISMOS\_FORMAT** allows you to select the output format for
+the seismograms such as ASCII, SAC\_ALPHANUM, SAC\_BINARY and ASDF.
+
+**ROTATE\_SEISMOGRAMS\_RT** can be selected to have radial (R) and
+transverse (T) horizontal components of the synthetic seismograms.
+
+**WRITE\_SEISMOGRAMS\_BY\_MASTER** can be selected to have all the
+seismograms written by the master.
+
+**SAVE\_ALL\_SEISMOS\_IN\_ONE\_FILE** saves all seismograms in one large
+combined file instead of one file per seismogram.
+
+**USE\_BINARY\_FOR\_LARGE\_FILE** can be selected to use binary instead
+of ASCII for that large file.
+
+**RECEIVERS\_CAN\_BE\_BURIED** can be used to accommodate stations with
+instruments that are buried, i.e., the solver will calculate seismograms
+at the burial depth specified in the STATIONS file.
+
+A2.9 Group 8 - Advanced 
+~~~~~~~~~~~~~~~~~~~~~~~~
+
++------------+-------------+
+| |image9|   | |image10|   |
++------------+-------------+
+
+.. centered:: **Figure A2.8:** Parameter form for ‘Group 8 - Advanced’.
+
+**PARTIAL\_PHYS\_DISPERSION\_ONLY** or **UNDO\_ATTENUATION** can be used
+to undo attenuation for sensitivity kernel calculations or forward runs
+with SAVE\_FORWARD
+
+**MEMORY\_INSTALLED\_PER\_CORE\_IN\_GB** is used to set the amount of
+memory installed per core in Gigabyte.
+
+**PERCENT\_OF\_MEM\_TO\_USE\_PER\_CORE** can be used to set percentage
+of memory to use per core for arrays to undo attenuation, keeping in
+mind that you need to leave some memory available for the GNU/Linux
+system to run.
+
+**EXACT\_MASS\_MATRIX\_FOR\_ROTATION** can be selected if you are
+interested in precise effects related to rotation.
+
+**USE\_LDDRK** can be used for LDDRK high-order time scheme instead of
+Newmark.
+
+**INCREASE\_CFL\_FOR\_LDDRK** can be used to increase CFL for LDDRK.
+
+**RATIO\_BY\_WHICH\_TO\_INCREASE\_IT** determines the ratio by which to
+increase CFL.
+
+**SAVE\_MESH\_FILES** can be used to save AVS, OpenDX, or ParaView mesh
+files for subsequent viewing.
+
+**NUMBER\_OF\_RUNS** refers to the number of stages in which the
+simulation will be completed, e.g. 1 corresponds to a run without
+restart files.
+
+**NUMBER\_OF\_THIS\_RUN** can be used if you choose to perform the run
+in stages in which you need to tell the solver what stage run to
+perform.
+
+**NUMBER\_OF\_SIMULTANEOUS\_RUNS** adds the ability to run several
+calculations (several earthquakes) in an embarrassingly-parallel fashion
+from within the same run.
+
+**BROADCAST\_SAME\_MESH\_AND\_MODEL** allows to read the mesh and model
+files from a single run in the beginning and broadcast them to all the
+others (if the mesh and the model are the same for all simultaneous
+runs).
+
+**USE\_FAILSAFE\_MECHANISM** can be used to terminate all the runs or
+let the others finish using a fail-safe mechanism if one or a few of
+simultaneous runs fail.
+
+**GPU\_RUNTIME** can only be used if GPU\_MODE is selected.
+
+**GPU\_PLATFORM** filters on the platform in OpenCL.
+
+**GPU\_DEVICE** filters on the device name in OpenCL.
+
+**ADIOS\_ENABLED** and all the other ADIOS flags enable the use of ADIOS
+library for I/Os.
+
+.. |image0| image:: images/Appendix2/image1.png
+
+.. |image1| image:: images/Appendix2/image2.png
+
+.. |image2| image:: images/Appendix2/image3.png
+
+.. |image3| image:: images/Appendix2/image4.png
+
+.. |image4| image:: images/Appendix2/image5.png
+
+.. |image5| image:: images/Appendix2/image6.png
+
+.. |image6| image:: images/Appendix2/image7.png
+
+.. |image7| image:: images/Appendix2/image8.png
+
+.. |image8| image:: images/Appendix2/image9.png
+
+.. |image9| image:: images/Appendix2/image10.png
+
+.. |image10| image:: images/Appendix2/image11.png
+
