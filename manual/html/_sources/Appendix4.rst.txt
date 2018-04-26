@@ -17,7 +17,7 @@ application.
 
 |image0|
 
-**Figure A3.1:** The Dispel4Py logo.
+**Figure A4.1:** The Dispel4Py logo.
 
 A4.1 Installing Dispel4Py
 -------------------------
@@ -69,7 +69,7 @@ http://www.verce.eu/Training/UseVERCE/2015-7-VERCE-dispel4py-advanced.pdf
 
 |image1|
 
-**Figure A3.2:** An example of a workflow to perform a cross
+**Figure A4.2:** An example of a workflow to perform a cross
 correlation of seismic noise data
 
 .. |image0| image:: images/Appendix4/image1.png

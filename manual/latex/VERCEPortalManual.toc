@@ -12,8 +12,8 @@
 \contentsline {section}{\numberline {3.4}Registering for super computing and data resources}{10}{section.3.4}
 \contentsline {section}{\numberline {3.5}Creating and uploading proxy certificates}{11}{section.3.5}
 \contentsline {subsection}{\numberline {3.5.1}MYPROXY Tools}{11}{subsection.3.5.1}
-\contentsline {subsubsection}{GSISSH\_Term Tool}{12}{subsubsection*.3}
-\contentsline {subsubsection}{MYPROXY command line tool}{13}{subsubsection*.4}
+\contentsline {subsubsection}{GSISSH\_Term Tool}{12}{subsubsection*.2}
+\contentsline {subsubsection}{MYPROXY command line tool}{13}{subsubsection*.3}
 \contentsline {subsection}{\numberline {3.5.2}Uploading a proxy certificate to the VERCE platform}{14}{subsection.3.5.2}
 \contentsline {subsection}{\numberline {3.5.3}Certificate Association}{15}{subsection.3.5.3}
 \contentsline {chapter}{\numberline {4}A tour of the VERCE platform}{17}{chapter.4}
@@ -60,28 +60,28 @@
 \contentsline {section}{\numberline {8.3}Submitting a mesh and a velocity model}{54}{section.8.3}
 \contentsline {section}{\numberline {8.4}Submitting a new station catalogue}{56}{section.8.4}
 \contentsline {chapter}{\numberline {9}VERCE glossary}{59}{chapter.9}
-\contentsline {chapter}{\numberline {10}Appendix \textendash {} SPECFEM3D\_Cartesian\IeC {\textquoteright }s Flags}{61}{chapter.10}
-\contentsline {section}{\numberline {10.1}Group 0 - Basic}{61}{section.10.1}
-\contentsline {section}{\numberline {10.2}Group 1 \textendash {} Inverse problem}{62}{section.10.2}
-\contentsline {section}{\numberline {10.3}Group 2 \textendash {} UTM projection}{62}{section.10.3}
-\contentsline {section}{\numberline {10.4}Group 3 \textendash {} Attenuation}{62}{section.10.4}
-\contentsline {section}{\numberline {10.5}Group 4 \textendash {} Absorbing Boundary Conditions}{63}{section.10.5}
-\contentsline {section}{\numberline {10.6}Group 5 \textendash {} Seismograms}{64}{section.10.6}
-\contentsline {section}{\numberline {10.7}Group 6 \textendash {} Sources}{65}{section.10.7}
-\contentsline {section}{\numberline {10.8}Group 7 \textendash {} Visualisation}{66}{section.10.8}
-\contentsline {section}{\numberline {10.9}Group 8 \textendash {} Adjoint Kernel Options}{67}{section.10.9}
-\contentsline {section}{\numberline {10.10}Group 9 \textendash {} Advanced}{67}{section.10.10}
-\contentsline {chapter}{\numberline {11}Appendix \textendash {} SPECFEM3D\_GLOBE\IeC {\textquoteright }s Flags}{71}{chapter.11}
-\contentsline {section}{\numberline {11.1}Group 0 - Basic}{71}{section.11.1}
-\contentsline {section}{\numberline {11.2}Group 1 \textendash {} Inverse Problem}{71}{section.11.2}
-\contentsline {section}{\numberline {11.3}Group 2 \textendash {} Simulation Area}{72}{section.11.3}
-\contentsline {section}{\numberline {11.4}Group 3 \textendash {} Mesh Parameters}{73}{section.11.4}
-\contentsline {section}{\numberline {11.5}Group 4 \textendash {} Adjoint Kernel Options}{73}{section.11.5}
-\contentsline {section}{\numberline {11.6}Group 5 - Movie}{74}{section.11.6}
-\contentsline {section}{\numberline {11.7}Group 6 - Sources}{74}{section.11.7}
-\contentsline {section}{\numberline {11.8}Group 7 - Seismograms}{75}{section.11.8}
-\contentsline {section}{\numberline {11.9}Group 8 - Advanced}{75}{section.11.9}
-\contentsline {chapter}{\numberline {12}Appendix \textendash {} Using ObsPy}{77}{chapter.12}
-\contentsline {chapter}{\numberline {13}Appendix \textendash {} using dispel4py}{79}{chapter.13}
-\contentsline {section}{\numberline {13.1}Installing Dispel4Py}{79}{section.13.1}
-\contentsline {section}{\numberline {13.2}Using Disple4Py}{80}{section.13.2}
+\contentsline {chapter}{\numberline {A1}Appendix 1 \textendash {} SPECFEM3D\_Cartesian\IeC {\textquoteright }s Flags}{61}{appendix.A}
+\contentsline {section}{\numberline {A1.1}Group 0 - Basic}{61}{section.A.1}
+\contentsline {section}{\numberline {A1.2}Group 1 \textendash {} Inverse problem}{62}{section.A.2}
+\contentsline {section}{\numberline {A1.3}Group 2 \textendash {} UTM projection}{62}{section.A.3}
+\contentsline {section}{\numberline {A1.4}Group 3 \textendash {} Attenuation}{62}{section.A.4}
+\contentsline {section}{\numberline {A1.5}Group 4 \textendash {} Absorbing Boundary Conditions}{63}{section.A.5}
+\contentsline {section}{\numberline {A1.6}Group 5 \textendash {} Seismograms}{64}{section.A.6}
+\contentsline {section}{\numberline {A1.7}Group 6 \textendash {} Sources}{65}{section.A.7}
+\contentsline {section}{\numberline {A1.8}Group 7 \textendash {} Visualisation}{66}{section.A.8}
+\contentsline {section}{\numberline {A1.9}Group 8 \textendash {} Adjoint Kernel Options}{67}{section.A.9}
+\contentsline {section}{\numberline {A1.10}Group 9 \textendash {} Advanced}{67}{section.A.10}
+\contentsline {chapter}{\numberline {A2}Appendix 2 \textendash {} SPECFEM3D\_GLOBE\IeC {\textquoteright }s Flags}{71}{appendix.B}
+\contentsline {section}{\numberline {A2.1}Group 0 - Basic}{71}{section.B.1}
+\contentsline {section}{\numberline {A2.2}Group 1 \textendash {} Inverse Problem}{71}{section.B.2}
+\contentsline {section}{\numberline {A2.3}Group 2 \textendash {} Simulation Area}{72}{section.B.3}
+\contentsline {section}{\numberline {A2.4}Group 3 \textendash {} Mesh Parameters}{73}{section.B.4}
+\contentsline {section}{\numberline {A2.5}Group 4 \textendash {} Adjoint Kernel Options}{73}{section.B.5}
+\contentsline {section}{\numberline {A2.6}Group 5 - Movie}{74}{section.B.6}
+\contentsline {section}{\numberline {A2.7}Group 6 - Sources}{74}{section.B.7}
+\contentsline {section}{\numberline {A2.8}Group 7 - Seismograms}{75}{section.B.8}
+\contentsline {section}{\numberline {A2.9}Group 8 - Advanced}{75}{section.B.9}
+\contentsline {chapter}{\numberline {A3}Appendix 3 \textendash {} Using ObsPy}{77}{appendix.C}
+\contentsline {chapter}{\numberline {A4}Appendix 4 \textendash {} using dispel4py}{79}{appendix.D}
+\contentsline {section}{\numberline {A4.1}Installing Dispel4Py}{79}{section.D.1}
+\contentsline {section}{\numberline {A4.2}Using Disple4Py}{80}{section.D.2}

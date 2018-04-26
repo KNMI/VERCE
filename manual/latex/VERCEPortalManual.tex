@@ -1,5 +1,9 @@
 \documentclass[english]{book}
-\usepackage{pdfpages}
+\usepackage{pdfpages} 
+\usepackage{tocloft}
+\setlength{\cftchapnumwidth}{2em}
+\cftsetindents{section}{2em}{2.4em}
+\cftsetindents{subsection}{4.4em}{3.2em} 
 \ifdefined\pdfpxdimen
    \let\sphinxpxdimen\pdfpxdimen\else\newdimen\sphinxpxdimen
 \fi \sphinxpxdimen=.75bp\relax
@@ -2188,6 +2192,7 @@ to the VERCE platform.
 
 \chapter{VERCE glossary}
 \label{\detokenize{Glossary::doc}}\label{\detokenize{Glossary:verce-glossary}}
+
 \sphinxstylestrong{Workflow} \textendash{} refers to a sequence of jobs that can be submitted. In
 the VERCE project we have a number of workflows prepared that can run
 you job on a specific high performance computer.
@@ -2238,7 +2243,9 @@ meshes for geographical bodies. Particularly, GeoCubit can produce
 meshes that include topography and/or bathymetry.
 
 
-\chapter{Appendix  \textendash{} SPECFEM3D\_Cartesian’s Flags}
+ \appendix
+ \renewcommand{\thechapter}{A\arabic{chapter}}
+\chapter{Appendix 1 \textendash{} SPECFEM3D\_Cartesian’s Flags}
 \label{\detokenize{Appendix1::doc}}\label{\detokenize{Appendix1:appendix-1-specfem3d-cartesians-flags}}
 The input parameters for the code SPECFEM3D\_Cartesian are briefly
 described below. Please see the manual of the code for a detailed
@@ -2674,7 +2681,7 @@ NUMBER\_OF\_SIMULTANEOUS\_RUNS\textgreater{}1. This option is not yet implemente
 the VERCE portal.
 
 
-\chapter{Appendix \textendash{} SPECFEM3D\_GLOBE’s Flags}
+\chapter{Appendix 2 \textendash{} SPECFEM3D\_GLOBE’s Flags}
 \label{\detokenize{Appendix2:appendix-2-specfem3d-globes-flags}}\label{\detokenize{Appendix2::doc}}
 The input parameters for the code of SPECFEM3D\_GLOBE are briefly
 described below. For a detailed description please consult the
@@ -2989,7 +2996,7 @@ simultaneous runs fail.
 library for I/Os.
 
 
-\chapter{Appendix  \textendash{} Using ObsPy}
+\chapter{Appendix 3  \textendash{} Using ObsPy}
 \label{\detokenize{Appendix3::doc}}\label{\detokenize{Appendix3:appendix-3-using-obspy}}
 ObsPy is a python based seismology toolbox, which can be used to deal
 with seismic waveform data and earthquake catalogue information. The
@@ -3003,7 +3010,7 @@ instance producing an earthquake catalogue in quakeML format.
 
 \sphinxincludegraphics{{image13}.png}
 
-\sphinxstylestrong{Figure A2.1:} The ObsPy logo
+\sphinxstylestrong{Figure A3.1:} The ObsPy logo
 
 \sphinxstylestrong{A3.1 Installing Python and ObsPy}
 \begin{enumerate}
@@ -3079,13 +3086,13 @@ below;
 
 \sphinxincludegraphics{{image2}.jpg}
 
-\sphinxstylestrong{Figure A2.2:} Z-component data plotted using ObsPy. Image
+\sphinxstylestrong{Figure A3.2:} Z-component data plotted using ObsPy. Image
 re-produced from
 
 \sphinxurl{http://docs.obspy.org/tutorial/code\_snippets/reading\_seismograms.html}
 
 
-\chapter{Appendix \textendash{} using dispel4py}
+\chapter{Appendix 4 \textendash{} using dispel4py}
 \label{\detokenize{Appendix4::doc}}\label{\detokenize{Appendix4:appendix-4-using-dispel4py}}
 Dispel4Py is a python library that allows workflows to be written that
 can easily scale to different sizes of computational resource, ranging
@@ -3103,7 +3110,7 @@ application.
 
 \sphinxincludegraphics{{image14}.png}
 
-\sphinxstylestrong{Figure A3.1:} The Dispel4Py logo.
+\sphinxstylestrong{Figure A4.1:} The Dispel4Py logo.
 
 
 \section{Installing Dispel4Py}
@@ -3167,9 +3174,8 @@ workflows for their own applications can be found at the link below.
 
 \sphinxincludegraphics{{image21}.jpg}
 
-\sphinxstylestrong{Figure A3.2:} An example of a workflow to perform a cross
+\sphinxstylestrong{Figure A4.2:} An example of a workflow to perform a cross
 correlation of seismic noise data
-
 
 
 \renewcommand{\indexname}{Index}

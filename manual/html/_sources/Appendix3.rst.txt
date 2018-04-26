@@ -13,7 +13,7 @@ instance producing an earthquake catalogue in quakeML format.
 
 |image0|
 
-**Figure A2.1:** The ObsPy logo
+**Figure A3.1:** The ObsPy logo
 
 \ **A3.1 Installing Python and ObsPy**
 
@@ -79,7 +79,7 @@ http://docs.obspy.org/tutorial/
 
 |image1|
 
-**Figure A2.2:** Z-component data plotted using ObsPy. Image
+**Figure A3.2:** Z-component data plotted using ObsPy. Image
 re-produced from
 
 http://docs.obspy.org/tutorial/code\_snippets/reading\_seismograms.html
