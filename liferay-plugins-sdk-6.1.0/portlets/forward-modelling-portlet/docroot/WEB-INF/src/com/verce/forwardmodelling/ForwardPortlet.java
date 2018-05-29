@@ -1519,7 +1519,7 @@ public class ForwardPortlet extends MVCPortlet{
     		HttpURLConnection con = (HttpURLConnection) url.openConnection(); 
     	   
     		con.setDoOutput(true); 
-    		con.addRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");  
+    		con.setRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");  
 			con.setRequestProperty("Accept", "application/json");	 
 		 
     		OutputStream os = con.getOutputStream(); 

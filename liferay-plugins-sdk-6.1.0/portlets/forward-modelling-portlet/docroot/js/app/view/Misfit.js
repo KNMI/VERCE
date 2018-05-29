@@ -140,7 +140,7 @@ var getMisfitJSON = function(runId, callback) {
                 params.config = config;
                 params.description = Ext.getCmp('misfit_description').getValue();
                 params.quakemlURL = prov_workflow.quakeml.url;
-
+/*
                 params.input = Ext.encode([
                   prov_workflow.simulation_workflow,
                   prov_workflow.download_workflow, {
@@ -149,6 +149,14 @@ var getMisfitJSON = function(runId, callback) {
                     'prov:type': 'wfrun',
                     'name': 'processing_workflow',
                   }
+                ]);
+                */
+                params.input = Ext.encode([{
+                    'url': PROV_SERVICE_BASEURL + 'workflow/export/' + runId + '?all=true&format=w3c-prov-xml',
+                    'mime-type': 'application/octet-stream',
+                    'prov:type': 'wfrun',
+                    'name': 'processing_workflow',
+                }                
                 ]);
 
                 callback(null, config, params);

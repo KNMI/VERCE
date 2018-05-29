@@ -1410,7 +1410,7 @@ Ext.define('CF.view.Processing', {
                             wfConfig.readJSONstgin[0].input.event_id = solverconf_json['events'][0];
                             wfConfig.readDataPE[0].input.event_id = solverconf_json['events'][0];
                             wfConfig.runId = runId;
-
+/*
                             params.input = Ext.encode([{
                                 'url': PROV_SERVICE_BASEURL + 'workflowexecutions/' + simulation_runId + '/export?all=true&format=w3c-prov-xml',
                                 'mime-type': 'application/octet-stream',
@@ -1422,7 +1422,19 @@ Ext.define('CF.view.Processing', {
                                 'prov:type': 'wfrun',
                                 'name': 'download_workflow',
                             }, ]);
-
+*/
+                            params.input = Ext.encode([{
+                                'url': PROV_SERVICE_BASEURL + 'workflow/export/' + simulation_runId + '?all=true&format=w3c-prov-xml',
+                                'mime-type': 'application/octet-stream',
+                                'prov:type': 'wfrun',
+                                'name': 'simulation_workflow',
+                            }, {
+                                'url': PROV_SERVICE_BASEURL + 'workflow/export/' + download_runId + '?all=true&format=w3c-prov-xml',
+                                'mime-type': 'application/octet-stream',
+                                'prov:type': 'wfrun',
+                                'name': 'download_workflow',
+                            }, ]);
+                            
                             params.config = Ext.encode(wfConfig);
                             params.PEs = Ext.encode(PEs);
                             params.description = Ext.getCmp('processing_description').getValue();
