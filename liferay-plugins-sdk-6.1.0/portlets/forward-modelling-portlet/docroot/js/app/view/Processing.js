@@ -391,7 +391,7 @@ Ext.define('CF.view.ProcessingGrid', {
 
                     var msg = this.up("panel").getJson();
                     var str = JSON.stringify(msg, null, 2);
-                    Ext.MessageBox.alert('JSON', '<pre>' + str + '</pre>');
+                    Ext.MessageBox.alert('JSON', '<pre class=\"x-selectable\">' + str + '</pre>');
                 }
             }]
         }
@@ -1124,7 +1124,7 @@ Ext.define('CF.view.StationGrid', {
             handler: function() {
                 var msg = this.up("grid").getJson();
                 var str = JSON.stringify(msg, null, 2);
-                Ext.MessageBox.alert('JSON', '<pre>' + str + '</pre>');
+                Ext.MessageBox.alert('JSON', '<pre class=\"x-selectable\">' + str + '</pre>');
             }
         }]
     }],
