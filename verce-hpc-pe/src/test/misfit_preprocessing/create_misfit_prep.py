@@ -48,7 +48,7 @@ class ReadDataPE(GenericPE):
         for i in range(len(stations)):
             station = stations[i]
             network = networks[i]
-            data_file = os.path.join(data_dir, network + "." + station + ".." + '?H?.mseed')
+            data_file = os.path.join(data_dir, network + "." + station + ".*." + '?H?.mseed')
             synt_file = os.path.join(synt_dir, network + "." + station + "." + '?X?.seed' + fe)
             sxml = os.path.join(stations_dir, network + "." + station + ".xml")
             real_stream, sta, event = mf.read_stream(data_file, sxml=sxml,

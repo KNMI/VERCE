@@ -637,7 +637,7 @@ function updateRawStation(newStore) {
         var content = d.content();
         var location = d.data.location;
         // TODO replace with more robust extra call for data from provenance
-        var stationxml_location = location.replace(/mseed\/([^.]*\.[^.]*)\.\.[^.]*\.mseed/g, "stationxml/$1.xml");
+        var stationxml_location = location.replace(/mseed\/([^.]*\.[^.]*)\.[0-9]*\.[^.]*\.mseed/g, "stationxml/$1.xml");        
         for (var j = 0; j < content.getCount(); j++) {
             var e = content.getAt(j);
             var sta = e.get("station");
