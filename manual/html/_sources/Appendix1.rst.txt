@@ -186,7 +186,7 @@ SPECFEM3D\_Cartesian.
 
 |image5|
 
-**Figure A1.7:** Parameter form for ‘Group 5 – Seismograms’.
+**Figure A1.6:** Parameter form for ‘Group 5 – Seismograms’.
 
 **NTSTEP\_BETWEEN\_OUTPUT\_SEISMOS** controls the frequency (in number
 of time steps) that the seismograms are written to disk. Fewer disk
@@ -237,7 +237,7 @@ be done using the options described below.
 
 |image6|
 
-**Figure A1.8:** Parameter form for ‘Group 6 – Sources’.
+**Figure A1.7:** Parameter form for ‘Group 6 – Sources’.
 
 **USE\_FORCE\_POINT\_SOURCE** simulates a force point source (e.g.
 impact source) rather than an earthquake source. If you are using this
@@ -272,7 +272,7 @@ not recommended for normal simulations.
 
 |image7|
 
-**Figure A1.9:** Parameter form for ‘Group 7 – Visualisation’.
+**Figure A1.8:** Parameter form for ‘Group 7 – Visualisation’.
 
 **CREATE\_SHAKEMAP** creates a map of peak ground velocity for the area
 modelled.
@@ -315,7 +315,7 @@ controlled by the options described below.
 
 |image8|
 
-**Figure A1.10:** Parameter form for ‘Group 8 – Adjoint Kernel
+**Figure A1.9:** Parameter form for ‘Group 8 – Adjoint Kernel
 Options’.
 
 **NTSTEP\_BETWEEN\_READ\_ADJSRC** interval in time steps for reading
@@ -344,7 +344,7 @@ these advanced options you should also refer to the SPECFEM m
 | |image9|   | |image10|  |
 +------------+------------+
 
-.. centered:: **Figure A1.11:** Parameter form for ‘Group 9 – Advanced’.  
+.. centered:: **Figure A1.10:** Parameter form for ‘Group 9 – Advanced’.  
 
 
 **NSTEPS\_BETWEEN\_OUTPUT\_INFO** controls the frequency that

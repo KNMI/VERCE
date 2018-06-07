@@ -2105,7 +2105,7 @@ implemented into the VERCE platform can be found here:
 \section{Submitting a mesh and a velocity model}
 \label{\detokenize{Section8:submitting-a-mesh-and-a-velocity-model}}
 Once you have produced your mesh, you can take the ten mesh files listed
-in figure 8.3 and put them into a folder named
+in figure 8.3.1 and put them into a folder named
 ‘\sphinxstyleemphasis{mesh\_MySimulationArea’}, where ‘\sphinxstyleemphasis{MySimulationArea’} is the name
 of the area you are studying. Then, zip this folder in a single zip file
 named ‘\sphinxstyleemphasis{mesh\_ MySimulationArea.zip’}.
@@ -2114,11 +2114,11 @@ Do the same with the tomography file formatted as outlined in section
 8.1. The tomography file can have whatever name you want but must be put
 in a folder named ‘\sphinxstyleemphasis{velocity\_ MySimulationArea’}. Finally, zip this
 folder in a single zip file named ‘\sphinxstyleemphasis{velocity\_ MySimulationArea.zip’,
-as shown in Figure 8.3}.
+as shown in Figure 8.3.1}.
 
 \sphinxincludegraphics{{image35}.png}
 
-\sphinxstylestrong{Figure 8.3:} Creating the zip files needed to upload a new model to
+\sphinxstylestrong{Figure 8.3.1:} Creating the zip files needed to upload a new model to
 the VERCE platform. The left hand side shows the 10 mesh files that need
 to be included and uploaded. The right hand side shows the single
 velocity file that needs to be uploaded, along with the naming
@@ -2127,7 +2127,7 @@ conventions for these files.
 Once these zip files have been created, they can be uploaded by clicking
 the link labelled ‘\sphinxstylestrong{*Click here to submit a new mesh and velocity
 model’*} in the solver tab of the forward modelling page. This will
-bring up the parameter form shown in figure 8.4. The zipped mesh and
+bring up the parameter form shown in figure 8.3.2. The zipped mesh and
 velocity model files can then be uploaded to the portal from the local
 machine. The limits of the mesh area in latitude and longitude should
 also be input in the ‘mesh bounds’ section of the pop-up window. Finally
@@ -2142,13 +2142,15 @@ box at the bottom of the parameter form.
 
 \sphinxincludegraphics{{image44}.png}
 
-\sphinxstylestrong{Figure 8.4:} The parameter form for inputting a new mesh and model
+\sphinxstylestrong{Figure 8.3.2:} The parameter form for inputting a new mesh and model
 into the VERCE platform.
 
-\sphinxstylestrong{8.4 Submitting a new earthquake catalogue}
+
+\section{Submitting a new earthquake catalogue}
+\label{\detokenize{Section8:submitting-a-new-earthquake-catalogue}}
 
 If you wish to submit your own earthquake catalogue, you can do this on
-the ‘\sphinxstyleemphasis{File’} tab of the ‘Earthquakes’ page shown in figure 8.5. The
+the ‘\sphinxstyleemphasis{File’} tab of the ‘Earthquakes’ page shown in figure 8.4. The
 catalogue must be uploaded in quakeML format. The easiest way to convert
 other earthquake catalogue formats to quakeML is using ObsPy. The
 earthquakes must have full details of the location and focal mechanism
@@ -2162,7 +2164,7 @@ in appendix 3.
 
 \sphinxincludegraphics{{image54}.png}
 
-\sphinxstylestrong{Figure 8.5:} The input form for bespoke user input earthquake
+\sphinxstylestrong{Figure 8.4:} The input form for bespoke user input earthquake
 catalogues.
 
 
@@ -2170,11 +2172,11 @@ catalogues.
 \label{\detokenize{Section8:submitting-a-new-station-catalogue}}
 New seismic stations and networks can be input in a similar way using
 the upload form under the ‘File’ tab in the ‘Stations’ section shown in
-figure 8.6.
+figure 8.5.1.
 
 The format of the input station file can be a simple list of station
 name, group (i.e. network name), longitude, latitude, depth and meters
-buried. Figure 8.7 shows an example of the station locations for the
+buried. Figure 8.5.2 shows an example of the station locations for the
 temporary Maule network in Central Chile, which is already loaded into
 the platform. Alternatively, the station file can be uploaded as an xml
 file by selecting this format in the drop down menu and choosing your
@@ -2182,11 +2184,11 @@ appropriate file.
 
 \sphinxincludegraphics{{image64}.png}
 
-\sphinxstylestrong{Figure 8.6:} The input form for new seismic station networks.
+\sphinxstylestrong{Figure 8.5.1:} The input form for new seismic station networks.
 
 \sphinxincludegraphics{{image74}.png}
 
-\sphinxstylestrong{Figure 8.7:} The input format for stations and networks to be added
+\sphinxstylestrong{Figure 8.5.2:} The input format for stations and networks to be added
 to the VERCE platform.
 
 
@@ -2432,7 +2434,7 @@ SPECFEM3D\_Cartesian.
 
 \sphinxincludegraphics[scale=0.7]{{image6}.png}
 
-\sphinxstylestrong{Figure A1.7:} Parameter form for ‘Group 5 \textendash{} Seismograms’.
+\sphinxstylestrong{Figure A1.6:} Parameter form for ‘Group 5 \textendash{} Seismograms’.
 
 \sphinxstylestrong{NTSTEP\_BETWEEN\_OUTPUT\_SEISMOS} controls the frequency (in number
 of time steps) that the seismograms are written to disk. Fewer disk
@@ -2483,7 +2485,7 @@ be done using the options described below.
 
 \sphinxincludegraphics[scale=0.8]{{image7}.png}
 
-\sphinxstylestrong{Figure A1.8:} Parameter form for ‘Group 6 \textendash{} Sources’.
+\sphinxstylestrong{Figure A1.7:} Parameter form for ‘Group 6 \textendash{} Sources’.
 
 \sphinxstylestrong{USE\_FORCE\_POINT\_SOURCE} simulates a force point source (e.g.
 impact source) rather than an earthquake source. If you are using this
@@ -2518,7 +2520,7 @@ not recommended for normal simulations.
 
 \sphinxincludegraphics[scale=0.8]{{image8}.png}
 
-\sphinxstylestrong{Figure A1.9:} Parameter form for ‘Group 7 \textendash{} Visualisation’.
+\sphinxstylestrong{Figure A1.8:} Parameter form for ‘Group 7 \textendash{} Visualisation’.
 
 \sphinxstylestrong{CREATE\_SHAKEMAP} creates a map of peak ground velocity for the area
 modelled.
@@ -2561,7 +2563,7 @@ controlled by the options described below.
 
 \sphinxincludegraphics[scale=0.8]{{image9}.png}
 
-\sphinxstylestrong{Figure A1.10:} Parameter form for ‘Group 8 \textendash{} Adjoint Kernel
+\sphinxstylestrong{Figure A1.9:} Parameter form for ‘Group 8 \textendash{} Adjoint Kernel
 Options’.
 
 \sphinxstylestrong{NTSTEP\_BETWEEN\_READ\_ADJSRC} interval in time steps for reading
@@ -2600,7 +2602,7 @@ these advanced options you should also refer to the SPECFEM m
 \par
 \sphinxattableend\end{savenotes}
 
-\begin{center}\sphinxstylestrong{Figure A1.11:} Parameter form for ‘Group 9 \textendash{} Advanced’.
+\begin{center}\sphinxstylestrong{Figure A1.10:} Parameter form for ‘Group 9 \textendash{} Advanced’.
 \end{center}
 \sphinxstylestrong{NSTEPS\_BETWEEN\_OUTPUT\_INFO} controls the frequency that
 information about a running simulation is output to a log file.

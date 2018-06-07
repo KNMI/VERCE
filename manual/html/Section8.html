@@ -95,6 +95,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submitting-a-mesh-and-a-velocity-model">8.3 Submitting a mesh and a velocity model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#submitting-a-new-earthquake-catalogue">8.4 Submitting a new earthquake catalogue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submitting-a-new-station-catalogue">8.5 Submitting a new station catalogue</a></li>
 </ul>
 </li>
@@ -279,7 +280,7 @@ implemented into the VERCE platform can be found here:</p>
 <div class="section" id="submitting-a-mesh-and-a-velocity-model">
 <h2>8.3 Submitting a mesh and a velocity model<a class="headerlink" href="#submitting-a-mesh-and-a-velocity-model" title="Permalink to this headline">¶</a></h2>
 <p>Once you have produced your mesh, you can take the ten mesh files listed
-in figure 8.3 and put them into a folder named
+in figure 8.3.1 and put them into a folder named
 ‘<em>mesh_MySimulationArea’</em>, where ‘<em>MySimulationArea’</em> is the name
 of the area you are studying. Then, zip this folder in a single zip file
 named ‘<em>mesh_ MySimulationArea.zip’</em>.</p>
@@ -287,9 +288,9 @@ named ‘<em>mesh_ MySimulationArea.zip’</em>.</p>
 8.1. The tomography file can have whatever name you want but must be put
 in a folder named ‘<em>velocity_ MySimulationArea’</em>. Finally, zip this
 folder in a single zip file named ‘<em>velocity_ MySimulationArea.zip’,
-as shown in Figure 8.3</em>.</p>
+as shown in Figure 8.3.1</em>.</p>
 <p><img alt="image2" src="_images/image35.png" /></p>
-<p><strong>Figure 8.3:</strong> Creating the zip files needed to upload a new model to
+<p><strong>Figure 8.3.1:</strong> Creating the zip files needed to upload a new model to
 the VERCE platform. The left hand side shows the 10 mesh files that need
 to be included and uploaded. The right hand side shows the single
 velocity file that needs to be uploaded, along with the naming
@@ -297,7 +298,7 @@ conventions for these files.</p>
 <p>Once these zip files have been created, they can be uploaded by clicking
 the link labelled ‘<strong>*Click here to submit a new mesh and velocity
 model’*</strong> in the solver tab of the forward modelling page. This will
-bring up the parameter form shown in figure 8.4. The zipped mesh and
+bring up the parameter form shown in figure 8.3.2. The zipped mesh and
 velocity model files can then be uploaded to the portal from the local
 machine. The limits of the mesh area in latitude and longitude should
 also be input in the ‘mesh bounds’ section of the pop-up window. Finally
@@ -309,11 +310,13 @@ for the mesh and model to be uploaded and ready to use.</p>
 your group of users can use. In this case please specify it in the note
 box at the bottom of the parameter form.</p>
 <p><img alt="image3" src="_images/image44.png" /></p>
-<p><strong>Figure 8.4:</strong> The parameter form for inputting a new mesh and model
+<p><strong>Figure 8.3.2:</strong> The parameter form for inputting a new mesh and model
 into the VERCE platform.</p>
-<p><strong>8.4 Submitting a new earthquake catalogue</strong></p>
+</div>
+<div class="section" id="submitting-a-new-earthquake-catalogue">
+<h2>8.4 Submitting a new earthquake catalogue<a class="headerlink" href="#submitting-a-new-earthquake-catalogue" title="Permalink to this headline">¶</a></h2>
 <p>If you wish to submit your own earthquake catalogue, you can do this on
-the ‘<em>File’</em> tab of the ‘Earthquakes’ page shown in figure 8.5. The
+the ‘<em>File’</em> tab of the ‘Earthquakes’ page shown in figure 8.4. The
 catalogue must be uploaded in quakeML format. The easiest way to convert
 other earthquake catalogue formats to quakeML is using ObsPy. The
 earthquakes must have full details of the location and focal mechanism
@@ -324,25 +327,25 @@ can then be written to a quakeML file using ‘<em>writeQuakeML’</em>. Full
 details on how to install ObsPy and access tutorials on ObsPy are given
 in appendix 3.</p>
 <p><img alt="image4" src="_images/image54.png" /></p>
-<p><strong>Figure 8.5:</strong> The input form for bespoke user input earthquake
+<p><strong>Figure 8.4:</strong> The input form for bespoke user input earthquake
 catalogues.</p>
 </div>
 <div class="section" id="submitting-a-new-station-catalogue">
 <h2>8.5 Submitting a new station catalogue<a class="headerlink" href="#submitting-a-new-station-catalogue" title="Permalink to this headline">¶</a></h2>
 <p>New seismic stations and networks can be input in a similar way using
 the upload form under the ‘File’ tab in the ‘Stations’ section shown in
-figure 8.6.</p>
+figure 8.5.1.</p>
 <p>The format of the input station file can be a simple list of station
 name, group (i.e. network name), longitude, latitude, depth and meters
-buried. Figure 8.7 shows an example of the station locations for the
+buried. Figure 8.5.2 shows an example of the station locations for the
 temporary Maule network in Central Chile, which is already loaded into
 the platform. Alternatively, the station file can be uploaded as an xml
 file by selecting this format in the drop down menu and choosing your
 appropriate file.</p>
 <p><img alt="image5" src="_images/image64.png" /></p>
-<p><strong>Figure 8.6:</strong> The input form for new seismic station networks.</p>
+<p><strong>Figure 8.5.1:</strong> The input form for new seismic station networks.</p>
 <p><img alt="image6" src="_images/image74.png" /></p>
-<p><strong>Figure 8.7:</strong> The input format for stations and networks to be added
+<p><strong>Figure 8.5.2:</strong> The input format for stations and networks to be added
 to the VERCE platform.</p>
 </div>
 </div>
