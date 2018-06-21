@@ -163,15 +163,17 @@ birthdayCalendar.set(Calendar.YEAR, 1970);
 					<aui:option label="female" selected="<%= !male %>" value="0" />
 				</aui:select>
 			</c:if>
-		 	<div class="exp-ctrl-holder">	
+			
+			<div class="exp-ctrl-holder">	
 				<liferay-ui:custom-attribute		
 					className="<%= User.class.getName() %>"		
 					classPK="<%= 0 %>"		
 					editable="<%= true %>"		
 					label="<%= true %>"		
-					name="Institution"		
+					name="Institution"	 
 				/> 	 
-			</div>	
+			</div>
+
 			<c:if test="<%= PropsValues.CAPTCHA_CHECK_PORTAL_CREATE_ACCOUNT %>">
 				<portlet:resourceURL var="captchaURL">
 					<portlet:param name="struts_action" value="/login/captcha" />
@@ -187,4 +189,24 @@ birthdayCalendar.set(Calendar.YEAR, 1970);
 	</aui:button-row>
 </aui:form>
 
-<liferay-util:include page="/html/portlet/login/navigation.jsp" />
+<aui:script use="aui-base,liferay-form">
+ 	var form= Liferay.Form.get('<portlet:namespace />fm').form; 
+	var customFieldName = form[15].name;  
+    Liferay.Form.register(
+    {
+        id: form.id,
+        fieldRules:
+        [
+            
+            {
+	            body: '',
+	            custom: false,
+	            errorMessage: 'This field is required.',
+	            fieldName: customFieldName,
+	            validatorName:'required'
+            }
+
+  		]     
+                         
+    });  
+</aui:script>	
