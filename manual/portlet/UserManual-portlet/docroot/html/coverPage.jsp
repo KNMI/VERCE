@@ -78,7 +78,7 @@
                                       </tr>
                                       <tr>
                                         <th> 
-                                          <a href="https://www.liverpool.ac.uk/">
+                                          <a href="https://www.liverpool.ac.uk/" target="_blank">
                                             <img alt="image7" src='<%=request.getContextPath()%>/images/liverpool.png' style="width: 3.0in; height: 1.0in;" />
                                           </a>
                                         </th>
