@@ -105,14 +105,12 @@
 			name="Institution" 
 			> 
 
-			<% 
-
- 			com.liferay.portlet.expando.model.impl.ExpandoBridgeImpl expandoBridge = new com.liferay.portlet.expando.model.impl.ExpandoBridgeImpl(company.getCompanyId(),className,classPK);
- 			
+			<% 			
  			String value="";
 			try 
 			{
-				value= (String) expandoBridge.getAttribute("Institution",true);
+				com.liferay.portlet.expando.model.impl.ExpandoBridgeImpl expandoBridge = new com.liferay.portlet.expando.model.impl.ExpandoBridgeImpl(company.getCompanyId(),className,classPK);
+	 			value= (String) expandoBridge.getAttribute("Institution",true);
 			
 			}
 			catch(Exception e)
@@ -121,6 +119,7 @@
 			}
 			buffer.append(value);
 			%>
+			
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
