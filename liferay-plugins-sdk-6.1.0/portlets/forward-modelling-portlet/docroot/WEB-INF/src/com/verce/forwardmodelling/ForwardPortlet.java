@@ -263,9 +263,10 @@ public class ForwardPortlet extends MVCPortlet{
 	      		String wfName = wf.getWorkflowName().substring(0,wf.getWorkflowName().lastIndexOf("_"));
 
                 String status = wf.getStatusbean().getStatus();
-
+                
                 // only fetch status for runs that are not already stopped
-                if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING")) {
+                if (!status.equals("ERROR") && !status.equals("FINISHED") && !status.equals("WORKFLOW_SUSPENDING") && !status.equals("INIT")) {
+                	//System.out.println("Workflow Name "+ wf.getWorkflowName() + " Workflow Status "+ status);
 	                WorkflowInstanceBean wfIB = asm_service.getDetails(req.getRemoteUser(), wf.getWorkflowName());
 
                     HashMap<String,String> statuses = new HashMap();
@@ -1199,7 +1200,7 @@ public class ForwardPortlet extends MVCPortlet{
    		try {
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
-	   		URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);
+	   		URL url = new URL("https://portal.verce.eu/verce-scig-api/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1239,7 +1240,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
 	   		String velocityModelName = ParamUtil.getString(resourceRequest, "velocityModelName");
 
-			URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);
+			URL url = new URL("https://portal.verce.eu/verce-scig-api/solver/" + solverName);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1513,12 +1514,12 @@ public class ForwardPortlet extends MVCPortlet{
     	urlParams.add(new BasicNameValuePair("prov", data));     	 
     	try 
     	{ 
-    		URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflowexecutions/insert"); 
+    		URL url = new URL("https://portal.verce.eu/j2ep-1.0/prov/workflowexecutions/insert"); 
     		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(urlParams, "utf-8"); 
     		HttpURLConnection con = (HttpURLConnection) url.openConnection(); 
     	   
     		con.setDoOutput(true); 
-    		con.addRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");  
+    		con.setRequestProperty("Content-type","application/x-www-form-urlencoded;charset=utf-8");  
 			con.setRequestProperty("Accept", "application/json");	 
 		 
     		OutputStream os = con.getOutputStream(); 

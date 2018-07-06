@@ -1,0 +1,87 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Introduction to the VERCE platform}{5}{chapter.1}
+\contentsline {chapter}{\numberline {2}Introduction to full waveform modeling}{7}{chapter.2}
+\contentsline {section}{\numberline {2.1}Why full waveform?}{7}{section.2.1}
+\contentsline {section}{\numberline {2.2}Calculating the wave field}{7}{section.2.2}
+\contentsline {section}{\numberline {2.3}High performance computing in seismic waveform modeling}{7}{section.2.3}
+\contentsline {section}{\numberline {2.4}What do I need to run a simulation?}{8}{section.2.4}
+\contentsline {chapter}{\numberline {3}Registering for the platform and certification}{9}{chapter.3}
+\contentsline {section}{\numberline {3.1}Registering for the platform}{9}{section.3.1}
+\contentsline {section}{\numberline {3.2}Getting a certificate}{10}{section.3.2}
+\contentsline {section}{\numberline {3.3}Installing your certificate in your browser}{10}{section.3.3}
+\contentsline {section}{\numberline {3.4}Registering for super computing and data resources}{10}{section.3.4}
+\contentsline {section}{\numberline {3.5}Creating and uploading proxy certificates}{11}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}MYPROXY Tools}{11}{subsection.3.5.1}
+\contentsline {subsubsection}{GSISSH\_Term Tool}{12}{subsubsection*.2}
+\contentsline {subsubsection}{MYPROXY command line tool}{13}{subsubsection*.3}
+\contentsline {subsection}{\numberline {3.5.2}Uploading a proxy certificate to the VERCE platform}{14}{subsection.3.5.2}
+\contentsline {subsection}{\numberline {3.5.3}Certificate Association}{15}{subsection.3.5.3}
+\contentsline {chapter}{\numberline {4}A tour of the VERCE platform}{17}{chapter.4}
+\contentsline {section}{\numberline {4.1}Welcome \& News tabs}{17}{section.4.1}
+\contentsline {section}{\numberline {4.2}Security tab}{17}{section.4.2}
+\contentsline {section}{\numberline {4.3}Forward Modelling tab}{17}{section.4.3}
+\contentsline {section}{\numberline {4.4}Provenance tab}{18}{section.4.4}
+\contentsline {section}{\numberline {4.5}File Manager tab}{19}{section.4.5}
+\contentsline {section}{\numberline {4.6}IRODS tab}{19}{section.4.6}
+\contentsline {section}{\numberline {4.7}The Meshes and models already uploaded}{19}{section.4.7}
+\contentsline {chapter}{\numberline {5}A SPECFEM3D\_Cartesian simulation example}{23}{chapter.5}
+\contentsline {section}{\numberline {5.1}Preparing the portal}{23}{section.5.1}
+\contentsline {section}{\numberline {5.2}Selecting a solver, mesh and velocity model}{23}{section.5.2}
+\contentsline {section}{\numberline {5.3}Specifying the input parameters for SPECFEM3D\_Cartesian}{24}{section.5.3}
+\contentsline {section}{\numberline {5.4}Selecting earthquakes}{25}{section.5.4}
+\contentsline {section}{\numberline {5.5}Selecting stations}{26}{section.5.5}
+\contentsline {section}{\numberline {5.6}Submitting the job}{27}{section.5.6}
+\contentsline {section}{\numberline {5.7}Monitoring the job}{27}{section.5.7}
+\contentsline {chapter}{\numberline {6}A SPECFEM3D\_GLOBE simulation example}{29}{chapter.6}
+\contentsline {section}{\numberline {6.1}Introduction}{29}{section.6.1}
+\contentsline {section}{\numberline {6.2}Setting the simulation area}{29}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Global Simulation}{29}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Regional Simulation}{29}{subsection.6.2.2}
+\contentsline {section}{\numberline {6.3}Selecting a velocity model}{30}{section.6.3}
+\contentsline {section}{\numberline {6.4}Defining the resolution \& mesh parameters}{30}{section.6.4}
+\contentsline {section}{\numberline {6.5}Selecting an Earthquake}{31}{section.6.5}
+\contentsline {section}{\numberline {6.6}Selecting stations}{32}{section.6.6}
+\contentsline {section}{\numberline {6.7}Submitting and monitoring the simulation}{33}{section.6.7}
+\contentsline {section}{\numberline {6.8}Outputs from regional \& global simulations}{34}{section.6.8}
+\contentsline {chapter}{\numberline {7}Processing and Accessing the Results}{37}{chapter.7}
+\contentsline {section}{\numberline {7.1}Outputs of the forward simulations}{37}{section.7.1}
+\contentsline {subsection}{\numberline {7.1.1}Waveform outputs}{38}{subsection.7.1.1}
+\contentsline {subsection}{\numberline {7.1.2}Animation outputs}{39}{subsection.7.1.2}
+\contentsline {subsection}{\numberline {7.1.3}Other outputs}{40}{subsection.7.1.3}
+\contentsline {section}{\numberline {7.2}Downloading observed data}{41}{section.7.2}
+\contentsline {section}{\numberline {7.3}Waveform processing}{42}{section.7.3}
+\contentsline {section}{\numberline {7.4}Misfit calculation}{43}{section.7.4}
+\contentsline {section}{\numberline {7.5}Accessing the results through iRODS}{48}{section.7.5}
+\contentsline {chapter}{\numberline {8}Running SPECFEM3D\_Cartesian simulations using your own data}{51}{chapter.8}
+\contentsline {section}{\numberline {8.1}Creating your own velocity model}{51}{section.8.1}
+\contentsline {section}{\numberline {8.2}Creating a bespoke mesh for your area}{52}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Meshing parameters}{52}{subsection.8.2.1}
+\contentsline {subsection}{\numberline {8.2.2}Meshing software}{53}{subsection.8.2.2}
+\contentsline {section}{\numberline {8.3}Submitting a mesh and a velocity model}{54}{section.8.3}
+\contentsline {section}{\numberline {8.4}Submitting a new station catalogue}{56}{section.8.4}
+\contentsline {chapter}{\numberline {9}VERCE glossary}{59}{chapter.9}
+\contentsline {chapter}{\numberline {A1}Appendix 1 \textendash {} SPECFEM3D\_Cartesian\IeC {\textquoteright }s Flags}{61}{appendix.A}
+\contentsline {section}{\numberline {A1.1}Group 0 - Basic}{61}{section.A.1}
+\contentsline {section}{\numberline {A1.2}Group 1 \textendash {} Inverse problem}{62}{section.A.2}
+\contentsline {section}{\numberline {A1.3}Group 2 \textendash {} UTM projection}{62}{section.A.3}
+\contentsline {section}{\numberline {A1.4}Group 3 \textendash {} Attenuation}{62}{section.A.4}
+\contentsline {section}{\numberline {A1.5}Group 4 \textendash {} Absorbing Boundary Conditions}{63}{section.A.5}
+\contentsline {section}{\numberline {A1.6}Group 5 \textendash {} Seismograms}{64}{section.A.6}
+\contentsline {section}{\numberline {A1.7}Group 6 \textendash {} Sources}{65}{section.A.7}
+\contentsline {section}{\numberline {A1.8}Group 7 \textendash {} Visualisation}{66}{section.A.8}
+\contentsline {section}{\numberline {A1.9}Group 8 \textendash {} Adjoint Kernel Options}{67}{section.A.9}
+\contentsline {section}{\numberline {A1.10}Group 9 \textendash {} Advanced}{67}{section.A.10}
+\contentsline {chapter}{\numberline {A2}Appendix 2 \textendash {} SPECFEM3D\_GLOBE\IeC {\textquoteright }s Flags}{71}{appendix.B}
+\contentsline {section}{\numberline {A2.1}Group 0 - Basic}{71}{section.B.1}
+\contentsline {section}{\numberline {A2.2}Group 1 \textendash {} Inverse Problem}{71}{section.B.2}
+\contentsline {section}{\numberline {A2.3}Group 2 \textendash {} Simulation Area}{72}{section.B.3}
+\contentsline {section}{\numberline {A2.4}Group 3 \textendash {} Mesh Parameters}{73}{section.B.4}
+\contentsline {section}{\numberline {A2.5}Group 4 \textendash {} Adjoint Kernel Options}{73}{section.B.5}
+\contentsline {section}{\numberline {A2.6}Group 5 - Movie}{74}{section.B.6}
+\contentsline {section}{\numberline {A2.7}Group 6 - Sources}{74}{section.B.7}
+\contentsline {section}{\numberline {A2.8}Group 7 - Seismograms}{75}{section.B.8}
+\contentsline {section}{\numberline {A2.9}Group 8 - Advanced}{75}{section.B.9}
+\contentsline {chapter}{\numberline {A3}Appendix 3 \textendash {} Using ObsPy}{77}{appendix.C}
+\contentsline {chapter}{\numberline {A4}Appendix 4 \textendash {} using dispel4py}{79}{appendix.D}
+\contentsline {section}{\numberline {A4.1}Installing Dispel4Py}{79}{section.D.1}
+\contentsline {section}{\numberline {A4.2}Using Disple4Py}{80}{section.D.2}

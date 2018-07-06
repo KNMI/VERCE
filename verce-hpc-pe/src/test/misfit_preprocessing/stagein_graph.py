@@ -107,9 +107,9 @@ graph.connect(streamer0, 'output', syn_staging_pipeline, "input")
 graph.connect(streamer1, 'output', raw_staging_pipeline, "input")
 graph.connect(streamer2, 'output', xml_staging_pipeline, "input")
 
-#injectProv(graph,ProvenancePE)
-#attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],w3c_prov=False)
+injectProv(graph,ProvenancePE)
+attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],w3c_prov=False)
 
-InitiateNewRun(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=input_json['runId'],w3c_prov=False,workflowName="preprocess_stagein",workflowId="")
+#InitiateNewRun(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=input_json['runId'],w3c_prov=False,workflowName="preprocess_stagein",workflowId="")
 #display(graph)
  

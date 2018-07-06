@@ -1,0 +1,277 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<meta http-equiv="Content-Type" content="text/html;" charset="utf-8">
+
+<%@ include file="header.jsp" %>
+<%@ include file="menu.jsp" %>
+<div class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+            <nav class="wy-nav-top" aria-label="top navigation">
+
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="index.jsp">VERCE Portal Manual</a>
+
+            </nav>
+
+            <div class="wy-nav-content-custom">
+
+                <div class="rst-content">
+
+                     <div role="navigation" aria-label="breadcrumbs navigation">
+
+                        <ul class="wy-breadcrumbs">
+
+                            <li><a href="index.html">Docs</a> &raquo;</li>
+
+                            <li>3. Registering for the platform and certification</li>
+
+                            <li class="wy-breadcrumbs-aside">
+
+                            </li>
+
+                        </ul>
+
+                        <hr/>
+                    </div>
+                    <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                        <div itemprop="articleBody">
+
+                            <div class="section" id="registering-for-the-platform-and-certification">
+                                <h1>3. Registering for the platform and certification<a class="headerlink" href="#registering-for-the-platform-and-certification" title="Permalink to this headline"></a></h1>
+                                <p>The VERCE platform can be accessed through a normal web browser. The portal has been well tested with browsers such as <em>Mozilla Firefox</em> and
+                                    <em>Safari</em>, and should also work with <em>Google Chrome</em>. At this stage the portal doesn’t support <em>Internet Explorer</em> or <em>Microsoft Edge.</em></p>
+                                <div class="section" id="registering-for-the-platform">
+                                    <h2>3.1 Registering for the platform<a class="headerlink" href="#registering-for-the-platform" title="Permalink to this headline"></a></h2>
+                                    <p>Registering for the portal is exceptionally easy. Simply go to the VERCE portal website on the link below and click the <img alt="image0" src='<%=request.getContextPath()%>/images/image11.jpg' />icon. Fill in your details ensuring that you use your university email address (i.e. your academic email address) if at all possible. This can take one or two working days to be processed so please leave yourself time for this.</p>
+                                    <p><a class="reference external" href="https://portal.verce.eu/home">https://portal.verce.eu/home</a></p>
+                                    <a href='<%=request.getContextPath()%>/images/image22.png' target="_blank">
+                                        <img  alt="image1" src='<%=request.getContextPath()%>/images/image22.png' />
+                                    </a>
+                                    <p><strong>Figure 3.1:</strong> The VERCE sign up page</p>
+                                </div>
+                                <div class="section" id="getting-a-certificate">
+                                    <h2>3.2 Getting a certificate<a class="headerlink" href="#getting-a-certificate" title="Permalink to this headline"></a></h2>
+                                    <p>In addition to registering for the platform you must also get an e-science certificate from the relevant authority. This is an internationally recognised certification scheme that will allow you to submit simulations to a wide range of supercomputers. Without an e-science certificate you will be able to log into the portal website, but you will not be able to submit jobs to any of the super computers, or access any data through the portal.</p>
+                                    <p>The procedure for getting an e-science certificate depends on the where you are based as the e-science certificates are distributed by national certification authorities. First you must request an e-science certificate from your national provider, following the instructions on the relevant website:</p>
+                                    <ul class="simple">
+                                        <li>For the UK: <a class="reference external" href="http://www.ngs.ac.uk/ukca/certificates">http://www.ngs.ac.uk/ukca/certificates</a></li>
+                                        <li>For Germany:
+                                            <a class="reference external" href="https://pki.pca.dfn.de/grid-root-ca/cgi-bin/pub/pki?RA_ID=101">https://pki.pca.dfn.de/grid-root-ca/cgi-bin/pub/pki?RA_ID=101</a></li>
+                                        <li>For the Netherlands: <a class="reference external" href="http://ca.dutchgrid.nl/">http://ca.dutchgrid.nl/</a></li>
+                                        <li>For France: <a class="reference external" href="https://igc.services.cnrs.fr/GRID2-FR">https://igc.services.cnrs.fr/GRID2-FR</a></li>
+                                        <li>For Italy: <a class="reference external" href="http://security.fi.infn.it/CA">http://security.fi.infn.it/CA</a></li>
+                                    </ul>
+                                    <p>You then have to go to an administrator (usually in your university) who confirms who you are, and (hopefully) approves the certificate. This can also take a day or two, so please leave time for this.</p>
+                                    <p>It is important to back up this certificate in a different location to the host computer (i.e. the computer that you used to request and download the certificate). Your local certificating authority will provide full details of how to do this.</p>
+                                </div>
+                                <div class="section" id="installing-your-certificate-in-your-browser">
+                                    <h2>3.3 Installing your certificate in your browser<a class="headerlink" href="#installing-your-certificate-in-your-browser" title="Permalink to this headline"></a></h2>
+                                    <p>To make the next stages of registration easier it is recommended that the users install their new certificate to the browser. Ideally this should be done on the computer you are most likely to be using the VERCE portal from. The certificate must first be exported from the certificate manager (see instructions from your national certificating authority). Both the ‘Private Key’ and the Certificate should be exported in ‘PKCS#12’ format. The certificate is exported to the local machine, and is protected with a new password.</p>
+                                    <p>To install the certificate on Mozilla you must first select
+                                        <em>‘Options/Preferences’</em> from the menu button (<img alt="image2" src='<%=request.getContextPath()%>/images/image32.png' />) in the top right of the browser. Select the ‘<em>Advanced</em>’ tab from the left-hand panel and then the ‘Certificates’ tab under the ‘Advanced’ menu. Finally select ‘<em>View Certificates’</em> and click <em>‘Import’</em> to upload your certificate from its location on your local machine using the new password set when exporting the certificate.</p>
+                                    <p>Other browsers can be used (see start of section for browser options), but the procedure for uploading the certificate will vary. You must then ensure that you use this browser for the validation steps outlined below, and ideally when you log in to the portal.</p>
+                                </div>
+                                <div class="section" id="registering-for-super-computing-and-data-resources">
+                                    <h2>3.4 Registering for super computing and data resources<a class="headerlink" href="#registering-for-super-computing-and-data-resources" title="Permalink to this headline"></a></h2>
+                                    <p>The VERCE portal and iRODS are currently hosted by the ‘SCAI Fraunhofer’ supercomputer, in Germany.</p>
+                                    <p>To register for SCAI and iRODS, please send the information listed below to André Gemünd (<a class="reference external" href="mailto:andre&#46;gemuend&#37;&#52;&#48;scai&#46;fraunhofer&#46;de">andre<span>&#46;</span>gemuend<span>&#64;</span>scai<span>&#46;</span>fraunhofer<span>&#46;</span>de</a>) at SCAI Fraunhofer, and request to be registered for the VERCE portal. André will be able to give you an account on ‘SCAI’ and ‘iRODS’ that will allow you to calculate and manage waveforms respectively. ‘iRODS’ is a suite of data management software that is embedded within the VERCE platform, and allows you to easily access your data regardless of where you submitted your simulation.</p>
+                                    <ul class="simple">
+                                        <li>First Name</li>
+                                        <li>Last Name</li>
+                                        <li>Nationality</li>
+                                        <li>Affiliation</li>
+                                        <li>Professional Address (including country)</li>
+                                        <li>Telephone Number</li>
+                                        <li>Email address</li>
+                                        <li>Certificate DN (distinguished name, also called subject) of your certificate
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="section" id="creating-and-uploading-proxy-certificates">
+                                    <h2>3.5 Creating and uploading proxy certificates<a class="headerlink" href="#creating-and-uploading-proxy-certificates" title="Permalink to this headline"></a></h2>
+                                    <p>Once you have got your national e-science certificate, you will need to load a proxy certificate up to the portal to allow you to access data and submit jobs to the available supercomputers. A proxy certificate is essentially a copy of the full certificate that will expire after a short time period (usually 24 hours). This allows you to upload and use your certificate, while the limited life span of the proxy minimises the risk of the certificate falling into the wrong hands.</p>
+                                    <p>Currently you can create a Proxy certificate using either the GSISSH_Term tool or the command line MYPROXY tools, both described below. We hope to provide a proxy certificate tool in the near future.</p>
+                                    <div class="section" id="myproxy-tools">
+                                        <h3>3.5.1 MYPROXY Tools<a class="headerlink" href="#myproxy-tools" title="Permalink to this headline"></a></h3>
+                                        <p>To run simulations on the VERCE Portal it is necessary to have stored your credentials (a proxy certificate) in a MyProxy repository so that it’s available for download through the portal when needed. To create a proxy certificate, you need to have a user certificate (from your national provider, listed above) and a private key file (with a .PEM format).
+                                        </p>
+                                        <p>If your certificate is in p12 format, the relevant certificate format and private key file can be created as below. Run the following commands in the command line:</p>
+                                        <div class="highlight-RestructuredText notranslate">
+                                            <div class="highlight"><pre><span></span>openssl pkcs12 -clcerts -nokeys -out usercert.pem -in cert.p12
+
+openssl pkcs12 -nocerts -out userkey.pem -in cert.p12
+</pre></div>
+                                        </div>
+                                        <p>The above commands should generate the files usercert.pem and userkey.pem. Once this is done then to protect your keys you would need to run the following commands:</p>
+                                        <div class="highlight-RestructuredText notranslate">
+                                            <div class="highlight"><pre><span></span>chmod 644 usercert.pem
+
+chmod 400 userkey.pem
+</pre></div>
+                                        </div>
+                                        <p>Before you could use the below proxy tools you will need first to perform the following:</p>
+                                        <ul>
+                                            <li>
+                                                <p class="first">Create a “. globus” folder in your home directory and then copy the files usercert.pem and userkey.pem to this particular folder</p>
+                                            </li>
+                                            <li>
+                                                <p class="first">Install Java Runtime Environment (JRE) 1.7 or higher</p>
+                                                <blockquote>
+                                                    <div>
+                                                        <p>For the GSISSH_term tool you should also do the following steps:</p>
+                                                    </div>
+                                                </blockquote>
+                                            </li>
+                                            <li>
+                                                <p class="first">Download the “Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files”</p>
+                                            </li>
+                                            <li>
+                                                <p class="first">Extract the two jar files, “local_policy.jar” and “US_export_policy.jar”, and copy them to {JRE_HOME}/lib/security</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="section" id="gsissh-term-tool">
+                                        <h3>3.5.1.1 GSISSH_Term Tool<a class="headerlink" href="#gsissh-term-tool" title="Permalink to this headline"></a></h3>
+                                        <p>The GSISSH_Term is a Java based application supported on most platforms. It is currently available for download on
+                                            <a class="reference external" href="https://www.lrz.de/services/compute/grid_en/software_en/gsisshterm_en/">https://www.lrz.de/services/compute/grid_en/software_en/gsisshterm_en/</a> and can be installed either as a desktop application or as a Java webstart application.</p>
+                                        <p>To run GSISSH-Term as a Java webstart application, you need to have Java webstart (javaws) installed on your machine. This should already be included in the Java Runtime Environment (JRE) for Java SE 7.</p>
+                                        <p>Once the GSISSH-Term application has ran successfully then you can launch “MyProxy Tool” by selecting “MyProxy Tool” option from the “Tools” menu. A new popup window should appear as shown Figure 3.5.1.1.</p>
+                                        
+                                        <a href='<%=request.getContextPath()%>/images/image4.jpg' target="_blank">
+                                            <p><img alt="image3" src='<%=request.getContextPath()%>/images/image4.jpg' /></p>
+                                        </a>    
+                                        <p><strong>Figure 3.5.1.1:</strong> Launching MyProxy Tool on GSISSH_Term application.
+                                        </p>
+                                        <p>With MyProxy Tool you can upload, check and remove your credential to/from a MyProxy server. The tool also supports the generation and upload of voms-enabled proxy.</p>
+                                        <p>To create and store a proxy certificate in a MyProxy server, do the following steps:</p>
+                                        <ul class="simple">
+                                            <li>Launch MyProxy Tool on a machine where your Grid credentials are located.
+                                            </li>
+                                            <li>Select “Create and upload proxy” from the dropdown list.</li>
+                                            <li>In the “MyProxy Server Information” panel enter:
+                                                <ul>
+                                                    <li>a URL of MyProxy server,</li>
+                                                    <li>a port number to connect to MyProxy server,</li>
+                                                    <li>a lifetime span for your proxy certificate and</li>
+                                                    <li>a username you could use later to retrieve or download your credentials from MyProxy server.</li>
+                                                </ul>
+                                            </li>
+                                            <li>In the “Local Certificate” panel:
+                                                <ul>
+                                                    <li>choose your certificate format from the dropdown list,</li>
+                                                    <li>for PEM format as mentioned above place both usercert.pem and userkey.pem in a folder named “.globus” which should be located within your home directory.</li>
+                                                    <li>For passphrase enter your grid-proxy passphrase.</li>
+                                                </ul>
+                                            </li>
+                                            <li>Click on the “Create and Store” button.</li>
+                                            <li>Once the connection to MyProxy server has been established then you will be prompted to enter a new passphrase which you will need to use later along with other details to access your credentials on MyProxy server. It is recommended to use a passphrase that is different to your grid-proxy passphrase</li>
+                                        </ul>
+                                    </div>
+                                    <div class="section" id="myproxy-command-line-tool">
+                                        <h3>3.5.1.2 MYPROXY command line tool<a class="headerlink" href="#myproxy-command-line-tool" title="Permalink to this headline"></a></h3>
+                                        <p>The MYPROXY tools can then be installed as by running the following commands in the command line of a Linux or mac machine:</p>
+                                        <div class="highlight-RestructuredText notranslate">
+                                            <div class="highlight"><pre><span></span>sudo apt-get install myproxy
+
+sudo apt-get install voms-clients
+</pre></div>
+                                        </div>
+                                        <p>Installing the packages below will allow you to manage your certificate (from your national certificating authority). More details on this are given at <a class="reference external" href="https://wiki.egi.eu/wiki/EGI_IGTF_Release">https://wiki.egi.eu/wiki/EGI_IGTF_Release</a>. To install the relevant packages:</p>
+                                        <ol class="arabic">
+                                            <li>
+                                                <p class="first">Add the following line to your dpkg sources (sources.list file):</p>
+                                                <div class="highlight-RestructuredText notranslate">
+                                                    <div class="highlight"><pre><span></span>#### EGI Trust Anchor Distribution ####
+
+deb http://repository.egi.eu/sw/production/cas/1/current egi-igtf core
+</pre></div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <p class="first">Run the following to add the EUGridPMA PGP key:</p>
+                                                <div class="highlight-RestructuredText notranslate">
+                                                    <div class="highlight"><pre><span></span>sudo wget -q -O –<span class="s">`https://dist.eugridpma.info/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3\| </span><span class="si">&lt;https://dist.eugridpma.info/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3|&gt;</span><span class="s">`__</span>
+    sudo apt-key add –
+</pre></div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <p class="first">Populate the cache and install the meta-package</p>
+                                                <div class="highlight-RestructuredText notranslate">
+                                                    <div class="highlight"><pre><span></span>sudo apt-get update
+
+    sudo apt-get install ca-policy-egi-core
+</pre></div>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                        <p>To store a credential in the MyProxy repository, run the <em>myproxy-init</em> command on a computer where your Grid credentials are located. For example:
+                                        </p>
+                                        <div class="highlight-RestructuredText notranslate">
+                                            <div class="highlight"><pre><span></span>myproxy-init -s myproxy.lrz.de
+</pre></div>
+                                        </div>
+                                        <p>This will prompt you for your grid-proxy passphrase and then for a new passphrase for accessing your credentials from the MyProxy server. It is recommended to use a passphrase that is different to your grid-proxy passphrase.
+                                        </p>
+                                        <p>By default, MyProxy uses your local Unix username to store your credentials and the proxy certificate is stored for 7 days in the MyProxy server. However, you can change this and register a proxy certificate for a specific number of hours using the -c option.</p>
+                                        <p>For example, running the following command will register a proxy certificate for 2 hours</p>
+                                        <div class="highlight-RestructuredText notranslate">
+                                            <div class="highlight"><pre><span></span>myproxy-init -c 2 -s myproxy.lrz.de
+</pre></div>
+                                        </div>
+                                        <p>To download your certificate, go to the ‘Security’ tab on the VERCE Portal and click on the ‘Download’ button under the ‘Certificate’ panel then under ‘<strong>Hostname’</strong> enter the MyProxy server (e.g. myproxy.lrz.de) and your MyProxy username and passphrase. This is described in more detail in section 3.5.2 (below).</p>
+                                        <p>For more details of MyProxy commands, see</p>
+                                        <p><a class="reference external" href="http://toolkit.globus.org/toolkit/docs/4.0/security/myproxy/user-index.html">http://toolkit.globus.org/toolkit/docs/4.0/security/myproxy/user-index.html</a></p>
+                                    </div>
+                                    <div class="section" id="uploading-a-proxy-certificate-to-the-verce-platform">
+                                        <h3>3.5.2 Uploading a proxy certificate to the VERCE platform<a class="headerlink" href="#uploading-a-proxy-certificate-to-the-verce-platform" title="Permalink to this headline"></a></h3>
+                                        <p>Once you have created you proxy certificate using one of the methods above, you need to load the certificate into the VERCE platform in order to be able to submit jobs and access the data.</p>
+                                        <p>To do this you need to go to the ‘Security’ page. On this page click the
+                                            <img alt="image4" src='<%=request.getContextPath()%>/images/image5.jpg' /> button which will display the proxy certificate upload panel as shown below in Figure 3.5.</p>
+                                        <a href='<%=request.getContextPath()%>/images/image6.jpg' target="_blank">    
+                                            <img alt="image5" src='<%=request.getContextPath()%>/images/image6.jpg' />
+                                        </a>    
+                                        <p><strong>Figure 3.5:</strong> The proxy certificate upload panel.</p>
+                                        <p>Here you need to enter the address of the institution hosting your proxy certificate in the <strong>‘Hostname’</strong> box (e.g. myproxy.lrz.de). The username and password you set for your proxy certificate must then be entered in the <strong>‘Login’</strong> and <strong>‘Password’</strong> boxes respectively. Clicking the <img alt="image6" src='<%=request.getContextPath()%>/images/image5.jpg' />button then adds the proxy certificate to the portal, allowing you to access the high performance computing (HPC) resources and data.</p>
+                                        <p>The proxy certificate will only be valid for up to 24 hours, so you will need to repeat this process of creating and uploading the proxy certificate every time you wish to use the VERCE portal to run simulations or access data.</p>
+                                    </div>
+                                    <div class="section" id="certificate-association">
+                                        <h3>3.5.3 Certificate Association<a class="headerlink" href="#certificate-association" title="Permalink to this headline"></a></h3>
+                                        <p>Once you have successfully uploaded your certificate, you must associate the certificate with the platform (verce.eu) and any resources you intend to use in this session (e.g. supercomputing resources). The proxy certificate will then authenticate you as a user, and allow you to access the HPC and memory resources.</p>
+                                        <p>First navigate to the ‘Security’ tab. Here you will see details of the proxy certificate you have just uploaded as shown below. Click the ‘Associate to VO’ button to bring up the page shown in figure 3.6. You can now select the resource you wish to associate your proxy certificate to from the drop-down menu located below your certificate details. You can see in both figure 3.5 and figure 3.6 that the proxy certificate here is associated to verce.eu, SuperMUC and SCAI_Cluster2.</p>
+                                        
+                                        <a href='<%=request.getContextPath()%>/images/image7.jpg' target="_blank">
+                                            <img alt="image7" src='<%=request.getContextPath()%>/images/image7.jpg' />
+                                        </a>    
+
+                                        <p><strong>Figure 3.5:</strong> The proxy certificate loaded into the certificates page of the portal. This proxy certificate has been associated with SCAI computing resources.</p>
+                                        
+                                        <a href='<%=request.getContextPath()%>/images/image8.jpg' target="_blank">
+                                            <img alt="image8" src='<%=request.getContextPath()%>/images/image8.jpg' />
+                                        </a>
+                                        <p><strong>Figure 3.6</strong>: The certificate association page. The resources to which the certificate may be associated are listed in the dropdown box shown in the bottom right of the figure.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+                        <a href='<%=request.getContextPath()%>/html/section4.jsp' class="btn btn-neutral float-right" title="1. Introduction to the VERCE platform" accesskey="n" rel="next">Next 
+                                          <span class="fa fa-arrow-circle-right"></span> </a>
+
+                        <a href='<%=request.getContextPath()%>/html/section2.jsp' class="btn btn-neutral" title="Table of Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+                    </div>
+                    <%@ include file="footer.jsp" %>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>

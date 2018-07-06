@@ -1,0 +1,3191 @@
+\documentclass[english]{book}
+\usepackage{pdfpages} 
+\usepackage{tocloft}
+\setlength{\cftchapnumwidth}{2em}
+\cftsetindents{section}{2em}{2.4em}
+\cftsetindents{subsection}{4.4em}{3.2em} 
+\ifdefined\pdfpxdimen
+   \let\sphinxpxdimen\pdfpxdimen\else\newdimen\sphinxpxdimen
+\fi \sphinxpxdimen=.75bp\relax
+
+\PassOptionsToPackage{warn}{textcomp}
+\usepackage[utf8]{inputenc}
+\ifdefined\DeclareUnicodeCharacter
+ \ifdefined\DeclareUnicodeCharacterAsOptional
+  \DeclareUnicodeCharacter{"00A0}{\nobreakspace}
+  \DeclareUnicodeCharacter{"2500}{\sphinxunichar{2500}}
+  \DeclareUnicodeCharacter{"2502}{\sphinxunichar{2502}}
+  \DeclareUnicodeCharacter{"2514}{\sphinxunichar{2514}}
+  \DeclareUnicodeCharacter{"251C}{\sphinxunichar{251C}}
+  \DeclareUnicodeCharacter{"2572}{\textbackslash}
+ \else
+  \DeclareUnicodeCharacter{00A0}{\nobreakspace}
+  \DeclareUnicodeCharacter{2500}{\sphinxunichar{2500}}
+  \DeclareUnicodeCharacter{2502}{\sphinxunichar{2502}}
+  \DeclareUnicodeCharacter{2514}{\sphinxunichar{2514}}
+  \DeclareUnicodeCharacter{251C}{\sphinxunichar{251C}}
+  \DeclareUnicodeCharacter{2572}{\textbackslash}
+ \fi
+\fi
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amstext}
+\usepackage{babel}
+\usepackage{times}
+\usepackage[Bjarne]{fncychap}
+\usepackage{sphinx}
+
+\usepackage{geometry}
+
+% Include hyperref last.
+\usepackage{hyperref}
+% Fix anchor placement for figures with captions.
+\usepackage{hypcap}% it must be loaded after hyperref.
+% Set up styles of URL: it should be placed after hyperref.
+\urlstyle{same}
+
+
+\addto\captionsenglish{\renewcommand{\figurename}{Fig.}}
+\addto\captionsenglish{\renewcommand{\tablename}{Table}}
+\addto\captionsenglish{\renewcommand{\literalblockname}{Listing}}
+
+\addto\captionsenglish{\renewcommand{\literalblockcontinuedname}{continued from previous page}}
+\addto\captionsenglish{\renewcommand{\literalblockcontinuesname}{continues on next page}}
+
+\addto\extrasenglish{\def\pageautorefname{page}}
+
+\setcounter{tocdepth}{2}
+
+\titleformat{\chapter}[display]{\bfseries\Large}{\filright}{1ex}{}[]
+
+\newcommand{\sphinxlogo}{\vbox{}}
+\renewcommand{\releasename}{Release}
+\makeindex
+
+\begin{document}
+
+\phantomsection\label{\detokenize{index::doc}}
+
+\sphinxincludegraphics{{logo}.png}
+
+\vspace{20mm}
+
+{\huge{The VERCE portal – a user’s guide}}
+
+\vspace{20mm}
+
+\sphinxincludegraphics{{aquila_sim}.png}
+
+\vspace{20mm}
+
+\sphinxstylestrong{Version 2.1}
+
+\vspace{5mm}
+
+\sphinxstylestrong{April 2018}
+
+\break
+
+The VERCE project was funded by the EU as an EU infrastructure project,
+involving a wide range of institutions from across the EU.
+
+\vspace{20mm}
+
+\scalebox{0.200000}{\sphinxincludegraphics[height=500\sphinxpxdimen]{{cineca}.png}} \hspace{5mm}
+\sphinxincludegraphics{{emsc}.jpg} \hspace{5mm}
+\sphinxincludegraphics[scale=0.4]{{edinburgh}.jpg}
+
+\vspace{5mm}
+
+\sphinxincludegraphics[width=2.0in]{{lmu}.png} \hspace{5mm}
+\sphinxincludegraphics[width=1.2in]{{ingv}.jpg} \hspace{5mm}
+\sphinxincludegraphics[width=2.5in,height=0.77500in]{{liverpool}.png}
+
+\vspace{5mm}
+
+\sphinxincludegraphics[width=2.5in,height=0.70139in]{{scai}.jpg} \hspace{15mm}
+\sphinxincludegraphics[width=2.5in,height=0.80347in]{{knmi}.png}
+
+\vspace{5mm}
+
+\scalebox{0.800000}{\sphinxincludegraphics{{orfeus}.png}}
+
+\vspace{20mm}
+
+The following individuals have contributed material to this guide
+
+T. Garth, F. Magnoni, R. Saleh, A. Spinuso, E. Casarotti, A. Gemund, S.
+Hoon Leong, J. Holt, L. Krishner, A. Kraus, R. Filgueira, M. Aktinson,
+H. Igel, A. Rietbrock
+
+
+\sphinxtableofcontents
+
+\chapter{Introduction to the VERCE platform}
+\label{\detokenize{Section1::doc}}
+\label{\detokenize{Section1:introduction-to-the-verce-platform}}
+The VERCE portal is an online resource that allows large scale, 3D full
+waveform simulations to be easily run on a variety of high performance
+computers, and the associated large data sets to be managed easily. This
+resource is designed to make the ever increasing potential of full
+waveform seismological techniques available to a much wider spectrum of
+seismology and earthquake science communities.
+
+This guide provides a brief description of the science and technologies
+behind the VERCE portal, and a step by step guide to using the portal.
+The written description of each step is complemented by online tutorial
+videos and presentations, and provides a stepping off point for users
+who want to use other tools supported by VERCE such as ‘Obspy’, a python
+toolbox for dealing with seismic data, and ‘Dispel4Py’, a python toolbox
+designed to manage large data sets in seismology (and other
+disciplines). The resources supported by VERCE should then enable a
+seismologist of any specialism run large scale waveform simulations for
+an area of interest, and deal with large seismological data sets.
+
+VERCE \textendash{} Virtual Earthquake and seismology Research Community e-science
+environment in Europe - is an EU infrastructure project extending from
+2011 and 2015, and the development of the VERCE portal has been a
+collaborative project involving a wide range of project partners from
+across the EU. VERCE was a major contribution to the e-science
+environment of the European Plate Observing System (EPOS), which is
+presently supporting further developments and updates of the VERCE
+platform.
+
+\sphinxincludegraphics{{image15}.png}
+
+\sphinxstylestrong{Figure 1.1:} A snapshot of a simulation of the Ml 5.2 Lunigiana
+earthquake which occurred on the 21$^{\text{st}}$ June 2013 in Northern
+Italy. Image produced by the INGV.
+
+
+
+\chapter{Introduction to full waveform modeling}
+\label{\detokenize{Section2:introduction-to-full-waveform-modeling}}\label{\detokenize{Section2::doc}}
+
+\section{Why full waveform?}
+\label{\detokenize{Section2:why-full-waveform}}
+Much of the modern seismological methods used today rely on very little
+of the information contained within the seismogram. Earthquakes can be
+located using just the arrival time of the P- and S- waves, and this
+same information from many earthquakes in a given area can be used to
+invert for a travel time tomography. These methods however neglect the
+vast majority of the data within the waveform.
+
+The seismic waveforms recorded from an earthquake principally depend
+upon the seismic structure of the medium they pass through (i.e. the
+Earth), and the characteristics of the earthquake source itself. If this
+waveform data is utilized, it could therefore lead to a much greater
+resolution of seismic properties (e.g. velocity and attenuation) of the
+Earth, as well as better models of earthquakes’ sources and ground
+motion from potentially hazardous earthquakes.
+
+
+\section{Calculating the wave field}
+\label{\detokenize{Section2:calculating-the-wave-field}}
+In order to use the full waveform to constrain a seismic wave speed
+model of the Earth, we need a way of calculating the response of the 3D
+velocity models we already have. The physics of how a seismic wave
+propagates through the earth is well understood, and is described by the
+wave equation.
+
+A number of different methods exist to solve the wave equation (or its
+constituent equations) in order to model the propagation of a waveform
+from its source through a velocity model to a receiver. In order to do
+this, the modelled area is broken up into a grid of points with given
+seismic properties, and the motion of each point in that grid is
+calculated at each time step.
+
+The spacing of these points is controlled by the velocity model used and
+the frequency of the seismic wave that is modelled, with tighter grid
+spacing and a smaller time step being required to model higher frequency
+seismic waves.
+
+The time step and grid spacing are also dependent on the method used to
+solve the wave propagation. The codes supported within the VERCE
+platform use the spectral element methods (Komatitsch et al., 2005) to
+solve the seismic wave equation, hence calculating the response of the
+seismic wave-field to the velocity and attenuation parameters of the
+input model. Details on how to ensure that the model is stable to the
+frequencies required are given in section 8 of this guide.
+
+
+\section{High performance computing in seismic waveform modeling}
+\label{\detokenize{Section2:high-performance-computing-in-seismic-waveform-modeling}}
+The main problem/issue with this sort of simulation is that calculating
+the motion of a tight grid of points at thousands of time steps is
+extremely computationally expensive. For this reason, both 2D and 3D
+waveform models are run on high performance computers. These simulations
+are executed in parallel, meaning that the simulation runs
+simultaneously on many different processing cores. Simulations performed
+through the VERCE platform can be run on a range of different super
+computers from across Europe. The supercomputer pictured in figure 2.1
+is hosted at SCAI Fraunhofer, Germany.
+
+\begin{center}\raisebox{-0.5\height}{\sphinxincludegraphics{{image1}.jpg}}
+\end{center}
+\sphinxstylestrong{Figure 2.1:} One of the high performance computers which is
+available through the VERCE platform is hosted at SCAI Fraunhofer,
+Germany (\sphinxurl{https://www.scai.fraunhofer.de}).
+
+
+\section{What do I need to run a simulation?}
+\label{\detokenize{Section2:what-do-i-need-to-run-a-simulation}}
+In order to run a full waveform seismic simulation you need to know the
+following details:
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{Velocity model}
+
+In order to calculate the wave-field you need to know the velocity
+structure of the area of interest. The velocity models already available
+through the portal are all based on published travel time tomography
+models, but it is also possible to load your own wave speed models into
+the portal (see section 8).
+
+\item {} 
+\sphinxstylestrong{Mesh}
+
+\end{enumerate}
+\begin{quote}
+
+The mesh is a grid of points within the volume that is to be modelled.
+The mesh takes into account the changes in required resolution with
+depth, but also the topography and bathymetry of the area being
+modelled. Several meshes are already loaded into the portal for specific
+regions. However, if you wish to run simulations in a new area, you will
+need to create and submit a new mesh and velocity model. Details of how
+to do this are given in section 8 of this guide.
+\end{quote}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item {} 
+\sphinxstylestrong{Focal mechanisms}
+
+\end{enumerate}
+\begin{quote}
+
+For any earthquake you want to model you must know the hypocentral
+location as well as the full focal mechanism. The VERCE portal allows
+you to download focal mechanisms from the gCMT catalogue and other local
+earthquake mechanism catalogues (e.g. INGV catalogue of TDMT solutions),
+but it is also possible to load in your own focal mechanisms as
+described in section 8.
+\end{quote}
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item {} 
+\sphinxstylestrong{Station locations}
+
+\end{enumerate}
+\begin{quote}
+
+Again, using the portal, users can select station locations by accessing
+the information on international seismic networks through FDSN web
+services. However, if there are any networks or station locations that
+are not pre-loaded to the portal, you can also add your own station
+locations (section 8).
+\end{quote}
+
+All of these are provided for certain study areas, such as the area we
+consider in the simple example in part 5 of this guide.
+
+However, If you are working on a study area that is not currently
+supported in the VERCE portal, you will also need to create a new mesh,
+velocity model, station locations and possible earthquake focal
+mechanisms (although there are global catalogues supported in the
+platform) and you can use them for bespoke simulations.
+
+
+
+\chapter{Registering for the platform and certification}
+\label{\detokenize{Section3:registering-for-the-platform-and-certification}}\label{\detokenize{Section3::doc}}
+The VERCE platform can be accessed through a normal web browser. The
+portal has been well tested with browsers such as \sphinxstyleemphasis{Mozilla Firefox} and
+\sphinxstyleemphasis{Safari}, and should also work with \sphinxstyleemphasis{Google Chrome}. At this stage the
+portal doesn’t support \sphinxstyleemphasis{Internet Explorer} or \sphinxstyleemphasis{Microsoft Edge.}
+
+
+\section{Registering for the platform}
+\label{\detokenize{Section3:registering-for-the-platform}}
+Registering for the portal is exceptionally easy. Simply go to the VERCE
+portal website on the link below and click the \sphinxincludegraphics{{image11}.jpg}icon. Fill in
+your details ensuring that you use your university email address (i.e.
+your academic email address) if at all possible. This can take one or
+two working days to be processed so please leave yourself time for this.
+
+\sphinxurl{https://portal.verce.eu/home}
+
+\sphinxincludegraphics{{image22}.png}
+
+\sphinxstylestrong{Figure 3.1:} The VERCE sign up page
+
+
+\section{Getting a certificate}
+\label{\detokenize{Section3:getting-a-certificate}}
+In addition to registering for the platform you must also get an
+e-science certificate from the relevant authority. This is an
+internationally recognised certification scheme that will allow you to
+submit simulations to a wide range of supercomputers. Without an
+e-science certificate you will be able to log into the portal website,
+but you will not be able to submit jobs to any of the super computers,
+or access any data through the portal.
+
+The procedure for getting an e-science certificate depends on the where
+you are based as the e-science certificates are distributed by national
+certification authorities. First you must request an e-science
+certificate from your national provider, following the instructions on
+the relevant website:
+\begin{itemize}
+\item {} 
+For the UK: \sphinxurl{http://www.ngs.ac.uk/ukca/certificates}
+
+\item {} 
+For Germany:
+\sphinxurl{https://pki.pca.dfn.de/grid-root-ca/cgi-bin/pub/pki?RA\_ID=101}
+
+\item {} 
+For the Netherlands: \sphinxurl{http://ca.dutchgrid.nl/}
+
+\item {} 
+For France: \sphinxurl{https://igc.services.cnrs.fr/GRID2-FR}
+
+\item {} 
+For Italy: \sphinxurl{http://security.fi.infn.it/CA}
+
+\end{itemize}
+
+You then have to go to an administrator (usually in your university) who
+confirms who you are, and (hopefully) approves the certificate. This can
+also take a day or two, so please leave time for this.
+
+It is important to back up this certificate in a different location to
+the host computer (i.e. the computer that you used to request and
+download the certificate). Your local certificating authority will
+provide full details of how to do this.
+
+
+\section{Installing your certificate in your browser}
+\label{\detokenize{Section3:installing-your-certificate-in-your-browser}}
+To make the next stages of registration easier it is recommended that
+the users install their new certificate to the browser. Ideally this
+should be done on the computer you are most likely to be using the VERCE
+portal from. The certificate must first be exported from the certificate
+manager (see instructions from your national certificating authority).
+Both the ‘Private Key’ and the Certificate should be exported in
+‘PKCS\#12’ format. The certificate is exported to the local machine, and
+is protected with a new password.
+
+To install the certificate on Mozilla you must first select
+\sphinxstyleemphasis{‘Options/Preferences’} from the menu button (\sphinxincludegraphics{{image32}.png}) in the top right
+of the browser. Select the ‘\sphinxstyleemphasis{Advanced}’ tab from the left-hand panel
+and then the ‘Certificates’ tab under the ‘Advanced’ menu. Finally
+select ‘\sphinxstyleemphasis{View Certificates’} and click \sphinxstyleemphasis{‘Import’} to upload your
+certificate from its location on your local machine using the new
+password set when exporting the certificate.
+
+Other browsers can be used (see start of section for browser options),
+but the procedure for uploading the certificate will vary. You must then
+ensure that you use this browser for the validation steps outlined
+below, and ideally when you log in to the portal.
+
+
+\section{Registering for super computing and data resources}
+\label{\detokenize{Section3:registering-for-super-computing-and-data-resources}}
+The VERCE portal and iRODS are currently hosted by the ‘SCAI Fraunhofer’
+supercomputer, in Germany.
+
+To register for SCAI and iRODS, please send the information listed below to André Gemünd (\sphinxhref{mailto:andre.gemuend@scai.fraunhofer.de}{andre.gemuend@scai.fraunhofer.de}) at
+SCAI Fraunhofer, and request to be registered for the VERCE portal.
+André will be able to give you an account on ‘SCAI’ and ‘iRODS’ that
+will allow you to calculate and manage waveforms respectively. ‘iRODS’
+is a suite of data management software that is embedded within the VERCE
+platform, and allows you to easily access your data regardless of where
+you submitted your simulation.
+\begin{itemize}
+\item {} 
+First Name
+
+\item {} 
+Last Name
+
+\item {} 
+Nationality
+
+\item {} 
+Affiliation
+
+\item {} 
+Professional Address (including country)
+
+\item {} 
+Telephone Number
+
+\item {} 
+Email address
+
+\item {} 
+Certificate DN (distinguished name, also called subject) of your
+certificate
+
+\end{itemize}
+
+
+\section{Creating and uploading proxy certificates}
+\label{\detokenize{Section3:creating-and-uploading-proxy-certificates}}
+Once you have got your national e-science certificate, you will need to
+load a proxy certificate up to the portal to allow you to access data
+and submit jobs to the available supercomputers. A proxy certificate is
+essentially a copy of the full certificate that will expire after a
+short time period (usually 24 hours). This allows you to upload and use
+your certificate, while the limited life span of the proxy minimises the
+risk of the certificate falling into the wrong hands.
+
+Currently you can create a Proxy certificate using either the
+GSISSH\_Term tool or the command line MYPROXY tools, both described
+below. We hope to provide a proxy certificate tool in the near future.
+
+
+\subsection{MYPROXY Tools}
+\label{\detokenize{Section3:myproxy-tools}}
+To run simulations on the VERCE Portal it is necessary to have stored
+your credentials (a proxy certificate) in a MyProxy repository so that
+it’s available for download through the portal when needed. To create a
+proxy certificate, you need to have a user certificate (from your
+national provider, listed above) and a private key file (with a .PEM
+format).
+
+If your certificate is in p12 format, the relevant certificate format
+and private key file can be created as below. Run the following commands
+in the command line:
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+openssl pkcs12 \PYGZhy{}clcerts \PYGZhy{}nokeys \PYGZhy{}out usercert.pem \PYGZhy{}in cert.p12
+
+openssl pkcs12 \PYGZhy{}nocerts \PYGZhy{}out userkey.pem \PYGZhy{}in cert.p12
+\end{sphinxVerbatim}
+
+The above commands should generate the files usercert.pem and
+userkey.pem. Once this is done then to protect your keys you would need
+to run the following commands:
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+chmod 644 usercert.pem
+
+chmod 400 userkey.pem
+\end{sphinxVerbatim}
+
+Before you could use the below proxy tools you will need first to
+perform the following:
+\begin{itemize}
+\item {} 
+Create a “. globus” folder in your home directory and then copy the
+files usercert.pem and userkey.pem to this particular folder
+
+\item {} 
+Install Java Runtime Environment (JRE) 1.7 or higher
+\begin{quote}
+
+For the GSISSH\_term tool you should also do the following steps:
+\end{quote}
+
+\item {} 
+Download the “Java Cryptography Extension (JCE) Unlimited Strength
+Jurisdiction Policy Files”
+
+\item {} 
+Extract the two jar files, “local\_policy.jar” and
+“US\_export\_policy.jar”, and copy them to \{JRE\_HOME\}/lib/security
+
+\end{itemize}
+
+
+\subsubsection{GSISSH\_Term Tool}
+\label{\detokenize{Section3:gsissh-term-tool}}
+The GSISSH\_Term is a Java based application supported on most
+platforms. It is currently available for download on
+\sphinxurl{https://www.lrz.de/services/compute/grid\_en/software\_en/gsisshterm\_en/}
+and can be installed either as a desktop application or as a Java
+webstart application.
+
+To run GSISSH-Term as a Java webstart application, you need to have Java
+webstart (javaws) installed on your machine. This should already be
+included in the Java Runtime Environment (JRE) for Java SE 7.
+
+Once the GSISSH-Term application has ran successfully then you can
+launch “MyProxy Tool” by selecting “MyProxy Tool” option from the
+“Tools” menu. A new popup window should appear as shown Figure 3.5.1.1.
+
+\sphinxincludegraphics{{image4}.jpg}
+
+\sphinxstylestrong{Figure 3.5.1.1:} Launching MyProxy Tool on GSISSH\_Term
+application.
+
+With MyProxy Tool you can upload, check and remove your credential
+to/from a MyProxy server. The tool also supports the generation and
+upload of voms-enabled proxy.
+
+To create and store a proxy certificate in a MyProxy server, do the
+following steps:
+\begin{itemize}
+\item {} 
+Launch MyProxy Tool on a machine where your Grid credentials are
+located.
+
+\item {} 
+Select “Create and upload proxy” from the dropdown list.
+
+\item {} 
+In the “MyProxy Server Information” panel enter:
+\begin{itemize}
+\item {} 
+a URL of MyProxy server,
+
+\item {} 
+a port number to connect to MyProxy server,
+
+\item {} 
+a lifetime span for your proxy certificate and
+
+\item {} 
+a username you could use later to retrieve or download your
+credentials from MyProxy server.
+
+\end{itemize}
+
+\item {} 
+In the “Local Certificate” panel:
+\begin{itemize}
+\item {} 
+choose your certificate format from the dropdown list,
+
+\item {} 
+for PEM format as mentioned above place both usercert.pem and
+userkey.pem in a folder named “.globus” which should be located
+within your home directory.
+
+\item {} 
+For passphrase enter your grid-proxy passphrase.
+
+\end{itemize}
+
+\item {} 
+Click on the “Create and Store” button.
+
+\item {} 
+Once the connection to MyProxy server has been established then you
+will be prompted to enter a new passphrase which you will need to use
+later along with other details to access your credentials on MyProxy
+server. It is recommended to use a passphrase that is different to
+your grid-proxy passphrase
+
+\end{itemize}
+
+
+\subsubsection{MYPROXY command line tool}
+\label{\detokenize{Section3:myproxy-command-line-tool}}
+The MYPROXY tools can then be installed as by running the following
+commands in the command line of a Linux or mac machine:
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+sudo apt\PYGZhy{}get install myproxy
+
+sudo apt\PYGZhy{}get install voms\PYGZhy{}clients
+\end{sphinxVerbatim}
+
+Installing the packages below will allow you to manage your certificate
+(from your national certificating authority). More details on this are
+given at \sphinxurl{https://wiki.egi.eu/wiki/EGI\_IGTF\_Release}. To install the
+relevant packages:
+\begin{enumerate}
+\item {} 
+Add the following line to your dpkg sources (sources.list file):
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{} EGI Trust Anchor Distribution \PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}
+
+deb http://repository.egi.eu/sw/production/cas/1/current egi\PYGZhy{}igtf core
+\end{sphinxVerbatim}
+
+\item {} 
+Run the following to add the EUGridPMA PGP key:
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+sudo wget \PYGZhy{}q \PYGZhy{}O \textendash{}\PYG{l+s}{{}`https://dist.eugridpma.info/distribution/igtf/current/GPG\PYGZhy{}KEY\PYGZhy{}EUGridPMA\PYGZhy{}RPM\PYGZhy{}3\PYGZbs{}\textbar{} }\PYG{l+s+si}{\PYGZlt{}https://dist.eugridpma.info/distribution/igtf/current/GPG\PYGZhy{}KEY\PYGZhy{}EUGridPMA\PYGZhy{}RPM\PYGZhy{}3\textbar{}\PYGZgt{}}\PYG{l+s}{{}`\PYGZus{}\PYGZus{}}
+    sudo apt\PYGZhy{}key add \textendash{}
+\end{sphinxVerbatim}
+
+\item {} 
+Populate the cache and install the meta-package
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+sudo apt\PYGZhy{}get update
+
+    sudo apt\PYGZhy{}get install ca\PYGZhy{}policy\PYGZhy{}egi\PYGZhy{}core
+\end{sphinxVerbatim}
+
+\end{enumerate}
+
+To store a credential in the MyProxy repository, run the \sphinxstyleemphasis{myproxy-init}
+command on a computer where your Grid credentials are located. For
+example:
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+myproxy\PYGZhy{}init \PYGZhy{}s myproxy.lrz.de
+\end{sphinxVerbatim}
+
+This will prompt you for your grid-proxy passphrase and then for a new
+passphrase for accessing your credentials from the MyProxy server. It is
+recommended to use a passphrase that is different to your grid-proxy
+passphrase.
+
+By default, MyProxy uses your local Unix username to store your
+credentials and the proxy certificate is stored for 7 days in the
+MyProxy server. However, you can change this and register a proxy
+certificate for a specific number of hours using the -c option.
+
+For example, running the following command will register a proxy
+certificate for 2 hours
+
+\fvset{hllines={, ,}}%
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+myproxy\PYGZhy{}init \PYGZhy{}c 2 \PYGZhy{}s myproxy.lrz.de
+\end{sphinxVerbatim}
+
+To download your certificate, go to the ‘Security’ tab on the VERCE
+Portal and click on the ‘Download’ button under the ‘Certificate’ panel
+then under ‘\sphinxstylestrong{Hostname’} enter the MyProxy server (e.g.
+myproxy.lrz.de) and your MyProxy username and passphrase. This is
+described in more detail in section 3.5.2 (below).
+
+For more details of MyProxy commands, see
+
+\sphinxurl{http://toolkit.globus.org/toolkit/docs/4.0/security/myproxy/user-index.html}
+
+
+\subsection{Uploading a proxy certificate to the VERCE platform}
+\label{\detokenize{Section3:uploading-a-proxy-certificate-to-the-verce-platform}}
+Once you have created you proxy certificate using one of the methods
+above, you need to load the certificate into the VERCE platform in order
+to be able to submit jobs and access the data.
+
+To do this you need to go to the ‘Security’ page. On this page click the
+\sphinxincludegraphics{{image5}.jpg} button which will display the proxy certificate upload panel as
+shown below in Figure 3.5.
+
+\sphinxincludegraphics{{image6}.jpg}
+
+\sphinxstylestrong{Figure 3.5:} The proxy certificate upload panel.
+
+Here you need to enter the address of the institution hosting your proxy
+certificate in the \sphinxstylestrong{‘Hostname’} box (e.g. myproxy.lrz.de). The
+username and password you set for your proxy certificate must then be
+entered in the \sphinxstylestrong{‘Login’} and \sphinxstylestrong{‘Password’} boxes respectively.
+Clicking the \sphinxincludegraphics{{image5}.jpg}button then adds the proxy certificate to the
+portal, allowing you to access the high performance computing (HPC)
+resources and data.
+
+The proxy certificate will only be valid for up to 24 hours, so you will
+need to repeat this process of creating and uploading the proxy
+certificate every time you wish to use the VERCE portal to run
+simulations or access data.
+
+
+\subsection{Certificate Association}
+\label{\detokenize{Section3:certificate-association}}
+Once you have successfully uploaded your certificate, you must associate
+the certificate with the platform (verce.eu) and any resources you
+intend to use in this session (e.g. supercomputing resources). The proxy
+certificate will then authenticate you as a user, and allow you to
+access the HPC and memory resources.
+
+First navigate to the ‘Security’ tab. Here you will see details of the
+proxy certificate you have just uploaded as shown below. Click the
+‘Associate to VO’ button to bring up the page shown in figure 3.6. You
+can now select the resource you wish to associate your proxy certificate
+to from the drop-down menu located below your certificate details. You
+can see in both figure 3.5 and figure 3.6 that the proxy certificate
+here is associated to verce.eu, SuperMUC and SCAI\_Cluster2.
+
+\sphinxincludegraphics{{image7}.jpg}
+
+\sphinxstylestrong{Figure 3.5:} The proxy certificate loaded into the certificates page
+of the portal. This proxy certificate has been associated with SCAI computing resources.
+
+\sphinxincludegraphics{{image8}.jpg}
+
+\sphinxstylestrong{Figure 3.6}: The certificate association page. The resources to
+which the certificate may be associated are listed in the dropdown box
+shown in the bottom right of the figure.
+
+
+\chapter{A tour of the VERCE platform}
+\label{\detokenize{Section4:a-tour-of-the-verce-platform}}\label{\detokenize{Section4::doc}}
+In this section we will introduce the different parts of the VERCE
+platform, and show the models and meshes that are already loaded into
+the VERCE portal.
+
+
+\section{Welcome \& News tabs}
+\label{\detokenize{Section4:welcome-news-tabs}}
+\sphinxincludegraphics{{image12}.jpg}
+
+The welcome tab of the portal gives a very brief overview of the portals
+uses, while the news tab gives details of recent significant
+earthquakes. Other news such as upcoming training events, and
+publications related to the VERCE platform may also be shown here.
+
+
+\section{Security tab}
+\label{\detokenize{Section4:security-tab}}
+\sphinxincludegraphics{{image22}.jpg}
+
+We have already used many of the features available in this tab in order
+to upload our proxy certificate. The main security page though gives an
+overview of how to register for and get certificated for the platform,
+as covered in section 3 of this guide. The main tools you need to be
+aware of are the \sphinxstylestrong{‘MyProxy tool’} (section 3.4.1) and the
+\sphinxstylestrong{‘Certificate’} upload tab (section 3.4.3).
+
+
+\section{Forward Modelling tab}
+\label{\detokenize{Section4:forward-modelling-tab}}
+\sphinxincludegraphics{{image3}.jpg}
+
+The ‘Forward Modelling’ tab is the main feature of the portal, and it is
+from here that you can setup and run full waveform simulations, and
+analyse the obtained output products. This section is divided in five
+sub-tabs that allow the user to access the different steps of the
+simulation and analysis procedure.
+
+Jobs can be run from the \sphinxstyleemphasis{‘Simulation’} tab shown in figure 4.1 below.
+On the right hand side of this panel, the code used for the simulations
+can be selected from the drop down menu ‘Solvers’: so far both a code
+for local/regional 3D simulations - SPECFEM3D\_Cartesian (Peter et al.,
+2011; see Section 5) \textendash{} or a code for regional/global 3D simulations \textendash{}
+SPECFEM3D\_GLOBE (Tromp, Komatitsch, and Liu 2008; see section 6) \textendash{} can
+be selected. Then, existing pre-loaded mesh and associated velocity
+model for different areas in the world can be selected from the drop
+down menus ‘Meshes’ and ‘Velocity Model’ respectively. Earthquake
+sources and seismic stations can be selected from the catalogues that
+are pre-installed into the portal under the ‘Earthquakes’ and ‘Stations’
+tabs respectively. This process is described in more detail later in
+section 5 and 6 of this guide.
+
+Alternatively, you can add your own mesh and velocity model using the
+blue link below the drop down boxes in figure 4.1. You can then add your
+own earthquake focal mechanisms and station locations. Details on how to
+create and submit a more advanced bespoke job like this are given in
+section 8 of this guide.
+
+The left hand side of the panel shows a summary map of the area you are
+running your model for, currently showing the default view of Europe.
+The map also shows details of existing geological maps, hazard maps and
+fault traces. The relative weight of these can be adjusted using the
+drop down menu from the layer info button in the top right of the map
+area.
+
+\sphinxincludegraphics{{image41}.jpg}
+
+\sphinxstylestrong{Figure 4.1:} The forward modeling interface ‘Simulation’ page.
+
+From the \sphinxstyleemphasis{‘Download’} tab users can download observed seismograms from
+the EIDA data archive corresponding to a specific earthquake selected
+for simulations. These data cab be used in the subsequent procedure to
+calculate misfit with respect to synthetic seismograms. Details in
+section 7.
+
+Moreover, both observed and synthetic seismograms can be processed
+before comparison using the features under the \sphinxstyleemphasis{‘Processing’} tab and
+quantitative misfit calculation can be performed in the section
+\sphinxstyleemphasis{‘Misfit’}. All the results of simulations and analyses can be accessed
+from the ‘Results’ tabs. Details are reported in section 7 of this
+guide.
+
+
+\section{Provenance tab}
+\label{\detokenize{Section4:provenance-tab}}
+\sphinxincludegraphics{{image51}.jpg}
+
+This tab gives access to the provenance explorer GUI, which allows the
+methods assumptions and inputs that have lead to a given synthetic
+output to be easily summarized. An example of the provenance GUI is
+shown below (figure 4.2)
+
+\sphinxincludegraphics{{image62}.png}
+
+\sphinxstylestrong{Figure 4.2:} An example displayed from the Provenance Explorer GUI
+(taken for Atkinson et al 2016).
+
+
+\section{File Manager tab}
+\label{\detokenize{Section4:file-manager-tab}}
+\sphinxincludegraphics{{image71}.jpg}
+
+The file manager tab gives a access to the files that are available to
+the user. The files are sorted by model run. Examples of using the
+functionality of this tab are given in section 7.
+
+
+\section{IRODS tab}
+\label{\detokenize{Section4:irods-tab}}
+\sphinxincludegraphics{{image81}.jpg}
+
+The iRODS tab gives direct access to the iRODS data structure, and
+allows the data to be managed and potentially downloaded. Examples of
+using the functionality of this tab are given in section 7.
+
+
+\section{The Meshes and models already uploaded}
+\label{\detokenize{Section4:the-meshes-and-models-already-uploaded}}
+Currently there are several meshes and velocity models pre-loaded for
+Italy, and a mesh pre-loaded for the Maule area of Central Chile. They
+can be used for running 3D simulations at local/regional scale with the
+code SPECFEM3D\_Cartesion, as explained in section 5 of this guide.
+
+The frequency to which the seismic wave-field can be simulated is
+controlled by the time step of the model, the spacing of grid points
+within the mesh and ultimately by the values of wave velocities in the
+corresponding model. For this reason, there is a maximum frequency (or
+minimum period) of waveform that a given pair of mesh and velocity model
+can support. This minimum period (maximum frequency) resolvable is shown
+below (figure 4.3) for each of the combinations mesh-wavespeed model
+currently available in the VERCE portal.
+
+Other details of these meshes such as the suggested time step (suggest
+DT) to make each model stable, the number of points in the mesh (Num. of
+HEX), and the approximate time that a 1 minute simulation would take if
+it was run on 100 cores (CPU time) are shown in figure 4.4. The UTM zone
+for each of the meshes is also shown as this should be specified to run
+the simulation and can be useful when using the output data.
+
+Finally figure 4.5 gives details of the velocity models that are
+uploaded, along with the meshes, to the VERCE portal. The minimum and
+maximum P-wave and S-wave velocities are given as these are required to
+calculate the grid spacing and time step needed to resolve a given
+frequency of seismic wave.
+
+\sphinxincludegraphics[scale=0.5]{{image9}.jpg}
+
+\sphinxstylestrong{Figure 4.3:} The mesh and velocity model combinations currently
+available through the VERCE portal, and the period to which the
+wave-field can be resolved in each of these mesh-model combinations.
+
+\sphinxincludegraphics[scale=0.5]{{image10}.jpg}
+
+\sphinxstylestrong{Figure 4.4:} Details of the meshes currently available through the
+VERCE platform.
+
+\sphinxincludegraphics[scale=0.5]{{image111}.jpg}
+
+\sphinxstylestrong{Figure 4.5:} Details of the velocity models that are currently
+available through the VERCE platform.
+
+
+\chapter{A SPECFEM3D\_Cartesian simulation example}
+\label{\detokenize{Section5::doc}}\label{\detokenize{Section5:a-specfem3d-cartesian-simulation-example}}
+SPECFEM3D\_Cartesian is one of the principle solvers used in the VERCE
+portal. It is designed to run waveform simulations on local to regional
+scales, where local variations in bathymetry or topography may be
+significant but large-scale features, such as the Earth’s curvature, may
+be reasonably ignored. The Cartesian version of SPECFEM requires a
+pre-made mesh that includes features of the area or region such as the
+topography. These meshes can be produced by third party programs such as
+GEOCUBIT (Casarotti et al., 2008), and are often refined for a
+particular velocity model from a local or regional scale tomography for
+instance. These meshes can be relatively complex to produce. However, in
+the VERCE platform, a range of pre-loaded meshes is available. Users can
+also upload their own mesh and velocity model for a region of interest.
+This more advance use is described in chapter 8.
+
+In the following section we will describe a step-by-step example of the
+set up of a forward simulation with SPECFEM3D\_Cartesian.
+
+
+\section{Preparing the portal}
+\label{\detokenize{Section5:preparing-the-portal}}
+Before you are able to run a simulation you must log in to the VERCE
+portal, and upload a proxy certificate as described in section 3 of this
+guide. Once you have done this, you should be able to use all parts of
+the portal for the next 24 hours (or the lifetime of your proxy
+certificate).
+
+
+\section{Selecting a solver, mesh and velocity model}
+\label{\detokenize{Section5:selecting-a-solver-mesh-and-velocity-model}}
+The waveform simulations are run from the ‘Forward Modelling’ tab of the
+VERCE portal, shown in figure 5.1. First you must select the ‘Solver’
+tab from the top of the forward modelling panel. In the first drop down
+menu you must select the solver. This is the code that will perform the
+full waveform simulation. Currently the VERCE platform supports
+SPECFEM3D\_Cartesian, which is designed to simulate waveforms on the
+local/regional scale, and SPECFEM3D\_GLOBE, designed for 3D simulations
+in the whole Earth. Specify one of the two codes by selecting
+SPECFEM3D\_Cartesian or SPECFEM3D\_GLOBE in the drop down menu labelled
+‘Solvers’. For this example we select SPECFEM3D\_Cartesian. Once you
+have done this you will see that the right hand side of the panel is
+populated with the input parameters for the selected code, which are
+categorised into ten groups.
+
+You can now select the area that you wish to run a simulation for from
+the drop down menu labelled ‘Meshes’. Once you have selected the
+relevant mesh, the map on the left of the ‘Forward Modelling’ panel will
+zoom to the area concerned, and the area the mesh covers will be
+outlined with a black box as shown below, in Figure 5.1.
+
+\sphinxincludegraphics{{image13}.jpg}
+
+\sphinxstylestrong{Figure 5.1:} Selecting a solver and mesh for Northern Italy. On the
+left panel the colours show the local geology, and known faults are
+plotted in black. On the right panel the drop down menu showing the
+meshes that are currently loaded in is shown. The input parameters for
+the solver can also be seen at the bottom of the right panel.
+
+Once you have selected a solver and a mesh you can then select a
+velocity model for the given area. Most of the meshes currently only
+have one velocity model associated with them. But in theory it is
+possible to have more than one velocity model for each mesh, as long as
+the area of the velocity model covers at least the mesh dimensions. This
+could for instance allow different tomographic models to be compared.
+
+
+\section{Specifying the input parameters for SPECFEM3D\_Cartesian}
+\label{\detokenize{Section5:specifying-the-input-parameters-for-specfem3d-cartesian}}
+The input parameters for SPECFEM3D\_Cartesian are broken up into 10
+categories, which are briefly described in Appendix 1. For a basic
+simulation, many of the parameters can be left at the default setting
+within the portal, but it is important to understand the meaning of
+these input flags for more advanced uses. For explanation of the use of
+the flags you can simply hold your curser above the question mark to the
+right of the flag or variable for a brief description. For a fuller
+description of these parameters please refer to Appendix 1, or for full
+details refer to the manual of SPECFEM3D\_Cartesian.
+
+It is very important that you check the parameters in Group 0,
+especially insuring that the number of processors (NPROC), the time step
+(DT) used in the simulation, and length of the simulation are all set
+correctly. In particular, for each mesh/velocity model pair there is a
+maximum value of DT above which the simulation becomes unstable (see
+section 8.2.1 for details); thus for all your simulations we suggest to
+use the best values of DT for each mesh/model pair reported in Figure
+4.4.
+
+Other parameters in Group 1-9 can be left as default for this exercise,
+but also allow you to specify details of the simulation. While the
+platform gives you as much flexibility as possible to vary these
+parameters, the user must ensure that reasonable values are used,
+otherwise the simulation may not run, or may not produce reasonable
+results. The aspects of the simulation controlled by each group are
+described briefly below.
+
+
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabular}[t]{|\X{15}{100}|\X{85}{100}|}
+\hline
+\sphinxstyletheadfamily 
+\sphinxstylestrong{Group}
+&\sphinxstyletheadfamily 
+\sphinxstylestrong{Description}
+\\
+\hline
+\sphinxstylestrong{Group 0}
+&
+Contains the main flags of the code that controls the number of cores used on the HPC resources, the simulation duration and the time step value. GPU mode will be supported in the near future.
+\\
+\hline
+\sphinxstylestrong{Group 1}
+&
+Controls the type of simulation that is run, and is currently limited to a forward simulation of an earthquake source. In the near future the platform will support the adjoint simulations allowed by the code.
+\\
+\hline
+\sphinxstylestrong{Group 2}
+&
+Contains the details of the projection, which are set by default when you select the appropriate mesh.
+\\
+\hline
+\sphinxstylestrong{Group 3}
+&
+Contains details of how attenuation is accounted for in the simulation. If the attenuation flags are left unchecked (as is the default), an elastic simulation will be run. If the flags are checked, attenuation is estimated from Olsen attenuation (Olsen et al., 2003). For this example we run an elastic case, and so leave the attenuation flags unchecked.
+\\
+\hline
+\sphinxstylestrong{Group 4}
+&
+Allows the type of boundary conditions at the edge of the model area to be set.
+\\
+\hline
+\sphinxstylestrong{Group 5}
+&
+Contains details of how the waveforms of the simulation are output.
+\\
+\hline
+\sphinxstylestrong{Group 6}
+&
+Contains details of the seismic source that is implemented.
+\\
+\hline
+\sphinxstylestrong{Group 7}
+&
+Contains details of how the movies of the simulation are output.
+\\
+\hline
+\sphinxstylestrong{Group 8 \& 9}
+&
+Contain more advance parameters that are not used in the examples presented here. Advance users who wish to use these parameters should refer to the SPECFEM3D\_Cartesian manual.
+\\
+\hline
+\end{tabular}
+\par
+\sphinxattableend\end{savenotes}
+
+\begin{center}Table 5.1: Summary of the groups for SPECFEM3D\_Cartesian
+\end{center}
+The final set up of the workflow is shown in Figure 5.2.
+
+\sphinxincludegraphics{{image23}.jpg}
+
+\sphinxstylestrong{Figure 5.2:} Final setup of the workflow for the simple example. The
+area of Northern Italy which is to be simulated is outlined by the black
+box.
+
+
+\section{Selecting earthquakes}
+\label{\detokenize{Section5:selecting-earthquakes}}
+Next the earthquakes to be simulated are defined in the ‘Earthquakes’
+tab at the top right of the ‘Forward Modelling’ page. There are a number
+of earthquake catalogues pre-loaded into the VERCE platform, including
+the global CMT catalogue, which provides a starting data set for any
+area that we have a model and mesh for. It is also possible to load in
+your own bespoke catalogue of earthquake moment tensors, as described in
+greater detail in section 8.4. Given that the model and mesh selected in
+our example is in Northern Italy, we can however use the INGV focal
+mechanism data set, which is likely to have a larger range of events
+down to smaller magnitudes.
+
+The earthquake catalogue you wish to search is selected using the drop
+down menu at the top of the ‘Earthquakes’ tab. You can then search for
+earthquakes in a range of magnitudes, depths and time. In this example
+we have searched for all earthquakes from magnitude Mw 4.0 \textendash{} 9.0, at up
+to 100000 m depth that occurred within the model and mesh area in the
+year 2012. The earthquake of interest can then be selected either by
+ticking the box next to the earthquake in the list in the bottom right
+of the panel, or by selecting the location of the earthquake on the map
+in the left of the panel. It is also possible to select multiple events
+from this page. This will then submit the same number of jobs as events
+that you have selected, and produce waveforms for each of them. This
+would then allow multiple events to be used in an inversion for
+instance.
+
+\sphinxincludegraphics{{image31}.jpg}
+
+\sphinxstylestrong{Figure 5.3:} The earthquake selection page of the forward modelling
+tool. Events are shown from the INGV catalogue. The locations of the
+events are shown in the summary map on the left, and details of the
+events are shown in the bottom right hand part of the panel. The event
+or events to be modelled can be selected from either of these panels.
+
+For now though, just submit one event. In Figure 5.3 an earthquake in
+the centre of the mesh has been selected so that we see a nice clear
+waveform on all stations. You can select any event you are interested
+in, but be aware that events close to the limits of the mesh may be more
+greatly affected by the absorbing boundary conditions at the edges of
+the model.
+
+
+\section{Selecting stations}
+\label{\detokenize{Section5:selecting-stations}}
+The seismometers where you want to simulate the synthetic seismogram can
+then be selected under the ‘Stations’ tab on the right hand side of the
+‘\sphinxstyleemphasis{Forward Modelling’} panel. The portal is configured to output the
+synthetic waveforms at points where real seismometers exist so that the
+synthetic waveforms can be directly compared to the observed waveforms
+recorded at these stations.
+
+There are many seismic networks loaded into the VERCE portal that can be
+used. To see all of the stations that are available within the mesh and
+model area you can simply select one ‘Provider’ and ‘*’ (i.e., any
+network) in the drop down box at the top of the ‘Stations’ panel.
+Alternatively you can select a given network you are interested in (or
+have the data for), for instance the INGV network (network code IV). You
+can then manually select the stations you are interested in by clicking
+on the stations in the map view, or selecting the tick box next to the
+station information in the right hand panel. All of the stations in this
+list can be selected by selecting the tick box at the top of the list.
+See Figure 5.4.
+
+\sphinxincludegraphics{{image42}.jpg}
+
+\sphinxstylestrong{Figure 5.4:} The station selection panel. Stations are shown inside
+the area of the model and mesh (shown by the black box) for the INGV
+network. The stations (shown in blue) can be selected individually from
+the map or from the station list. All the available stations can be
+selected by ticking the tick box in the title bar (labelled 0/0 when no
+stations are selected).
+
+While selecting a large number of stations will not affect the overall
+time taken or computational cost of the simulation, the more stations
+you select the longer it will take to move the simulation output to
+memory where you can then access it. For large simulations it is most
+efficient therefore to output seismograms for all the stations that you
+may be interested in.
+
+
+\section{Submitting the job}
+\label{\detokenize{Section5:submitting-the-job}}
+You can then select the workflow you wish to use and submit your job.
+Currently one workflow is available, for the super computer at SCAI
+Fraunhofer
+(\sphinxhref{http://www.hpc.cineca.it/)}{https://www.scai.fraunhofer.de)}. Other
+workflows will be introduced, allowing users to run the simulation on a
+variety of HPC resources across Europe. Each workflow is configured to a
+different machine, and some machines have more than one workflow
+available on them. You can then select the relevant workflow (here we
+have selected ‘SCAI\_mpi\_SPECFEM\_PRODUCTION’) for the HPC resource you
+wish to submit to, and enter a name and description of the run. Please
+note that the name of the model must be 20 characters or less, and can
+only consists of letters, numbers and decimals. Other characters are not
+accepted.
+
+If you have selected more than one event to simulate, you may select the
+‘Process the events in parallel’ box. This submits each of the events to
+the queue of the resources you have selected as separate jobs, rather
+than running the jobs in serial (one after another). This can speed up
+the process of simulating several earthquake events for the same
+velocity model.
+
+\sphinxincludegraphics[scale=0.5]{{image52}.png}
+
+\sphinxstylestrong{Figure 5.5:} Available workflow from the top drop down menu of the
+‘submit’ tab of the forward modelling page.
+
+
+\section{Monitoring the job}
+\label{\detokenize{Section5:monitoring-the-job}}
+Once the job has been submitted, the status and progress of the job can
+be monitored from the ‘Control’ tab. This brings up a list of all of the
+jobs that have recently been submitted as shown below.
+
+\sphinxincludegraphics{{image61}.jpg}
+
+\sphinxstylestrong{Figure 5.6:} Jobs listed in the ‘Control’ tab.
+
+Clicking the following symbols at the end of the row allows information
+on the simulation to be accessed among other things. The symbols are
+described below:
+
+\vspace{10mm}
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabular}[t]{\X{15}{100}\X{85}{100}}
+\sphinxstyletheadfamily 
+\sphinxincludegraphics[scale=0.5]{{image72}.jpg}
+&
+Gives access to the log files from a given job.
+\\
+\sphinxincludegraphics[scale=0.5]{{image82}.jpg}
+&
+Takes you to the ‘Results’ tab to view the results from this model run.
+\\
+\sphinxincludegraphics[scale=0.5]{{image91}.jpg}
+&
+Reloads the setup of the model so that it can be reused or modified and resubmitted.
+\\
+\sphinxincludegraphics[scale=0.5]{{image101}.jpg}
+&
+Deletes the record of this model run.
+\\
+\end{tabular}
+\par
+\sphinxattableend\end{savenotes}
+
+
+\chapter{A SPECFEM3D\_GLOBE simulation example}
+\label{\detokenize{Section6::doc}}\label{\detokenize{Section6:a-specfem3d-globe-simulation-example}}
+
+\section{Introduction}
+\label{\detokenize{Section6:introduction}}
+SPECFEM3D\_GLOBE is a spectral element code for simulating the seismic
+wave-field on regional and global scales. As the solver accounts for the
+curvature of the Earth is much better for large scale simulations.
+Unlike SPECFEM3D\_Cartesian, SPECFEM3D\_GLOBE does not require a
+pre-made mesh. Instead the mesh is produced for the simulation area by
+an inbuilt meshing tool.
+
+For global waveform simulations (i.e. simulations where the whole earth
+is simulated) the user only defines the grid spacing for the whole earth
+mesh. For regional simulations (where a segment of the globe is
+simulated) the user defines the area to be modelled and the grid spacing
+for that bespoke mesh. The mesh is then calculated before the simulation
+is run.
+
+
+\section{Setting the simulation area}
+\label{\detokenize{Section6:setting-the-simulation-area}}
+Once the user has selected the SPECFEM3D\_GLOBE solver from the drop
+down ‘\sphinxstyleemphasis{solvers’} menu in the ‘\sphinxstyleemphasis{Solver’} tab the user will have the
+option to select from two mesh types. The first of these is ‘\sphinxstyleemphasis{Globe’},
+to run a global simulation. The second of these is ‘Bespoke’, which
+allows a user defined area to be modelled.
+
+
+\subsection{Global Simulation}
+\label{\detokenize{Section6:global-simulation}}
+If you select global simulation, then you are modelling the whole globe.
+Therefore, all earthquakes and all seismic stations will be available
+for modelling. The user can define the length of the simulation (by
+varying the RECORD\_LENGTH parameter) and the resolution of the
+simulation (by varying the mesh parameters) as described in section 6.4.
+The ‘velocity model’ must then be set to default.
+
+
+\subsection{Regional Simulation}
+\label{\detokenize{Section6:regional-simulation}}
+If you select a \sphinxstyleemphasis{‘Bespoke’} mesh you are able to define the specific
+region you wish to simulate. This is defined by setting the centre of
+the area to be modelled with the parameters
+\sphinxstyleemphasis{‘CENTRE\_LONGITUDE\_IN\_DEGREES’} and
+\sphinxstyleemphasis{‘CENTRE\_LATITUDE\_IN\_DEGREES’}. The width and height of the area to
+be simulated are then defined by the \sphinxstyleemphasis{‘ANGULAR\_WIDTH\_XI\_IN\_DEGREES’}
+and \sphinxstyleemphasis{‘ANGULAR\_WIDTH\_ETA\_IN\_DEGREES’} which describe the width of the
+region at the closest point to the equator, and the height of the region
+in degrees of longitude and latitude respectively. The approximate area
+to be simulated is shown on the map to the left, allowing the area to be
+refined and appropriate earthquakes and seismic stations to be selected
+for simulation.
+
+\sphinxincludegraphics{{image16}.png}
+
+\sphinxstylestrong{Figure 6.1:} Example model setup for a global waveform simulation
+
+\sphinxincludegraphics{{image23}.png}
+
+\sphinxstylestrong{Figure 6.2:} Example of regional simulation for Southern European
+and Mediterranean region.
+
+
+\section{Selecting a velocity model}
+\label{\detokenize{Section6:selecting-a-velocity-model}}
+For both regional and global simulations a range of global 1D and 3D
+velocity models can be used. These velocity models are defined within
+SPECFEM3D\_GLOBE, and so are not defined in the \sphinxstyleemphasis{‘Velocity Model’} tab.
+Instead the models are defined in the dropdown \sphinxstyleemphasis{‘MODEL’} menu in group 0
+of the input parameters.
+
+The input parameters for SPECFEM3D\_GLOBE are divided into 9 groups,
+which are briefly described in Appendix 2.
+
+
+\section{Defining the resolution \& mesh parameters}
+\label{\detokenize{Section6:defining-the-resolution-mesh-parameters}}
+In SPECFEM the frequency of seismic wave that can be accurately
+simulated depends on both the grid spacing (\sphinxstyleemphasis{DH}) of the mesh of points
+the wave-field is calculated for, and the time step (\sphinxstyleemphasis{DT}). Unlike
+SPECFEM3D\_Cartesian, (where \sphinxstyleemphasis{DT} is manually defined, and should be set
+to an appropriate value for the mesh and velocity model that are
+selected), SPECFEM3D\_GLOBE calculates the \sphinxstyleemphasis{DT} that is needed, based on
+the grid spacing of the mesh. The user therefore defines the highest
+frequency (or shortest wavelength) that the setup can accurately
+simulate by setting the mesh parameters.
+
+For the Global case the user must first define how many ‘chunks’ the
+globe should be subdivided into, the default on the platform being 6.
+For regional simulations the simulation area must be defined as a single
+chunk. The resolution of the simulation is then prescribed by the values
+‘NEX\_XI’ and ‘NEX\_ETA’, which correspond to the number of elements at
+the surface of the model space for the first chunk in the side of length
+XI and ETA respectively. SPECFEM3D\_GLOBE requires that the value of
+NEX\_XI must be a multiple of 16, and be 8 times a multiple of
+NPROC\_XI. In turn the value of NEX\_ETA must be a multiple of 16, and
+be 8 times a multiple of NPROC\_ETA. To summarise;
+\begin{equation*}
+\begin{split}\text{NE}X_{\text{XI}} = \ c \times 8\left( \text{NPRO}C_{\text{XI}} \right)\end{split}
+\end{equation*}\begin{equation*}
+\begin{split}\text{NE}X_{\text{ETA}} = \ c \times 8\left( \text{NPRO}C_{\text{ETA}} \right)\end{split}
+\end{equation*}
+Where \((\text{NPO}C_{\text{ETA}}*c)\) and
+\((NPOC_{\text{XI}}*c)\) are even and greater than 2.
+
+The shortest period resolved by the simulation can then be approximated
+by the following equation;
+\begin{equation*}
+\begin{split}
+\text{shortest period }\left( s \right) \simeq \left( \frac{256}{\text{NE}X_{\text{XI}}} \right) \times \left( \frac{\text{ANGULAR WIDTH XI IN DEGREES}}{90}\  \right) \times 17
+\end{split}
+\end{equation*}
+For regional simulations the areas you have defined at the Earth’s
+surface will be modelled. The depth of the simulation area is
+automatically defined, and the wave filed is simulated down to the inner
+core boundary in regional simulations. This means that certain seismic
+phases that travel through the core will not be seen. The VERCE platform
+automatically sets absorbing boundary conditions for simulation areas.
+However, as these boundary conditions are not perfect care should be
+taken if using receivers or in particular sources that are close to the
+limits of the region simulated.
+
+Once you have defined the area you wish to model the earthquake sources
+and receivers can be defined in the ‘\sphinxstyleemphasis{Earthquakes} ’ and
+‘\sphinxstyleemphasis{Stations’} tabs.
+
+
+\section{Selecting an Earthquake}
+\label{\detokenize{Section6:selecting-an-earthquake}}
+For global and regional simulations the only earthquake catalogue that
+is currently supported is the gCMT catalogue. Other earthquake
+mechanisms can be uploaded is gCMT format using the ‘\sphinxstyleemphasis{file}’ tab.
+The format needed is shown in figure 6.5.
+
+If you are using the gCMT catalogue supported in the portal, you can
+search for events of certain magnitudes and dates using the search
+parameter boxes, and the available earthquakes are seen inside the mesh
+area. This is shown for global simulation (figure 6.3) and a regional
+simulation (figure 6.4) below. The relevant earthquake can then be
+selected from either the map (by clicking on the red dot) or from the
+list to the right.
+
+\sphinxincludegraphics{{image33}.png}
+
+\sphinxstylestrong{Figure 6.3:} earthquake search for a global simulation.
+
+\sphinxincludegraphics{{image42}.png}
+
+\sphinxstylestrong{Figure 6.3:} earthquake search for a regional simulation for
+Europe.
+
+\sphinxincludegraphics{{image52}.jpg}
+
+\sphinxstylestrong{Figure 6.4:} Format of a bespoke CMT solution for upload to the
+portal. (Image from the SPECFEM3D Globe manual).
+
+
+\section{Selecting stations}
+\label{\detokenize{Section6:selecting-stations}}
+Stations can then be selected as for Cartesian simulations. For
+SPECFEM3D\_GLOBE the only source of station locations that is built in
+is the IRIS catalogue. If you wish to add further stations, station
+locations can be manually uploaded in the format shown in figure 6.5.
+
+Example station searches for a regional simulation of Europe and for a
+global simulation are shown in figures 6.6 and 6.7 respectively. In the
+global simulations particularly, it can be useful to specify the
+specific networks needed by specifying the network code in the
+‘\sphinxstyleemphasis{Networks’} drop-down box. Stations from multiple networks can be
+search by separating the network codes with a comma only (no space) e.g.
+(IU,II). If all stations are selected the station searching and data
+parsing will be very slow, and it is unlikely that this volume of data
+will be useful. So please take the time to search for useful stations
+carefully.
+
+\sphinxincludegraphics{{image62}.jpg}
+
+\sphinxstylestrong{Figure 6.5:} Format for manual station location upload (Image from
+the SPECFEM3D\_GLOBE manual)
+
+\sphinxincludegraphics{{image72}.png}
+
+\sphinxstylestrong{Figure 6.6:} Searching for stations in a regional mesh.
+
+\sphinxincludegraphics{{image82}.png}
+
+\sphinxstylestrong{Figure 6.7:} Searching for stations in a global mesh.
+
+
+\section{Submitting and monitoring the simulation}
+\label{\detokenize{Section6:submitting-and-monitoring-the-simulation}}
+Once the simulation has been setup, the relevant earthquake source(s)
+defined, and the required stations selected the simulation can be
+submitted to the supercomputer. The workflow is selected from the top
+drop-down box, with different workflows corresponding to different HPC
+resources. The name and description boxes allow you to document exactly
+what this simulation is for.
+
+Once the model has been submitted the progress of the simulation can be
+monitored on the ‘results’ tab. As the processing is done on a HPC
+machine, the simulation may not run immediately, as these large jobs are
+managed in a queue system.
+
+\sphinxincludegraphics{{image92}.png}
+
+\sphinxstylestrong{Figure 6.8:} Submitting a job, for a regional simulation of Europe
+using SPECFEM3D\_GLOBE.
+
+\sphinxincludegraphics{{image102}.png}
+
+\sphinxstylestrong{Figure 6.9:} Monitoring the progress of submitted job through the
+‘results’ tab.
+
+
+\section{Outputs from regional \& global simulations}
+\label{\detokenize{Section6:outputs-from-regional-global-simulations}}
+The results of these simulations can then be accessed through the
+results tabs as described in the next chapter. Example outputs include
+waveforms (figure 6.10), a .kmz file that can be used to view the
+waveforms in geographical context (figure 6.11), as well as global and
+regional snapshots and movie animations (e.g. figure 6.12).
+
+\sphinxincludegraphics{{image112}.png}
+
+\sphinxstylestrong{Figure 6.10:} Waveform produced by regional simulation.
+
+\sphinxincludegraphics{{image121}.png}
+
+\sphinxstylestrong{Figure 6.11:} Waveforms in geographical context using KMZ file
+viewed in Goole Earth.
+
+\sphinxincludegraphics{{image131}.png}
+
+\sphinxstylestrong{Figure 6.12:} Snapshot from a regional simulation of Europe, using
+regional settings in SPECFEM3D Globe.
+
+
+\chapter{Processing and Accessing the Results}
+\label{\detokenize{Section7::doc}}\label{\detokenize{Section7:processing-and-accessing-the-results}}
+
+\section{Outputs of the forward simulations}
+\label{\detokenize{Section7:outputs-of-the-forward-simulations}}
+Once your job has run, you will be able to access the output of the
+simulation in three ways:
+\begin{enumerate}
+\item {} 
+Clicking on the ‘\sphinxstyleemphasis{Control’} tab in the ‘\sphinxstyleemphasis{Simulation’} section of
+the ‘\sphinxstyleemphasis{Forward} \sphinxstyleemphasis{Modelling’} panel (see section 5.7):
+
+It shows a list of the simulation jobs that have been launched with,
+among others, the corresponding ‘\sphinxstyleemphasis{Name}’, ‘\sphinxstyleemphasis{Description’},
+‘\sphinxstyleemphasis{Status’} and ‘\sphinxstyleemphasis{Date’} of the run; if you do not see the event you
+have just run then click ‘\sphinxstyleemphasis{Refresh list}’ to load this in. By
+clicking on the blue-eye icon next to each run you will be redirected to
+the ‘\sphinxstyleemphasis{Results’} section showing the selected run and all its outputs
+(in the far left of the opened panel) as described in the next point.
+
+\item {} 
+Directly checking under the ‘\sphinxstyleemphasis{Results’} section:
+
+The simulation results can be searched using the ‘\sphinxstyleemphasis{Open Run’} button
+which is on the top left. This enables you to search for runs that for
+instance involve earthquakes in a range of magnitudes (as shown in
+Figure 7.1), or a range of depths, latitudes, longitudes, etc. For a
+full list of the parameters for which it is possible to search for,
+please see the ‘\sphinxstyleemphasis{Terms’} drop down menu. You can then select the
+simulation of interest from the list of previous runs satisfying the
+searching criteria that appears on the screen after clicking the
+‘\sphinxstyleemphasis{Search’} button. As in case 1), the far left of the panel will then
+show the outputs of this simulation.
+
+\item {} 
+Using the ‘\sphinxstyleemphasis{iRODS}’ panel: see section 7.4.
+
+\sphinxincludegraphics{{image17}.png}
+
+\sphinxstylestrong{Figure 7.1:} Example of searching simulations involving events in a
+selected magnitude range.
+
+\end{enumerate}
+
+Focusing now on points 1) and 2), selecting an output from the left hand
+part of the ‘\sphinxstyleemphasis{Results}’ panel will bring up a provenance diagram in
+the top right window of the ‘\sphinxstyleemphasis{Results’} section marked as ‘\sphinxstyleemphasis{Data
+Dependency Graph’}. If this is done for instance for the .kml file that
+is output, all of the constituent inputs needed for this result are
+shown by a dark blue circle bounded in yellow, and the outputs are shown
+by a simple dark blue circle.
+
+The bottom right window, marked as \sphinxstyleemphasis{‘Data products’}, gives further
+details of the output file that is selected and lists possible errors
+occurred during the production of this output. To open the file
+concerned, click the blue link marked ‘\sphinxstyleemphasis{Open’} or the one marked
+‘\sphinxstyleemphasis{Download’} appearing in the dialog window. Moreover, with the button
+\sphinxstyleemphasis{‘Produce Download Script’} you can get a piece of code to download the
+selected output via gsissh terminal.
+
+Using the ‘\sphinxstyleemphasis{Search’} button in the ‘\sphinxstyleemphasis{Data} \sphinxstyleemphasis{products’} section of
+the ‘\sphinxstyleemphasis{Results’} panel it is also possible to search for all the output
+files of a specific mime-type (e.g., png, kmz, etc.) for a specific
+simulation.
+
+Finally, you can also visualise the input files for the selected
+simulation, such as the quakeML file, which contains information about
+the source or sources that are input into the model. This is done using
+the ‘\sphinxstyleemphasis{View Inputs’} button on the top left of the ‘\sphinxstyleemphasis{Results’} panel.
+
+
+\subsection{Waveform outputs}
+\label{\detokenize{Section7:waveform-outputs}}
+The primary outputs of any seismic simulation are the recorded
+waveforms. These can be viewed most simply as a .png file as shown in
+figure 7.2. To access these figures, after selecting a given simulation
+(as explained above), use the ‘\sphinxstyleemphasis{Search’} button in the ‘\sphinxstyleemphasis{Data}
+\sphinxstyleemphasis{products’} window (of the ‘\sphinxstyleemphasis{Results’} panel) to search for
+‘image/png’ type of files. Otherwise, waveforms can be downloaded as
+seed files searching and downloading ‘application/octet-stream’
+mime-type files.
+\begin{quote}
+
+\sphinxincludegraphics{{image24}.png}
+
+\sphinxstylestrong{Figure 7.2:} Example of waveform output.
+\end{quote}
+
+The simulation code produces one file for each of the three components
+of a seismic station and, depending on the Par\_file set up (see
+Appendix 1), the seismograms can be in displacement, velocity or
+acceleration, or all of them.
+
+The three components of different seismometers that are output can also
+be viewed in a more interactive form, by downloading the *.kmz file
+that is automatically output from the simulation run and viewing it in
+Google Earth as shown in Figure 7.3. This kmz file can be downloaded by
+searching for a mime-type ‘\sphinxstyleemphasis{application/vnd.google-earth.kmz’} in the
+‘\sphinxstyleemphasis{Search’} section of ‘\sphinxstyleemphasis{Data} \sphinxstyleemphasis{products’}.
+\begin{quote}
+
+\sphinxincludegraphics{{image34}.png}
+
+\sphinxstylestrong{Figure 7.3:} Three components of a synthetic seismogram produced
+for an earthquake in Central Italy, observed on the interactive
+Google Earth tool. The seismograms are shown in displacement,
+velocity and acceleration.
+\end{quote}
+
+
+\subsection{Animation outputs}
+\label{\detokenize{Section7:animation-outputs}}
+The VERCE platform can also be used to produce animations or movies of
+the waveforms propagating out from the simulated earthquake event. These
+animations can be projected onto the Earth’s surface as in the snapshot
+example of Figure 7.4, or can show the propagation over all the external
+faces of the mesh (i.e., topography+vertical edges+bottom) depending on
+the Par\_file set up as described in Appendix 1.
+
+The movie file *.mp4 is automatically output from the portal and can be
+downloaded by searching for a mime-type
+‘\sphinxstyleemphasis{application/vnd.google-earth.kmz}’ in the ‘\sphinxstyleemphasis{Search’} section of
+‘\sphinxstyleemphasis{Data} \sphinxstyleemphasis{products’} (in the ‘\sphinxstyleemphasis{Results’} panel). The animations shown
+at the top of the movie file and the one on the bottom left (Figure 7.4)
+represent the three components of the waveform velocity propagation,
+while the animation at the bottom right is the instantaneous peak ground
+velocity, i.e. a map of the maximum ground velocity for each time step
+of the simulation.
+
+\sphinxincludegraphics{{image43}.png}
+
+\sphinxstylestrong{Figure 7.4:} Snapshot of the movie for an earthquake in Central
+Italy produced from the VERCE platform using a regional simulation in
+SPECFEM3D\_Globe.
+
+
+\subsection{Other outputs}
+\label{\detokenize{Section7:other-outputs}}
+The portal outputs can also be processed externally with your own
+routines to produce, for example, ground motion maps as shown for an
+event in Northern Italy in Figure 7.5. In particular, this kind of maps
+can be obtained by processing a binary file called \sphinxstyleemphasis{shakingdata}
+produced in output by SPECFEM3D\_Cartesian if in the Par\_file the user
+sets the flag
+
+CREATE\_SHAKEMAP = .true.
+
+\sphinxincludegraphics{{image53}.png}
+
+\sphinxstylestrong{Figure 7.5:} A ground shaking map produced with SPECFEM3D\_Cartesian
+for an event occurring in Northern Italy.
+
+One of the main changes that will be introduced in the next release of
+the portal (autumn/winter 2017) is the automatic production, through a
+dedicated workflow in the portal, of such ground motion maps, i.e. PGD,
+PGV and PGA maps. A single *.png picture containing the three maps will
+be generated from the automatic processing of the \sphinxstyleemphasis{shakingdata} file.
+
+
+\section{Downloading observed data}
+\label{\detokenize{Section7:downloading-observed-data}}
+One of the main goals of a seismological analysis is the comparison of
+simulated results with observed data. Thus, after running a waveform
+simulation, the portal allows users to download from European data
+archives the recorded seismograms corresponding to the simulated
+earthquake.
+
+The section marked as ‘\sphinxstyleemphasis{Download’} under the ‘\sphinxstyleemphasis{Forward Modelling’}
+panel is dedicated to this task and it is composed by the following
+sub-sections that guide the users to launch a data -download job.
+\begin{itemize}
+\item {} 
+\sphinxstyleemphasis{’Setup’} tab:
+
+A list of all the simulations that have been run is shown in this
+window. By selecting one of them, the information on the corresponding
+earthquake (source location, origin time) and run (NSTEP, DT) are
+automatically passed to the portal thanks to the metadata stored along
+with each simulation job.
+
+\item {} 
+\sphinxstyleemphasis{‘Submit’} tab:
+
+In the upper window you see the input parameters for the download job
+based on the selection in the previous tab; in the lower window you can
+setup the submission parameters, in particular the specific workflow and
+the number of cores of the HPC resource to run the data-download job
+(see the example in Figure 7.6). Click on ‘\sphinxstyleemphasis{Submit’} on the lower
+right to launch the job.
+
+\item {} 
+\sphinxstyleemphasis{‘Control’} tab:
+
+As for the case of simulation jobs in section 7.1, this window shows a
+list of the download jobs that have been launched and their
+corresponding status, among other information. The \sphinxstyleemphasis{‘blue-eye’} icon
+next to each run links you again to the main ‘\sphinxstyleemphasis{Results’} page where
+this time you visualize the outputs of the selected data-download job
+and the provenance graphs.
+
+Otherwise, the outputs can be accessed by searching for the specific
+download job directly from the ‘\sphinxstyleemphasis{Results’} panel (see section 7.1) or
+from the ‘\sphinxstyleemphasis{iRODS}’ panel (see section 7.4).
+
+\end{itemize}
+
+The output files of a data-download job are both seed and png files of
+the recorded traces downloaded from European archives. Use the
+‘\sphinxstyleemphasis{Search’} button in the \sphinxstyleemphasis{‘Data products’} window of the ‘\sphinxstyleemphasis{Results’}
+tab to search for mime-type ‘\sphinxstyleemphasis{application/octet-stream’} or
+‘\sphinxstyleemphasis{image/png’}, respectively.
+
+\sphinxincludegraphics{{image63}.png}
+
+\sphinxstylestrong{Figure 7.6:} Example of submission settings for a data-download
+job.
+
+
+\section{Waveform processing}
+\label{\detokenize{Section7:waveform-processing}}
+Once both a simulation job and a download job have been run, users can
+exploit another feature of the portal to pre-process observed and
+synthetic waveforms in order to prepare them for comparison analyses.
+
+In the ‘\sphinxstyleemphasis{Forward Modelling’} panel, by clicking on the
+‘\sphinxstyleemphasis{Processing’} tab you should go through the following sub-sections to
+set up and launch a processing job.
+\begin{itemize}
+\item {} 
+\sphinxstyleemphasis{‘Data Setup’} tab:
+
+The window on the top left shows a list of the waveform simulations that
+have been run, while the window on the top right shows a list of the
+data-download jobs that have been run. By selecting a simulation and a
+download run, a list of the seismic stations involved in the two jobs
+appears in the window below and the portal automatically highlights the
+common stations, i.e. those for which both data and synthetics are
+stored in its database. Use the checkbox on the left of each station to
+select those for which you are interested in processing both simulated
+and recorded seismograms in order to then compare them.
+
+\item {} 
+‘\sphinxstyleemphasis{Processing Setup’} tab:
+
+Here you can built-up a customized pipeline of processing analyses to be
+applied to the recorded and simulated waveforms selected in the previous
+panel. A list of the most common seismological processing functions
+(here called \sphinxstyleemphasis{Processing Elements}, and abbreviated to \sphinxstyleemphasis{PEs}) is
+reported in the far left window. Drag the selected PEs into the top
+right window following the order of the operations you want to apply on
+the seismograms.
+
+For each PE of the pipeline you can choose to apply the operation on
+both data and synthetics or on just one of them using the checkboxes
+‘\sphinxstyleemphasis{raw’} and ‘\sphinxstyleemphasis{synt’}. As an example, usually the operation of
+removing the instrument response (represented by the PE
+\sphinxstyleemphasis{remove\_response}) is applied only on the raw data, while on the
+synthetics one applies a pre-filtering function (\sphinxstyleemphasis{pre\_filter} PE) to
+replicate the bandpass filter done by \sphinxstyleemphasis{remove\_response} function on the
+data but without any deconvolution (see Figure 7.7). Moreover, the
+checkbox ‘\sphinxstyleemphasis{visu’} allows you to produce a png file showing the result
+of the specific analysis, while the checkbox ‘\sphinxstyleemphasis{store’} allows to also
+store the processed seismogram as a seed file.
+
+For each PE you can also modify the corresponding parameters. Clicking
+on the row of a given PE in the ‘\sphinxstyleemphasis{PE Workflow’} window, the
+corresponding parameters appear in the window below and you can set up,
+for example, the type of de-trend, the type of taper and its percentage,
+the limit frequencies for the selected filter.
+
+Finally, on the top of the ‘\sphinxstyleemphasis{PE Workflow’} window a drop down menu
+allows to select if the output of the processing will be in
+displacement, velocity or acceleration, and with a checkbox you can
+decide to rotate the seismic traces from NS and EW to radial and
+vertical components.
+
+\item {} 
+\sphinxstyleemphasis{‘Submit’} tab:
+
+As in the case of section 7.2, this tab shows a summary of the set up
+for the processing job, in particular the list of stations to which the
+processing will be applied and a list of the processing operations that
+compose the custom pipeline. Then, you can setup the submission
+parameters in the lower window and launch the processing job by clicking
+on ‘Submit’ on the lower right.
+
+\item {} 
+\sphinxstyleemphasis{‘Control’} tab:
+
+As previously, the window shows a list of the processing jobs that have
+been launched and the blue-eye icon links to the main ‘\sphinxstyleemphasis{Results}’
+page where the outputs of the selected job can be explored together with
+the provenance graphs. The outputs can be also accessed by searching for
+the specific processing job directly from the ‘\sphinxstyleemphasis{Results}’ panel (see
+section 7.1) or from the ‘\sphinxstyleemphasis{iRODS}’ panel (see section 7.4).
+
+\end{itemize}
+
+The output products of a processing job can be png files of the
+processed traces, if the option ‘\sphinxstyleemphasis{visu’} is checked, or/and seed files
+containing the processed seismograms, if the option ‘\sphinxstyleemphasis{store}’ is on
+(see above). Use the \sphinxstyleemphasis{‘Search’} button in the ‘\sphinxstyleemphasis{Data products’} window
+of the \sphinxstyleemphasis{‘Results’} tab to search for mime-type ‘\sphinxstyleemphasis{image/png’} or
+‘\sphinxstyleemphasis{application/octet-stream’}, respectively.
+
+\sphinxincludegraphics{{image73}.png}
+
+\sphinxstylestrong{Figure 7.7:} Example of custom pipeline of processing functions to
+be applied on observed and synthetic seismograms.
+
+
+\section{Misfit calculation}
+\label{\detokenize{Section7:misfit-calculation}}
+After simulating the seismic wave field, downloading the raw seismic
+data and pre-processing both, the VERCE portal allows users to compare
+synthetic and recorded seismograms and to quantitatively assess the
+goodness of fit. Evaluating this fit is essential to approach the
+inverse problem in seismology and there are numerous algorithms and
+procedures to accomplish this task. In the portal we have so far
+implemented two different established techniques for misfit calculation
+and a third option that combines the two:
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{PYFLEX}
+
+This is a python port (L. Krisher; \sphinxurl{http://krischer.github.io/pyflex}) of
+the fortran code FLEXWIN (Maggi et al., 2009;
+\sphinxurl{http://geodynamics.org/cig/software/flexwin}). Considering full observed
+and synthetic traces, the code selects a set of time-windows suitable
+for waveform comparison based on given input parameters and estimates
+cross-correlation, time-shift and amplitude ratio within each window.
+The code allows for an automated selection of the windows handling large
+data volumes and also complex 3D simulated waveforms, hence it is
+particularly useful for iterative tomographic inversions (Maggi et al.,
+2009). For a complete description of the method and the parameters see
+the manual of PYFLEX (or FLEXWIN).
+
+In the portal this option corresponds to ‘\sphinxstyleemphasis{misfit\_type = pyflex’}.
+
+\item {} 
+\sphinxstylestrong{Kristeková’s misfit method}
+
+This is a python code based on the method developed by Kristeková et al.
+(2006) and Kristeková et al. (2009). The method compares observed and
+synthetic full-waveforms and allows the following time-frequency (TF)
+misfit criteria to be estimated:
+\begin{itemize}
+\item {} 
+time-frequency envelope misfit (TFEM)
+
+\item {} 
+time-frequency phase misfit (TFPM)
+
+\item {} 
+time envelope misfit (TEM)
+
+\item {} 
+time phase misfit (TPM)
+
+\item {} 
+frequency envelope misfit (FEM)
+
+\item {} 
+frequency phase misfit (FPM)
+
+\item {} 
+envelope misfit (EM)
+
+\item {} 
+phase misfit (PM)
+
+\end{itemize}
+
+This method allows for comparing arbitrary time signals in their entire
+TF complexity, thus providing a detailed TF anatomy of the disagreement
+between two full signals from the point of view of both envelope and
+phase (Kristeková et al., 2009). For a complete description of the
+method see Kristeková et al. (2006) and Kristeková et al. (2009).
+
+In the portal this option corresponds to ‘\sphinxstyleemphasis{misfit\_type =
+time\_frequency’}.
+
+\item {} 
+\sphinxstylestrong{PYFLEX + Kristeková’s misfit method}
+
+In this case the time windows are selected using the code PYFLEX and
+then the time-frequency misfit criteria are estimated on this windows
+using Kristekova’s method.
+
+In the portal this corresponds to ‘\sphinxstyleemphasis{misfit\_type =
+pyflex\_and\_time\_frequency’}.
+
+\end{enumerate}
+
+The section of the VERCE portal for misfit calculation is accessible
+through the ‘\sphinxstyleemphasis{Misfit}’ tab in the ‘\sphinxstyleemphasis{Forward Modelling}’ panel
+and it consists of the following sub-sections that allows for the set-up
+of a misfit job.
+\begin{itemize}
+\item {} 
+\sphinxstyleemphasis{‘Setup’} tab:
+
+\end{itemize}
+\begin{quote}
+
+Select one of the processing job that have been run and that are listed
+in the upper window of this panel. Then select the ‘\sphinxstyleemphasis{Misfit type}’
+from the drop-down menu considering that
+\end{quote}
+\begin{itemize}
+\item {} 
+‘\sphinxstyleemphasis{pyflex’} corresponds to option 1 above
+
+\item {} 
+‘\sphinxstyleemphasis{time}\_\sphinxstyleemphasis{frequency’} corresponds to option 2 above
+
+\item {} 
+‘\sphinxstyleemphasis{pyflex\_and\_time\_frequency’} corresponds to option 3 above
+
+\end{itemize}
+\begin{quote}
+
+For each misfit procedure the lower window of the panel shows the
+corresponding parameters that should be set up by the user. In
+particular, for option 1 \textendash{} ‘PYFLEX’ the tuning parameters control
+the window selection and are fully described in the manual of the
+code; for option 2 \textendash{} ‘Kristeková’s misfit method’ the main
+parameters are the minimum and maximum period at which the waveforms
+have been filtered; option 3 \textendash{} ‘PYFLEX + Kristeková’s misfit method‘
+contains all the parameters of the two previous options. (See Figure 7.8).
+\end{quote}
+\begin{itemize}
+\item {} 
+‘\sphinxstyleemphasis{Submit’} tab:
+
+A summary of the chosen misfit method and set up parameters is shown in the upper window of this section. Then, you can setup the submission
+parameters in the lower window and launch the misfit job by clicking on ‘\sphinxstyleemphasis{Submit}’ on the lower right.
+
+\item {} 
+‘\sphinxstyleemphasis{Control}’ tab:
+
+As always, the window shows a list of the misfit jobs that have been
+launched and the blue-eye icon links to the main ‘\sphinxstyleemphasis{Results}’ page
+where the outputs of the selected job can be explored together with the
+provenance graphs. The outputs can be also accessed by searching for the
+specific misfit job directly from the ‘\sphinxstyleemphasis{Results}’ panel (see section
+7.1) or from the ‘\sphinxstyleemphasis{iRODS}’ panel (see section 7.4).
+
+\end{itemize}
+
+The output products of a misfit job are png files showing the waveform
+comparison for each component of each selected seismic station. The
+figures are different depending on the misfit option chosen in the
+‘\sphinxstyleemphasis{Setup}’ tab (see examples in Figures 7.9 and 7.10). To access
+these output files use the ‘\sphinxstyleemphasis{Search}’ button in the ‘\sphinxstyleemphasis{Data
+products}’ window of the ‘\sphinxstyleemphasis{Results}’ tab searching for mime-type
+‘\sphinxstyleemphasis{image/png}’.
+
+\sphinxincludegraphics{{image83}.png}
+
+\sphinxstylestrong{Figure 7.8:} Example of the set-up of a misfit job using in
+combination PYFLEX and Kristeková’s method.
+
+\sphinxincludegraphics{{image93}.png}
+
+\sphinxstylestrong{Figure 7.9:} Example of an output file produced by calculating the
+misfit using PYFLEX. For each component of each station the figure shows
+the observed data in black, the synthetic trace in red and the
+short-term average/long-term average ratio in blue; the windows selected
+by the code are highlighted.
+
+\sphinxincludegraphics{{image103}.png}
+
+\sphinxstylestrong{Figure 7.10:} Example of an output file produced by calculating the
+misfit using Kristeková’s method. For each component of each station the
+figure shows the observed data in black, the synthetic trace in red;
+moreover, it shows the Kristeková’s misfi criteria TFEM, TFPM, TEM, TPM,
+FEM, FPM, EM, PM (see the text for details).
+
+
+\section{Accessing the results through iRODS}
+\label{\detokenize{Section7:accessing-the-results-through-irods}}
+After any of the jobs described above (simulation, download, processing
+and misfit) is finished, the output products are shipped from the HPC
+resource, that performed the calculation, to the store repository of the
+VERCE portal. This storage is managed through iRODS that provides a
+repository shared among the federated nodes of the VERCE organisation.
+How to create an account in iRODS is described in section 3 of this
+manual, and after that you can log in selecting the ‘\sphinxstyleemphasis{IRODS}’ panel
+in the portal main menu (see Figure 7.11).
+
+\sphinxincludegraphics{{image113}.png}
+
+\sphinxstylestrong{Figure 7.11:} Screenshot of the ‘IRODS’ panel in the VERCE portal
+
+Entering iRODS gives you access to your personal folder where you can
+navigate the results of all your completed jobs (of any type) as
+anticipated above. The run results are organised in trees of subfolders
+with the main directory called using the ‘\sphinxstyleemphasis{Name}’ you have chosen
+for your job (see section 5.6), as shown for example in Figure 7.12.
+
+\sphinxincludegraphics{{image122}.png}
+
+\sphinxstylestrong{Figure 7.12:} Example of the iRODS subfolder structure containing
+the results of the jobs.
+
+A given job can be selected by double-clicking on the relative folder
+and, navigating the subdirectories, you can access all the same input
+and output files of each job that have been described in the above
+sections.
+
+It is very important that in order to visualise or download any output
+or input data from the portal, both via the ‘\sphinxstyleemphasis{Results}’ tab or the
+‘\sphinxstyleemphasis{iRODS}’ tab, you always need to firstly log in into the
+‘\sphinxstyleemphasis{iRODS}’ panel (Figure 7.11) because the storage database is
+accessible only to authenticated users.
+
+
+\chapter{Running SPECFEM3D\_Cartesian simulations using your own data}
+\label{\detokenize{Section8:running-specfem3d-cartesian-simulations-using-your-own-data}}\label{\detokenize{Section8::doc}}
+So far we have covered how to run a relatively simple simulation using
+data that are already loaded into the portal. While we hope to keep
+increasing the areas where meshes and models are currently available, it
+is also essential that users can upload their own velocity models,
+meshes, earthquake catalogues and station locations. In this section we
+will give a brief overview of what is needed for each of these inputs,
+and how they are submitted to the portal.
+
+
+\section{Creating your own velocity model}
+\label{\detokenize{Section8:creating-your-own-velocity-model}}
+All of the velocity models currently loaded into the VERCE portal are
+based on regional travel time tomography models of the concerned area.
+It would be possible to construct an input velocity model based on a
+surface wave tomography or noise tomography, or even from a velocity
+model produced from active seismic techniques based on refraction or
+reflection seismic surveys. If you are interested in running a full
+waveform simulation in a new area, you will therefore acquire a
+published velocity model, or use a preliminary model from your own work
+or collaborations.
+
+The new velocity model should be defined in a 3D grid of points and the
+corresponding input file for the portal should be formatted as shown
+below (Figure 8.1) and saved as a text file, usually called tomography
+file.
+
+The velocity model you submit should be based on your tomography, and
+should deviate back to the regional or global 1D starting model at the
+edges of the 3D volume. The tomography file should be formatted as shown
+in the below (Figure 7.1), and saved as a text file.
+
+The grid spacing defined on the second row of the file depends upon the
+frequency of seismic wave you intend to simulate, as described in
+section 8.2. Once this file has been created, the velocity model can be
+uploaded along with the corresponding mesh as described in section 8.3.
+
+The variables input into the velocity model text file are defined as
+follows.
+
+\sphinxincludegraphics{{image14}.jpg}
+
+\sphinxstylestrong{Figure 8.1:} Format for an input velocity model. Image re-produced
+from the SPECFEM manual.
+
+\sphinxstylestrong{ORIG\_X, ORIG\_Y,} \& \sphinxstylestrong{ORIG\_Z}: are the coordinates of the initial
+grid points in the tomographic model in the x, y and z directions
+respectively.
+
+\sphinxstylestrong{END\_X, END\_Y,} \& \sphinxstylestrong{END\_Z:} are the coordinates of the final grid
+points in the tomographic model in the x, y and z directions
+respectively.
+
+\sphinxstylestrong{SPACING\_X, SPACING\_Y,} \& \sphinxstylestrong{SPACING\_Z}: describe the spacing
+between points of the tomography file in the x, y and z directions
+respectively.
+
+\sphinxstylestrong{NX, NY,} \& \sphinxstylestrong{NZ}: describe the number of grid points in the x, y and
+z directions respectively.
+
+\sphinxstylestrong{VP\_MIN} \& \sphinxstylestrong{VP\_MAX:} describe respectively the minimum and maximum
+P-wave velocity of the input file in \sphinxstyleemphasis{ms:sup:{}`-1{}`}.
+
+\sphinxstylestrong{VS\_MIN} \& \sphinxstylestrong{VS\_MAX}: describe respectively the minimum and maximum
+S-wave velocity of the input file in \sphinxstyleemphasis{ms:sup:{}`-1{}`}.
+
+\sphinxstylestrong{RHO\_MIN} \& \sphinxstylestrong{RHO\_MAX}: describe respectively the minimum and
+maximum density of the input file in \sphinxstyleemphasis{kg/m:sup:{}`3{}`}.
+
+
+\section{Creating a bespoke mesh for your area}
+\label{\detokenize{Section8:creating-a-bespoke-mesh-for-your-area}}
+Creating a mesh is the most complicated step in setting up a simulation
+in a new area. The mesh must be created so that it can account for the
+frequency of seismic waves at the seismic velocities that are found in
+the velocity model defined above.
+
+
+\subsection{Meshing parameters}
+\label{\detokenize{Section8:meshing-parameters}}
+The spacing of the grid (\({\Delta}h\)) depends upon the minimum seismic
+velocity in the wave speed model (\(v_{\min}\)) and the frequency
+(\(1/To,\)) to which you wish to resolve the wavefield in your
+simulations as shown in the equation below (Komatitsch et al., 2005):
+\begin{equation}\label{equation:Section8:eq1}
+\begin{split}{\Delta}h = \ v_{\min}\text{\ T}_{o}\ \frac{n + 1}{f(n)}\end{split}
+\end{equation}
+where \(\text{To}\) is the shortest period that can be resolved, and
+\(n\) is the degree of polynomials used to represent the wave field
+in the spectral element method. Seismic velocity usually increases with
+depth, thus, in order to have the same resolution everywhere in the
+model, element size should increase.
+
+The time integration algorithm used by SEM to solve the seismic wave
+equation is conditionally stable, i.e. there exists an upper limit to
+the value of the time step over which the calculations become unstable.
+The stability condition, namely the Courant stability condition, is
+given by (Komatitsch et al., 2005):
+\begin{equation}\label{equation:Section8:eq2}
+\begin{split}{\Delta}t \leq C_{\max}\ \left( \frac{h}{v} \right)_{\min}\end{split}
+\end{equation}
+where \({(\ \frac{{\Delta}h}{v}\ )}_{\min}\) denotes the minimum ratio
+between the grid spacing and the P-wave velocity, and \(C_{\max}\)
+is the highest possible value of the Courant number. Based on equation
+\eqref{equation:Section8:eq1}, equation \eqref{equation:Section8:eq2} can be written as
+\begin{equation}\label{equation:Section8:eq3}
+\begin{split}{\Delta}t \leq C_{\max}\ \frac{v_{\min}}{v_{\max}}\ T_{o}\ \frac{n + 1}{f(n)}\end{split}
+\end{equation}
+Finally, the mesh should also account for the topography of the Earth’s
+surface, or bathymetry if the modelled area includes oceanic areas.
+
+\sphinxincludegraphics{{image25}.png}
+
+\sphinxstylestrong{Figure 8.2:} Example of a hexahedral mesh built using GEOCUBIT. On
+the left of the figure we can see that the grid spacing increases with
+depth as the wave speed increases. The top surface of the mesh
+represents the topography of the area to be modelled.
+
+
+\subsection{Meshing software}
+\label{\detokenize{Section8:meshing-software}}
+Meshes that can be used with SPECFEM3D\_Cartesian and within the portal
+can be produced using CUBIT/ TRELIS software. Unfortunately the
+CUBIT/TRELIS software is not free, although a 30 day trial licence can
+be downloaded. Full details of the commercial software can be found at
+the following link.
+
+\sphinxurl{http://www.csimsoft.com/}
+
+This software is then used in conjunction with the free python based
+GeoCubit software developed at the INGV:
+
+\sphinxurl{https://github.com/geodynamics/specfem3d/tree/devel/CUBIT\_GEOCUBIT}
+
+A full description of how to create a mesh for SPECFEM3D\_Cartesian
+implemented into the VERCE platform can be found here:
+
+\sphinxurl{http://verce.eu/Training/UseVERCE/2015-7-VERCE-hexmeshing101.pdf}
+
+
+\section{Submitting a mesh and a velocity model}
+\label{\detokenize{Section8:submitting-a-mesh-and-a-velocity-model}}
+Once you have produced your mesh, you can take the ten mesh files listed
+in figure 8.3.1 and put them into a folder named
+‘\sphinxstyleemphasis{mesh\_MySimulationArea’}, where ‘\sphinxstyleemphasis{MySimulationArea’} is the name
+of the area you are studying. Then, zip this folder in a single zip file
+named ‘\sphinxstyleemphasis{mesh\_ MySimulationArea.zip’}.
+
+Do the same with the tomography file formatted as outlined in section
+8.1. The tomography file can have whatever name you want but must be put
+in a folder named ‘\sphinxstyleemphasis{velocity\_ MySimulationArea’}. Finally, zip this
+folder in a single zip file named ‘\sphinxstyleemphasis{velocity\_ MySimulationArea.zip’,
+as shown in Figure 8.3.1}.
+
+\sphinxincludegraphics{{image35}.png}
+
+\sphinxstylestrong{Figure 8.3.1:} Creating the zip files needed to upload a new model to
+the VERCE platform. The left hand side shows the 10 mesh files that need
+to be included and uploaded. The right hand side shows the single
+velocity file that needs to be uploaded, along with the naming
+conventions for these files.
+
+Once these zip files have been created, they can be uploaded by clicking
+the link labelled ‘\sphinxstylestrong{*Click here to submit a new mesh and velocity
+model’*} in the solver tab of the forward modelling page. This will
+bring up the parameter form shown in figure 8.3.2. The zipped mesh and
+velocity model files can then be uploaded to the portal from the local
+machine. The limits of the mesh area in latitude and longitude should
+also be input in the ‘mesh bounds’ section of the pop-up window. Finally
+click ‘Submit’ for the mesh and velocity model to be uploaded to the
+portal. The meshes and models are manually validated before they are
+made available to you and to all the users, so it can take several days
+for the mesh and model to be uploaded and ready to use.
+
+It is of course possible to upload meshes and models that only you or
+your group of users can use. In this case please specify it in the note
+box at the bottom of the parameter form.
+
+\sphinxincludegraphics{{image44}.png}
+
+\sphinxstylestrong{Figure 8.3.2:} The parameter form for inputting a new mesh and model
+into the VERCE platform.
+
+
+\section{Submitting a new earthquake catalogue}
+\label{\detokenize{Section8:submitting-a-new-earthquake-catalogue}}
+
+If you wish to submit your own earthquake catalogue, you can do this on
+the ‘\sphinxstyleemphasis{File’} tab of the ‘Earthquakes’ page shown in figure 8.4. The
+catalogue must be uploaded in quakeML format. The easiest way to convert
+other earthquake catalogue formats to quakeML is using ObsPy. The
+earthquakes must have full details of the location and focal mechanism
+of all the events you are interested in modelling.
+
+The ObsPy command ‘\sphinxstyleemphasis{readEvents’} can be used to read in events that
+are in a range of text based formats (e.g. NDK \& ZMAP). The event data
+can then be written to a quakeML file using ‘\sphinxstyleemphasis{writeQuakeML’}. Full
+details on how to install ObsPy and access tutorials on ObsPy are given
+in appendix 3.
+
+\sphinxincludegraphics{{image54}.png}
+
+\sphinxstylestrong{Figure 8.4:} The input form for bespoke user input earthquake
+catalogues.
+
+
+\section{Submitting a new station catalogue}
+\label{\detokenize{Section8:submitting-a-new-station-catalogue}}
+New seismic stations and networks can be input in a similar way using
+the upload form under the ‘File’ tab in the ‘Stations’ section shown in
+figure 8.5.1.
+
+The format of the input station file can be a simple list of station
+name, group (i.e. network name), longitude, latitude, depth and meters
+buried. Figure 8.5.2 shows an example of the station locations for the
+temporary Maule network in Central Chile, which is already loaded into
+the platform. Alternatively, the station file can be uploaded as an xml
+file by selecting this format in the drop down menu and choosing your
+appropriate file.
+
+\sphinxincludegraphics{{image64}.png}
+
+\sphinxstylestrong{Figure 8.5.1:} The input form for new seismic station networks.
+
+\sphinxincludegraphics{{image74}.png}
+
+\sphinxstylestrong{Figure 8.5.2:} The input format for stations and networks to be added
+to the VERCE platform.
+
+
+\chapter{VERCE glossary}
+\label{\detokenize{Glossary::doc}}\label{\detokenize{Glossary:verce-glossary}}
+
+\sphinxstylestrong{Workflow} \textendash{} refers to a sequence of jobs that can be submitted. In
+the VERCE project we have a number of workflows prepared that can run
+you job on a specific high performance computer.
+
+\sphinxstylestrong{HPC} \textendash{} high performance computing. This usually refers to parallel
+computers, where a given computational task is spread over many separate
+processing cores.
+
+\sphinxstylestrong{iRODS} \textendash{} a suite of data managements software that is embedded within
+the VERCE platform, and allows you to easily access your data regardless
+of where you submitted your simulation.
+
+\sphinxstylestrong{superMUC} \textendash{} a super computer hosted by the LRZ in Munich, Germany.
+
+\sphinxstylestrong{SCAI} \textendash{} a super computer hosted by CINECA in Italy.
+
+\sphinxstylestrong{DT} \textendash{} the time step of the waveform model.
+
+\sphinxstylestrong{Solver} \textendash{} shorthand for the code that does the forward calculation.
+The solver currently hosted in the VERCE platform is SPECFEM.
+
+\sphinxstylestrong{Mesh} \textendash{} the grid over which the wavefield is calculated. The modelled
+space is broken up into a grid of points, each with specific seismic
+properties (e.g. p-wave velocity, s-wave velocity, seismic attenuation).
+The spacing of this grid is able to change especially with depth (due to
+the increasing seismic velocity). The structure of these grid points is
+referred to as the mesh.
+
+\sphinxstylestrong{Velocity model} \textendash{} this is the seismic velocity model that is input
+for an area, and includes the p-wave and s-wave velocities. Most models
+in the VERCE portal are 3D, though there are some 2D models (for
+subduction zones) and 1D models (global 1D velocity models) available.
+
+\sphinxstylestrong{CPML} \textendash{} ‘convolutional perfectly matched layers’ are a type of
+absorbing boundary condition
+
+\sphinxstylestrong{Absorbing Boundary Conditions} \textendash{} are at the edges of the model that
+shouldn’t reflect the seismic energy. These boundary conditions are
+designed to absorb an incoming wave simulating an infinite medium.
+
+\sphinxstylestrong{CUBIT} \textendash{} an external program used for making meshes for a variety of
+scientific and engineering modelling disciplines.
+
+\sphinxstylestrong{TRELIS} \textendash{} the commercial name for the CUBIT package.
+
+\sphinxstylestrong{GeoCubit} \textendash{} a python based program that uses CUBIT command to create
+meshes for geographical bodies. Particularly, GeoCubit can produce
+meshes that include topography and/or bathymetry.
+
+
+ \appendix
+ \renewcommand{\thechapter}{A\arabic{chapter}}
+\chapter{Appendix 1 \textendash{} SPECFEM3D\_Cartesian’s Flags}
+\label{\detokenize{Appendix1::doc}}\label{\detokenize{Appendix1:appendix-1-specfem3d-cartesians-flags}}
+The input parameters for the code SPECFEM3D\_Cartesian are briefly
+described below. Please see the manual of the code for a detailed
+description.
+
+
+\section{Group 0 - Basic}
+\label{\detokenize{Appendix1:a1-1-group-0-basic}}
+\sphinxincludegraphics[scale=0.8]{{image1}.png}
+
+\sphinxstylestrong{Figure A1.1:} Parameter form for ‘Group 0 - Basic’.
+
+\sphinxstylestrong{NPROC} is the number of processors that the simulation is run on.
+This is essentially dependent upon the high performance computer and
+workflow you intend to submit your job to.
+
+\sphinxstylestrong{NSTEP} is the number of time steps that you want to run your
+simulation for. This should be set so that (NSTEP * DT) is equal to the
+time in seconds you want to simulate. So the model setup shown above
+will run a simulation of 60 seconds, and provide synthetic seismograms
+for 60 seconds after the origin time of the simulated earthquake.
+
+\sphinxstylestrong{DT} is the time step in seconds used in the solver. This must be
+small enough to ensure that the simulated waveform is properly sampled
+and that the calculations are stable. The equations this is based on are
+given in section 8 of this guide. For the meshes and models that are
+already available in the portal though, the recommended DT is given in
+Figure 4.4 and is the default in the portal.
+
+\sphinxstylestrong{MODEL} allows you to select the velocity model that is used in the
+simulation. Leaving this to ‘\sphinxstyleemphasis{default’} will select the 3D velocity
+model that is specified in the drop down menu next to ‘\sphinxstyleemphasis{Velocity
+Model}’, at the top of the input parameters panel. It is however also
+possible to select from a range of 1D models that are pre-loaded into
+the solver SPECFEM3D\_Cartesian. (See the code’s manual for all the
+available options).
+
+\sphinxstylestrong{GPU\_MODE} allows SPECFEM to be run on high performance computers
+that use graphical processing units (GPUs) rather than the more
+conventional CPU (central processing unit). All the workflows currently
+available on the VERCE platform use CPUs, so you should always leave
+this box unchecked.
+
+
+\section{Group 1 \textendash{} Inverse problem}
+\label{\detokenize{Appendix1:a1-2-group-1-inverse-problem}}
+In addition to calculating the wavefield from an earthquake source
+(referred to as a ‘forward simulation’), SPECFEM can also be used to
+calculate the adjoint wavefield, as well as being able to simulate noise
+sources for ambient noise tomography applications. These options are
+controlled by this group of parameters.
+
+\sphinxincludegraphics{{image2}.png}
+
+\sphinxstylestrong{Figure A1.2:} Parameter form for ‘Group 1 \textendash{} Inverse problem’.
+
+\sphinxstylestrong{SIMULATION\_TYPE} is set to ‘\sphinxstyleemphasis{forward}’ by default to model the
+wave-field from an earthquake.
+
+\sphinxstylestrong{NOISE\_TOMOGRAPHY} is set to ‘\sphinxstyleemphasis{earthquake simulation}’ by default
+as the noise tomography applications of SPECFEM are not currently
+supported within the VERCE platform.
+
+\sphinxstylestrong{SAVE\_FORWARD} is selected if the last step of the wave-field is to
+be saved. This enables to back reconstruct the seismic wave-field, but
+requires a large amount of storage space and it is not yet supported by
+the VERCE platform.
+
+
+\section{Group 2 \textendash{} UTM projection}
+\label{\detokenize{Appendix1:a1-3-group-2-utm-projection}}
+As SPECFEM3D\_Cartesian uses, unsurprisingly, Cartesian coordinates, you
+must specify the UTM zone that your model falls in. This is described in
+more detail in section 8 when we consider uploading new meshes and
+models. For the pre-loaded meshes and models though the correct UTM zone
+is given by the tables shown in Figures 4.4 and 4.5, and is set
+correctly by default when the mesh is selected.
+
+\sphinxincludegraphics{{image3}.png}
+
+\sphinxstylestrong{Figure A1.3:} Parameter form for ‘Group 2 \textendash{} UTM projection’.
+
+\sphinxstylestrong{UTM\_PROJECTION\_ZONE} is where the UTM zone is specified. Only valid
+when SUPPRESS\_UTM\_PROJECTION is unchecked (as in our case).
+
+\sphinxstylestrong{SUPPRESS\_UTM\_PROJECTION} is not enabled in the VERCE platform,
+meaning the model range must always be specified in geographical
+coordinates (not Cartesian coordinates) and the conversion will be done
+inside the code.
+
+
+\section{Group 3 \textendash{} Attenuation}
+\label{\detokenize{Appendix1:a1-4-group-3-attenuation}}
+In the Earth seismic waves are attenuated by the visco-elastic
+deformation as the wave propagates. If we are to gain simulated seismic
+waves with a similar amplitude to the recorded waves, we must include
+this attenuation in our waveform simulation.
+
+\sphinxincludegraphics[scale=0.8]{{image4}.png}
+
+\sphinxstylestrong{Figure A1.4:} Parameter form for ‘Group 3 \textendash{} Attenuation’.
+
+\sphinxstylestrong{ATTENUATION} controls whether attenuation is incorporated or not.
+Turning attenuation on means that extra variables are generated, and
+therefore will increase the time taken for the simulation to run and
+also the memory requirements.
+
+\sphinxstylestrong{USE\_OLSEN\_ATTENUATION} can be used to define the attenuation model
+from the S-wave velocity using the empirical relationship proposed by
+Olsen et al. (2003).
+
+\sphinxstylestrong{OLSEN\_ATTENUATION\_RATIO} determines the Olsen’s constant in Olsen’s
+empirical relation and should be in the range of 0.02-0.1.
+
+\sphinxstylestrong{MIN\_ATTENUATION\_PERIOD} is the minimum of the attenuation period
+range over which we try to mimic a constant Q factor.
+
+\sphinxstylestrong{MAX\_ATTENUATION\_PERIOD} is the maximum of the attenuation period
+range over which we try to mimic a constant Q factor.
+
+\sphinxstylestrong{COMPUTE\_FREQ\_BAND\_AUTOMATIC} is used to ignore the above range and
+ask the code to compute it automatically based on the estimated
+resolution of the mesh.
+
+\sphinxstylestrong{ATTENUATION\_f0\_REFERENCE} is the reference frequency for target
+velocity values in the velocity model.
+
+
+\section{Group 4 \textendash{} Absorbing Boundary Conditions}
+\label{\detokenize{Appendix1:a1-5-group-4-absorbing-boundary-conditions}}
+Parameters of this group allow to choose between Stacey absorbing
+conditions or ‘convolutional perfectly matched layers’ (CPMLs) The last
+ones are the most effective and therefore computationally efficient
+absorbing boundary conditions and should be considered for all new
+meshes that are uploaded. It is especially important that they are used
+in models where you are particularly worried about side reflections
+(e.g. models where receivers or particularly sources are very close to
+the model edge). For a full discussion of the relative merits of the two
+methods, please see the SPECFEM3D\_Cartesian manual.
+
+\sphinxincludegraphics[scale=0.8]{{image5}.png}
+
+\sphinxstylestrong{Figure A1.5:} Parameter form for ‘Group 4 \textendash{} Absorbing Boundary
+Conditions’.
+
+\sphinxstylestrong{PML\_CONDITIONS} select whether CPMLs are implemented. Please ensure
+that Stacey absorbing conditions are unchecked if you do this. If
+PML\_CONDITIONS and STACEY\_ABSORBING\_CONDITIONS are both unchecked,
+you get a free surface instead.
+
+\sphinxstylestrong{PML\_INSTEAD\_OF\_FREE\_SURFACE} replaces the free surface at the top
+of the model with a PML absorbing layer. This can be useful if you are
+simulating a deep model, rather than a model that includes the Earth’s
+surface.
+
+\sphinxstylestrong{f0\_FOR\_PML} is the dominant frequency of CPML, or the frequency at
+which the PML will be the most effective. It should therefore be set to
+the dominant frequency of the waveforms being simulated.
+
+\sphinxstylestrong{STACEY\_ABSORBING\_CONDITIONS} is selected to activate
+Clayton-Enquist absorbing boundary conditions on the sides and bottom of
+the simulated areas. This is designed to prevent artificial reflections
+from the model edges from affecting the simulated waveforms.
+
+\sphinxstylestrong{ROTATE\_PML\_ACTIVATE} parameter used to rotate C-PML boundary
+conditions by a given angle (not implemented yet)
+
+\sphinxstylestrong{ROTATE\_PML\_ANGLE} parameter used to set the angle by which we want
+the C-PML boundary conditions to be rotated (not implemented yet).
+
+\sphinxstylestrong{BOTTOM\_FREE\_SURFACE} is checked to make the bottom surface of the
+mesh a free surface instead of absorbing.
+
+\sphinxstylestrong{STACEY\_INSTEAD\_OF\_FREE\_SURFACE} is largely the same as the
+‘PML\_INSTEAD\_OF\_FREE\_SURFACE’ option, but the free surface is
+replaced with the less effective Clayton-Enquist style absorbing
+boundary conditions.
+
+
+\section{Group 5 \textendash{} Seismograms}
+\label{\detokenize{Appendix1:a1-6-group-5-seismograms}}
+These parameters control the output of seismograms produced by
+SPECFEM3D\_Cartesian.
+
+\sphinxincludegraphics[scale=0.7]{{image6}.png}
+
+\sphinxstylestrong{Figure A1.6:} Parameter form for ‘Group 5 \textendash{} Seismograms’.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_OUTPUT\_SEISMOS} controls the frequency (in number
+of time steps) that the seismograms are written to disk. Fewer disk
+writes will allow the simulation to run quicker, but will also increase
+the amount of data that is lost if the code does crash.
+
+\sphinxstylestrong{SAVE\_SEISMOGRAMS\_DISPLACEMENT} is checked if we want to save
+displacement in the forward runs (can be checked simultaneously to the
+following three flags).
+
+\sphinxstylestrong{SAVE\_SEISMOGRAMS\_VELOCITY} is checked if we want to save velocity
+in the forward runs (can be checked simultaneously to the previous and
+following two flags).
+
+\sphinxstylestrong{SAVE\_SEISMOGRAMS\_ACCELERATION} is checked if we want to save
+acceleration in the forward runs (can be checked simultaneously to the
+previous two and following two flags).
+
+\sphinxstylestrong{SAVE\_SEISMOGRAMS\_PRESSURE} is checked if we want to save pressure
+in the forward runs (can be checked simultaneously to the previous three
+flags). Currently it is implemented in acoustic elements only.
+
+\sphinxstylestrong{USE\_BINARY\_FOR\_SEISMOGRAMS} saves seismograms in binary instead of
+ASCII format (binary is smaller but may not be portable between
+machines).
+
+\sphinxstylestrong{SU\_FORMAT} outputs seismograms in Seismic Unix format (binary with
+240-byte-headers).
+
+\sphinxstylestrong{WRITE\_SEISMOGRAMS\_BY\_MASTER} decides if master process writes all
+the seismograms or if all processes do it in parallel.
+
+\sphinxstylestrong{SAVE\_ALL\_SEISMOS\_IN\_ONE\_FILE} saves all seismograms in one large
+combined file instead of one file per seismogram to avoid overloading
+shared non-local file systems such as LUSTRE or GPFS for instance.
+
+\sphinxstylestrong{USE\_TRICK\_FOR\_BETTER\_PRESSURE} allows to use a trick to increase
+accuracy of pressure seismograms in fluid (acoustic) elements (see
+SPECFEM manual for details).
+
+
+\section{Group 6 \textendash{} Sources}
+\label{\detokenize{Appendix1:a1-7-group-6-sources}}
+The VERCE platform is very much configured to simulate earthquake
+sources. However there are other types of seismic sources such as active
+sources, explosions or impacts that you may want to simulate. This can
+be done using the options described below.
+
+\sphinxincludegraphics[scale=0.8]{{image7}.png}
+
+\sphinxstylestrong{Figure A1.7:} Parameter form for ‘Group 6 \textendash{} Sources’.
+
+\sphinxstylestrong{USE\_FORCE\_POINT\_SOURCE} simulates a force point source (e.g.
+impact source) rather than an earthquake source. If you are using this
+option the source must be defined in a FORCESOLUTUION file, rather than
+in the CMT solution convention used for earthquake sources. See the
+SPECFEM manual for full details. This option is not yet implemented in
+the VERCE portal.
+
+\sphinxstylestrong{USER\_RICKER\_TIME\_FUNCTION} this inputs the source as a Ricker
+wavelet, rather than the default delta/gaussian function that is
+designed to represent the slip on a fault during an earthquake. Again
+this option is useful for simulating non-earthquake seismic sources.
+
+\sphinxstylestrong{USE\_EXTERNAL\_SOURCE\_FILE} is checked to use an external source
+time function defined by an input file. This option is not yet
+implemented in the VERCE portal.
+
+\sphinxstylestrong{USE\_SOURCE\_ENCODING} determines source encoding factor +/-1
+depending on the sign of moment tensor (for acoustic simulations only).
+
+\sphinxstylestrong{PRINT\_SOURCE\_TIME\_FUNCTION} outputs the source time function input
+to the simulation as a text file.
+
+
+\section{Group 7 \textendash{} Visualisation}
+\label{\detokenize{Appendix1:a1-8-group-7-visualisation}}
+One of the outputs of SPECFEM which can be requested through the VERCE
+platform is a movie of the waveform simulation. This is usually output
+on the surface topography of the model, but can be built for the whole
+3D volume. This last option is extremely demanding on memory though, and
+not recommended for normal simulations.
+
+\sphinxincludegraphics[scale=0.8]{{image8}.png}
+
+\sphinxstylestrong{Figure A1.8:} Parameter form for ‘Group 7 \textendash{} Visualisation’.
+
+\sphinxstylestrong{CREATE\_SHAKEMAP} creates a map of peak ground velocity for the area
+modelled.
+
+\sphinxstylestrong{MOVIE\_SURFACE} sets the output movie for just the surfaces you
+define in MOVIE\_TYPE.
+
+\sphinxstylestrong{MOVIE\_TYPE} selects whether the surface movies and shake-maps are
+generated for the top surface of the model (topography + oceans) only,
+or for all external faces of the mesh (i.e. topography + vertical edges
++ bottom).
+
+\sphinxstylestrong{MOVIE\_VOLUME} allows 3D snapshots of the entire model volume to be
+output. This would allow the entire wave-field to be imaged, which could
+be useful. But this would also be hugely demanding on memory and so
+should be left unchecked by default.
+
+\sphinxstylestrong{SAVE\_DISPLACMENT} saves displacement in the movie snapshots, rather
+than the default, which is to save velocity for the movie.
+
+\sphinxstylestrong{USE\_HIGHRES\_FOR\_MOVIES} saves the wave-field values for movies at
+all the grid points so that the resolution of the movie is the same as
+the resolution of the model. Selecting this option requires a large
+amount of memory, so should not be selected by default.
+
+\sphinxstylestrong{NTSTEPS\_BETWEEN\_FRAMES} sets the number of time steps between
+snapshots of the wave-field. The spacing of the frames in seconds is
+given by (NTSTEPS\_BETWEEN\_FRAMES*DT).
+
+\sphinxstylestrong{HDUR\_MOVIE} is the half duration of the source time function for the
+movie simulation.
+
+
+\section{Group 8 \textendash{} Adjoint Kernel Options}
+\label{\detokenize{Appendix1:a1-9-group-8-adjoint-kernel-options}}
+Beyond forward simulations, SPECFEM3D\_Cartesian allows for the
+simulation of adjoint wave-fields useful for adjoint travel time
+tomography procedures (Tromp et al., 2005). These simulations are
+controlled by the options described below.
+
+\sphinxincludegraphics[scale=0.8]{{image9}.png}
+
+\sphinxstylestrong{Figure A1.9:} Parameter form for ‘Group 8 \textendash{} Adjoint Kernel
+Options’.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_READ\_ADJSRC} interval in time steps for reading
+adjoint traces.
+
+\sphinxstylestrong{ANISOTROPIC\_KL} allows to compute anisotropic kernels in crust and
+mantle instead of the default, which is to compute isotropic kernels.
+
+\sphinxstylestrong{SAVE\_TRANSVERSE\_KL} allows to compute transverse isotropic kernels
+rather than fully anisotropic kernels.
+
+\sphinxstylestrong{APPROXIMATE\_HESS\_KL} outputs approximate Hessian for
+preconditioning.
+
+\sphinxstylestrong{SAVE\_MOHO\_MESH} saves Moho mesh and computes Moho boundary kernels.
+
+
+\section{Group 9 \textendash{} Advanced}
+\label{\detokenize{Appendix1:a1-10-group-9-advanced}}
+There are a large amount of other functions within SPECFEM3D\_Cartesian
+that can be altered using the VERCE platform. A brief description of
+these functions is given below, but in most cases if you intend to use
+these advanced options you should also refer to the SPECFEM m
+
+
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabulary}{\linewidth}[t]{T T}
+
+\sphinxincludegraphics{{image10}.png}
+&
+\sphinxincludegraphics{{image11}.png}
+\\
+
+\end{tabulary}
+\par
+\sphinxattableend\end{savenotes}
+
+\begin{center}\sphinxstylestrong{Figure A1.10:} Parameter form for ‘Group 9 \textendash{} Advanced’.
+\end{center}
+\sphinxstylestrong{NSTEPS\_BETWEEN\_OUTPUT\_INFO} controls the frequency that
+information about a running simulation is output to a log file.
+
+\sphinxstylestrong{NGNOD} controls the number of nodes for each element of the
+hexahedral mesh. For all meshes loaded into the VERCE platform and all
+meshes created using CUBIT this should be left at the default value of
+8.
+
+\sphinxstylestrong{APROXIMATE\_OCEAN\_LOAD} is a relatively computationally cheap method
+of modelling the effect of oceans on the wave-field. It is however only
+effective at relatively low frequencies (periods of 20 seconds and
+longer). For higher frequencies if the effects of the water column are
+to be modelled, the ocean must be included in the mesh itself.
+
+\sphinxstylestrong{TOPOGRAPHY} is only needed if the ‘APROXIMATE\_OCEAN\_LOAD’ option
+above is selected, and reads in the topography/bathymetry files needed
+to define that surface.
+
+\sphinxstylestrong{ANISOTROPY} is selected if you want to include seismic anisotropy.
+You will also need to provide an anisotropy model to include this, and
+this has not been done for any of the pre-loaded meshes and models, and
+so cannot be selected for these cases.
+
+\sphinxstylestrong{GRAVITY} is selected if you want to include gravity in your
+simulation. It is effective only at very long periods.
+
+\sphinxstylestrong{TOMOGRAPHY\_PATH} is the directory in which the tomography files are
+stored for using external tomographic Earth models. For simulations with
+the VERCE portal it is not required to set this parameter.
+
+\sphinxstylestrong{SAVE\_MESH\_FILES} saves mesh files in a ‘\sphinxstyleemphasis{Paraview’} format for
+later use.
+
+\sphinxstylestrong{LOCAL\_PATH} is the directory in which the files for the partitioned
+mesh will be written. For simulations with the VERCE portal it is not
+required to set this parameter.
+
+\sphinxstylestrong{SEP\_MODEL\_DIRECTORY} should be set if you are using a SEP model
+(oil-industry format). This option is not yet implemented in the VERCE
+portal.
+
+\sphinxstylestrong{ADIOS\_ENABLED} is checked to enable ADIOS. If it is not checked,
+subsequent ADIOS parameters will not be considered. This option is not
+yet implemented in the VERCE portal.
+
+\sphinxstylestrong{ADIOS\_FOR\_DATABASES} is checked to use ADIOS for xmeshfem3D output
+and xgenerate\_database input.
+
+\sphinxstylestrong{ADIOS\_FOR\_MESH} is checked to use ADIOS for generated databases.
+
+\sphinxstylestrong{ADIOS\_FOR\_FORWARD\_ARRAYS} is checked to read and write forward
+arrays using ADIOS.
+
+\sphinxstylestrong{ADIOS\_FOR\_KERNELS} is checked to produce ADIOS kernels that can
+later be visualized with the ADIOS version of combine\_vol\_data.
+
+\sphinxstylestrong{USE\_LDDRK, INCREASE\_CFL\_FOR\_LDDRK,
+RATIO\_BY\_WHICH\_TO\_INCREASE\_IT} are the parameters to set up the
+LDDRK time scheme. This option is not yet implemented into the VERCE
+portal. See the manual of SPECFEM for details.
+
+\sphinxstylestrong{OUTPUT\_ENERGY} allows to plot energy curves, for instance to monitor
+how CPML absorbing layers behave. This option is turned off by default
+since it is a bit expensive.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_OUTPUT\_ENERGY} controls the interval of time steps
+between the energy computation.
+
+\sphinxstylestrong{NUMBER\_OF\_SIMULTANEOUS\_RUNS} allows to simultaneously run (in an
+embarrassingly-parallel fashion) multiple earthquake simulations each
+with the same number of cores. This option is not yet implemented in the
+VERCE portal.
+
+\sphinxstylestrong{BROADCAST\_SAME\_MESH\_AND\_MODEL} allows to broadcast the same mesh
+and velocity model to multiple events in case of
+NUMBER\_OF\_SIMULTANEOUS\_RUNS\textgreater{}1. This option is not yet implemented in
+the VERCE portal.
+
+
+\chapter{Appendix 2 \textendash{} SPECFEM3D\_GLOBE’s Flags}
+\label{\detokenize{Appendix2:appendix-2-specfem3d-globes-flags}}\label{\detokenize{Appendix2::doc}}
+The input parameters for the code of SPECFEM3D\_GLOBE are briefly
+described below. For a detailed description please consult the
+SPECFEM3D\_GLOBE manual.
+
+
+\section{Group 0 - Basic}
+\label{\detokenize{Appendix2:a2-1-group-0-basic}}
+\sphinxincludegraphics{{image12}.png}
+
+\sphinxstylestrong{Figure A2.1:} Parameter form for ‘Group 0 - Basic’.
+
+\sphinxstylestrong{NPROC} is the number of processors that the simulation will run on.
+This is essentially dependent upon the high-performance computer and
+workflow you intend to submit your job to.
+
+\sphinxstylestrong{RECORD\_LENGTH\_IN\_MINUTES} is the time in minutes you want to run
+the simulation for.
+
+\sphinxstylestrong{MODEL} is the velocity model to be used in the simulation. There is a
+range of models pre-loaded into the solver SPECFEM3D\_GLOBE. (See the
+code’s manual for all the available options).
+
+\sphinxstylestrong{GPU\_MODE} allows SPECFEM to be run on high performance computers
+that use graphical processing units (GPUs) rather than the more
+conventional CPU (central processing unit). All the workflows currently
+available on the VERCE platform use CPUs, so you should always leave
+this box unchecked.
+
+
+\section{Group 1 \textendash{} Inverse Problem}
+\label{\detokenize{Appendix2:a2-2-group-1-inverse-problem}}
+\sphinxincludegraphics{{image21}.png}
+
+\sphinxstylestrong{Figure A2.2:} Parameter form for ‘Group 1 \textendash{} Inverse Problem’.
+
+\sphinxstylestrong{SIMULATION\_TYPE} is set to ‘\sphinxstyleemphasis{forward}’ by default to model the
+wave-field from an earthquake.
+
+\sphinxstylestrong{NOISE\_TOMOGRAPHY} is set to ‘\sphinxstyleemphasis{earthquake simulation}’ by default
+as the noise tomography applications of SPECFEM are not currently
+supported within the VERCE platform.
+
+\sphinxstylestrong{SAVE\_FORWARD} is selected if the last step of the wave-field is to
+be saved. This enables to back reconstruct the seismic wave-field, but
+requires a large amount of storage space and it is not yet supported by
+the VERCE platform.
+
+
+\section{Group 2 \textendash{} Simulation Area}
+\label{\detokenize{Appendix2:a2-3-group-2-simulation-area}}
+\sphinxincludegraphics{{image31}.png}
+
+\sphinxstylestrong{Figure A2.3:} Parameter form for ‘Group 2 \textendash{} Simulation Area’.
+
+\sphinxstylestrong{ANGULAR\_WIDTH\_XI\_IN\_DEGREES} is the width of one side of the
+chunk in degrees.
+
+\sphinxstylestrong{ANGULAR\_WIDTH\_ETA\_IN\_DEGREES} is the width of the second side of
+the chunk in degrees.
+
+\sphinxstylestrong{CENTER\_LATITUDE\_IN\_DEGREES} is the latitude of centre of the chunk
+in degrees.
+
+\sphinxstylestrong{CENTER\_LONGITUDE\_IN\_DEGREES} is the longitude of centre of the
+chunk in degrees.
+
+\sphinxstylestrong{GAMMA\_ROTATION\_AZIMUTH} defines the rotation angle of the chunk
+about its centre measured counter clockwise from due North in degrees.
+
+\sphinxstylestrong{OCEANS} can be selected if the effect of the oceans on seismic wave
+propagation should be incorporated based upon the approximate treatment
+discussed in Komatitsch and Tromp (2002).
+
+\sphinxstylestrong{ELLIPTICITY} can be selected if the mesh should make the Earth model
+elliptical in shape according to Clairaut’s equation.
+
+\sphinxstylestrong{TOPOGRAPHY} can be selected if topography and bathymetry should be
+incorporated based upon model ETOPO4.
+
+\sphinxstylestrong{GRAVITY} can be selected if self-gravitation should be incorporated
+in the Cowling approximation.
+
+\sphinxstylestrong{ROTATION} can be selected if the Coriolis effect should be
+incorporated. Turning this feature on is relatively cheap numerically.
+
+\sphinxstylestrong{ATTENUATION} can be selected if attenuation should be incorporated.
+
+\sphinxstylestrong{ABSORBING\_CONDITIONS} is selected only for regional simulations.
+
+
+\section{Group 3 \textendash{} Mesh Parameters}
+\label{\detokenize{Appendix2:a2-4-group-3-mesh-parameters}}
+\sphinxincludegraphics{{image41}.png}
+
+\sphinxstylestrong{Figure A2.4:} Parameter form for ‘Group 3 \textendash{} Mesh Parameters’.
+
+\sphinxstylestrong{NCHUNKS} is the number of chunks.
+
+\sphinxstylestrong{NEX\_XI} is the number of elements at the surface along the xi side
+of a chunk.
+
+\sphinxstylestrong{NEX\_ETA} is the number of elements at the surface along the eta side
+of a chunk.
+
+\sphinxstylestrong{NPROC\_XI} is the number of MPI processors along the xi side of a
+chunk.
+
+\sphinxstylestrong{NPROC\_ETA} is the number of MPI processors along the eta side of a
+chunk.
+
+
+\section{Group 4 \textendash{} Adjoint Kernel Options}
+\label{\detokenize{Appendix2:a2-5-group-4-adjoint-kernel-options}}
+\sphinxincludegraphics{{image51}.png}
+
+\sphinxstylestrong{Figure A2.5:} Parameter form for ‘Group 4 \textendash{} Adjoint Kernel
+Options’.
+
+\sphinxstylestrong{READ\_ADJSRC\_ASDF} can be selected to use ASDF format for reading
+the adjoint sources.
+
+\sphinxstylestrong{ANISOTROPIC\_KL} can be used to compute anisotropic kernels in crust
+and mantle.
+
+\sphinxstylestrong{SAVE\_TRANSVERSE\_KL\_ONLY} can be used to output only transverse
+isotropic kernels rather than fully anisotropic kernels when
+\sphinxstylestrong{ANISOTROPIC\_KL} above is selected.
+
+\sphinxstylestrong{APPROXIMATE\_HESS\_KL} can be used to output approximate Hessian in
+crust mantle region.
+
+\sphinxstylestrong{USE\_FULL\_TISO\_MANTLE} can be used to force transverse isotropy for
+all mantle elements.
+
+\sphinxstylestrong{SAVE\_SOURCE\_MASK} can be used to output kernel mask to zero out
+source region to remove large values near the sources in the sensitivity
+kernels.
+
+\sphinxstylestrong{SAVE\_REGULAR\_KL} can be used to output kernels on a regular grid
+instead of on the GLL mesh points.
+
+
+\section{Group 5 - Movie}
+\label{\detokenize{Appendix2:a2-6-group-5-movie}}
+
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabulary}{\linewidth}[t]{T T}
+
+
+\sphinxincludegraphics{{image61}.png}
+&
+\sphinxincludegraphics{{image71}.png}
+\\
+\end{tabulary}
+\par
+\sphinxattableend\end{savenotes}
+
+\begin{center}\sphinxstylestrong{Figure A2.6:} Parameter form for ‘Group 5 - Movie’.
+\end{center}
+\sphinxstylestrong{MOVIE\_SURFACE} creates a movie of seismic wave propagation on the
+Earth’s surface.
+
+\sphinxstylestrong{MOVIE\_VOLUME} creates a movie of seismic wave propagation in the
+Earth’s interior.
+
+\sphinxstylestrong{MOVIE\_COARSE} saves movie only at corners of elements.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_FRAMES} determines the number of timesteps between
+two movie frames.
+
+\sphinxstylestrong{HDUR\_MOVIE} determines the half duration of the source time function
+for the movie simulations.
+
+\sphinxstylestrong{MOVIE\_VOLUME\_TYPE} allows you to select movie volume type option
+where 1=strain, 2=time integral of strain, 3=µ*time integral of strain,
+4= saves the trace and deviatoric stress in the whole volume,
+5=displacement, 6=velocity.
+
+\sphinxstylestrong{MOVIE\_TOP\_KM/MOVIE\_BOTTOM\_KM} defines depth below the surface in
+kilometres.
+
+\sphinxstylestrong{MOVIE\_WEST\_DEG} refers to longitude, degrees West.
+
+\sphinxstylestrong{MOVIE\_EAST\_DEG} refers to longitude, degrees East.
+
+\sphinxstylestrong{MOVIE\_NORTH\_DEG} refers to latitude, degrees North.
+
+\sphinxstylestrong{MOVIE\_SOUTH\_DEG} refers to latitude, degrees South.
+
+\sphinxstylestrong{MOVIE\_START} denotes movie start time.
+
+\sphinxstylestrong{MOVIE\_STOP} denotes movie end time.
+
+
+\section{Group 6 - Sources}
+\label{\detokenize{Appendix2:a2-7-group-6-sources}}
+\sphinxincludegraphics{{image81}.png}
+
+\sphinxstylestrong{Figure A2.7:} Parameter form for ‘Group 6 - Sources’.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_READ\_ADJSRC} refers to the number of adjoint
+sources read in each time for an adjoint simulation.
+
+\sphinxstylestrong{PRINT\_SOURCE\_TIME\_FUNCTION} prints information about the source
+time function in the file
+OUTPUT\_FILES/plot\_source\_time\_function.txt.
+
+
+\section{Group 7 - Seismograms}
+\label{\detokenize{Appendix2:a2-8-group-7-seismograms}}
+\sphinxincludegraphics{{image91}.png}
+
+\sphinxstylestrong{Figure A2.8:} Parameter form for ‘Group 7 - Seismograms’.
+
+\sphinxstylestrong{NTSTEP\_BETWEEN\_OUTPUT\_SEISMOS} specifies the interval at which
+synthetic seismograms are written in the LOCAL\_PATH directory.
+
+\sphinxstylestrong{OUTPUT\_SEISMOS\_FORMAT} allows you to select the output format for
+the seismograms such as ASCII, SAC\_ALPHANUM, SAC\_BINARY and ASDF.
+
+\sphinxstylestrong{ROTATE\_SEISMOGRAMS\_RT} can be selected to have radial (R) and
+transverse (T) horizontal components of the synthetic seismograms.
+
+\sphinxstylestrong{WRITE\_SEISMOGRAMS\_BY\_MASTER} can be selected to have all the
+seismograms written by the master.
+
+\sphinxstylestrong{SAVE\_ALL\_SEISMOS\_IN\_ONE\_FILE} saves all seismograms in one large
+combined file instead of one file per seismogram.
+
+\sphinxstylestrong{USE\_BINARY\_FOR\_LARGE\_FILE} can be selected to use binary instead
+of ASCII for that large file.
+
+\sphinxstylestrong{RECEIVERS\_CAN\_BE\_BURIED} can be used to accommodate stations with
+instruments that are buried, i.e., the solver will calculate seismograms
+at the burial depth specified in the STATIONS file.
+
+
+\section{Group 8 - Advanced}
+\label{\detokenize{Appendix2:a2-9-group-8-advanced}}
+
+\begin{savenotes}\sphinxattablestart
+\centering
+\begin{tabulary}{\linewidth}[t]{T T}
+
+
+\sphinxincludegraphics{{image101}.png}
+&
+\sphinxincludegraphics{{image111}.png}
+\\
+\end{tabulary}
+\par
+\sphinxattableend\end{savenotes}
+
+\begin{center}\sphinxstylestrong{Figure A2.8:} Parameter form for ‘Group 8 - Advanced’.
+\end{center}
+\sphinxstylestrong{PARTIAL\_PHYS\_DISPERSION\_ONLY} or \sphinxstylestrong{UNDO\_ATTENUATION} can be used
+to undo attenuation for sensitivity kernel calculations or forward runs
+with SAVE\_FORWARD
+
+\sphinxstylestrong{MEMORY\_INSTALLED\_PER\_CORE\_IN\_GB} is used to set the amount of
+memory installed per core in Gigabyte.
+
+\sphinxstylestrong{PERCENT\_OF\_MEM\_TO\_USE\_PER\_CORE} can be used to set percentage
+of memory to use per core for arrays to undo attenuation, keeping in
+mind that you need to leave some memory available for the GNU/Linux
+system to run.
+
+\sphinxstylestrong{EXACT\_MASS\_MATRIX\_FOR\_ROTATION} can be selected if you are
+interested in precise effects related to rotation.
+
+\sphinxstylestrong{USE\_LDDRK} can be used for LDDRK high-order time scheme instead of
+Newmark.
+
+\sphinxstylestrong{INCREASE\_CFL\_FOR\_LDDRK} can be used to increase CFL for LDDRK.
+
+\sphinxstylestrong{RATIO\_BY\_WHICH\_TO\_INCREASE\_IT} determines the ratio by which to
+increase CFL.
+
+\sphinxstylestrong{SAVE\_MESH\_FILES} can be used to save AVS, OpenDX, or ParaView mesh
+files for subsequent viewing.
+
+\sphinxstylestrong{NUMBER\_OF\_RUNS} refers to the number of stages in which the
+simulation will be completed, e.g. 1 corresponds to a run without
+restart files.
+
+\sphinxstylestrong{NUMBER\_OF\_THIS\_RUN} can be used if you choose to perform the run
+in stages in which you need to tell the solver what stage run to
+perform.
+
+\sphinxstylestrong{NUMBER\_OF\_SIMULTANEOUS\_RUNS} adds the ability to run several
+calculations (several earthquakes) in an embarrassingly-parallel fashion
+from within the same run.
+
+\sphinxstylestrong{BROADCAST\_SAME\_MESH\_AND\_MODEL} allows to read the mesh and model
+files from a single run in the beginning and broadcast them to all the
+others (if the mesh and the model are the same for all simultaneous
+runs).
+
+\sphinxstylestrong{USE\_FAILSAFE\_MECHANISM} can be used to terminate all the runs or
+let the others finish using a fail-safe mechanism if one or a few of
+simultaneous runs fail.
+
+\sphinxstylestrong{GPU\_RUNTIME} can only be used if GPU\_MODE is selected.
+
+\sphinxstylestrong{GPU\_PLATFORM} filters on the platform in OpenCL.
+
+\sphinxstylestrong{GPU\_DEVICE} filters on the device name in OpenCL.
+
+\sphinxstylestrong{ADIOS\_ENABLED} and all the other ADIOS flags enable the use of ADIOS
+library for I/Os.
+
+
+\chapter{Appendix 3  \textendash{} Using ObsPy}
+\label{\detokenize{Appendix3::doc}}\label{\detokenize{Appendix3:appendix-3-using-obspy}}
+ObsPy is a python based seismology toolbox, which can be used to deal
+with seismic waveform data and earthquake catalogue information. The
+toolbox can read a large range of seismic data formats and perform a
+large range of processing applications such as filtering the data, and
+misfit calculation.
+
+Many of the pre- and post-processing applications within the portal use
+python and ObsPy. The toolbox can also be used to format input data, for
+instance producing an earthquake catalogue in quakeML format.
+
+\sphinxincludegraphics{{image13}.png}
+
+\sphinxstylestrong{Figure A3.1:} The ObsPy logo
+
+\sphinxstylestrong{A3.1 Installing Python and ObsPy}
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{Installing Python:} Depending on your operating system this can be
+installed through the software manager. Alternatively the latest
+version of python can be installed here,
+\begin{quote}
+
+\sphinxurl{https://www.python.org/downloads}
+
+You will also require to specific python libraries that can be
+installed from GitHub as described below.
+\end{quote}
+
+\end{enumerate}
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{Installing anaconda:} if you do not have super user privalages on
+your machine then both ObsPy and dispel4py (see appendix two) can be
+installed using Anaconda, a package to manage and deploy Python
+packages. Anaconda can be installed on mac and Linux operating
+systems as described here,
+\begin{quote}
+
+\sphinxurl{http://docs.continuum.io/anaconda/install.html}
+
+\sphinxstylestrong{Installing ObsPy}: Make sure you have a C and fortran compile
+installer. You can then install ObsPy with the command,
+
+conda install -c obspy obspy
+
+or, if you have not installed anaconda,
+
+sudo pip install obspy
+
+Full instructions can be found at
+
+\sphinxurl{https://github.com/obspy/obspy/wiki\#installation}
+\end{quote}
+
+\end{enumerate}
+
+\sphinxstylestrong{A3.2 Other dependencies you need to run ObsPy are listed below;}
+
+\sphinxstylestrong{numPy} \textendash{} a toolbox for doing numerical applications in python.
+
+sudo apt-get install python-numpy
+
+\sphinxstylestrong{SciPy} \textendash{} a generic scientific programming toolbox for applications in
+python.
+
+sudo apt-get install python-scipy
+
+Additionally, in order to do the plotting parts of the tutorial below
+you will need to install the following;
+
+\sphinxstylestrong{Matplotlib} \textendash{} a toolbox for creating plots and figures for python
+applications. Figures are customised very easily and intuitively, and
+can be exported in a number of different. Files can also be exported
+easily to a .mat file for Matlab users.
+
+sudo apt-get install python-matplotlib
+
+\sphinxstylestrong{A3.3 Using ObsPy}
+
+A full online python tutorial, that covers everything from a basic
+introduction to ObsPy, up to more advanced applications such as
+developing an automated processing workflow, can be found at the link
+below;
+
+\sphinxurl{http://docs.obspy.org/tutorial/}
+
+\sphinxincludegraphics{{image2}.jpg}
+
+\sphinxstylestrong{Figure A3.2:} Z-component data plotted using ObsPy. Image
+re-produced from
+
+\sphinxurl{http://docs.obspy.org/tutorial/code\_snippets/reading\_seismograms.html}
+
+
+\chapter{Appendix 4 \textendash{} using dispel4py}
+\label{\detokenize{Appendix4::doc}}\label{\detokenize{Appendix4:appendix-4-using-dispel4py}}
+Dispel4Py is a python library that allows workflows to be written that
+can easily scale to different sizes of computational resource, ranging
+from your own laptop, to a large parallel supercomputer. This means that
+you can devolve and test your workflow locally on your own machine
+before transferring the workflow to a much larger computer to process a
+large amount of data.
+
+In seismology this could be particularly useful for performance
+calculations with very large data sets, such as noise correlation.
+Dispel4Py is used widely in the VERCE portal in the pre- and
+post-processing workflows that are implemented there. This toolbox is
+especially useful for any seismologist who is looking to speed up a data
+application.
+
+\sphinxincludegraphics{{image14}.png}
+
+\sphinxstylestrong{Figure A4.1:} The Dispel4Py logo.
+
+
+\section{Installing Dispel4Py}
+\label{\detokenize{Appendix4:a4-1-installing-dispel4py}}
+Firstly please ensure that you have an up to data version of Python
+installed as described in appendix one. You can then install Dispel4Py
+and its dependencies (such as MPI) as described below.
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{Installing dispel4py:} Dispel4py can be installed using the
+command,
+\begin{quote}
+
+pip install dispel4py
+
+Full instructions for installing dispel4py can be found at,
+\begin{quote}
+
+\sphinxurl{https://github.com/dispel4py/dispel4py}
+\end{quote}
+\end{quote}
+
+\end{enumerate}
+\begin{enumerate}
+\item {} 
+\sphinxstylestrong{Installing MPI and mpi4py (optional):} If you wish to explore the
+parallel mapping of dispel4py to MPI you may want to install these on
+your machine. Different implementations of MPI are available, for
+example Open MPI or MPICH2. Depending on your operating system MPI
+can be installed through the software manager. You can then install
+mpi4py with the command:
+\begin{quote}
+
+pip install mpi4py
+\end{quote}
+
+\end{enumerate}
+
+Full instructions can be found at:
+
+\sphinxurl{http://mpi4py.scipy.org/docs/usrman/install.html}
+
+
+\section{Using Disple4Py}
+\label{\detokenize{Appendix4:a4-2-using-disple4py}}
+A full tutorial describing how to create workflows and perform
+sequential and parallel processing using Dispel4Py can be found at the
+link below.
+
+\sphinxurl{http://www2.epcc.ed.ac.uk/~amrey/VERCE/Dispel4Py/}
+
+For more information on the basic principles of Dispel4Py please see the
+following presentation.
+
+\sphinxurl{http://www.verce.eu/Training/UseVERCE/2015-7-VERCE-dispel4py-basic.pdf}
+
+An advanced introduction for those who wish use Dispel4Py to create
+workflows for their own applications can be found at the link below.
+
+\sphinxurl{http://www.verce.eu/Training/UseVERCE/2015-7-VERCE-dispel4py-advanced.pdf}
+
+\sphinxincludegraphics{{image21}.jpg}
+
+\sphinxstylestrong{Figure A4.2:} An example of a workflow to perform a cross
+correlation of seismic noise data
+
+
+\renewcommand{\indexname}{Index}
+\printindex
+\end{document}
+
+
+
+\renewcommand{\indexname}{Index}
+\printindex
+\end{document}

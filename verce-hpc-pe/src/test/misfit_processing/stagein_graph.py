@@ -98,9 +98,9 @@ graph.connect(read, 'output_data', streamer0, "input")
 graph.connect(read, 'output_xml', streamer1, "input")
 graph.connect(streamer0, 'output', data_staging_pipeline, "input")
 graph.connect(streamer1, 'output', xml_staging_pipeline, "input")
-#injectProv(graph,ProvenancePE)
-#attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],w3c_prov=False)
+injectProv(graph,ProvenancePE)
+attachProvenanceRecorderPE(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=os.environ['RUN_ID'],w3c_prov=False)
 
-InitiateNewRun(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=input_json['runId'],w3c_prov=False,workflowName="misfit_process_stagein",workflowId="")
+#InitiateNewRun(graph,ProvenanceRecorderToFileBulk,username=os.environ['USER_NAME'],runId=input_json['runId'],w3c_prov=False,workflowName="misfit_process_stagein",workflowId="")
 #display(graph)
  

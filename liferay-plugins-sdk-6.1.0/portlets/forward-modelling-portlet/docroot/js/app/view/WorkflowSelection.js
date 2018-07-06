@@ -193,12 +193,12 @@ Ext.define('CF.view.WorkflowSelection', {
             header: 'Run ID',
             dataIndex: 'runId',
             flex: 5,
-            sortable: false
+            sortable: true
         }, {
             header: 'Workflow Name',
             dataIndex: 'workflowName',
             flex: 3,
-            sortable: false,
+            sortable: true,
             groupable: false
         }, {
             header: 'Description - Click to Edit',
@@ -214,7 +214,7 @@ Ext.define('CF.view.WorkflowSelection', {
             header: 'Date',
             dataIndex: 'date',
             flex: 3,
-            sortable: false,
+            sortable: true,
             groupable: false
         }, // custom mapping
         {

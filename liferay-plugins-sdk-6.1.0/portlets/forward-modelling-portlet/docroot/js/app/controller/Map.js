@@ -331,7 +331,7 @@
               var baseUrl = provider.get('url') + '/fdsnws/station/1/query?level=station&';
               var mesh = (Ext.getCmp('meshes').getValue() == "Bespoke") ? bespoke_mesh : Ext.getCmp('meshes').findRecordByValue(Ext.getCmp('meshes').getValue());
               var bbox = "&maxlat=" + mesh.data.geo_maxLat + "&minlon=" + mesh.data.geo_minLon + "&maxlon=" + mesh.data.geo_maxLon + "&minlat=" + mesh.data.geo_minLat;
-              var networks = button.up('form').down('multicombo').getValue();
+              var networks = button.up('form').down('multicombo').rawValue.replace(/\s/g, "");
               if (typeof networks === 'string') {
                   // handle custom strings
                   networks = networks.split(',');

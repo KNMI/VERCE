@@ -13,7 +13,7 @@ import sys
 import socket
 import numpy as np
 import obspy
-#from dispel4py.seismo.seismo import *
+# from dispel4py.seismo.seismo import *
 from obspy.core.event import readEvents, ResourceIdentifier
 from obspy.signal.invsim import c_sac_taper
 from obspy.signal.util import _npts2nfft
@@ -22,8 +22,10 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdt
 from dispel4py.core import GenericPE
 from dispel4py.base import IterativePE, ConsumerPE, create_iterative_chain
-import gc 
-#from dispel4py.workflow_graph import WorkflowGraph
+import gc
+
+
+# from dispel4py.workflow_graph import WorkflowGraph
 
 
 def get_event_time(event):
@@ -47,11 +49,10 @@ def get_synthetics(synts, event_time):
 
     # The start time of the synthetics might not be absolute. Grant a tolerance
     # of 10 seconds.
-	if st and st[0] and  st[0].stats and  st[0].stats.starttime and  st[0].stats.starttime.timestamp:
-	    if -10.0 <= st[0].stats.starttime.timestamp <= 0.0:
-		for tr in st:
-		    offset = tr.stats.starttime - obspy.UTCDateTime(0)
-		    tr.stats.starttime = event_time + offset
+    if -10.0 <= st[0].stats.starttime.timestamp <= 0.0:
+        for tr in st:
+            offset = tr.stats.starttime - obspy.UTCDateTime(0)
+            tr.stats.starttime = event_time + offset
 
     return st
 
@@ -150,8 +151,6 @@ def sync_cut(data, synth, lenwin=None):
         endtime = starttime + float(lenwin)
 
     npts = int((endtime - starttime) * sampling_rate)
-    
-    
 
     data.interpolate(sampling_rate=sampling_rate, method="cubic",
                      starttime=starttime, npts=npts)
@@ -172,10 +171,10 @@ def rotate_data(stream, stations, event):
                                station=stream[0].stats.station)
 
     if len(e) and len(n):
-        #print "COORD:"+str(get_event_coordinates(event))
+        # print "COORD:"+str(get_event_coordinates(event))
         lon_event, lat_event = get_event_coordinates(event)
         lon_station, lat_station = stations[0][0].longitude, \
-            stations[0][0].latitude
+                                   stations[0][0].latitude
         dist, az, baz = obspy.core.util.geodetics.base.gps2DistAzimuth(
             float(lat_event), float(lon_event), float(lat_station),
             float(lon_station))
@@ -249,41 +248,40 @@ def filter_bandpass(stream, min_frequency, max_frequency, corners, zerophase):
     return stream
 
 
-def plot_stream(stream,output_dir,source,tag,seq_idx=0):
+def plot_stream(stream, output_dir, source, tag, seq_idx=0):
     try:
         stats = stream[0].stats
-        filename = source+"-%s.%s.%s.%s.png" % (stats['network'], stats['station'],tag,seq_idx)
-    
-    
-        path = os.environ['STAGED_DATA']+'/'+output_dir
-        
+        filename = source + "-%s.%s.%s.%s.png" % (stats['network'], stats['station'], tag, seq_idx)
+
+        path = os.environ['STAGED_DATA'] + '/' + output_dir
+
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
             except:
                 pass
-        
-        dest=os.path.join(path, filename)
+
+        dest = os.path.join(path, filename)
         stream.plot(outfile=dest)
-        prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'image/png','metadata':{'prov:type':tag,'source':source}}
+        prov = {'location': "file://" + socket.gethostname() + "/" + dest, 'format': 'image/png',
+                'metadata': {'prov:type': tag, 'source': source}}
         return stream, prov
     except:
         traceback.print_exc()
-   
 
-def store_stream(stream,output_dir,source,tag,seq_idx=0):
-    
+
+def store_stream(stream, output_dir, source, tag, seq_idx=0):
     stats = stream[0].stats
-    filename = source+"-%s.%s.%s.%s.seed" % (
-            stats['network'], stats['station'], tag,seq_idx)
-    
-    path = os.environ['STAGED_DATA']+'/'+output_dir
-    
+    filename = source + "-%s.%s.%s.%s.seed" % (
+        stats['network'], stats['station'], tag, seq_idx)
+
+    path = os.environ['STAGED_DATA'] + '/' + output_dir
+
     if not os.path.exists(path):
         os.makedirs(path)
-    
-    dest=os.path.join(path, filename)
+
+    dest = os.path.join(path, filename)
     stream.write(dest, format='MSEED')
-    prov={'location':"file://"+socket.gethostname()+"/"+dest, 'format':'application/octet-stream','metadata':{'prov:type':tag}}
+    prov = {'location': "file://" + socket.gethostname() + "/" + dest, 'format': 'application/octet-stream',
+            'metadata': {'prov:type': tag}}
     return stream, prov
-    
