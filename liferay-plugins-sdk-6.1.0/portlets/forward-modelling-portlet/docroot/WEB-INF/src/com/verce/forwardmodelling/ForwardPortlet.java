@@ -482,17 +482,7 @@ public class ForwardPortlet extends MVCPortlet{
             input.put(new JSONObject().put("name", "download_conf").put("url", download_conf_path).put("mime-type", "text/json"));
 
             asm_service.placeUploadedFile(userId, download_conf, importedWfId, "Job0", "2");
-            // stagein => Sync for final workflow
-
-            // temporary for fake workflow
-            try {
-                asm_service.placeUploadedFile(userId, download_conf, importedWfId, "sync", "1");
-            } catch (Exception e) {
-                System.out.println("Failed uploading config file");
-                e.printStackTrace();
-            }
-
-            // add vercepes.zip
+                       // add vercepes.zip
             String zipName = runId+".zip";
             createZipFile("temp/"+zipName);
             File tempZipFile = new File("temp/"+zipName);
@@ -502,6 +492,18 @@ public class ForwardPortlet extends MVCPortlet{
             input.put(new JSONObject().put("name", "vercepes").put("url", zipPublicPath).put("mime-type", "zip"));
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
+            // stagein => Sync for final workflow
+
+            // If a workflow does not contain the job sync, such as those designed to run on the cloud resources 
+            // then an exception is thrown and the submission would fail as a result. The following try and catch block is put in place to catch 
+            // such an exception so that the same method can be reused for workflows without a sync job.
+            try {
+                asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "sync", "0");
+                asm_service.placeUploadedFile(userId, download_conf, importedWfId, "sync", "1");
+            } catch (Exception e) {
+                System.out.println("[ForwardModellingPortlet.submitDownloadWorkflow] Failed uploading Sync input files");
+            }
+
 
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
@@ -581,14 +583,8 @@ public class ForwardPortlet extends MVCPortlet{
             String processing_conf_path = addFileToDL(processing_conf, runId+"_processing_conf.json", groupId, userSN, "processing");
             input.put(new JSONObject().put("name", "processing_conf").put("url", processing_conf_path).put("mime-type", "text/json"));
 
-            // temporary for fake workflow
-            try {
-                asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "sync", "1");
-                asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "Job0", "2");
-            } catch (Exception e) {
-
-            }
-
+            asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "Job0", "2");
+            
             String portalUrl = PortalUtil.getPortalURL(resourceRequest);
             String currentURL = PortalUtil.getCurrentURL(resourceRequest);
             String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
@@ -638,7 +634,17 @@ public class ForwardPortlet extends MVCPortlet{
             input.put(new JSONObject().put("name", "vercepes").put("url", zipPublicPath).put("mime-type", "zip"));
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
+         
+            // If a workflow does not contain the job sync, such as those designed to run on the cloud resources 
+            // then an exception is thrown and the submission would fail as a result. The following try and catch block is put in place to catch 
+            // such an exception so that the same method can be reused for workflows without a sync job.
+            try {
+            	asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "sync", "0");
+                asm_service.placeUploadedFile(userId, processing_conf, importedWfId, "sync", "1");
+            } catch (Exception e) {
+            	 System.out.println("[ForwardModellingPortlet.submitProcessingWorkflow] Failed uploading Sync input files");
 
+            }
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
             {
@@ -714,14 +720,9 @@ public class ForwardPortlet extends MVCPortlet{
             String misfit_conf_path = addFileToDL(misfit_conf, runId+"_misfit_conf.json", groupId, userSN, "misfit");
             input.put(new JSONObject().put("name", "misfit_conf").put("url", misfit_conf_path).put("mime-type", "text/json"));
 
-            // temporary for fake workflow
-            try {
-                asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "sync", "1");
-                asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "Job0", "2");
-            } catch (Exception e) {
 
-            }
-
+            asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "Job0", "2");
+           
             String portalUrl = PortalUtil.getPortalURL(resourceRequest);
             String currentURL = PortalUtil.getCurrentURL(resourceRequest);
             String portal = currentURL.substring(0, currentURL.substring(1).indexOf("/")+1);
@@ -763,6 +764,17 @@ public class ForwardPortlet extends MVCPortlet{
 
             asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "Job0", "3");
 
+            // If a workflow does not contain the job sync, such as those designed to run on the cloud resources 
+            // then an exception is thrown and the submission would fail as a result. The following try and catch block is put in place to catch 
+            // such an exception so that the same method can be reused for workflows without a sync job.
+            try {
+            	asm_service.placeUploadedFile(userId, tempZipFile, importedWfId, "sync", "0");
+            	asm_service.placeUploadedFile(userId, misfit_conf, importedWfId, "sync", "1");
+            } catch (Exception e) {
+            	System.out.println("[ForwardModellingPortlet.submitMisfitWorkflow] Failed uploading Sync input files");
+
+            }
+            
             Vector<WorkflowConfigErrorBean> errorVector = checkCredentialErrors(userId, importedWfId);
             if(errorVector!=null && !errorVector.isEmpty())
             {
