@@ -16,8 +16,8 @@ Ext.define('CF.view.dataviews.EventGrid', {
     id: 'eventgrid',
     multiSelect: true,
     requires: [
-        'GeoExt.selection.FeatureModel',
-        'GeoExt.grid.column.Symbolizer',
+        //'GeoExt.selection.FeatureModel',
+        //'GeoExt.grid.column.Symbolizer',
         'Ext.grid.plugin.CellEditing',
         'Ext.form.field.Number',
         'Ext.grid.plugin.BufferedRenderer'
@@ -29,10 +29,10 @@ Ext.define('CF.view.dataviews.EventGrid', {
         injectCheckbox: 0,
         listeners: {
             select: function(rowmodel, record, index) {
-                CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(record.data);
+                controller.onEventClick(record,true);
             },
             deselect: function(rowmodel, record, index) {
-                CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(record.data);
+                controller.onEventClick(record,false);
             },
             selectionchange: function(t, s) {
                 if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
@@ -48,7 +48,7 @@ Ext.define('CF.view.dataviews.EventGrid', {
         dataIndex: 'symbolizer',
         menuDisabled: true,
         sortable: false,
-        xtype: 'gx_symbolizercolumn',
+        //xtype: 'gx_symbolizercolumn',
         width: 60
     }, {
         header: 'Desc',
@@ -84,10 +84,10 @@ Ext.define('CF.view.dataviews.EventGrid', {
         tdCls: 'show',
         items: [{
             icon: localResourcesPath + '/img/eye-3-256.png', // Use a URL in the icon config
-            tooltip: 'Show',
+            tooltip: 'Show/Hide',
             handler: function(grid, rowIndex, colIndex) {
                 var rec = grid.getStore().getAt(rowIndex);
-                CF.app.getController('Map').showEventInfo(rec.data);
+                controller.showEventInfo(rec.data);
             }
         }]
     }],

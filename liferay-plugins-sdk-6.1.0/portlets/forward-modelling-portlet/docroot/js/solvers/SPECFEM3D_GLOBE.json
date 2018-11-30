@@ -154,10 +154,10 @@
             "geo_maxLat" : 60,
             "geo_minLat" : 30,
             "polygon":{
-                "lower_left" : [-10,30],
-                "lower_right" : [30,30],
-                "upper_right" : [45,60],
-                "upper_left" : [-25,60]
+                "lower_left" : [28.48,-10],
+                "lower_right" : [28.48,30],
+                "upper_right" : [55.68,42.25],
+                "upper_left" : [55.68,-22.24]
             }
         }
     ],
@@ -339,7 +339,7 @@
             "type" : "float",
             "desc" : "Not needed for a global simulation. (See manual for regional simulations.)"   ,
             "minValue":-180,
-            "maxValue":180  
+            "maxValue":180
         }, 
         {
             "group" : "2 - Simulation Area",

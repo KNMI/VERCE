@@ -21,7 +21,7 @@ Ext.define('CF.view.MultiCombo', {
     },
     listeners: {
         change: function(multicombo, value, display) {
-            multicombo.up('form').down('#station_but').enable();
+            multicombo.up('form').down('#station_btn').enable();
         }
     }
 });
@@ -93,11 +93,11 @@ Ext.define('CF.view.StationSearchPanel', {
         disabled: true
     }],
     buttons: [{
-        itemId: 'station_but',
+        itemId: 'station_btn',
         disabled: true,
         text: 'Search'
     }, {
-        itemId: 'station_cl_but',
+        itemId: 'station_cl_btn',
         text: 'Clear'
     }]
 });

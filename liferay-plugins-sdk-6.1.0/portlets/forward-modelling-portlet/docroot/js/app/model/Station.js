@@ -4,7 +4,8 @@ Ext.define('CF.model.Station', {
   fields: [{
       name: 'symbolizer',
       convert: function(v, r) {
-        return r.data.layer.styleMap.createSymbolizer(r.data, r.data.layer.styleMap.styles[r.data.renderIntent]);
+        return '<img src="/forward-modelling-portlet/img/station.png" height="25%" width="50%" style="margin: 5px; max-width: 20px;" >';
+        //return r.data.layer.styleMap.createSymbolizer(r.data, r.data.layer.styleMap.styles[r.data.renderIntent]);
       },
     }, {
       name: 'station',

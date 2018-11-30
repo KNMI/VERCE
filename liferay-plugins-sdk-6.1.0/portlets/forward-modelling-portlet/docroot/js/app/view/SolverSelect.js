@@ -224,52 +224,53 @@ Ext.define('CF.view.MeshesCombo', {
 
                     Ext.getCmp('mesh_doc_button').setDisabled(false);
                 }
-            }
-            if (combo.getValue() == "Bespoke") {
-                controller = CF.app.getController('Map');
-                if (reuse_mesh) {
-                    isAcrossEquator = parseInt(reuse_mesh.geo_minLat) < 0 && parseInt(reuse_mesh.geo_maxLat) > 0;
-                    controller.createPolygonLayer(reuse_mesh, isAcrossEquator);
-                    reuse_mesh = null;
-                } else {
-                    controller.createPolygonLayer(mesh, false);
-                }
-            } else {
-                createBoundariesLayer(mesh);
-            }
+            } 
             //Update the solver values
             updateSolverValues(mesh.get('values'));
 
             velocitycombo.store.loadData(mesh.get('velmod'));
+
+            if (combo.getValue() == "Bespoke" && reuse_bespoke_mesh) {
+                solverConfStore = Ext.data.StoreManager.lookup('solverConfStore');
+
+                xi = solverConfStore.findRecord("name", "ANGULAR_WIDTH_XI_IN_DEGREES").get('value');
+                eta = solverConfStore.findRecord("name", "ANGULAR_WIDTH_ETA_IN_DEGREES").get('value');
+                cenLat = solverConfStore.findRecord("name", "CENTER_LATITUDE_IN_DEGREES").get('value');
+                cenLon = solverConfStore.findRecord("name", "CENTER_LONGITUDE_IN_DEGREES").get('value');
+
+                updateBoundaries(xi,eta,cenLat,cenLon);
+            }
+            else
+             {
+                createBoundariesLayer(mesh);
+             }
         },
     }
 });
 
-
 var createBoundariesLayer = function(mesh) {
-    var controller = CF.app.getController('Map');
-    if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
-        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
-    }
-    if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") {
-        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
-    }
-    var layers = [];
-    var boxes = new OpenLayers.Layer.Boxes("Boxes");
-    var coord = [mesh.get('geo_minLon'), mesh.get('geo_minLat'), mesh.get('geo_maxLon'), mesh.get('geo_maxLat')];
-    bounds = OpenLayers.Bounds.fromArray(coord);
-    box = new OpenLayers.Marker.Box(bounds);
-    box.setBorder("black");
-    //box.events.register("click", box, function (e) {this.setBorder("yellow"); });
-    boxes.addMarker(box);
-    layers.push(boxes);
-    controller.mapPanel.map.addLayers(layers);
+    polygon=mesh.data.polygon;
+    if(mesh.data.name == "Bespoke")
+    {
+        if(!polygon.boundaries) {
+            polygon.boundaries = [new WorldWind.Location(polygon.lower_left[0],polygon.lower_left[1]),
+            new WorldWind.Location(polygon.lower_right[0],polygon.lower_right[1]),
+            new WorldWind.Location(polygon.upper_right[0],polygon.upper_right[1]),
+            new WorldWind.Location(polygon.upper_left[0],polygon.upper_left[1])];
+        }
 
-    var centLon = mesh.get('geo_minLon') + (mesh.get('geo_maxLon') - mesh.get('geo_minLon')) / 2;
-    var centLat = mesh.get('geo_minLat') + (mesh.get('geo_maxLat') - mesh.get('geo_minLat')) / 2;
-    controller.mapPanel.map.setCenter([centLon, centLat]);
-    controller.mapPanel.map.zoomToExtent(bounds);
-};
+    }
+    else
+    {
+      mesh.data.polygon= {boundaries : new WorldWind.Sector(mesh.data.geo_minLat,mesh.data.geo_maxLat,mesh.data.geo_minLon,mesh.data.geo_maxLon).getCorners()};
+
+    }
+
+    //controller = CF.app.getController('Map');
+    controller.createPolygon(mesh);
+    controller.zoomToExtent(mesh);
+
+}
 
 var customVelocityModel = Ext.create(velocitystore.getModel(), {
     custom: true
@@ -623,7 +624,7 @@ Ext.define('CF.view.SolverSelectForm', {
             solverConfStore.save();
             var jsonString = '{"fields" :' + Ext.encode(Ext.pluck(solverConfStore.data.items, 'data')) + "}";
             var wsSolverUrl = '/verce-scig-api/solver/par-file/' + encodeURIComponent(Ext.getCmp('solvertype').getValue().toLowerCase());
-            postRequest(wsSolverUrl, "jsondata", jsonString); // makes a call to the WS that, the user receives a file back  
+            postRequest(wsSolverUrl, "jsondata", jsonString); // makes a call to the WS that, the user receives a file back
         }
     }]
 });
@@ -806,7 +807,7 @@ function selectSolver(selectedSolver) {
 
     solverConfStore.setProxy({
         type: 'ajax',
-        url: '/verce-scig-api/solver/' + selectedSolver, 
+        url: '/verce-scig-api/solver/' + selectedSolver,
         //url: '../../../forward-modelling-portlet/js/solvers/' + selectedSolver + '.json',
         extraParams: {
             'userId': userId
@@ -854,20 +855,10 @@ function postRequest(path, paramName, paramValue) {
 
 //Clear map, clear velocityCombo and disable tabs for stations and events
 function clearMap() {
-    var controller = CF.app.getController('Map');
-    if (controller.mapPanel.map.getLayersByName("Boxes") != "") {
-        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Boxes")[0]);
-    }
-    if (controller.mapPanel.map.getLayersByName("Polygon Layer") != "") {
-        controller.mapPanel.map.removeLayer(controller.mapPanel.map.getLayersByName("Polygon Layer")[0]);
-    }
-    Ext.data.StoreManager.lookup('eventStore').removeAll();
-    Ext.data.StoreManager.lookup('stationStore').removeAll();
-    controller.hideEventInfo();
-    controller.hideStationInfo();
+    //var controller = CF.app.getController('Map');
+    controller.clearMap();
     var velocitycombo = Ext.getCmp('velocity');
     velocitycombo.clearValue();
     velocitycombo.store.removeAll();
-    Ext.getCmp('tabpanel_principal').down('#stations').setDisabled(true);
-    Ext.getCmp('tabpanel_principal').down('#earthquakes').setDisabled(true);
 }
+

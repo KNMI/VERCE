@@ -1,5 +1,5 @@
 Ext.define('CF.store.Event', {
-  extend: 'GeoExt.data.FeatureStore',
+  extend: 'Ext.data.Store',
   requires: ['CF.model.Event'],
   model: 'CF.model.Event',
   alias: 'store.event',

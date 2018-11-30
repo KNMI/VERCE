@@ -1,15 +1,12 @@
-var reuse_mesh = null;
+var reuse_bespoke_mesh = null;
+
 var handleDownloadLogfiles = function(grid, rowIndex, colIndex) {
     var rec = grid.getStore().getAt(rowIndex);
     window.open(downloadWorkflowOutputURL + '&workflowId=' + rec.get('workflowId'), '_self');
 };
 
 var handleViewResults = function(grid, rowIndex, colIndex) {
-    var record = grid.getStore().getAt(rowIndex);
-
-    var activityStore = Ext.data.StoreManager.lookup('activityStore');
-    var artifactStore = Ext.data.StoreManager.lookup('artifactStore');
-
+    var record = grid.getStore().getAt(rowIndex);    var activityStore = Ext.data.StoreManager.lookup('activityStore');    var artifactStore = Ext.data.StoreManager.lookup('artifactStore');
     activityStore.setProxy({
         type: 'ajax',
         url: PROV_SERVICE_BASEURL + 'workflowexecutions/' + encodeURIComponent(record.get("name")) + '/showactivity',
@@ -30,19 +27,17 @@ var handleViewResults = function(grid, rowIndex, colIndex) {
             Ext.getCmp('downloadscript').enable();
         }
     });
-
     activityStore.on('load', onStoreLoad, this, {
         single: true
     });
     currentRun = record.get("name");
     owner = userSN;
-
     this.up('viewport > #viewport_tabpanel').setActiveTab('resultstab');
 };
 
 var getSolverConf = function(solverconf, callback) {
     Ext.Ajax.request({
-        url: solverconf.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'),
+        url: solverconf.url.replace(/http:\/\/[^\/]*\//, '/'),
         success: function(response, config) {
             var solver_conf = JSON.parse(response.responseText);
             if (solver_conf === null) {
@@ -50,7 +45,6 @@ var getSolverConf = function(solverconf, callback) {
                 Ext.getCmp('viewport').setLoading(false);
                 return;
             }
-
             // callback without error
             callback(null, solver_conf);
         },
@@ -60,32 +54,28 @@ var getSolverConf = function(solverconf, callback) {
         }
     });
 }
-
 var getWorkflowAndSolverConf = function(runId, callback) {
     var url = PROV_SERVICE_BASEURL + "workflowexecutions/" + encodeURIComponent(runId);
-
     Ext.Ajax.request({
         url: url,
         params: {},
         method: 'GET',
         success: function(response, config) {
             var prov_workflow = JSON.parse(response.responseText);
-
             if (prov_workflow == null) {
                 Ext.getCmp('viewport').setLoading(true);
                 Ext.Msg.alert("Error", "Workflow missing from provenance repository. Please contact support and list the workflow name and username.");
                 return;
             }
-
             prov_workflow.input.forEach(function(item) {
                 prov_workflow[item.name] = item;
             });
-
             if (prov_workflow.solverconf != null) {
                 getSolverConf(prov_workflow.solverconf, function(err, solverconf) {
                     callback(err, prov_workflow, solverconf, url);
                 });
-            } else {
+            }
+            else {
                 Ext.Ajax.request({
                     url: prov_workflow.simulation_workflow.url.replace(/\/export\//, '/').replace(/\?.*$/, ''),
                     success: function(response, config) {
@@ -111,112 +101,46 @@ var getWorkflowAndSolverConf = function(runId, callback) {
     });
 }
 
-var handleReuse = function(grid, rowIndex, colIndex) {
-    var self = this;
-
-    var rec = grid.getStore().getAt(rowIndex);
-
-    Ext.getCmp('viewport').setLoading(true);
-    // number of asynchronous calls remaining
-    var numRemaining = 3;
-
-    getWorkflowAndSolverConf(rec.get('name'), function(err, prov_workflow, solver_conf) {
+var reuseWorkflow = function(wfName, callback) {
+    getWorkflowAndSolverConf(wfName, function(err, prov_workflow, solver_conf) {
         if (err != null) {
-            Ext.Msg.alert("Error", err);
-            Ext.getCmp('viewport').setLoading(false);
-
+            callback(err);
             return;
         }
-
-        // reuse solver
+       // reuse solver
         var solverType = Ext.getCmp('solvertype');
         var solver = solverType.store.findRecord('name', solver_conf.solver);
         if (solver != null) {
             solverType.clearValue();
             solverType.setValue(solver.get('abbr'));
         } else {
-            // TODO fix partial reuse when solver unavailable
-            Ext.Msg.alert("Solver from old run now unavailable. Please select another one on the Solver tab.");
+            callback("Solver from old run now unavailable. Please select another one on the Solver tab.");
             Ext.getCmp('viewport').setLoading(false);
             return;
         }
-
-        self.up('viewport > #viewport_tabpanel').setActiveTab('simulationtab');
-
-        // Reuse bespoke type meshes
+        // Reuse mesh
         if (solver_conf.bespoke_mesh_boundaries) {
-            reuse_mesh = {
+            reuse_bespoke_mesh = {
                 data: solver_conf.bespoke_mesh_boundaries
             };
         }
+        Ext.data.StoreManager.lookup('solverConfStore').addListener('refresh', function() {
+                    Ext.getCmp('meshes').setValue(solver_conf.mesh);
+        }, this, {
+            single: true
+        });
+
         // reuse velocity when velocity model store finishes loading
         var velocityCombo = Ext.getCmp('velocity');
         velocityCombo.store.addListener('refresh', function() {
             velocityCombo.setValue(solver_conf.velocity_model);
-
             if (solver_conf.custom_mesh) {
                 velocityCombo.up('form').getForm().findField('minlat').setValue(solver_conf.custom_mesh_boundaries.minlat);
                 velocityCombo.up('form').getForm().findField('maxlat').setValue(solver_conf.custom_mesh_boundaries.maxlat);
                 velocityCombo.up('form').getForm().findField('minlon').setValue(solver_conf.custom_mesh_boundaries.minlon);
                 velocityCombo.up('form').getForm().findField('maxlon').setValue(solver_conf.custom_mesh_boundaries.maxlon);
             }
-
             Ext.data.StoreManager.lookup('solverConfStore').loadData(solver_conf.fields);
-
-            // HACK ensure correct event binding order by binding here
-            var eventLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Events')[0];
-            Ext.data.StoreManager.lookup('eventStore').bind(eventLayer);
-
-            eventLayer.events.on({
-                featureadded: function(event) {},
-                featuresadded: function(event) {
-                    event.features.forEach(function(feature) {
-                        if (solver_conf.events.indexOf(feature.data.eventId) >= 0) {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                        } else {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                        }
-                    });
-                    eventLayer.events.un(this);
-                    if (--numRemaining === 0) {
-                        Ext.getCmp('viewport').setLoading(false);
-                    }
-                },
-                scope: this
-            });
-
-            // reuse events
-            CF.app.getController('Map').getEvents(CF.app.getController('Map'), prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'));
-
-            var stationFileType = prov_workflow.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
-            var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
-            Ext.getCmp('station-filetype').select(stationFileType);
-
-            // HACK ensure correct event binding order by binding here
-            var stationLayer = CF.app.getController('Map').mapPanel.map.getLayersByName('Stations')[0];
-            Ext.data.StoreManager.lookup('stationStore').bind(stationLayer);
-
-            stationLayer.events.on({
-                featureadded: function(event) {},
-                featuresadded: function(event) {
-                    event.features.forEach(function(feature) {
-                        if (solver_conf.stations.indexOf(feature.data.network + '.' + feature.data.station) >= 0) {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(feature);
-                        } else {
-                            CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(feature);
-                        }
-                    });
-                    stationLayer.events.un(this);
-                    if (--numRemaining === 0) {
-                        Ext.getCmp('viewport').setLoading(false);
-                    }
-                },
-                scope: this
-            });
-
-            // reuse stations
-            CF.app.getController('Map').getStations(CF.app.getController('Map'), prov_workflow.stations.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de', 'portal.verce.eu'), stationFileType);
-
             // Only set old workflow if it's still available
             if (prov_workflow.workflowId != null) {
                 var workflowDropdown = Ext.getCmp('wfSelection');
@@ -227,28 +151,56 @@ var handleReuse = function(grid, rowIndex, colIndex) {
                     workflowDropdown.setValue(prov_workflow.workflowId);
                 }
             }
-
             Ext.getCmp('submitName').setValue(prov_workflow._id.slice(0, -14)); // remove runid
             Ext.getCmp('submitMessage').setValue(prov_workflow.description);
         }, this, {
             single: true
         });
-
-        // set mesh when solverconfstore finishes loading
-        Ext.data.StoreManager.lookup('solverConfStore').addListener('refresh', function() {
-            // reuse mesh and trigger velocity store reload
-            Ext.getCmp('meshes').setValue(solver_conf.mesh);
-            if (--numRemaining === 0) {
-                Ext.getCmp('viewport').setLoading(false);
-            }
-        }, this, {
-            single: true
-        });
+        callback(err,prov_workflow,solver_conf);
     });
 };
 
+var handleReuse=function(grid, rowIndex, colIndex) {
+    reuse_bespoke_mesh=null;
+    var wfName = grid.getStore().getAt(rowIndex).get('name');
+    reuseWorkflow(wfName, function(err, prov_workflow, solver_conf) {
+        Ext.getCmp('viewport').setLoading(true);
+        if (err != null) {
+            Ext.Msg.alert("Error", err);
+            Ext.getCmp('viewport').setLoading(false);
+            return;
+        }
+
+        // wait a few  secs for the new polygon to be recreated before adding events and stations
+        setTimeout(function(){
+            handleEvents(prov_workflow,solver_conf.events);
+            handleStations(prov_workflow,solver_conf.stations);
+         },3000);
+
+    });
+}
+function handleEvents(prov_workflow, selectedEvents)
+{
+    eventsUrl=prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/');
+    controller.getEvents(eventsUrl, function() {
+      controller.updateEvents(selectedEvents,true);
+    });
+}
+
+function handleStations(prov_workflow, selectedStations)
+{
+    var stationFileType = prov_workflow.stations['mime-type'] === 'application/xml' ? STXML_TYPE : STPOINTS_TYPE;
+    var record = Ext.getCmp('station-filetype').getStore().findRecord('abbr', stationFileType);
+    Ext.getCmp('station-filetype').select(stationFileType);
+    stationsUrl=prov_workflow.stations.url.replace(/http:\/\/[^\/]*\//, '/');
+    controller.getStations(stationsUrl,stationFileType,function() {
+        controller.updateStations(selectedStations,true);
+        Ext.getCmp('viewport').setLoading(false);
+    });
+}
+
 var handleDeleteInstance = function(grid, rowIndex, colIndex) {
-    var encryptedIrodsSession = CF.app.getController('Map').encryptedIrodsSession;
+    var encryptedIrodsSession = controller.encryptedIrodsSession;
     //TO BE HANDLED WITH THE NEW IRODS CLOUD BROWSER
     //if (encryptedIrodsSession == null) {
     //  Ext.Msg.alert('Error', 'Cannot remove run. Please log out from and back into iRods and try again.');
@@ -292,8 +244,9 @@ var getEventData = function(event_url, publicIds, callback) {
         url: event_url,
         method: 'GET',
         params: {},
-        success: function(response, config) {
-            var quakeml = OpenLayers.Format.XML.prototype.read.apply(this, [response.responseText]);
+        success: function(response, config) { 
+            parser = new DOMParser();
+            var quakeml= (response.responseXML) ? response.responseXML : parser.parseFromString(response.responseText,"text/xml");
             var eventsXML = quakeml.getElementsByTagName('event');
 
             var events = [];
