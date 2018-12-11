@@ -44,10 +44,14 @@ Ext.define('CF.view.globe.LayerMenu', {
 
             if (layer.displayName === layerName) {
                 layer.enabled = !layer.enabled;
-                if (layer.enabled) {
+                if (layer.enabled) {		
                     layerButton.addClass("active");
+                    $('#'+layerName+'OpacitySliderPanel').show();
+                    $('#'+layerName+'legendPanel').show();
                 } else {
                     layerButton.removeClass("active");
+                    $('#'+layerName+'OpacitySliderPanel').hide();
+                    $('#'+layerName+'legendPanel').hide();
                 }
                 this.wwd.redraw();
                 break;
@@ -56,4 +60,3 @@ Ext.define('CF.view.globe.LayerMenu', {
     },
 
 });
-

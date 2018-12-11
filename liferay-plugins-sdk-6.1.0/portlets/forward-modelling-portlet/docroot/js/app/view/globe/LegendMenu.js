@@ -11,15 +11,22 @@ Ext.define('CF.view.globe.LegendMenu', {
     },
     updateLegendList : function() {
         var legendDropdown = $("#legendsDropdown");
-
+        var legendPanel = $('<div id="'+this.legend.name+'legendPanel"></div>');
         var legendItem = $('<li id ="' + this.legend.name + 'legend_btn" type="button" class="btn btn-block" data-toggle="modal" data-target="#legendModal" value='+ this.legend.name + ' data-backdrop="false"><a >' + this.legend.name + '</a></li>');
 
-        legendDropdown.append(legendItem);
+        legendPanel.append(legendItem);
 
         var imageUrl=' <input type="hidden"  id="imgUrl_'+ this.legend.name +'" value="'+this.legend.imageUrl +'">'
 
-        legendDropdown.append(imageUrl);
+        legendPanel.append(imageUrl);
 
+        legendDropdown.append(legendPanel);
+
+        if (this.legend.enabled) {
+                $('#'+this.legend.name+'legendPanel').show();
+            } else {
+                $('#'+this.legend.name+'legendPanel').hide();
+            }
 
     },
     onLegendClick : function(event) {

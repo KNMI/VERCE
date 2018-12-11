@@ -8,12 +8,13 @@ Ext.define('CF.view.globe.SliderMenu', {
         var layer = this.layer;
         var name = layer.displayName;
         var sliderDropdown =  $("#slidersDropdown");
+        var sliderPanel = $('<div id="'+name+'OpacitySliderPanel"></div>');
         var sliderlabel = '<h5>' + name +'<span id="'+name+'Opacity" class="pull-right">' + Math.round(layer.opacity * 100) + '</span></h5>';
-        sliderDropdown.append(sliderlabel);
+        sliderPanel.append(sliderlabel);
         var sliderItem = $('<li id="'+name+'OpacitySlider"></li>');
-
+	
         // Set up  an opacity slider control
-          sliderItem.slider({
+        sliderItem.slider({
             range: "min",
             value: 0.5,
             min: 0,
@@ -26,9 +27,15 @@ Ext.define('CF.view.globe.SliderMenu', {
             }
           });
 
-        sliderDropdown.append(sliderItem);
+        sliderPanel.append(sliderItem);
 
-        sliderDropdown.append('<hr>');
+        sliderPanel.append('<hr>');
+        sliderDropdown.append(sliderPanel);
+         if (layer.enabled) {
+                $('#'+name+'OpacitySliderPanel').show();
+            } else {
+                $('#'+name+'OpacitySliderPanel').hide();
+            }
     }
 
 });

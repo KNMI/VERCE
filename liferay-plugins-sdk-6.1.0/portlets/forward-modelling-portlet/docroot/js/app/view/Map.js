@@ -100,7 +100,7 @@ Ext.define('CF.view.Map', {
             serviceAddress: "https://geoservices.knmi.nl/cgi-bin/worldmaps.cgi?version=1.3.0&service=WMS&request=GetCapabilities&layer=world_raster",
             layerName : "world_raster",
             displayName : "KNMI",
-            enabled : true,
+            enabled : false,
             hide : false,
             opacity: 1,
             hasLegend :false,
@@ -132,7 +132,7 @@ Ext.define('CF.view.Map', {
             serviceAddress: "/ethz-mapserv/mapserv?MAP=/var/www/mapfile/sharehazard.01.map&FORMAT=image/gif&TRANSPARENT=true&VISIBILITY=false&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG%3A4326&layer=hmap469",
             layerName : "hmap469",
             displayName : "Hazards",
-            enabled : true,
+            enabled : false,
             hide : false,
             opacity: 0.5,
             hasLegend :true,
@@ -142,7 +142,7 @@ Ext.define('CF.view.Map', {
             serviceAddress: "/ethz-mapserv/mapserv?map=/var/www/mapfile/worldvector.map&FORMAT=image/gif&TRANSPARENT=true&VISIBILITY=false&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities&STYLES=&EXCEPTIONS=application/vnd.ogc.se_inimage&SRS=EPSG%3A4326&layer=wv_country_ol",
             layerName : "wv_country_ol",
             displayName : "Borders",
-            enabled : true,
+            enabled : false,
             hide : false,
             opacity: 0.5,
             hasLegend :false,
@@ -187,7 +187,8 @@ Ext.define('CF.view.Map', {
           {
               legend= {
               name :options.displayName,
-              imageUrl:options.serviceAddress.replace("GetCapabilities","GetLegendGraphic")
+              imageUrl:options.serviceAddress.replace("GetCapabilities","GetLegendGraphic"),
+              enabled:options.enabled
               };
               Ext.create('CF.view.globe.LegendMenu', legend);
           }
