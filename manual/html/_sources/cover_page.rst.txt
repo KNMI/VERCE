@@ -6,7 +6,7 @@ The VERCE portal – a user’s guide
 
 |image1|
 
-**Version 2.1, April 2018**
+**Version 2.2, December 2018**
 
 Contributors
 ============

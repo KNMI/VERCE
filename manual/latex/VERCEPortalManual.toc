@@ -1,4 +1,4 @@
-\babel@toc {english}{}
+\select@language {english}
 \contentsline {chapter}{\numberline {1}Introduction to the VERCE platform}{5}{chapter.1}
 \contentsline {chapter}{\numberline {2}Introduction to full waveform modeling}{7}{chapter.2}
 \contentsline {section}{\numberline {2.1}Why full waveform?}{7}{section.2.1}
@@ -31,7 +31,7 @@
 \contentsline {section}{\numberline {5.4}Selecting earthquakes}{25}{section.5.4}
 \contentsline {section}{\numberline {5.5}Selecting stations}{26}{section.5.5}
 \contentsline {section}{\numberline {5.6}Submitting the job}{27}{section.5.6}
-\contentsline {section}{\numberline {5.7}Monitoring the job}{27}{section.5.7}
+\contentsline {section}{\numberline {5.7}Monitoring the job}{28}{section.5.7}
 \contentsline {chapter}{\numberline {6}A SPECFEM3D\_GLOBE simulation example}{29}{chapter.6}
 \contentsline {section}{\numberline {6.1}Introduction}{29}{section.6.1}
 \contentsline {section}{\numberline {6.2}Setting the simulation area}{29}{section.6.2}
@@ -41,7 +41,7 @@
 \contentsline {section}{\numberline {6.4}Defining the resolution \& mesh parameters}{30}{section.6.4}
 \contentsline {section}{\numberline {6.5}Selecting an Earthquake}{31}{section.6.5}
 \contentsline {section}{\numberline {6.6}Selecting stations}{32}{section.6.6}
-\contentsline {section}{\numberline {6.7}Submitting and monitoring the simulation}{33}{section.6.7}
+\contentsline {section}{\numberline {6.7}Submitting and monitoring the simulation}{34}{section.6.7}
 \contentsline {section}{\numberline {6.8}Outputs from regional \& global simulations}{34}{section.6.8}
 \contentsline {chapter}{\numberline {7}Processing and Accessing the Results}{37}{chapter.7}
 \contentsline {section}{\numberline {7.1}Outputs of the forward simulations}{37}{section.7.1}
@@ -58,7 +58,8 @@
 \contentsline {subsection}{\numberline {8.2.1}Meshing parameters}{52}{subsection.8.2.1}
 \contentsline {subsection}{\numberline {8.2.2}Meshing software}{53}{subsection.8.2.2}
 \contentsline {section}{\numberline {8.3}Submitting a mesh and a velocity model}{54}{section.8.3}
-\contentsline {section}{\numberline {8.4}Submitting a new station catalogue}{56}{section.8.4}
+\contentsline {section}{\numberline {8.4}Submitting a new earthquake catalogue}{55}{section.8.4}
+\contentsline {section}{\numberline {8.5}Submitting a new station catalogue}{56}{section.8.5}
 \contentsline {chapter}{\numberline {9}VERCE glossary}{59}{chapter.9}
 \contentsline {chapter}{\numberline {A1}Appendix 1 \textendash {} SPECFEM3D\_Cartesian\IeC {\textquoteright }s Flags}{61}{appendix.A}
 \contentsline {section}{\numberline {A1.1}Group 0 - Basic}{61}{section.A.1}
