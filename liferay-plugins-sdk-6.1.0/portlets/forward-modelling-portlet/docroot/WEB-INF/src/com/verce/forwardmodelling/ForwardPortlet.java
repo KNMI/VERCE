@@ -122,9 +122,11 @@ import org.apache.http.message.BasicNameValuePair;
 public class ForwardPortlet extends MVCPortlet{
 	
 	ASMService asm_service = null;
-	
+	String portalWebAddress= "";
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws PortletException, IOException 
 	{
+		portalWebAddress = PortalUtil.getPortalURL(resourceRequest);
+	   
 	   System.out.println("###### " + resourceRequest.getResourceID());
 	   if(resourceRequest.getResourceID().equals("uploadFile"))
 		   uploadFile(resourceRequest, resourceResponse);
@@ -1212,8 +1214,7 @@ public class ForwardPortlet extends MVCPortlet{
    		try {
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
-	   		URL url = new URL("https://portal.verce.eu/verce-scig-api/solver/" + solverName);
-	   		//URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);	   		
+	   		URL url = new URL(portalWebAddress + "/verce-scig-api/solver/" + solverName); 	   		
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1252,8 +1253,7 @@ public class ForwardPortlet extends MVCPortlet{
 	   		String solverName = ParamUtil.getString(resourceRequest, "solver");
 	   		String meshName = ParamUtil.getString(resourceRequest, "meshName");
 	   		String velocityModelName = ParamUtil.getString(resourceRequest, "velocityModelName");
-	   		URL url = new URL("https://portal.verce.eu/verce-scig-api/solver/" + solverName);
-			//URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/verce-scig-api/solver/" + solverName);
+	   		URL url = new URL(portalWebAddress + "/verce-scig-api/solver/" + solverName); 
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 
@@ -1527,8 +1527,7 @@ public class ForwardPortlet extends MVCPortlet{
     	urlParams.add(new BasicNameValuePair("prov", data));     	 
     	try 
     	{ 
-    		//URL url = new URL("https://verce-portal-test.scai.fraunhofer.de/j2ep-1.0/prov/workflowexecutions/insert");
-    		URL url = new URL("https://portal.verce.eu/j2ep-1.0/prov/workflowexecutions/insert"); 
+    		URL url = new URL(portalWebAddress + "/j2ep-1.0/prov/workflowexecutions/insert"); 
     		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(urlParams, "utf-8"); 
     		HttpURLConnection con = (HttpURLConnection) url.openConnection(); 
     	   
