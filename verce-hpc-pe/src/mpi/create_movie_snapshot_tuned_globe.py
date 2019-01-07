@@ -31,17 +31,16 @@ def create_image(filename, cent_lat, cent_lon, eta_deg, xi_deg,mesh):
 
     fig = plt.figure(figsize=[22, 15])
 
-    if mesh=="Globe":
+    if mesh == "Globe" or (int(round(minlat)) == -90 and int(round(maxlat)) == 90):
         ax1 = globe_subplot(lons, lats, vxs, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vx, m/s', 221,'k','w')
+                            (-1 * extreme), 'Vx, m/s', 221, 'k', 'w')
         ax2 = globe_subplot(lons, lats, vys, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vy, m/s', 222,'k','w')
+                            (-1 * extreme), 'Vy, m/s', 222, 'k', 'w')
         ax3 = globe_subplot(lons, lats, vzs, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, 'seismic',
-                      (-1 * extreme), 'Vz, m/s', 223,'k','w')
+                            (-1 * extreme), 'Vz, m/s', 223, 'k', 'w')
         ax4 = globe_subplot(lons, lats, pgv, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, 'hot', 0,
-                      'PGV, m/s',
-                      224,'w','k')
-
+                            'PGV, m/s',
+                            224, 'w', 'k')
 
     else:
         ax1 = regional_subplot(lons, lats, vxs, extreme, cent_lat, cent_lon, minlon, maxlon, minlat, maxlat, parallels,
@@ -62,14 +61,18 @@ def create_image(filename, cent_lat, cent_lon, eta_deg, xi_deg,mesh):
 
 def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, min_lon, max_lon, min_lat, max_lat, parallels, meridians, cmap, vmin, title,
             plot_number, coastline_color, background_color):
-
     ax = plt.subplot(plot_number)
     ax.set_axis_bgcolor(background_color)
 
     ETA_m = haversine_distance((min_lat, cent_lon), (max_lat, cent_lon), True)
     XI_m = haversine_distance((min_lat, min_lon), (max_lat, max_lon),True)
-    map = Basemap(height=ETA_m, width=XI_m,
-            resolution='l', area_thresh=1000., projection='omerc', \
+
+    if int(round(max_lat)) == 90:
+        map = Basemap(projection='npstere', boundinglat=min_lat, lon_0=max_lon, resolution='l')
+    elif int(round(min_lat)) == -90:
+        map = Basemap(projection='spstere', boundinglat=max_lat, lon_0=max_lon, resolution='l')
+    else:
+        map = Basemap(height=ETA_m, width=XI_m, resolution='l', area_thresh=1000., projection='omerc', \
             lon_0=cent_lon, lat_0=cent_lat, lon_2=cent_lon, lat_2=min_lat, lon_1=cent_lon, lat_1=max_lat)
     map.drawcoastlines(color=coastline_color)
 
@@ -85,7 +88,6 @@ def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, min_lon, max
     ax.set_title(title)
 
     return ax
-
 """
 def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, eta_deg, xi_deg, parallels, meridians, cmap, vmin, title,
             plot_number, coastline_color, background_color):
@@ -127,6 +129,7 @@ def regional_subplot(lons, lats, data, extreme, cent_lat, cent_lon, eta_deg, xi_
 
     return ax
 """
+
 def globe_subplot(lons, lats, data, extreme, minlon, minlat, maxlon, maxlat, parallels, meridians, cmap, vmin, title,
             plot_number, coastline_color, background_color):
 
@@ -151,6 +154,7 @@ def globe_subplot(lons, lats, data, extreme, minlon, minlat, maxlon, maxlat, par
     ax.set_title(title)
 
     return ax
+
 def read_movie_data(filename):
     filename = "OUTPUT_FILES/" + filename
     x, y, vx = numpy.loadtxt(filename + '.E.xyz', usecols=(0, 1, 2), unpack=True)

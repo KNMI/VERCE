@@ -7,6 +7,15 @@
     <!-- <link rel="stylesheet" type="text/css" href="https://extjs.cachefly.net/ext/gpl/5.0.0/build/packages/ext-theme-classic/build/resources/ext-theme-classic-all.css" /> -->
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/theme/default/style.css" />
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/custom.css" />
+
+    <script src="https://files.worldwind.arc.nasa.gov/artifactory/web/0.9.0/worldwind.min.js"></script>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.fancytree/2.9.0/jquery.fancytree-all.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
     <style>
         .x-form-text-default { 
             background-color: transparent;  
@@ -212,6 +221,34 @@
         .cf-helpwindow h2 {
             margin: 2px 0 0 0;
         }
+        #canvasOne {
+            width: 100%;
+            height: 92%;
+        }
+        #projectionsDropdown {
+            cursor: pointer;
+        }
+        #slidersDropdown {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        #mapNavbar {
+            background-color: #eff6fb;font-weight:bold;
+            padding-left:0px;
+        }
+        .ui-slider-range {
+            background: #147CC8;
+        }
+        .ui-slider-handle {
+            border-color: #147CC8;
+        }
+        .navbar-nav {
+            border-right: 1px solid #D2D2D2;
+        }
+        .navbar-nav > li > a {
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
     </style>
 </head>
 
@@ -223,8 +260,8 @@
 
         <div style="display: none; left: 100px; position: absolute; top: 100px; z-index: 100;">
         </div>
-        <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.debug.js"></script>
+        <!-- <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.debug.js"></script> -->
 
         <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/lib/arbor.js"></script>
         <script language="javascript" type="text/javascript" src="<%=request.getContextPath()%>/js/_/graphics.js"></script>

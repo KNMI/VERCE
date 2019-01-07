@@ -49,7 +49,7 @@ Ext.define('CF.view.EventSearchByFileForm', {
             url: uploadFileURL,
             waitMsg: 'Uploading your file...',
             success: function(fp, o) {
-              CF.app.getController('Map').getEvents(CF.app.getController('Map'), o.result.path);
+              controller.getEvents(o.result.path);
             },
             failure: function(formPanel, action) {
               var data = Ext.decode(action.response.responseText);

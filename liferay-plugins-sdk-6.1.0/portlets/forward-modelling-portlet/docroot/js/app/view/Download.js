@@ -32,7 +32,7 @@ var getDownloadJSON = function(runId, callback) {
     }
 
     // get the events
-    var event_url = prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/').replace('verce-portal-test.scai.fraunhofer.de','portal.verce.eu');
+    var event_url = prov_workflow.quakeml.url.replace(/http:\/\/[^\/]*\//, '/');
 
     getEventData(event_url, solver_conf.events, function(err, events) {
       if (err != null) {

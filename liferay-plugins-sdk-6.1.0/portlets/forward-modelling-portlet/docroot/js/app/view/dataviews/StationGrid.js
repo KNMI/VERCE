@@ -6,8 +6,8 @@ Ext.define('CF.view.dataviews.StationGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.stationgrid',
     requires: [
-        'GeoExt.selection.FeatureModel',
-        'GeoExt.grid.column.Symbolizer',
+        //'GeoExt.selection.FeatureModel',
+        //'GeoExt.grid.column.Symbolizer',
         'Ext.grid.plugin.CellEditing',
         'Ext.grid.plugin.BufferedRenderer',
         'Ext.form.field.Number'
@@ -19,10 +19,10 @@ Ext.define('CF.view.dataviews.StationGrid', {
         checkOnly: true,
         listeners: {
             select: function(rowmodel, record, index) {
-                CF.app.getController('Map').mapPanel.map.getControl('dragselect').select(record.data);
+                 controller.onStationClick(record, true);
             },
             deselect: function(rowmodel, record, index) {
-                CF.app.getController('Map').mapPanel.map.getControl('dragselect').unselect(record.data);
+                controller.onStationClick(record, false);
             },
             selectionchange: function(t, s) {
                 if (s.length > 1) Ext.getCmp('checkboxNSubmit').setDisabled(false);
@@ -37,7 +37,7 @@ Ext.define('CF.view.dataviews.StationGrid', {
         dataIndex: 'symbolizer',
         menuDisabled: true,
         sortable: false,
-        xtype: 'gx_symbolizercolumn',
+        //xtype: 'gx_symbolizercolumn',
         width: 60
     }, {
         header: 'Station',
@@ -65,10 +65,10 @@ Ext.define('CF.view.dataviews.StationGrid', {
         tdCls: 'delete',
         items: [{
             icon: localResourcesPath + '/img/eye-3-256.png', // Use a URL in the icon config
-            tooltip: 'Show',
+            tooltip: 'Show/Hide',
             handler: function(grid, rowIndex, colIndex) {
                 var rec = grid.getStore().getAt(rowIndex);
-                CF.app.getController('Map').showStationInfo(rec.data);
+                controller.showStationInfo(rec.data);
             }
         }]
     }],

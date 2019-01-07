@@ -3,9 +3,15 @@
 
    fields: [{
      name: 'symbolizer',
+     type: 'string',
      convert: function(v, r) {
+       height=15 + Number(r.data.magnitude);
+       width=15 + Number(r.data.magnitude);
+       return '<img src="/forward-modelling-portlet/img/earthquake.png" height="'+height +'" width="'+width+'">';
+     }
+     /*convert: function(v, r) {
        return r.data.layer.styleMap.createSymbolizer(r.data, r.data.layer.styleMap.styles[r.data.renderIntent]);
-     },
+     },*/
    }, {
      name: 'eventId',
      type: 'string',
@@ -17,7 +23,7 @@
    }, {
      name: 'date',
      type: 'string',
-     mapping: 'data.datetime'
+     mapping: 'data.date'
    }, {
      name: 'depth',
      type: 'string',

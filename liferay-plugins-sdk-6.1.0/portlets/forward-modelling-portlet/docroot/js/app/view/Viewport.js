@@ -140,7 +140,8 @@ function showFileSelector(htmlFileList, filetype) {
 }
 
 function parseSelectedFile(win, filetype) {
-  var controller = CF.app.getController('Map');
+  //var controller = CF.app.getController('Map');
+  //var controller = CF.app.getController('GLobe');
   if (selectedFile === "") {
     Ext.Msg.alert("Alert!", "Please, select a file by clicking on it");
   } else {

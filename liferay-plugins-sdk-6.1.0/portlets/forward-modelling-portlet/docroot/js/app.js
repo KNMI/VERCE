@@ -26,7 +26,9 @@ Ext.Loader.setConfig({
   enabled: true,
   disableCaching: false,
   paths: {
-    GeoExt: "../../../forward-modelling-portlet/js/src/GeoExt",
+    //GeoExt: "../../../forward-modelling-portlet/js/src/GeoExt",
+    NasaWorldWind: "../../../forward-modelling-portlet/js/src/NasaWorldWind",
+
     // for dev use
     // Ext: "http://cdn.sencha.io/ext-4.1.0-gpl/src"
     // for build purpose
@@ -41,6 +43,6 @@ Ext.Loader.setConfig({
 Ext.application({
   name: 'CF',
   appFolder: '../../../forward-modelling-portlet/js/app',
-  controllers: ['Map'],
+   controllers: ['Map'],
   autoCreateViewport: true
 });

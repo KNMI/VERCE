@@ -1,3 +1,4 @@
+
 Ext.define('CF.view.Simulation', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.simulation_panel',
@@ -7,7 +8,8 @@ Ext.define('CF.view.Simulation', {
   },
   items: [{
     xtype: 'cf_mappanel'
-  }, {
+    },
+    {
     xtype: 'tabpanel', // Search & Upload
     region: 'center',
     border: false,
@@ -98,3 +100,4 @@ Ext.define('CF.view.Simulation', {
     }
   }]
 });
+

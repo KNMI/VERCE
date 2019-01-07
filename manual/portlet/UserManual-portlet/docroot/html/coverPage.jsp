@@ -33,7 +33,7 @@
                                     <img alt="image1" src='<%=request.getContextPath() %>/images/aquila_sim.png' />
                                 </a>
                                 <p>
-                                    <strong>Version 2.1, April 2018</strong>
+                                    <strong>Version 2.2, December 2018</strong>
                                 </p>
                                 <div class="section" id="contributors">
                                     <h2>Contributors

@@ -1,5 +1,5 @@
 Ext.define('CF.store.Station', {
-  extend: 'GeoExt.data.FeatureStore',
+  extend: 'Ext.data.Store',
   requires: ['CF.model.Station'],
   model: 'CF.model.Station',
   alias: 'store.station',
